@@ -28,9 +28,13 @@ Wednesday: 4:45 - 5:15 PM EST
 Fridays: 2:00 - 2:30 PM EST
 Sundays: 8:00 - 8:30 PM EST
 
+<<<<<<< HEAD
 Standups will take place on Zoom on a re-occurring link. They will last approximately 30 minutes as a high end estimate, with the "actual" standup lasting 5 to 15 minutes and the rest of the time spent working on tasks, code review, and sprint planning.
 
 The zoom link is https://nyu.zoom.us/j/96743743979
+=======
+Standups will [take place on Zoom](https://nyu.zoom.us/j/96743743979) on a re-occurring link. They will last approx 30 minutes as a high end estimate with the "actual" standup lasting 5 to 10 minutes and the rest of the time will be working on tasks, code review, and sprint planning. Zoom link in case the hyperlink does not work: [https://nyu.zoom.us/j/96743743979](https://nyu.zoom.us/j/96743743979).
+>>>>>>> f369d64bf22b0791870a1a4aa14ddb52e411127e
 
 ### Coding Standards
 

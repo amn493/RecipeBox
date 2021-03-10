@@ -28,11 +28,11 @@ The themes of our MVP will be broken down into the outlined things above. More e
 
 ## Team Members
 
-Ashley Nussbaum:
-Olivia Edell:
-Jonathan Sussman:
-Anvita Yellamanchli:
-Mark Bacon: 
+Ashley Nussbaum: https://github.com/amn493
+Olivia Edell: https://github.com/oliviaedell
+Jonathan Sussman: https://github.com/JonathanSussman1
+Anvita Yellamanchli: https://github.com/anvitayella
+Mark Bacon: https://github.com/Dendrobyte
 
 ## What Problem Does RecipeBox Solve?
 
