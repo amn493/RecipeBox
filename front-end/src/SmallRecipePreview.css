@@ -1,0 +1,21 @@
+.smallRecipePreview {
+    padding-left: 20px;
+    padding-bottom: 20px;
+}
+
+.smallRecipePreviewImage {
+    width: 20vw;
+    height: 20vw;
+    padding-right: 10px;
+}
+
+.heartImage {
+    width: 20px;
+    height: 20px;
+    padding-left: 10px;
+    padding-right: 5px;
+}
+
+.smallRecipePreviewUsername {
+    padding-right: 15px;
+}
