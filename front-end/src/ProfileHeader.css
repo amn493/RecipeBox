@@ -1,0 +1,9 @@
+.recipesFollowersAndFollowing{
+    display: 'flex', 'flex-direction', 'row';
+    align-Items: 'center';
+    justify-Content: 'center';
+}
+
+.recipesCount{
+    pointer-events: 'none';
+}

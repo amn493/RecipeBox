@@ -1,9 +1,11 @@
 import logo from './logo.svg';
 import './App.css';
+import ProfileHeader from './ProfileHeader.js';
 
 function App() {
   return (
     <div className="App">
+      <ProfileHeader />
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
