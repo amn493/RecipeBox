@@ -1,3 +1,5 @@
+import Timestamp from './Timestamp'
+
 import './LargeRecipePreview.css'
 
 //Component for large recipe previews
@@ -13,7 +15,7 @@ const LargeRecipePreview = (props) => {
                 {props.recipe.likes}
                 <br></br>
                 <a className="largeRecipePreviewUsername" href={'/user/' + props.recipe.user.username}>{'@' + props.recipe.user.username}</a>
-                {props.recipe.createdAt}
+                <Timestamp createdAt={props.recipe.createdAt} />
                 <p>{props.recipe.caption}</p>
                 {props.recipe.tags.map(tag => (<a className="largeRecipePreviewTag" href={'/browserecipes?tag=' + tag}>{'#' + tag}</a>))}
             </div>
