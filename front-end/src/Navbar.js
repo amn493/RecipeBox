@@ -1,5 +1,6 @@
 import './Navbar.css'
 import NavbarRightSignedOut from './NavbarRightSignedout.js'
+import HamburgerNotSignedIn from './HamburgerNotSignedIn.js'
 
 const Navbar = (props) => {
 
@@ -15,8 +16,6 @@ const Navbar = (props) => {
 
                 {/* Navbar header of logo and hamburger menu*/}
                 <div className="navbar-header">
-                    {/* TODO: Import hamburger menu component with onclick */}
-                    <span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>
 
                     <h1 className="rbx-logo-title">RecipeBox</h1>
                 </div>
