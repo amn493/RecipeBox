@@ -1,4 +1,4 @@
-import './LargeRecipePreview.css';
+import './LargeRecipePreview.css'
 
 //Component for large recipe previews
 //Expects recipe (a recipe object) and liked (a boolean indicating whether or not the signed-in user has liked the recipe) as props
@@ -18,9 +18,9 @@ const LargeRecipePreview = (props) => {
                 {props.recipe.tags.map(tag => (<a className="largeRecipePreviewTag" href={'/browserecipes?tag=' + tag}>{'#' + tag}</a>))}
             </div>
         </div>   
-    );
-};
+    )
+}
 
-export default LargeRecipePreview;
+export default LargeRecipePreview
 
 
