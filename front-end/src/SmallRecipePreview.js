@@ -1,8 +1,8 @@
-import './SmallRecipePreview.css';
+import './SmallRecipePreview.css'
 
 //Component for small recipe previews
 //Expects a recipe object as props
-//Example: <SmallRecipePreview recipe={{imagePath: 'guac.jpg', slug: 'foobarguacamole', name: 'Guacamole', user: {username: 'foobar'}, likes: 36}} liked={false}></SmallRecipePreview>
+//Example: <SmallRecipePreview recipe={{imagePath: 'logo192.png', slug: 'foobarguacamole', name: 'Guacamole', user: {username: 'foobar'}, likes: 36}} liked={false}></SmallRecipePreview>
 const SmallRecipePreview = (props) => {
     return (
         <table className="smallRecipePreview">
@@ -20,7 +20,7 @@ const SmallRecipePreview = (props) => {
             </td>
             </tr>
         </table>
-    );
-};
+    )
+}
 
-export default SmallRecipePreview;
+export default SmallRecipePreview
