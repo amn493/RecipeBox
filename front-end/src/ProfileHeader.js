@@ -8,7 +8,7 @@ import AvatarEditor from 'react-avatar-editor' // convenient avatar/profilepictu
 const ProfileHeader = (props) => {
   
   let editProfileOption = "" // if not currently logged-in user, no option to edit profile
-  if(props.isCurrentUser == true) { // TODO: Setup a state variable cross-page
+  if(props.isCurrentUser === true) { // TODO: Setup a state variable cross-page
     editProfileOption = <EditProfileButton />
   }
 
