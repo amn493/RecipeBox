@@ -1,3 +1,5 @@
+import Timestamp from './Timestamp'
+
 import './SmallRecipePreview.css'
 
 //Component for small recipe previews
@@ -19,7 +21,7 @@ const SmallRecipePreview = (props) => {
                     {props.recipe.likes}
                     <br />
                     <a className="smallRecipePreviewUsername" href={'/user/' + props.recipe.user.username}>{'@' + props.recipe.user.username}</a>
-                    {props.recipe.createdAt}
+                    <Timestamp createdAt={props.recipe.createdAt} />
                 </td>
             </tr>
         </table>
