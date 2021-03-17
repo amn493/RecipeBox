@@ -32,8 +32,6 @@ const KeywordSearchBar = (props) => {
                 </InputGroup.Prepend>
                 <FormControl
                     placeholder={placeholder}
-                    aria-label="Username"
-                    aria-describedby="basic-addon1"
                 />
                 <Button variant="primary" type="submit" className="searchButton">Search</Button>
             </InputGroup>
