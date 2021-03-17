@@ -1,0 +1,23 @@
+.user-preview-profile-link {
+    text-decoration: none;
+    color: #000000;
+  }
+  .user-preview-container {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    font-size: 4vw;
+    align-items: stretch;
+    border: 1px solid black;
+  }
+  .user-preview-full-name {
+    font-weight: bold;
+  }
+  .user-preview-personal-data {
+    text-align: left;
+  }
+  .user-preview-numerical-data {
+    margin-right: 2vw;
+    flex-grow: 2;
+    text-align: right;
+  }
