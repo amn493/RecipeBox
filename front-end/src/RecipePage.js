@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
+import { useParams } from 'react-router-dom'
 
 import Comment from './Comment.js'
 import Timestamp from './Timestamp'
@@ -8,11 +9,13 @@ import './RecipePage.css'
 
 
 // Recipe Page
-// Expects slug (a recipe slug) as props
-// Example: <RecipePage slug="foobar-guacamole" />
+// Expects no props - must be accessed via a url with a slug (/recipes-:slug)
+// Example: <RecipePage />
 
 const RecipePage = (props) => {
 
+    // get slug from url params
+    const { slug } = useParams();
 
     // state variables for knowing when all required data has been fetched from the apis
     const [loadedRecipe, setLoadedRecipe] = useState(false)
@@ -20,7 +23,7 @@ const RecipePage = (props) => {
     const [loadedComments, setLoadedComments] = useState(false)
 
 
-    // request current recipe (slug = props.slug) on initial render
+    // request current recipe (slug = slug) on initial render
     const [recipe, setRecipe] = useState([])
 
     useEffect(() => {
@@ -75,7 +78,7 @@ const RecipePage = (props) => {
             setRecipe(backupData[0])
             setLoadedRecipe(true)
         })
-    }, [props.slug])
+    }, [slug])
 
 
 
