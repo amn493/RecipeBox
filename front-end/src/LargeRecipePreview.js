@@ -22,7 +22,7 @@ const LargeRecipePreview = (props) => {
                 <p>{props.recipe.caption}</p>
                 {props.recipe.tags.map((tag, i) => (<a className="largeRecipePreviewTag" href={'/browserecipes?tag=' + tag} key={i}>{'#' + tag}</a>))}
             </div>
-        </div>   
+        </div>
     )
 }
 
