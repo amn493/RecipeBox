@@ -1,0 +1,50 @@
+.recipeImage {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 80%;
+    height: 80%;
+    margin-bottom: 10px;
+}
+
+.recipeText {
+    margin: auto;
+    width: 80%;
+}
+
+.likeButton {
+    width: 20px;
+    height: 20px;
+    margin-left: 10px;
+    margin-right: 5px;
+}
+
+.recipeName {
+    display: inline;
+}
+
+.recipeUsername {
+    margin-right: 15px;
+}
+
+.recipeTag {
+    margin-right: 5px;
+}
+/*
+.recipeSubheading {
+    display: inline;
+    margin-bottom: 5px;
+}
+*/
+.recipeDetails {
+    margin-bottom: 30px;
+}
+
+.recipeSubsection {
+    padding: 10px;
+    background-color: lightgray;
+}
+
+.commentsSection {
+    margin-bottom: 30px;
+}
