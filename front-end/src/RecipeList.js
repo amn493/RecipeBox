@@ -16,9 +16,9 @@ const RecipeList = (props) => {
             // Define whether or not the previews are large and small (default to small)
             if (props.size === "large"){
                 // TODO: Put in the recipe to be "entry" and get rid of likes
-                preview = <LargeRecipePreview key={index} recipe={recipeEntry} user={props.user}/>
+                preview = <LargeRecipePreview key={index} recipe={recipeEntry} user={props.user} />
             } else {
-                preview = <SmallRecipePreview key={index} recipe={recipeEntry} user={props.user}/>
+                preview = <SmallRecipePreview key={index} recipe={recipeEntry} user={props.user} />
             }
 
             // Add the proper list to the previewarray
@@ -32,7 +32,7 @@ const RecipeList = (props) => {
     
     // Return the list of previews
     return (
-        <div className=".entry-body container">
+        <div className="container .entry-body">
             {previewArray}
         </div>
     )
