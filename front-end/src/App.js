@@ -88,7 +88,7 @@ function App() {
 
             {/* FEED PAGE */}
             <Route path="/feed">
-              <FeedPage user={{liked: [1, 2, 3, 4, 5]}}/>
+              <FeedPage user={{liked: [1, 2, 3, 4, 5], following: [1, 2, 3, 4, 5]}}/>
             </Route>
 
             {/* NEW RECIPE PAGE
