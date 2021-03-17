@@ -106,6 +106,12 @@ function App() {
             </Route>
             */}
 
+            {/* BLOCKED USERS PAGE
+            <Route path="/settings/blocked-users">
+              //insert corresponding page component tag here
+            </Route>
+            */}
+
           </Switch>
         </BrowserRouter>
       </main>
