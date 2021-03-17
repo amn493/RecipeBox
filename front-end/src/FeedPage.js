@@ -30,7 +30,7 @@ const Feed = (props) => {
     ]
 
     return (
-        <div className="feed-body container">
+        <div className="container">
             <RecipeList size="large" recipes={feedRecipes} user={props.user} />
         </div>
     )
