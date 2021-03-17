@@ -12,7 +12,6 @@ function App() {
       {/*<HamburgerNotSignedIn pageWrapId={ 'page-wrap' } outerContainerId={ 'outer-container' } />*/}
       <main id='page-wrap'>
         <p>Page content starts here! There's padding within the navbar which is why this looks off.</p>
-        <RecipeList size="large" recipes={[1, 2, 3, 4]} user={{liked: [1, 2, 3, 4, 5]}}/>
       </main>
     </div>
   );
