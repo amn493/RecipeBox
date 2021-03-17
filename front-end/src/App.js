@@ -6,7 +6,10 @@ import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom'
 import './App.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
+// Import pages
 import RecipePage from './RecipePage.js'
+import FeedPage from './FeedPage.js'
+import Navbar from './Navbar'
 
 
 function App() {
@@ -14,8 +17,9 @@ function App() {
   let signedIn = true // change this when sign-in is implemented
 
   return (
-    <div className='App' id='outer-container'>
+    <div className='App' id='outer-container' className = "container">
       {/*<HamburgerNotSignedIn pageWrapId={ 'page-wrap' } outerContainerId={ 'outer-container' } />*/}
+      <Navbar />
       <main id='page-wrap'>
         <BrowserRouter>
 
@@ -82,11 +86,10 @@ function App() {
             </Route>
             */}
 
-            {/* FEED PAGE
+            {/* FEED PAGE */}
             <Route path="/feed">
-              //insert corresponding page component tag here
+              <FeedPage user={{liked: [1, 2, 3, 4, 5], following: [1, 2, 3, 4, 5]}}/>
             </Route>
-            */}
 
             {/* NEW RECIPE PAGE
             <Route path="/new-recipe">
