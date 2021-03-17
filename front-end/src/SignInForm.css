@@ -1,0 +1,33 @@
+/* Styling for the sign in form*/
+.signIn {
+  display: flex;
+  flex-direction: column;
+}
+
+.signIn form {
+  margin: 0 auto;
+}
+
+.username {
+  margin: 15px auto;
+}
+
+.password {
+  margin: 15px auto;
+}
+
+.signIn button {
+  margin: 15px auto;
+  display: flex;
+  justify-content: center;
+}
+
+.redirectSignIn {
+  display: flex;
+  justify-content: center;
+}
+
+.createAccountLink {
+  margin-left: 10px;
+  color: rgb(0, 0, 0)
+}
