@@ -20,7 +20,7 @@ const LargeRecipePreview = (props) => {
                 <a className="largeRecipePreviewUsername" href={'/user-' + props.recipe.user.slug}>{'@' + props.recipe.user.username}</a>
                 <Timestamp createdAt={props.recipe.createdAt} />
                 <p>{props.recipe.caption}</p>
-                {props.recipe.tags.map(tag => (<a className="largeRecipePreviewTag" href={'/browserecipes?tag=' + tag}>{'#' + tag}</a>))}
+                {props.recipe.tags.map((tag, i) => (<a className="largeRecipePreviewTag" href={'/browserecipes?tag=' + tag} key={i}>{'#' + tag}</a>))}
             </div>
         </div>   
     )
