@@ -13,8 +13,7 @@ function App() {
     <HamburgerNotSignedIn pageWrapId={ 'page-wrap' } outerContainerId={ 'outer-container' } />
     <div className='App' id='outer-container'>
       <div className="container">
-        <Navbar signedIn="true" />
-        // Put your test content here!
+      // Put your test content here!
       </div>
     </div>
     </>
