@@ -17,14 +17,14 @@ const RecipeList = (props) => {
         if (props.size === "large"){
             console.log("Returning large preview...?")
             previewArray.push(
-                <div key={recipeEntry.id} className="entry-single">
+                <div key={recipeEntry.id} className="entrySingle">
                     <LargeRecipePreview key={recipeEntry.id} recipe={recipeEntry} user={props.user} />
                 </div>
             )
             
         } else {
             previewArray.push(
-                <div key={recipeEntry.id} className="entry-single">
+                <div key={recipeEntry.id} className="entrySingle">
                     <SmallRecipePreview key={recipeEntry.id} recipe={recipeEntry} user={props.user} />
                 </div>
             )
