@@ -3,7 +3,7 @@ import "./FollowButton.css"
 
 const FollowButton = (props) => {
   let state = "Follow"
-  if (props.userProfileViewing in props.user.following) {
+  if (props.profileUserId in props.currentUser.following) {
     state = "Unfollow"
   }
 /* text is a state variable that changes the text
