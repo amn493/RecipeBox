@@ -1,8 +1,4 @@
-.entry-body {
-    width: 60%;
-}
-
-.entry-single {
+.entrySingle {
     border-radius: 10px;
     background-color: azure;
 }
