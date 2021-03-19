@@ -15,6 +15,21 @@ import Navbar from './Navbar'
 function App() {
 
   let signedIn = true // change this when sign-in is implemented
+  
+  let user = {
+    username: 'anonymous',
+    password: 'Abc123',
+    firstName: 'Anonymous',
+    lastName: 'User',
+    bio: 'fun, easy recipes!',
+    followers: [2,3,5,7,9],
+    following: [2,3,4,8,9],
+    liked: [1,3,5,10,33],
+    slug: 'anonymous',
+    id: 1
+  } // change this when sign-in is implemented
+
+
 
   return (
     <div className='App' id='outer-container' className = "container">
@@ -88,7 +103,7 @@ function App() {
 
             {/* FEED PAGE */}
             <Route path="/feed">
-              <FeedPage user={{liked: [1, 2, 3, 4, 5], following: [1, 2, 3, 4, 5]}}/>
+              <FeedPage user={user}/>
             </Route>
 
             {/* NEW RECIPE PAGE
