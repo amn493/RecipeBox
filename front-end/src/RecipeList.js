@@ -9,33 +9,29 @@ import './RecipeList.css'
 const RecipeList = (props) => {
     
     // Will put "recipe" and "likes" details here when passed in / fetched from database
+    let recipeArray = props.recipes
     let previewArray = []
-    let preview
 
-    props.recipes.map((recipeEntry, index) => {
-            // Define whether or not the previews are large and small (default to small)
-            if (props.size === "large"){
-                // TODO: Put in the recipe to be "entry" and get rid of likes
-                preview = <LargeRecipePreview key={index} recipe={recipeEntry} user={props.user} />
-            } else {
-                preview = <SmallRecipePreview key={index} recipe={recipeEntry} user={props.user} />
-            }
-
-            // Add the proper list to the previewarray
+    recipeArray.forEach(recipeEntry => {
+        // Define whether or not the previews are large and small (default to small)
+        if (props.size === "large"){
+            console.log("Returning large preview...?")
             previewArray.push(
-                <div className="entry-single">
-                    {preview}
+                <div key={recipeEntry.id} className="entry-single">
+                    <LargeRecipePreview key={recipeEntry.id} recipe={recipeEntry} user={props.user} />
+                </div>
+            )
+            
+        } else {
+            previewArray.push(
+                <div key={recipeEntry.id} className="entry-single">
+                    <SmallRecipePreview key={recipeEntry.id} recipe={recipeEntry} user={props.user} />
                 </div>
             )
         }
-    )
-    
-    // Return the list of previews
-    return (
-        <div className="container .entry-body">
-            {previewArray}
-        </div>
-    )
+    });
+
+    return previewArray
 
 }
 
