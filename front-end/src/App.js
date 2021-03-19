@@ -67,7 +67,7 @@ function App() {
 
             {/* RECIPE PAGE */}
             <Route path="/recipe-:slug">
-              <RecipePage />
+              <RecipePage user={user} />
             </Route>
 
             {/* BROWSE USERS PAGE
