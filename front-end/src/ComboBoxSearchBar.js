@@ -55,7 +55,7 @@ const ComboBoxSearchResults = (props) => {
 
     return (
         <Combobox onSelect={handleSelect}>
-            <ComboboxInput classname="comboBoxInput" placeholder={placeholder} value={term}
+            <ComboboxInput className="comboBoxInput" placeholder={placeholder} value={term}
                 onChange={handleChange} 
             />
             {results && (
