@@ -1,0 +1,15 @@
+#followBtn {
+    font-size: 4vw;
+    padding: 1vw 8vw;
+    border: none;
+    transition: 0.3s;
+  }
+  .followBtn:hover {
+    opacity: 0.5;
+  }
+  .followBtnFollowing {
+    background-color: #d3d3d3;
+  }
+  .followBtnNotFollowing {
+    background-color: #4caf50;
+  }
