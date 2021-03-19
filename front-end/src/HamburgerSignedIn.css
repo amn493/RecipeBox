@@ -1,0 +1,8 @@
+/* CSS for signed in hamburger menu -- Bootstrap navbar components */
+.rbx-navdropdown {
+    font-size: 30px;
+}
+
+.recipebox-nav-dropdown {
+    display: inline;
+}
