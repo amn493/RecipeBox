@@ -10,23 +10,10 @@ import './SignInForm.css';
 const SignInForm = (props) =>  {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-
-  const error = [
-    false, 
-    "Sign in failed. Username or password is incorrect."
-  ]
+  const error = false;
 
   function handleSubmit(event) {
     event.preventDefault();
-
-    // Authenticate username and password combination
-    // authenticate() sets error[0] to be true if sign-in fails.
-    // const error[0] = authenticate(username, password);
-    if (errors[0]) {
-      // Display error message
-      this.setState({ errors });
-      return;
-    }
   }
 
   /*function validateForm() {
@@ -35,6 +22,7 @@ const SignInForm = (props) =>  {
 
   return (
     <div className='signIn'>
+      <p className={error ? 'errorMessage' : 'hidden'}>Sign in failed. Username or password is incorrect.</p>
       <Form onSubmit={handleSubmit}>
         <Form.Group className='username' controlId='username'>
           <Form.Control
@@ -59,8 +47,9 @@ const SignInForm = (props) =>  {
         </Button>
       </Form>
       <div className='redirectSignIn'>
-        Don't have an account? <a className='createAccountLink' href='/createaccount'>Create Account</a>
+        Don't have an account?
       </div>
+      <a className='createAccountLink' href='/create-account'>Create Account</a>
     </div>
   );
 }
