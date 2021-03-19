@@ -22,7 +22,7 @@ const Navbar = (props) => {
                 <div className="collapse navbar-collapse">
                     <ul className="navbar-nav">
                         {hamburgerMenu}
-                        <h1 className="rbx-logo-title">Recipe Box</h1>
+                        <h1 className="rbxLogoTitle">Recipe Box</h1>
                         
                     </ul>
                 </div>

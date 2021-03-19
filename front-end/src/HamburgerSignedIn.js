@@ -10,8 +10,8 @@ const HamburgerSignedIn = (props) => {
 
     // TODO: Check to make sure that just '/page' is good for the routing
     return (
-        <div className="recipebox-nav-dropdown">
-            <NavDropdown title="Menu" id="basic-nav-dropdown" className="rbx-navdropdown">
+        <div className="recipeboxNavDropdown">
+            <NavDropdown title="Menu" id="basic-nav-dropdown" className="rbxNavDropdown">
                 <NavDropdown.Item href="/new-recipe">New Recipe</NavDropdown.Item>
                 <NavDropdown.Item href="/feed">Feed</NavDropdown.Item>
                 <NavDropdown.Item href="/my-recipe-box">My RecipeBox</NavDropdown.Item>
