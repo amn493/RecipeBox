@@ -28,10 +28,10 @@ const RecipePage = (props) => {
 
     useEffect(() => {
         // fetch the recipe that corresponds to the slug from the url
-        axios('https://my.api.mockaroo.com/animals.json?num=1&key=d9ddfc40aaa')
+        axios('https://my.api.mockaroo.com/recipe.json?key=f6a27260')
         .then((response) => {
             
-            setRecipe(response.data)
+            setRecipe(response.data[0]) //TODO: change when database is integrated
             setLoadedRecipe(true)
         })
         .catch((err) => {
@@ -89,9 +89,9 @@ const RecipePage = (props) => {
 
     useEffect(() => {
         // fetch the signed-in user
-        axios('https://my.api.mockaroo.com/animals.json?num=1&key=d9ddfc40aaa')
+        axios('https://my.api.mockaroo.com/user.json?key=f6a27260')
         .then((response) => {
-            setUser(response.data)
+            setUser(response.data[0])
             setLoadedUser(true)
         })
         .catch((err) => {
@@ -123,9 +123,9 @@ const RecipePage = (props) => {
     const [comments, setComments] = useState([])
 
     useEffect(() => {
-        axios('https://my.api.mockaroo.com/animals.json?num=1&key=d9ddfc40aaa')
+        axios('https://my.api.mockaroo.com/comment.json?key=f6a27260')
         .then((response) => {
-            setComments(response.data)
+            setComments(response.data) //TODO: change when database is integrated
             setLoadedComments(true)
         })
         .catch((err) => {
@@ -150,7 +150,7 @@ const RecipePage = (props) => {
             setComments(backupData)
             setLoadedComments(true)
         })
-    }, [recipe.id])
+    }, [loadedRecipe])
 
 
     // render the page if all required data has been fetched
