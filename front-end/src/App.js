@@ -10,7 +10,8 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import RecipePage from './RecipePage.js'
 import FeedPage from './FeedPage.js'
 import Navbar from './Navbar'
-
+import AppSettings from './AppSettings'
+import ComboBoxSearchBar from './ComboBoxSearchBar'
 
 function App() {
 
@@ -29,7 +30,9 @@ function App() {
 
             {/* HOME PAGE */}
             <Route exact path="/">
-              {signedIn ? <Redirect to="/feed" /> : <Redirect to="/browse-recipes" />}
+              {/* {signedIn ? <Redirect to="/feed" /> : <Redirect to="/browse-recipes" />} */}
+              {<AppSettings/>}
+              {/* <ComboBoxSearchBar/> */}
             </Route>
             
             {/* SIGN IN PAGE
