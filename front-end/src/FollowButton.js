@@ -6,7 +6,7 @@ const FollowButton = (props) => {
   if (props.profileUserId in props.currentUser.following) {
     state = "Unfollow"
   }
-/* text is a state variable that changes the text
+/* text is a state variable that changesg the text
 on the button depending on whether the active user 
 is already following the profile they are viewing */
   let [text, setText] = useState(state)
@@ -16,12 +16,8 @@ is already following the profile they are viewing */
   function follow(evt) {
     setText((prevText) => {
       if (prevText === "Follow") {
-        evt.target.classList.add("follow-btn-following")
-        evt.target.classList.remove("follow-btn-not-following")
         return "Unfollow"
       } else {
-        evt.target.classList.add("follow-btn-not-following")
-        evt.target.classList.remove("follow-btn-following")
         return "Follow"
       }
     })
@@ -29,7 +25,7 @@ is already following the profile they are viewing */
 
 /* component */
   return (
-    <button className="follow-btn" onClick={follow}>
+    <button id="followBtn" className={(text === 'Follow') ? 'followBtnNotFollowing' : 'followBtnFollowing'} onClick={follow}>
       {text}
     </button>
   );
