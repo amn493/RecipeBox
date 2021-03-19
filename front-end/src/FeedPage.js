@@ -26,6 +26,24 @@ const Feed = (props) => {
             'dip'
             ],
             id:2
+        },
+        {
+            imagePath:'logo192.png',
+            slug:'foobar-guacamole',
+            name:'Guacamole',
+            user:{
+            username:'foobar',
+            slug:'foobar'
+                },
+            likes:36,
+            createdAt:1615864425952,
+            caption:'Because who doesn\'t love guac?',
+            tags:[
+            'mexican',
+            'spicy',
+            'dip'
+            ],
+            id:3
         }
     ]
 
