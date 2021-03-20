@@ -12,6 +12,8 @@ import FeedPage from './FeedPage.js'
 import Navbar from './Navbar'
 import BrowseRecipesPage from './BrowseRecipesPage.js'
 import ProfilePage from './ProfilePage.js'
+import SignInForm from './SignInForm'
+
 
 
 function App() {
@@ -50,11 +52,11 @@ function App() {
               {signedIn ? <Redirect to="/feed" /> : <Redirect to="/browse-recipes" />}
             </Route>
             
-            {/* SIGN IN PAGE
+            {/* SIGN IN PAGE */}
             <Route path="/sign-in">
-              //insert corresponding page component tag here
+              {/* Note this is the component for sign-in (used in both the pop-up and page*/}
+              <SignInForm />
             </Route>
-            */}
 
             {/* CREATE ACCOUNT PAGE
             <Route path="/create-account">
