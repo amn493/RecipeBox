@@ -9,6 +9,7 @@ import ProfileHeader from './ProfileHeader.js'
 import FollowButton from './FollowButton.js'
 import SmallRecipePreview from './SmallRecipePreview.js'
 import LargeRecipePreview from './LargeRecipePreview.js'
+import SignInModal from './SignInModal.js'
 
 import './ProfilePage.css'
 
@@ -185,6 +186,9 @@ const ProfilePage = (props) => {
     // state variable for storing the active tab
     const [activeTab, setActiveTab] = useState('small')
 
+    // state variable for showing sign-in modal
+    const [showModal, setShowModal] = useState(false)
+
     return (
 
         loadedUser && loadedRecipes ?
@@ -194,7 +198,7 @@ const ProfilePage = (props) => {
                 {(slug === props.user.slug) ?
                     <a className="editProfileButton" href="/edit-profile">Edit Profile</a>
                 :
-                    <FollowButton profileUserId={profileUser.id} currentUser={props.user} />
+                    <FollowButton profileUserId={profileUser.id} currentUser={props.user} signedIn={props.signedIn} setShowModal={setShowModal} />
                 }
                 
                 <div className="tabContainer">
@@ -223,7 +227,7 @@ const ProfilePage = (props) => {
                     </Tab.Container>
                 </div>
 
-
+                <SignInModal show={showModal} setShow={setShowModal} />
             </div>
         :
             <></>

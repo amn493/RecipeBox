@@ -71,7 +71,7 @@ function App() {
 
             {/* RECIPE PAGE */}
             <Route path="/recipe-:slug">
-              <RecipePage user={user} />
+              <RecipePage user={user} signedIn={signedIn} />
             </Route>
 
             {/* BROWSE USERS PAGE
@@ -82,7 +82,7 @@ function App() {
 
             {/* USER PROFILE AND MY PROFILE PAGES */}
             <Route path="/user-:slug">
-              <ProfilePage user={user} />
+              <ProfilePage user={user} signedIn={signedIn} />
             </Route>
 
             {/* FOLLOWERS PAGE
