@@ -10,10 +10,10 @@ const HamburgerNotSignedIn = (props) => {
     return (
         <div>
         <Menu>
-            <a className='menuItem' href='/signin'>Sign In</a>
-            <a className='menuItem' href='/createaccount'>Create Account</a>
-            <a className='menuItem' href='/browserecipes'>Browse Recipes</a>
-            <a className='menuItem' href='/browseusers'>Browse Users</a>
+            <a className='menuItem' href='/sign-in'>Sign In</a>
+            <a className='menuItem' href='/create-account'>Create Account</a>
+            <a className='menuItem' href='/browse-recipes'>Browse Recipes</a>
+            <a className='menuItem' href='/browse-users'>Browse Users</a>
         </Menu>
         </div>
     )
