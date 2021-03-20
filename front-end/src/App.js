@@ -32,18 +32,6 @@ function App() {
 
 
 
-  let user = {
-    username: 'anonymous',
-    //password: // a password hash,
-    firstName: 'Anonymous',
-    lastName: 'User',
-    bio: 'fun, easy recipes!',
-    followers: [1,2,3,4,5],
-    following: [1,2,4,7,9],
-    liked: [1,3,9],
-    slug: 'anonymous'
-  } // change this when sign-in is implemented
-
   return (
     <div className='App' id='outer-container' className = "container">
       {/*<HamburgerNotSignedIn pageWrapId={ 'page-wrap' } outerContainerId={ 'outer-container' } />*/}
