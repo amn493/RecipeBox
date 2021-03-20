@@ -1,54 +1,55 @@
-import React from 'react'
 import './ProfileHeader.css'
-import AvatarEditor from 'react-avatar-editor' // convenient avatar/profilepicture npm component
+
 
 //Component for profile headers (my profile and other user profile)
-//Expects a user (a user object) and isCurrentUser (a boolean determining whether this profile header belongs to the currently-browsing user, or another user)
+//Expects user (a user object) and recipeCount (the number of recipes the user has posted) as props
 
 const ProfileHeader = (props) => {
-  
-  let editProfileOption = "" // if not currently logged-in user, no option to edit profile
-  if(props.isCurrentUser === true) { // TODO: Setup a state variable cross-page
-    editProfileOption = <EditProfileButton />
-  }
 
   return (
     <div className="profileHeader">
-      {/*Profile Picture*/}
-      <AvatarEditor classname="ProfilePhoto"
-      image={props.user.userImageUrl}
-      width={250}
-      height={250}
-      border={50}
-      color={[255, 255, 255, 0.6]} // RGBA
-      scale={1.2}
-      rotate={0}
-    />
+      
+      <table>
+        <tr>
+          <td>
+            <img className="profilePicture" src={props.user.imagePath} alt="user profile" />
+          </td>
+          <td className="userFullNameAndUserHandle">
+            <b className="userFirstAndLastName">{props.user.firstName + ' ' + props.user.lastName}</b>
+            <br />
+            {'@' + props.user.username}
+          </td>
+        </tr>
+      </table>
 
-      <div className="userFullNameAndUserHandle">
-        <p className="userFirstAndLastName"><b>{props.user.firstname + ' ' + props.user.lastname}</b></p>
-        <p className="userHandle">{'@' + props.user.username}</p>
-      </div>
+      <table className="profileStatsSection">
+        <tr>
+          <td className="profileStat">
+            <b className="profileStatNumber">{props.recipeCount}</b>
+            <br />
+            <small className="profileStatText">{'Recipes'}</small>
+          </td>
+          <td className="profileStat">
+            <a className="profileStatLink" href={`/user-${props.user.slug}/followers`}>
+              <b className="profileStatNumber">{props.user.followers.length}</b>
+              <br />
+              <small className="profileStatText">{'Followers'}</small>
+            </a>
+          </td>
+          <td className="profileStat">
+            <a className="profileStatLink" href={`/user-${props.user.slug}/following`}>
+              <b className="profileStatNumber">{props.user.following.length}</b>
+              <br />
+              <small className="profileStatText">{'Following'}</small>
+            </a>
+          </td>
+        </tr>
+      </table>
 
-      <div className="recipesFollowersAndFollowing">
-        <button className="recipesCount">{props.user.recipes.length}<br/>{'Recipes'}</button>
-        <button className="followersButton">{props.user.followers.length}<br/>{'Followers'}</button>
-        <button className="followingButton">{props.user.following.length}<br/>{'Following'}</button>
-      </div>
-
-      {/*Bio*/}
       <p className="userBio">{props.user.bio}</p>
 
-      {/*Edit Profile Button*/}
-      {editProfileOption}
     </div>
   ) 
 }
 
-const EditProfileButton = () => {
-        return (
-            <button className="editProfileButton">{'Edit Profile'}</button>
-        )
-}
-
-export default ProfileHeader;
+export default ProfileHeader
