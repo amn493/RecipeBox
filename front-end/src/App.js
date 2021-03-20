@@ -28,6 +28,7 @@ function App() {
     following: [2,3,4,8,9],
     liked: [1,3,5,10,33],
     slug: 'anonymous',
+    imagePath: 'https://picsum.photos/200',
     id: 1
   } // change this when sign-in is implemented
 
