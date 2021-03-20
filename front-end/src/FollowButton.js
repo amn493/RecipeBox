@@ -4,7 +4,7 @@ import "./FollowButton.css"
 const FollowButton = (props) => {
   let state = "Follow"
   if (props.profileUserId in props.currentUser.following) {
-    state = "Unfollow"
+    state = "Following"
   }
 /* text is a state variable that changesg the text
 on the button depending on whether the active user 
@@ -16,7 +16,7 @@ is already following the profile they are viewing */
   function follow(evt) {
     setText((prevText) => {
       if (prevText === "Follow") {
-        return "Unfollow"
+        return "Following"
       } else {
         return "Follow"
       }
