@@ -10,8 +10,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import RecipePage from './RecipePage.js'
 import FeedPage from './FeedPage.js'
 import Navbar from './Navbar'
-import SignInForm from './SignInForm.js'
-
+import BrowseRecipesPage from './BrowseRecipesPage.js'
 
 function App() {
 
@@ -31,6 +30,18 @@ function App() {
   } // change this when sign-in is implemented
 
 
+
+  let user = {
+    username: 'anonymous',
+    //password: // a password hash,
+    firstName: 'Anonymous',
+    lastName: 'User',
+    bio: 'fun, easy recipes!',
+    followers: [1,2,3,4,5],
+    following: [1,2,4,7,9],
+    liked: [1,3,9],
+    slug: 'anonymous'
+  } // change this when sign-in is implemented
 
   return (
     <div className='App' id='outer-container' className = "container">
@@ -59,11 +70,10 @@ function App() {
             </Route>
             */}
 
-            {/* BROWSE RECIPES PAGE
+            {/* BROWSE RECIPES PAGE */}
             <Route path="/browse-recipes">
-              //insert corresponding page component tag here
+              <BrowseRecipesPage user={user} />
             </Route>
-            */}
 
             {/* RECIPE PAGE */}
             <Route path="/recipe-:slug">
