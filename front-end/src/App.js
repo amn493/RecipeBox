@@ -10,6 +10,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import RecipePage from './RecipePage.js'
 import FeedPage from './FeedPage.js'
 import Navbar from './Navbar'
+import SignInForm from './SignInForm.js'
 
 
 function App() {
@@ -47,11 +48,10 @@ function App() {
               {signedIn ? <Redirect to="/feed" /> : <Redirect to="/browse-recipes" />}
             </Route>
             
-            {/* SIGN IN PAGE
+            {/* SIGN IN PAGE */}
             <Route path="/sign-in">
-              //insert corresponding page component tag here
+              <SignInForm />
             </Route>
-            */}
 
             {/* CREATE ACCOUNT PAGE
             <Route path="/create-account">
@@ -67,7 +67,7 @@ function App() {
 
             {/* RECIPE PAGE */}
             <Route path="/recipe-:slug">
-              <RecipePage user={user} />
+              <RecipePage />
             </Route>
 
             {/* BROWSE USERS PAGE
