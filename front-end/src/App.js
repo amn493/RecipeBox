@@ -11,6 +11,7 @@ import RecipePage from './RecipePage.js'
 import FeedPage from './FeedPage.js'
 import Navbar from './Navbar'
 import BrowseRecipesPage from './BrowseRecipesPage.js'
+import ProfilePage from './ProfilePage.js'
 
 
 function App() {
@@ -76,12 +77,10 @@ function App() {
             </Route>
             */}
 
-            {/* USER PROFILE AND MY PROFILE PAGES
+            {/* USER PROFILE AND MY PROFILE PAGES */}
             <Route path="/user-:slug">
-              //insert corresponding page component tag here
-              (add an additional component that renders the correct page after comparing slug with the signed-in user's slug and insert here)
+              <ProfilePage user={user} />
             </Route>
-            */}
 
             {/* FOLLOWERS PAGE
             <Route path="/user-:slug/followers">
