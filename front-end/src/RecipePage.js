@@ -6,6 +6,7 @@ import Comment from './Comment.js'
 import Timestamp from './Timestamp'
 
 import './RecipePage.css'
+import SignInModal from './SignInModal.js'
 
 
 // Recipe Page
@@ -115,6 +116,10 @@ const RecipePage = (props) => {
     }, [loadedRecipe])
 
 
+    // state variable for showing sign-in modal
+    const [showModal, setShowModal] = useState(false)
+
+
     // render the page if all required data has been fetched
     if(loadedRecipe && loadedComments) {
         return (
@@ -123,7 +128,7 @@ const RecipePage = (props) => {
                 <div className="recipeText">
                     <div className="recipeDetails">
                         <h1 className="recipeName">{recipe.name}</h1>
-                        <LikeButton recipe={recipe} user={props.user} />
+                        <LikeButton recipe={recipe} user={props.user} signedIn={props.signedIn} setShowModal={setShowModal} />
                         <br />
                         <a className="recipeUsername" href={'/user-' + recipe.user.slug}>{'@' + recipe.user.username}</a>
                         <Timestamp createdAt={recipe.createdAt} />
@@ -146,9 +151,11 @@ const RecipePage = (props) => {
                     </div>
                     <br />
     
-                    <CommentsSection comments={comments} userId={props.user.id} recipeId={recipe.id} />
+                    <CommentsSection comments={comments} userId={props.user.id} recipeId={recipe.id} signedIn={props.signedIn} setShowModal={setShowModal} />
                     
                 </div>
+
+                <SignInModal show={showModal} setShow={setShowModal} />
             </div> 
         )
     }
@@ -183,8 +190,14 @@ const LikeButton = (props) => {
     return (
         <>
             <input className="likeButton" type="image" src={liked ? 'heartFill.png' : 'heartOutline.png'} alt={liked ? 'heart fill' : 'heart outline'} onClick={() => {
-                setLikes(likes + (liked ? -1 : 1))
-                setLiked(!liked)
+                if (props.signedIn) {
+                    setLikes(likes + (liked ? -1 : 1))
+                    setLiked(!liked)
+                }
+                else {
+                    // show sign-in modal if a not-signed in user attempts to like the recipe
+                    props.setShowModal(true)
+                }
             }} />
             {likes}
         </>
@@ -206,20 +219,29 @@ const CommentsSection = (props) => {
 
     // update page to include new comment on submit
     const handleSubmit = (event) => {
+
         event.preventDefault()
-        const newComment = {
-            user: props.userId,
-            comment: value,
-            recipe: props.recipeId,
-            createdAt: Date.now()
+
+        if (props.signedIn) {
+
+            const newComment = {
+                user: props.userId,
+                comment: value,
+                recipe: props.recipeId,
+                createdAt: Date.now()
+            }
+
+            //TODO: store newComment in database
+
+
+            //update page to include new comment
+            setComments(comments.concat([newComment]))
+            setValue('')
         }
-
-        //TODO: store newComment in database
-
-
-        //update page to include new comment
-        setComments(comments.concat([newComment]))
-        setValue('')
+        else {
+            // show sign-in modal if a not-signed in user attempts to comment on the recipe
+            props.setShowModal(true)
+        }
 
         
     }
