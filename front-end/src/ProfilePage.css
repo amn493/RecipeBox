@@ -1,0 +1,30 @@
+.editProfileButton {
+    font-weight: bold;
+    font-size: small;
+    text-align: center;
+    display: block;
+    width: 100%;
+    padding: 5px 0px;
+    border: 2px solid black;
+    border-radius: 5px;
+    color: black;
+}
+
+.editProfileButton:hover {
+    text-decoration: none;
+    color: black;
+    background-color: rgb(235, 235, 235);
+    opacity: 50%;
+}
+
+.activeTab {
+    color: black;
+}
+
+.inactiveTab {
+    color: lightgray;
+}
+
+.tabContainer {
+    margin-top: 20px;
+}

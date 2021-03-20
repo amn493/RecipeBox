@@ -11,7 +11,9 @@ import RecipePage from './RecipePage.js'
 import FeedPage from './FeedPage.js'
 import Navbar from './Navbar'
 import BrowseRecipesPage from './BrowseRecipesPage.js'
+import ProfilePage from './ProfilePage.js'
 import SignInForm from './SignInForm'
+
 
 
 function App() {
@@ -28,6 +30,7 @@ function App() {
     following: [2,3,4,8,9],
     liked: [1,3,5,10,33],
     slug: 'anonymous',
+    imagePath: 'https://picsum.photos/200',
     id: 1
   } // change this when sign-in is implemented
 
@@ -77,12 +80,10 @@ function App() {
             </Route>
             */}
 
-            {/* USER PROFILE AND MY PROFILE PAGES
+            {/* USER PROFILE AND MY PROFILE PAGES */}
             <Route path="/user-:slug">
-              //insert corresponding page component tag here
-              (add an additional component that renders the correct page after comparing slug with the signed-in user's slug and insert here)
+              <ProfilePage user={user} />
             </Route>
-            */}
 
             {/* FOLLOWERS PAGE
             <Route path="/user-:slug/followers">
