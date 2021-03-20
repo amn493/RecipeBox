@@ -19,7 +19,7 @@ import SignInForm from './SignInForm'
 function App() {
 
   // comment out and uncomment the following to test with or without a signed-in user
-  
+
   const [signedIn, setSignedIn] = useState(
     //false // no signed-in user
     true // signed-in user
@@ -55,7 +55,7 @@ function App() {
 
 
   return (
-    <div className='App' id='outer-container' className = "container">
+    <div className='App container' id='outer-container'>
       {/*<HamburgerNotSignedIn pageWrapId={ 'page-wrap' } outerContainerId={ 'outer-container' } />*/}
       <Navbar />
       <main id='page-wrap'>
