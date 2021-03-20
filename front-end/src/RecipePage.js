@@ -224,19 +224,22 @@ const CommentsSection = (props) => {
 
         if (props.signedIn) {
 
-            const newComment = {
-                user: props.userId,
-                comment: value,
-                recipe: props.recipeId,
-                createdAt: Date.now()
+            // don't add empty comments
+            if (value !== '') {
+                const newComment = {
+                    user: props.userId,
+                    comment: value,
+                    recipe: props.recipeId,
+                    createdAt: Date.now()
+                }
+    
+                //TODO: store newComment in database
+    
+    
+                //update page to include new comment
+                setComments(comments.concat([newComment]))
+                setValue('')
             }
-
-            //TODO: store newComment in database
-
-
-            //update page to include new comment
-            setComments(comments.concat([newComment]))
-            setValue('')
         }
         else {
             // show sign-in modal if a not-signed in user attempts to comment on the recipe
