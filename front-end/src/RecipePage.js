@@ -45,7 +45,7 @@ const RecipePage = (props) => {
                       slug: 'foobar'
                     },
                     name: 'Guacamole',
-                    imagePath: 'logo192.png',
+                    imagePath: 'https://picsum.photos/300',
                     tags: ['mexican', 'spicy', 'dip'],
                     caption: "my secret recipe:)",
                     ingredients: [

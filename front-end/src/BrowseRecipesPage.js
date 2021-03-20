@@ -77,7 +77,7 @@ const BrowseRecipesPage = (props) => {
                       slug: 'foobar'
                     },
                     name: 'Guacamole',
-                    imagePath: 'logo192.png',
+                    imagePath: 'https://picsum.photos/300',
                     tags: ['mexican', 'vegan'],
                     caption: "my secret recipe:)",
                     ingredients: [
@@ -111,7 +111,7 @@ const BrowseRecipesPage = (props) => {
                       slug: 'foobar'
                     },
                     name: 'Tacos',
-                    imagePath: 'logo192.png',
+                    imagePath: 'https://picsum.photos/300',
                     tags: ['mexican', 'appetizer'],
                     caption: "my secret recipe:)",
                     ingredients: [
@@ -145,7 +145,7 @@ const BrowseRecipesPage = (props) => {
                       slug: 'foobar'
                     },
                     name: 'Tofu',
-                    imagePath: 'logo192.png',
+                    imagePath: 'https://picsum.photos/300',
                     tags: ['vegan'],
                     caption: "my secret recipe:)",
                     ingredients: [

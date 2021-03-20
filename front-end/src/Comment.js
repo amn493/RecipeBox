@@ -33,6 +33,7 @@ const Comment = (props) => {
                     //followers: // an array of references to User documents,
                     //following: // an array of references to User documents,
                     liked: [], // an array of references to Recipe documents
+                    imagePath: 'https://picsum.photos/200',
                     slug: 'therealfoobar'
                   }
             ]

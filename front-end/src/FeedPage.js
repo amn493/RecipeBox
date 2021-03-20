@@ -10,7 +10,7 @@ const Feed = (props) => {
     // TODO: Back-end task -- Fill feedEntries. Also need to adjust below so the array contains both "recipe" and "likes"
     let feedRecipes = [
         {
-            imagePath:'logo192.png',
+            imagePath:'https://picsum.photos/300',
             slug:'foobar-guacamole',
             name:'Guacamole',
             user:{
@@ -28,7 +28,7 @@ const Feed = (props) => {
             id:2
         },
         {
-            imagePath:'logo192.png',
+            imagePath:'https://picsum.photos/300',
             slug:'foobar-guacamole',
             name:'Guacamole',
             user:{
