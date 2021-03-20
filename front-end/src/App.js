@@ -1,4 +1,4 @@
-import React from 'react'
+import { React, useState } from 'react'
 
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom'
 
@@ -18,9 +18,27 @@ import SignInForm from './SignInForm'
 
 function App() {
 
-  let signedIn = true // change this when sign-in is implemented
-  
-  let user = {
+  // comment out and uncomment the following to test with or without a signed-in user
+
+  const [signedIn, setSignedIn] = useState(
+    //false // no signed-in user
+    true // signed-in user
+    )
+  const [user, setUser] = useState(
+    /*{
+    username: '',
+    password: '',
+    firstName: '',
+    lastName: '',
+    bio: '',
+    followers: [],
+    following: [],
+    liked: [],
+    slug: '',
+    imagePath: '',
+    id: null
+  }*/ // no signed-in user
+  {
     username: 'anonymous',
     password: 'Abc123',
     firstName: 'Anonymous',
@@ -32,12 +50,12 @@ function App() {
     slug: 'anonymous',
     imagePath: 'https://picsum.photos/200',
     id: 1
-  } // change this when sign-in is implemented
-
+  } // signed-in user
+  )
 
 
   return (
-    <div className='App' id='outer-container' className = "container">
+    <div className='App container' id='outer-container'>
       {/*<HamburgerNotSignedIn pageWrapId={ 'page-wrap' } outerContainerId={ 'outer-container' } />*/}
       <Navbar />
       <main id='page-wrap'>
@@ -54,13 +72,12 @@ function App() {
             
             {/* SIGN IN PAGE */}
             <Route path="/sign-in">
-              {/* Note this is the component for sign-in (used in both the pop-up and page*/}
-              <SignInForm />
+                {signedIn ? <Redirect to={'/user-' + user.slug} /> : <SignInForm />}
             </Route>
 
             {/* CREATE ACCOUNT PAGE
             <Route path="/create-account">
-              //insert corresponding page component tag here
+              {signedIn ? <Redirect to={'/user-' + user.slug} /> : //insert corresponding page component tag here }
             </Route>
             */}
 
@@ -99,36 +116,36 @@ function App() {
 
             {/* EDIT PROFILE PAGE
             <Route path="/edit-profile">
-              //insert corresponding page component tag here
+              {signedIn ? //insert corresponding page component tag here : <Redirect to="/sign-in" />}
             </Route>
             */}
 
             {/* FEED PAGE */}
             <Route path="/feed">
-              <FeedPage user={user}/>
+              {signedIn ? <FeedPage user={user} /> : <Redirect to="/sign-in" />}
             </Route>
 
             {/* NEW RECIPE PAGE
             <Route path="/new-recipe">
-              //insert corresponding page component tag here
+              {signedIn ? //insert corresponding page component tag here : <Redirect to="/sign-in" />}
             </Route>
             */}
 
             {/* MY RECIPE BOX PAGE
             <Route path="/my-recipe-box">
-              //insert corresponding page component tag here
+              {signedIn ? //insert corresponding page component tag here : <Redirect to="/sign-in" />}
             </Route>
             */}
 
             {/* SETTINGS PAGE
             <Route path="/settings">
-              //insert corresponding page component tag here
+              {signedIn ? //insert corresponding page component tag here : <Redirect to="/sign-in" />}
             </Route>
             */}
 
             {/* BLOCKED USERS PAGE
             <Route path="/settings/blocked-users">
-              //insert corresponding page component tag here
+              {signedIn ? //insert corresponding page component tag here : <Redirect to="/sign-in" />}
             </Route>
             */}
 
