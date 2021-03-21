@@ -1,0 +1,5 @@
+/* Styling for BrowseUsersPage */
+.userPreviews {
+    display: flex;
+    flex-direction: column;
+}
