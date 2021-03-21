@@ -1,6 +1,5 @@
 import './FeedPage.css'
 import RecipeList from './RecipeList'
-import LargeRecipePreview from './LargeRecipePreview'
 
 // Pulls recipes from the database for the logged-in feed and generates a recipelist for qualifying recipes
 // Qualifying recipes, e.g. latest recipes posted by those someone has followed

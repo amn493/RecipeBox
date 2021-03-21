@@ -7,7 +7,7 @@ import UserIcon from './usericon.png'
 import RecipeIcon from './recipeicon.png'
 import './KeywordSearchBar.css'
 
-//Component for a keyword search bar 
+//Component for a keyword search bar
 //functional for searching recipe names and users
 
 //PROPS:
