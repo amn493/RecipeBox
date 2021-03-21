@@ -1,0 +1,52 @@
+.userPreview{
+    display: flex;
+    flex-direction: row;
+}
+
+.userPreviewProfileLink {
+    text-decoration: none;
+    color: #000000;
+    float: left;
+    width: 95%;
+}
+
+.userPreviewContainer {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    font-size: 4vw;
+    align-items: stretch;
+    border: 1px solid black;
+}
+
+.userPreviewFullName {
+    font-weight: bold;
+}
+
+.userPreviewPersonalData {
+    text-align: left;
+}
+
+.userPreviewNumericalData {
+    margin-right: 2vw;
+    flex-grow: 2;
+    text-align: right;
+} 
+
+.smallUserProfilePic{
+    max-width: 10vw;
+    max-height: 10vw;
+}
+
+.userPreviewNumericalData{
+    position:relative;
+}
+
+.unBlock{
+    float: left;
+    width: 5%;
+}
+.unBlockUserButton{
+    height: 100%;
+    width: 10vw;
+}
