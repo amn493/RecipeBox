@@ -36,7 +36,16 @@ function App() {
     liked: [],
     slug: '',
     imagePath: '',
-    id: null
+    id: null,
+    blockedUsers: [],
+    blockedTags: [],
+    notificationSettings: {
+      "emailNotifications": false,
+      "likes": false,
+      "comments": false,
+      "follows": false,
+      "posts": false
+    }
   }*/ // no signed-in user
   {
     username: 'anonymous',
@@ -49,10 +58,21 @@ function App() {
     liked: [1,3,5,10,33],
     slug: 'anonymous',
     imagePath: 'https://picsum.photos/200',
-    id: 1
-  } // signed-in user
-  )
-
+    id: 1,
+    blockedUsers: [1,5,9],
+    blockedTags: [
+      "breakfast",
+      "gluten",
+      "sugar"
+    ],
+    notificationSettings: {
+      "emailNotifications": true,
+      "likes": true,
+      "comments": false,
+      "follows": false,
+      "posts": true
+    }
+  }) // change this when sign-in is implemented
 
   return (
     <div className='App container' id='outer-container'>
