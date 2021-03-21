@@ -157,7 +157,7 @@ const FollowersPage = (props) => {
                 <KeyWordSearchBar isRecipe={false} filter={filterKeyword} setFilter={setFilterKeyword} />
             </div>
             <div className='followersList'>
-                <div className='follower'>
+                <div className='followerUserPreview'>
                     {followers.sort((a, b) => a.firstName.localeCompare(b.firstName)).map((follower, i) => (<SmallUserPreview user={follower} isBlockedUserProfile={false} key={i}/>))}
                 </div>
             </div>
