@@ -18,38 +18,37 @@ const CreateAccountPage = (props) =>  {
   const [errorMessages, setErrorMessages] = useState([])
 
   function handleSubmit(event) {
+    event.preventDefault()
     setError(false)
     setErrorMessages([])
-
-    event.preventDefault()
     validateForm()
   }
 
   function emptyField() {
     if (email.length === 0) {
-      return true;
+      return true
     }
     if (firstName.length === 0) {
-      return true;
+      return true
     }
     if (lastName.length === 0) {
-      return true;
+      return true
     }
     if (username.length === 0) {
-      return true;
+      return true
     }
     if (password.length === 0) {
-      return true;
+      return true
     }
     if (ReEnterPassword.length === 0) {
-      return true;
+      return true
     }
-    return false;
+    return false
   }
 
-  const emailRegex = /^\S+@\S+\.\S+$/;
-  const nameRegex = /^[a-z ,.'-]+$/i;
-  const usernameRegex = /^[a-z._-]+$/i;
+  const emailRegex = /^\S+@\S+\.\S+$/
+  const nameRegex = /^[a-z ,.'-]+$/i
+  const usernameRegex = /^[a-z._-]+$/i
   const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/
 
   function validateForm() {
@@ -148,7 +147,7 @@ const CreateAccountPage = (props) =>  {
             onChange={(e) => setReEnterPassword(e.target.value)}
           />
         </Form.Group>
-        <Button className='submit' type='submit' variant='outline-dark' disabled={emptyField}>
+        <Button className='submitButton' type='submit' variant='outline-dark' disabled={emptyField}>
           Create Account
         </Button>
       </Form>
