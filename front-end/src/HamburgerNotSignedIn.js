@@ -15,11 +15,11 @@ const HamburgerNotSignedIn = (props) => {
                 <Navbar.Brand href="/">Recipe Box</Navbar.Brand>
                 <Navbar.Collapse id="responsive-navbar-nav">
                     <Nav className="mr-auto">
-                        <NavDropdown.Item href="/sign-in">Sign-In</NavDropdown.Item>
-                        <NavDropdown.Item href="/create-account">Create Account</NavDropdown.Item>
+                        <NavDropdown.Item className="rbxSpaceAdjustment" href="/sign-in">Sign-In</NavDropdown.Item>
+                        <NavDropdown.Item className="rbxSpaceAdjustment" href="/create-account">Create Account</NavDropdown.Item>
                         <NavDropdown.Divider />
-                        <NavDropdown.Item href="/browse-recipes">Browse Recipes</NavDropdown.Item>
-                        <NavDropdown.Item href="/browse-users">Browse Users</NavDropdown.Item>
+                        <NavDropdown.Item className="rbxSpaceAdjustment" href="/browse-recipes">Browse Recipes</NavDropdown.Item>
+                        <NavDropdown.Item className="rbxSpaceAdjustment" href="/browse-users">Browse Users</NavDropdown.Item>
                     </Nav>
                 </Navbar.Collapse>
             </Navbar>
