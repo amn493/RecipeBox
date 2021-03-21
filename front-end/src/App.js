@@ -12,8 +12,8 @@ import FeedPage from './FeedPage.js'
 import Navbar from './Navbar'
 import BrowseRecipesPage from './BrowseRecipesPage.js'
 import ProfilePage from './ProfilePage.js'
-import SignInForm from './SignInForm'
-
+import SignInForm from './SignInForm.js'
+import FollowersPage from './FollowersPage.js'
 
 
 function App() {
@@ -60,7 +60,6 @@ function App() {
       <Navbar />
       <main id='page-wrap'>
         <BrowserRouter>
-
           {/* TODO: uncomment and complete the corresponding route when you implement a page component */}
 
           <Switch>
@@ -102,11 +101,10 @@ function App() {
               <ProfilePage user={user} signedIn={signedIn} />
             </Route>
 
-            {/* FOLLOWERS PAGE
-            <Route path="/user-:slug/followers">
-              //insert corresponding page component tag here
+            {/* FOLLOWERS PAGE */}
+            <Route path="/followers" /*path="/user-:slug/followers"*/>
+              <FollowersPage user={user} />
             </Route>
-            */}
 
             {/* FOLLOWING PAGE
             <Route path="/user-:slug/following">
