@@ -23,7 +23,7 @@ const SmallUserPreview = (props) => {
         <div className="userPreview">
 
             {/*preview links to the user profile*/ }
-            <a className="userPreviewProfileLink" href={userSlug}> {/*TODO(?): Disable link if component used for blocked users page?*/ }
+            <a className="userPreviewProfileLink" href={props.isBlockedUserProfile ? false : userSlug}> {/*TODO(?): Disable link if component used for blocked users page?*/ }
 
                 { /* css flex container */ }
                 <div className="userPreviewContainer">
