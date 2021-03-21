@@ -2,9 +2,10 @@ import { useEffect, useState } from 'react'
 import axios from 'axios'
 import './AppSettings.css'
 import ComboBoxSearchBar from './ComboBoxSearchBar.js'
+import TagButton from './TagButton'
 
 //expects:
-//current user
+//current user and signedIn state variable
 const AppSettings = (props) => {
 
     // request all tags that current user has the opportunity to block
@@ -62,7 +63,7 @@ const AppSettings = (props) => {
                       }
             ]
 
-            setTagsToBlock((backupData.map((tag)=>"#" + tag.tag)))
+            setTagsToBlock((backupData.map((tag)=> tag.tag)))
             setLoadedTagsToBlock(true)
         })
     }, [props.user.username])
@@ -72,6 +73,7 @@ const AppSettings = (props) => {
     const [blockedTagsList, addBlockedTagToList] = useState(props.user.blockedTags) //list of current user's blocked tags
 
     const handleAddBlockedTag = (props) => {
+        addBlockedTag(false)
         if (blockedTagsList.includes(props) === false){
             addBlockedTagToList(blockedTagsList.concat(props)) //change (1) list of user's blocked tags
             let index = tagsToBlock.indexOf(props)
@@ -84,7 +86,7 @@ const AppSettings = (props) => {
     const [commentsNotifs, setCommentsNotifs] = useState(props.user.notificationSettings.comments)
     const [followersNotifs, setFollowersNotifs] = useState(props.user.notificationSettings.follows)
     const [postsNotifs, setPostsNotifs] = useState(props.user.notificationSettings.posts)
-
+    
 
     return(
 
@@ -109,7 +111,7 @@ const AppSettings = (props) => {
                             </label>
                             </div>
                         </div>
-                    </div>
+                    </div><hr/>
                 
                     {/* New Likes toggle switch*/}
                     <div className='notifsSwitchSubEmails'id={2}>
@@ -128,6 +130,7 @@ const AppSettings = (props) => {
                             </div>
                         </div>
                     </div>
+                    <hr/>
 
                     {/* New Comments toggle switch*/}
                     <div className='notifsSwitchSubEmails'id={3}>
@@ -145,7 +148,7 @@ const AppSettings = (props) => {
                             </label>
                             </div>
                         </div>
-                    </div>
+                    </div><hr/>
 
                     {/* New Followers toggle switch*/}
                     <div className='notifsSwitchSubEmails'id={4}>
@@ -163,7 +166,7 @@ const AppSettings = (props) => {
                             </label>
                             </div>
                         </div>
-                    </div>
+                    </div><hr/>
 
                     {/* New Posts toggle switch*/}
                     <div className='notifsSwitchSubEmails'id={5}>
@@ -193,18 +196,22 @@ const AppSettings = (props) => {
 
                 {/* blocked tags section*/}
                 <div className="blockedTags">
-                    <button className="blockedTagsHeader">Blocked Tags</button><br></br>
-                    <textarea className="blockedTagsForm" rows="5" cols="80" value={"#" + blockedTagsList.join(" #") }></textarea><br/>
-                    <button className="addBlockedTags" onClick={() => addBlockedTag(true)}> Add Blocked Tag</button><br/>
-                    <div className="addBlockedTagsField">
-                        { blockedTagAddition && (<ComboBoxSearchBar className="addBlockedTagsField" isTag={true} tags={tagsToBlock} users={[]} setSelection={handleAddBlockedTag}/>) }
-                    </div>
+                    <b className="blockedTagsHeader">Blocked Tags</b><br></br><p className="blockedTagsSubHeader">(click to unblock)</p>
+                    <div className="blockedTagsDisplay">
+                        <div classname="actualBlockedTags">
+                            {blockedTagsList.map((selectTag, i) => <TagButton tag={selectTag} tags={tagsToBlock} filterTags={blockedTagsList} setTags={setTagsToBlock} setFilterTags={addBlockedTagToList} key={i} />)}<hr/>
+                        </div>
+                        <br/><button className="addBlockedTags" onClick={() => addBlockedTag(true)}> Add Blocked Tag</button><br/>
+                        <div className="addBlockedTagsField">
+                            { blockedTagAddition && (<ComboBoxSearchBar className="addBlockedTagsField" isTag={true} tags={tagsToBlock} users={[]} setSelection={handleAddBlockedTag}/>) }
+                        </div>
+                    </div><br/>
                 </div>
 
                 {/* signout button*/}
-                <div className="signOutButton">
+                <br/><div className="signOutButton">
                     <a href="/sign-in"><br/><br/> 
-                        <button>Sign Out</button>   
+                        <button onClick={() => props.setSignedIn(false)}>Sign Out</button>   
                         {/* TODO: handle credentials stuff*/}
                     </a>
                 </div>

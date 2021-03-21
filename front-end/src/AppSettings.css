@@ -3,12 +3,13 @@
 
 }
 .emailSwitchMaster{
-    padding-left: 12px;
+    padding-left: 9vw;
 }
-.emailSwitchNewLikes {
+.notifsSwitchSubEmails {
     display: table;
-    padding-left: 12px;
-    left: 15em;
+    max-width: 25vw;
+    padding-left: 9vw;
+    left: 5vw;
 }
 .custom-control .custom-switch{
     vertical-align: middle;
@@ -30,10 +31,13 @@
 }
 
 .blockedTagsHeader{
+    display: inline-block;
     pointer-events: 'none';
     width: 20em;
 }
-
+.blockedTagsSubHeader{
+    font-size: 12px;
+}
 .blockedTagsInput{
     max-height:100;
 }
@@ -41,11 +45,20 @@
 .blockedTags .blockedTagsForm{
     width: 20em;
 }
-.addBlockedTags{
-    left:11.5em;
+
+
+.blockedTagsDisplay{
+    float:left;
     position: relative;
+    max-width: 50vw;
+    border: 1px solid blue;
+    padding: 2vw;
+    margin-bottom: 300px;
 }
 
-.addBlockedTagsField{
-    padding-left:9.5em;
+.signOutButton{
+    margin-left: 3vw;
+    padding-left: 5vw;
+    padding-top: 20vw;
+    align-items: center;
 }
