@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Plus, Hash } from 'react-bootstrap-icons'
+import { Plus, Hash, Dot } from 'react-bootstrap-icons'
 import InputGroup from 'react-bootstrap/InputGroup'
 import FormControl from 'react-bootstrap/FormControl'
 import Form from 'react-bootstrap/Form'
@@ -123,7 +123,14 @@ const AdditionalFields = (props) => {
 
 
     for(let i = 0; i < fieldCount; i++) {
-        textFields.push(<Form.Control className="mt-1" type="text" name="recipeName" placeholder={props.placeholderText} value={values[i]} onChange={(event) => handleChange(event, i)} />)
+        textFields.push(
+            <InputGroup className="subsectionField mt-1" key={i}>
+                <InputGroup.Prepend>
+                    <InputGroup.Text id="subsectionFieldIcon" key={i}>{(props.placeholderText === 'Enter ingredient') ? <i><Dot /></i> : `${i + 1}.`}</InputGroup.Text>
+                </InputGroup.Prepend>
+                <Form.Control type="text" name="recipeName" placeholder={props.placeholderText} value={values[i]} onChange={(event) => handleChange(event, i)} />
+            </InputGroup>
+        )
     }
 
     return (
