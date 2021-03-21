@@ -140,7 +140,7 @@ const FollowersPage = (props) => {
     // Filter followers based on keyword entered by the user
     useEffect(() => {
         // Set followers array to only include followers whose name contains the filter keyword
-        setFollowers(allFollowers.filter(follower => ((filterKeyword !== '') ? follower.name.toLowerCase().includes(filterKeyword.toLowerCase()) : true)))
+        // setFollowers(allFollowers.filter(follower => ((filterKeyword !== '') ? follower.name.toLowerCase().includes(filterKeyword.toLowerCase()) : true)))
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [filterKeyword]) // Update followers when a new keyword is entered
