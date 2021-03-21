@@ -106,8 +106,8 @@ const FollowingPage = (props) => {
                     username: 'foobar_and_family',
                     password: '12345',
                     email: 'foobar_and_family@foo.org',
-                    firstName: 'Foo',
-                    lastName: 'Bar',
+                    firstName: 'Bar',
+                    lastName: 'Family',
                     bio: 'A house of chefs',
                     followers: [1,2,3,4,5,5,6,7],
                     following: [1,2,3,4,5],
@@ -140,7 +140,7 @@ const FollowingPage = (props) => {
     // Filter following based on keyword entered by the user
     useEffect(() => {
         // Set following array to only include following whose name contains the filter keyword
-        setFollowing(allFollowing.filter(followingUser => ((filterKeyword !== '') ? followingUser.name.toLowerCase().includes(filterKeyword.toLowerCase()) : true)))
+        // setFollowing(allFollowing.filter(followingUser => ((filterKeyword !== '') ? followingUser.name.toLowerCase().includes(filterKeyword.toLowerCase()) : true)))
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [filterKeyword]) // Update following when a new keyword is entered
