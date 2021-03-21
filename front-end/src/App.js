@@ -2,7 +2,6 @@ import { React, useState } from 'react'
 
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom'
 
-//import HamburgerNotSignedIn from './HamburgerNotSignedIn.js'
 import './App.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
@@ -57,7 +56,7 @@ function App() {
   return (
     <div className='App container' id='outer-container'>
       {/*<HamburgerNotSignedIn pageWrapId={ 'page-wrap' } outerContainerId={ 'outer-container' } />*/}
-      <Navbar />
+      <Navbar signedIn="false"/>
       <main id='page-wrap'>
         <BrowserRouter>
 
