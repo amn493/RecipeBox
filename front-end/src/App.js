@@ -13,7 +13,7 @@ import Navbar from './Navbar'
 import BrowseRecipesPage from './BrowseRecipesPage.js'
 import ProfilePage from './ProfilePage.js'
 import SignInForm from './SignInForm'
-
+import BlockedUsers from './BlockedUsers'
 
 
 function App() {
@@ -163,11 +163,11 @@ function App() {
             </Route>
             */}
 
-            {/* BLOCKED USERS PAGE
-            <Route path="/settings/blocked-users">
-              {signedIn ? //insert corresponding page component tag here : <Redirect to="/sign-in" />}
+            {/* BLOCKED USERS PAGE*/
+            <Route path="/settings/blocked-users" exact={true}>
+              {signedIn ? <BlockedUsers user={user}/> : <Redirect to="/sign-in" />}
             </Route>
-            */}
+            }
 
           </Switch>
         </BrowserRouter>
