@@ -15,6 +15,7 @@ const HamburgerNotSignedIn = (props) => {
                 <Navbar.Brand href="/">Recipe Box</Navbar.Brand>
                 <Navbar.Collapse id="responsive-navbar-nav">
                     <Nav className="mr-auto">
+                        <NavDropdown.Divider />
                         <NavDropdown.Item className="rbxSpaceAdjustment" href="/sign-in">Sign-In</NavDropdown.Item>
                         <NavDropdown.Item className="rbxSpaceAdjustment" href="/create-account">Create Account</NavDropdown.Item>
                         <NavDropdown.Divider />

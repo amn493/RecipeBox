@@ -20,6 +20,7 @@ const HamburgerSignedIn = (props) => {
                 <Navbar.Brand className={rbxLogoPadding} href="/">Recipe Box</Navbar.Brand>
                 <Navbar.Collapse id="responsive-navbar-nav">
                     <Nav className="mr-auto">
+                        <NavDropdown.Divider />
                         <NavDropdown.Item className="rbxSpaceAdjustment" href="/new-recipe">New Recipe</NavDropdown.Item>
                         <NavDropdown.Item className="rbxSpaceAdjustment" href="/feed">Feed</NavDropdown.Item>
                         <NavDropdown.Item className="rbxSpaceAdjustment" href="/my-recipe-box">My Recipe Box</NavDropdown.Item>
