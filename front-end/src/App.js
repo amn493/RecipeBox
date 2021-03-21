@@ -14,7 +14,7 @@ import BrowseRecipesPage from './BrowseRecipesPage.js'
 import ProfilePage from './ProfilePage.js'
 import SignInForm from './SignInForm'
 import BlockedUsers from './BlockedUsers'
-
+import AppSettings from './AppSettings'
 
 function App() {
 
@@ -157,11 +157,11 @@ function App() {
             </Route>
             */}
 
-            {/* SETTINGS PAGE
-            <Route path="/settings">
-              {signedIn ? //insert corresponding page component tag here : <Redirect to="/sign-in" />}
+            {/* SETTINGS PAGE*/
+            <Route path="/settings" exact={true}>
+              {signedIn ? <AppSettings user={user}/> : <Redirect to="/sign-in" />}
             </Route>
-            */}
+            }
 
             {/* BLOCKED USERS PAGE*/
             <Route path="/settings/blocked-users" exact={true}>
