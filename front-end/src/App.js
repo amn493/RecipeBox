@@ -2,7 +2,6 @@ import { React, useState } from 'react'
 
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom'
 
-//import HamburgerNotSignedIn from './HamburgerNotSignedIn.js'
 import './App.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
@@ -15,6 +14,8 @@ import ProfilePage from './ProfilePage.js'
 import SignInForm from './SignInForm'
 import AppSettings from './AppSettings'
 // import BlockedUsers from './BlockedUsers'
+import CreateAccountPage from './CreateAccountPage.js'
+import BrowseUsersPage from './BrowseUsersPage.js'
 
 function App() {
 
@@ -77,7 +78,7 @@ function App() {
   return (
     <div className='App container' id='outer-container'>
       {/*<HamburgerNotSignedIn pageWrapId={ 'page-wrap' } outerContainerId={ 'outer-container' } />*/}
-      <Navbar />
+      <Navbar signedIn="false"/>
       <main id='page-wrap'>
         <BrowserRouter>
 
@@ -95,15 +96,14 @@ function App() {
                 {signedIn ? <Redirect to={'/user-' + user.slug} /> : <SignInForm />}
             </Route>
 
-            {/* CREATE ACCOUNT PAGE
+            {/* CREATE ACCOUNT PAGE */}
             <Route path="/create-account">
-              {signedIn ? <Redirect to={'/user-' + user.slug} /> : //insert corresponding page component tag here }
+            {signedIn ? <Redirect to={'/user-' + user.slug} /> : <CreateAccountPage />}
             </Route>
-            */}
 
             {/* BROWSE RECIPES PAGE */}
             <Route path="/browse-recipes">
-              <BrowseRecipesPage user={user} />
+              <BrowseRecipesPage />
             </Route>
 
             {/* RECIPE PAGE */}
@@ -111,11 +111,10 @@ function App() {
               <RecipePage user={user} signedIn={signedIn} />
             </Route>
 
-            {/* BROWSE USERS PAGE
+            {/* BROWSE USERS PAGE */}
             <Route path="/browse-users">
-              //insert corresponding page component tag here
+              <BrowseUsersPage />
             </Route>
-            */}
 
             {/* USER PROFILE AND MY PROFILE PAGES */}
             <Route path="/user-:slug">
