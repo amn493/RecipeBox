@@ -140,7 +140,7 @@ const FollowingPage = (props) => {
     // Filter following based on keyword entered by the user
     useEffect(() => {
         // Set following array to only include following whose name contains the filter keyword
-        setFollowing(allFollowing.filter(following => ((filterKeyword !== '') ? following.name.toLowerCase().includes(filterKeyword.toLowerCase()) : true)))
+        setFollowing(allFollowing.filter(followingUser => ((filterKeyword !== '') ? followingUser.name.toLowerCase().includes(filterKeyword.toLowerCase()) : true)))
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [filterKeyword]) // Update following when a new keyword is entered
@@ -158,7 +158,7 @@ const FollowingPage = (props) => {
             </div>
             <div className='followingList'>
                 <div className='followingUserPreview'>
-                    {following.sort((a, b) => a.firstName.localeCompare(b.firstName)).map((following, i) => (<SmallUserPreview user={following} isBlockedUserProfile={false} key={i}/>))}
+                    {following.sort((a, b) => a.firstName.localeCompare(b.firstName)).map((followingUser, i) => (<SmallUserPreview user={followingUser} isBlockedUserProfile={false} key={i}/>))}
                 </div>
             </div>
         </div>
