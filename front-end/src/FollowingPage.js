@@ -150,8 +150,8 @@ const FollowingPage = (props) => {
         <div className='following'>
             <div className='followingHeading'>
                 <a className='backLink' href='javascript:history.back()'>Back</a>
-                <p className='title'>Following</p>
                 <h3 className='userName'>{props.user.firstName} {props.user.lastName}</h3>
+                <h4 className='title'>Following</h4>
             </div>
             <div className='userSearchBar'>
                 <KeyWordSearchBar isRecipe={false} filter={filterKeyword} setFilter={setFilterKeyword} />
