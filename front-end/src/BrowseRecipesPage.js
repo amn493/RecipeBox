@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 
+import LargeRecipePreview from './LargeRecipePreview.js'
 import KeywordSearchBar from './KeywordSearchBar.js'
 import ComboBoxSearchBar from './ComboBoxSearchBar.js'
+import TagButton from './TagButton.js'
 
 import './BrowseRecipesPage.css'
-import LargeRecipePreview from './LargeRecipePreview.js'
 
 
 const BrowseRecipesPage = (props) => {
@@ -226,30 +227,6 @@ const BrowseRecipesPage = (props) => {
             {recipes.sort((a, b) => b.likes - a.likes).map((recipe, i) => <LargeRecipePreview recipe={recipe} user={props.user} key={i} />)}
             </div>
         </div>
-    )
-}
-
-
-
-
-
-const TagButton = (props) => {
-
-    const handleClick = () => {
-
-        // remove tag from filter tags array
-        const tagIndex = props.filterTags.indexOf(props.tag)
-        props.setFilterTags(props.filterTags.slice(0, tagIndex).concat(props.filterTags.slice(tagIndex + 1)))
-
-        // add tag to tags array
-        props.setTags(props.tags.concat([props.tag]))
-    }
-
-    return (
-        (props.tag !== '') ?
-            <button className="tagButton" type="button" onClick={handleClick}>{'#' + props.tag}</button>
-        :
-            <></> 
     )
 }
 
