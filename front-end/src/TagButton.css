@@ -1,0 +1,16 @@
+.tagButton {
+    margin-right: 5px;
+    margin-bottom: 5px;
+
+    border: none;
+    border-radius: 5px;
+    padding: 5px;
+    background-color: rgb(68, 68, 68);
+    color: white;
+    font-size: small;
+    font-weight: bold;
+}
+
+.tagButton:hover {
+    opacity: 70%;
+}
