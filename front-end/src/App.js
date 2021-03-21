@@ -13,8 +13,8 @@ import Navbar from './Navbar'
 import BrowseRecipesPage from './BrowseRecipesPage.js'
 import ProfilePage from './ProfilePage.js'
 import SignInForm from './SignInForm'
-
-
+import AppSettings from './AppSettings'
+// import BlockedUsers from './BlockedUsers'
 
 function App() {
 
@@ -36,7 +36,16 @@ function App() {
     liked: [],
     slug: '',
     imagePath: '',
-    id: null
+    id: null,
+    blockedUsers: [],
+    blockedTags: [],
+    notificationSettings: {
+      "emailNotifications": false,
+      "likes": false,
+      "comments": false,
+      "follows": false,
+      "posts": false
+    }
   }*/ // no signed-in user
   {
     username: 'anonymous',
@@ -49,10 +58,21 @@ function App() {
     liked: [1,3,5,10,33],
     slug: 'anonymous',
     imagePath: 'https://picsum.photos/200',
-    id: 1
-  } // signed-in user
-  )
-
+    id: 1,
+    blockedUsers: [1,5,9],
+    blockedTags: [
+      "breakfast",
+      "gluten",
+      "sugar"
+    ],
+    notificationSettings: {
+      "emailNotifications": true,
+      "likes": true,
+      "comments": false,
+      "follows": false,
+      "posts": true
+    }
+  }) // change this when sign-in is implemented
 
   return (
     <div className='App container' id='outer-container'>
@@ -137,17 +157,17 @@ function App() {
             </Route>
             */}
 
-            {/* SETTINGS PAGE
-            <Route path="/settings">
-              {signedIn ? //insert corresponding page component tag here : <Redirect to="/sign-in" />}
+            {/* SETTINGS PAGE*/
+            <Route path="/settings" exact={true}>
+              {signedIn ? <AppSettings user={user} setSignedIn={setSignedIn}/> : <Redirect to="/sign-in" />}
             </Route>
-            */}
+            }
 
-            {/* BLOCKED USERS PAGE
-            <Route path="/settings/blocked-users">
-              {signedIn ? //insert corresponding page component tag here : <Redirect to="/sign-in" />}
-            </Route>
-            */}
+            {/* BLOCKED USERS PAGE*/
+            // <Route path="/settings/blocked-users" exact={true}>
+            //   {signedIn ? <BlockedUsers user={user}/> : <Redirect to="/sign-in" />}
+            // </Route>
+            }
 
           </Switch>
         </BrowserRouter>
