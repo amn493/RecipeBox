@@ -56,7 +56,7 @@ function App() {
   return (
     <div className='App container' id='outer-container'>
       {/*<HamburgerNotSignedIn pageWrapId={ 'page-wrap' } outerContainerId={ 'outer-container' } />*/}
-      <Navbar />
+      <Navbar signedIn="false"/>
       <main id='page-wrap'>
         <BrowserRouter>
 

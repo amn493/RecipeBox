@@ -3,6 +3,18 @@
     font-size: 30px;
 }
 
-.recipebox-nav-dropdown {
+.recipeboxNavDropdown {
     display: inline;
+}
+
+.rbxSpaceAdjustment {
+    padding: 5px 10px 5px 10px;
+}
+
+.rbxLogoExpanded {
+    padding-right: 0px;
+}
+
+.rbxLogoCollapsed {
+    padding-right: 50%;
 }

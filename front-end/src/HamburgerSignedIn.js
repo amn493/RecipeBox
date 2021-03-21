@@ -1,29 +1,39 @@
 import './HamburgerSignedIn.css'
 // NavDropdown imports
 import NavDropdown from 'react-bootstrap/NavDropdown'
-import Nav from 'react-bootstrap/Navbar'
+import Navbar from 'react-bootstrap/Navbar'
+import Nav from 'react-bootstrap/Nav'
 import { BsList } from 'react-icons/bs'
-
-let navDropdownTitleIcon = <BsList />
 
 const HamburgerSignedIn = (props) => {
 
-    // TODO: Check to make sure that just '/page' is good for the routing
+    // TODO: Adjust the rbxLogoClass depending on if it's expanded or contracted
+    let rbxLogoPadding = "rbxLogoExpanded"
+    let adjustPadding = () => {
+        rbxLogoPadding === "rbxLogoCollapsed" ? rbxLogoPadding = "rbxLogoExpanded" : rbxLogoPadding = "rbxLogoCollapsed"
+    }
+
     return (
         <div className="recipeboxNavDropdown">
-            <NavDropdown title="Menu" id="basic-nav-dropdown" className="rbxNavDropdown">
-                <NavDropdown.Item href="/new-recipe">New Recipe</NavDropdown.Item>
-                <NavDropdown.Item href="/feed">Feed</NavDropdown.Item>
-                <NavDropdown.Item href="/my-recipe-box">My RecipeBox</NavDropdown.Item>
-                {/* Is this the proper way to navigate... or should we pass in the slug as a propr? Is there a specific way?*/}
-                <NavDropdown.Item href="/user-:slug">My Profile</NavDropdown.Item>
-                <NavDropdown.Item href="/browse-recipes">Browse Recipes</NavDropdown.Item>
-                <NavDropdown.Item href="/browse-users">Browse Uers</NavDropdown.Item>
-                <NavDropdown.Item href="/settings">Settings</NavDropdown.Item>
-                <NavDropdown.Divider />
-                {/* What's the best way to make this functional? */}
-                <NavDropdown.Item href="">Sign Out</NavDropdown.Item>
-            </NavDropdown>
+            <Navbar collapseOnSelect expand="lg">
+                <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+                <Navbar.Brand className={rbxLogoPadding} href="/">Recipe Box</Navbar.Brand>
+                <Navbar.Collapse id="responsive-navbar-nav">
+                    <Nav className="mr-auto">
+                        <NavDropdown.Item className="rbxSpaceAdjustment" href="/new-recipe">New Recipe</NavDropdown.Item>
+                        <NavDropdown.Item className="rbxSpaceAdjustment" href="/feed">Feed</NavDropdown.Item>
+                        <NavDropdown.Item className="rbxSpaceAdjustment" href="/my-recipe-box">My Recipe Box</NavDropdown.Item>
+                        {/* Is this the proper way to navigate... or should we pass in the slug as a propr? Is there a specific way?*/}
+                        <NavDropdown.Item className="rbxSpaceAdjustment" href="/user-:slug">My Profile</NavDropdown.Item>
+                        <NavDropdown.Item className="rbxSpaceAdjustment" href="/browse-recipes">Browse Recipes</NavDropdown.Item>
+                        <NavDropdown.Item className="rbxSpaceAdjustment" href="/browse-users">Browse Users</NavDropdown.Item>
+                        <NavDropdown.Item className="rbxSpaceAdjustment" href="/settings">Settings</NavDropdown.Item>
+                        <NavDropdown.Divider />
+                        {/* What's the best way to make this functional? */}
+                        <NavDropdown.Item className="rbxSpaceAdjustment" href="">Sign Out</NavDropdown.Item>
+                    </Nav>
+                </Navbar.Collapse>
+            </Navbar>
         </div>
     )
 
