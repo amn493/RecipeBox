@@ -13,6 +13,7 @@ import Navbar from './Navbar'
 import BrowseRecipesPage from './BrowseRecipesPage.js'
 import ProfilePage from './ProfilePage.js'
 import SignInForm from './SignInForm'
+import FollowingPage from './FollowingPage.js'
 
 
 
@@ -98,7 +99,7 @@ function App() {
             */}
 
             {/* USER PROFILE AND MY PROFILE PAGES */}
-            <Route path="/user-:slug">
+            <Route exact path="/user-:slug">
               <ProfilePage user={user} signedIn={signedIn} />
             </Route>
 
@@ -108,11 +109,10 @@ function App() {
             </Route>
             */}
 
-            {/* FOLLOWING PAGE
-            <Route path="/user-:slug/following">
-              //insert corresponding page component tag here
+            {/* FOLLOWING PAGE */}
+            <Route exact path="/user-:slug/following">
+              <FollowingPage user={user} />
             </Route>
-            */}
 
             {/* EDIT PROFILE PAGE
             <Route path="/edit-profile">
