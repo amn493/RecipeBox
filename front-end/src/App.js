@@ -13,7 +13,7 @@ import Navbar from './Navbar'
 import BrowseRecipesPage from './BrowseRecipesPage.js'
 import ProfilePage from './ProfilePage.js'
 import SignInForm from './SignInForm'
-
+import CreateAccountPage from './CreateAccountPage'
 
 
 function App() {
@@ -75,11 +75,10 @@ function App() {
                 {signedIn ? <Redirect to={'/user-' + user.slug} /> : <SignInForm />}
             </Route>
 
-            {/* CREATE ACCOUNT PAGE
+            {/* CREATE ACCOUNT PAGE */}
             <Route path="/create-account">
-              {signedIn ? <Redirect to={'/user-' + user.slug} /> : //insert corresponding page component tag here }
+              <CreateAccountPage />
             </Route>
-            */}
 
             {/* BROWSE RECIPES PAGE */}
             <Route path="/browse-recipes">
