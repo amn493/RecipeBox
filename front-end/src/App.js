@@ -13,7 +13,7 @@ import Navbar from './Navbar'
 import BrowseRecipesPage from './BrowseRecipesPage.js'
 import ProfilePage from './ProfilePage.js'
 import SignInForm from './SignInForm'
-
+import BrowseUsersPage from './BrowseUsersPage'
 
 
 function App() {
@@ -83,7 +83,7 @@ function App() {
 
             {/* BROWSE RECIPES PAGE */}
             <Route path="/browse-recipes">
-              <BrowseRecipesPage user={user} />
+              <BrowseRecipesPage />
             </Route>
 
             {/* RECIPE PAGE */}
@@ -91,11 +91,10 @@ function App() {
               <RecipePage user={user} signedIn={signedIn} />
             </Route>
 
-            {/* BROWSE USERS PAGE
+            {/* BROWSE USERS PAGE */}
             <Route path="/browse-users">
-              //insert corresponding page component tag here
+              <BrowseUsersPage />
             </Route>
-            */}
 
             {/* USER PROFILE AND MY PROFILE PAGES */}
             <Route path="/user-:slug">
