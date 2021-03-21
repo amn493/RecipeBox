@@ -2,7 +2,6 @@ import { React, useState } from 'react'
 
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom'
 
-//import HamburgerNotSignedIn from './HamburgerNotSignedIn.js'
 import './App.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
@@ -14,6 +13,14 @@ import Navbar from './Navbar'
 import BrowseRecipesPage from './BrowseRecipesPage.js'
 import ProfilePage from './ProfilePage.js'
 import SignInForm from './SignInForm'
+import AppSettings from './AppSettings'
+// import BlockedUsers from './BlockedUsers'
+import FollowingPage from './FollowingPage.js'
+import SignInForm from './SignInForm.js'
+import CreateAccountPage from './CreateAccountPage.js'
+import FollowersPage from './FollowersPage.js'
+import FollowingPage from './FollowingPage.js'
+import BrowseUsersPage from './BrowseUsersPage.js'
 
 function App() {
 
@@ -35,7 +42,16 @@ function App() {
     liked: [],
     slug: '',
     imagePath: '',
-    id: null
+    id: null,
+    blockedUsers: [],
+    blockedTags: [],
+    notificationSettings: {
+      "emailNotifications": false,
+      "likes": false,
+      "comments": false,
+      "follows": false,
+      "posts": false
+    }
   }*/ // no signed-in user
   {
     username: 'anonymous',
@@ -48,18 +64,28 @@ function App() {
     liked: [1,3,5,10,33],
     slug: 'anonymous',
     imagePath: 'https://picsum.photos/200',
-    id: 1
-  } // signed-in user
-  )
-
+    id: 1,
+    blockedUsers: [1,5,9],
+    blockedTags: [
+      "breakfast",
+      "gluten",
+      "sugar"
+    ],
+    notificationSettings: {
+      "emailNotifications": true,
+      "likes": true,
+      "comments": false,
+      "follows": false,
+      "posts": true
+    }
+  }) // change this when sign-in is implemented
 
   return (
     <div className='App container' id='outer-container'>
       {/*<HamburgerNotSignedIn pageWrapId={ 'page-wrap' } outerContainerId={ 'outer-container' } />*/}
-      <Navbar />
+      <Navbar signedIn="false"/>
       <main id='page-wrap'>
         <BrowserRouter>
-
           {/* TODO: uncomment and complete the corresponding route when you implement a page component */}
 
           <Switch>
@@ -74,15 +100,14 @@ function App() {
                 {signedIn ? <Redirect to={'/user-' + user.slug} /> : <SignInForm />}
             </Route>
 
-            {/* CREATE ACCOUNT PAGE
+            {/* CREATE ACCOUNT PAGE */}
             <Route path="/create-account">
-              {signedIn ? <Redirect to={'/user-' + user.slug} /> : //insert corresponding page component tag here }
+            {signedIn ? <Redirect to={'/user-' + user.slug} /> : <CreateAccountPage />}
             </Route>
-            */}
 
             {/* BROWSE RECIPES PAGE */}
             <Route path="/browse-recipes">
-              <BrowseRecipesPage user={user} />
+              <BrowseRecipesPage />
             </Route>
 
             {/* RECIPE PAGE */}
@@ -90,28 +115,25 @@ function App() {
               <RecipePage user={user} signedIn={signedIn} />
             </Route>
 
-            {/* BROWSE USERS PAGE
+            {/* BROWSE USERS PAGE */}
             <Route path="/browse-users">
-              //insert corresponding page component tag here
+              <BrowseUsersPage />
             </Route>
-            */}
 
             {/* USER PROFILE AND MY PROFILE PAGES */}
-            <Route path="/user-:slug">
+            <Route exact path="/user-:slug">
               <ProfilePage user={user} signedIn={signedIn} />
             </Route>
 
-            {/* FOLLOWERS PAGE
-            <Route path="/user-:slug/followers">
-              //insert corresponding page component tag here
+            {/* FOLLOWERS PAGE */}
+            <Route exact path="/user-:slug/followers">
+              <FollowersPage user={user} />
             </Route>
-            */}
 
-            {/* FOLLOWING PAGE
-            <Route path="/user-:slug/following">
-              //insert corresponding page component tag here
+            {/* FOLLOWING PAGE */}
+            <Route exact path="/user-:slug/following">
+              <FollowingPage user={user} />
             </Route>
-            */}
 
             {/* EDIT PROFILE PAGE
             <Route path="/edit-profile">
@@ -135,17 +157,17 @@ function App() {
               {signedIn ? <RecipeBoxPage user={user} /> : <Redirect to="/sign-in" />}
             </Route>
 
-            {/* SETTINGS PAGE
-            <Route path="/settings">
-              {signedIn ? //insert corresponding page component tag here : <Redirect to="/sign-in" />}
+            {/* SETTINGS PAGE*/
+            <Route path="/settings" exact={true}>
+              {signedIn ? <AppSettings user={user} setSignedIn={setSignedIn}/> : <Redirect to="/sign-in" />}
             </Route>
-            */}
+            }
 
-            {/* BLOCKED USERS PAGE
-            <Route path="/settings/blocked-users">
-              {signedIn ? //insert corresponding page component tag here : <Redirect to="/sign-in" />}
-            </Route>
-            */}
+            {/* BLOCKED USERS PAGE*/
+            // <Route path="/settings/blocked-users" exact={true}>
+            //   {signedIn ? <BlockedUsers user={user}/> : <Redirect to="/sign-in" />}
+            // </Route>
+            }
 
           </Switch>
         </BrowserRouter>

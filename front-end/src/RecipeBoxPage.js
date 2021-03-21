@@ -85,16 +85,16 @@ const RecipeBoxPage = (props) => {
 
             {/* Sort and filter */}
             <div className="recipeBoxFilters">
+                <p>Sort By</p>
                 <div className="sortDropdown">
                 <Dropdown as={ButtonGroup}>
                     <Button variant="success">{sortByString}</Button>
 
                     <Dropdown.Toggle split variant="success" id="dropdown-split-basic" />
-
                     <Dropdown.Menu>
-                        <Dropdown.Item>Most Recently Saved</Dropdown.Item>
-                        <Dropdown.Item>User</Dropdown.Item>
-                        <Dropdown.Item>Something else</Dropdown.Item>
+                        <Dropdown.Item>Date Posted</Dropdown.Item>
+                        <Dropdown.Item>Date Liked</Dropdown.Item>
+                        <Dropdown.Item>Likes</Dropdown.Item>
                     </Dropdown.Menu>
                 </Dropdown>
                 </div>
