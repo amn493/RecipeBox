@@ -97,12 +97,12 @@ function App() {
             */}
 
             {/* USER PROFILE AND MY PROFILE PAGES */}
-            <Route path="/user-:slug">
+            <Route exact path="/user-:slug">
               <ProfilePage user={user} signedIn={signedIn} />
             </Route>
 
             {/* FOLLOWERS PAGE */}
-            <Route path="/followers" /*path="/user-:slug/followers"*/>
+            <Route exact path="/user-:slug/followers">
               <FollowersPage user={user} />
             </Route>
 
