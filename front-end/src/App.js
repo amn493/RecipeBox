@@ -13,7 +13,7 @@ import Navbar from './Navbar'
 import BrowseRecipesPage from './BrowseRecipesPage.js'
 import ProfilePage from './ProfilePage.js'
 import SignInForm from './SignInForm'
-
+import BlockedUsers from './BlockedUsers'
 
 
 function App() {
@@ -24,34 +24,55 @@ function App() {
     //false // no signed-in user
     true // signed-in user
     )
-  const [user, setUser] = useState(
-    /*{
-    username: '',
-    password: '',
-    firstName: '',
-    lastName: '',
-    bio: '',
-    followers: [],
-    following: [],
-    liked: [],
-    slug: '',
-    imagePath: '',
-    id: null
-  }*/ // no signed-in user
-  {
-    username: 'anonymous',
-    password: 'Abc123',
-    firstName: 'Anonymous',
-    lastName: 'User',
-    bio: 'fun, easy recipes!',
-    followers: [2,3,5,7,9],
-    following: [2,3,4,8,9],
-    liked: [1,3,5,10,33],
-    slug: 'anonymous',
-    imagePath: 'https://picsum.photos/200',
-    id: 1
-  } // signed-in user
-  )
+    const [user, setUser] = useState(
+      /*{
+      username: '',
+      password: '',
+      firstName: '',
+      lastName: '',
+      bio: '',
+      followers: [],
+      following: [],
+      liked: [],
+      slug: '',
+      imagePath: '',
+      id: null,
+      blockedUsers: [],
+      blockedTags: [],
+      notificationSettings: {
+        "emailNotifications": false,
+        "likes": false,
+        "comments": false,
+        "follows": false,
+        "posts": false
+      }
+    }*/ // no signed-in user
+    {
+      username: 'anonymous',
+      password: 'Abc123',
+      firstName: 'Anonymous',
+      lastName: 'User',
+      bio: 'fun, easy recipes!',
+      followers: [2,3,5,7,9],
+      following: [2,3,4,8,9],
+      liked: [1,3,5,10,33],
+      slug: 'anonymous',
+      imagePath: 'https://picsum.photos/200',
+      id: 1,
+      blockedUsers: [1,5,9],
+      blockedTags: [
+        "breakfast",
+        "gluten",
+        "sugar"
+      ],
+      notificationSettings: {
+        "emailNotifications": true,
+        "likes": true,
+        "comments": false,
+        "follows": false,
+        "posts": true
+      }
+    }) // change this when sign-in is implemented
 
 
   return (
@@ -143,11 +164,11 @@ function App() {
             </Route>
             */}
 
-            {/* BLOCKED USERS PAGE
+            {/* BLOCKED USERS PAGE */}
             <Route path="/settings/blocked-users">
-              {signedIn ? //insert corresponding page component tag here : <Redirect to="/sign-in" />}
+              {signedIn ? <BlockedUsers user={user}/> : <Redirect to="/sign-in" />}
             </Route>
-            */}
+           
 
           </Switch>
         </BrowserRouter>
