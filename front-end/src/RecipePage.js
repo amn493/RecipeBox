@@ -6,6 +6,7 @@ import Comment from './Comment.js'
 import Timestamp from './Timestamp'
 
 import './RecipePage.css'
+import SignInModal from './SignInModal.js'
 
 
 // Recipe Page
@@ -19,7 +20,6 @@ const RecipePage = (props) => {
 
     // state variables for knowing when all required data has been fetched from the apis
     const [loadedRecipe, setLoadedRecipe] = useState(false)
-    const [loadedUser, setLoadedUser] = useState(false)
     const [loadedComments, setLoadedComments] = useState(false)
 
 
@@ -28,10 +28,10 @@ const RecipePage = (props) => {
 
     useEffect(() => {
         // fetch the recipe that corresponds to the slug from the url
-        axios('https://my.api.mockaroo.com/animals.json?num=1&key=d9ddfc40aaa')
+        axios('https://my.api.mockaroo.com/recipe.json?key=f6a27260')
         .then((response) => {
             
-            setRecipe(response.data)
+            setRecipe(response.data[0]) //TODO: change when database is integrated
             setLoadedRecipe(true)
         })
         .catch((err) => {
@@ -46,7 +46,7 @@ const RecipePage = (props) => {
                       slug: 'foobar'
                     },
                     name: 'Guacamole',
-                    imagePath: 'logo192.png',
+                    imagePath: 'https://picsum.photos/300',
                     tags: ['mexican', 'spicy', 'dip'],
                     caption: "my secret recipe:)",
                     ingredients: [
@@ -82,50 +82,13 @@ const RecipePage = (props) => {
 
 
 
-
-    //DELETE? REQUEST SIGNED IN USER IN APP.JS AND PASS AS PROPS??
-    // request signed-in user on initial render
-    const [user, setUser] = useState([])
-
-    useEffect(() => {
-        // fetch the signed-in user
-        axios('https://my.api.mockaroo.com/animals.json?num=1&key=d9ddfc40aaa')
-        .then((response) => {
-            setUser(response.data)
-            setLoadedUser(true)
-        })
-        .catch((err) => {
-            console.error(err)
-
-            // make some backup fake data
-            const backupData = [
-                {
-                    username: 'anonymous',
-                    //password: // a password hash,
-                    firstName: 'Anonymous',
-                    lastName: 'User',
-                    bio: 'fun, easy recipes!',
-                    //followers: // an array of references to User documents,
-                    //following: // an array of references to User documents,
-                    liked: [], // an array of references to Recipe documents
-                    slug: 'anonymous'
-                  }
-            ]
-
-            setUser(backupData[0])
-            setLoadedUser(true)
-        })
-    }, [])
-
-
-
     // request comments for current recipe (recipe = recipe.id) on initial render
     const [comments, setComments] = useState([])
 
     useEffect(() => {
-        axios('https://my.api.mockaroo.com/animals.json?num=1&key=d9ddfc40aaa')
+        axios('https://my.api.mockaroo.com/comment.json?key=f6a27260')
         .then((response) => {
-            setComments(response.data)
+            setComments(response.data) //TODO: change when database is integrated
             setLoadedComments(true)
         })
         .catch((err) => {
@@ -150,18 +113,22 @@ const RecipePage = (props) => {
             setComments(backupData)
             setLoadedComments(true)
         })
-    }, [recipe.id])
+    }, [loadedRecipe])
+
+
+    // state variable for showing sign-in modal
+    const [showModal, setShowModal] = useState(false)
 
 
     // render the page if all required data has been fetched
-    if(loadedRecipe && loadedUser && loadedComments) {
+    if(loadedRecipe && loadedComments) {
         return (
             <div className="recipe">
                 <img className="recipeImage" src={recipe.imagePath} alt="food" />
                 <div className="recipeText">
                     <div className="recipeDetails">
                         <h1 className="recipeName">{recipe.name}</h1>
-                        <LikeButton recipe={recipe} user={user} />
+                        <LikeButton recipe={recipe} user={props.user} signedIn={props.signedIn} setShowModal={setShowModal} />
                         <br />
                         <a className="recipeUsername" href={'/user-' + recipe.user.slug}>{'@' + recipe.user.username}</a>
                         <Timestamp createdAt={recipe.createdAt} />
@@ -184,9 +151,11 @@ const RecipePage = (props) => {
                     </div>
                     <br />
     
-                    <CommentsSection comments={comments} userId={user.id} recipeId={recipe.id} />
+                    <CommentsSection comments={comments} userId={props.user.id} recipeId={recipe.id} signedIn={props.signedIn} setShowModal={setShowModal} />
                     
                 </div>
+
+                <SignInModal show={showModal} setShow={setShowModal} />
             </div> 
         )
     }
@@ -221,8 +190,14 @@ const LikeButton = (props) => {
     return (
         <>
             <input className="likeButton" type="image" src={liked ? 'heartFill.png' : 'heartOutline.png'} alt={liked ? 'heart fill' : 'heart outline'} onClick={() => {
-                setLikes(likes + (liked ? -1 : 1))
-                setLiked(!liked)
+                if (props.signedIn) {
+                    setLikes(likes + (liked ? -1 : 1))
+                    setLiked(!liked)
+                }
+                else {
+                    // show sign-in modal if a not-signed in user attempts to like the recipe
+                    props.setShowModal(true)
+                }
             }} />
             {likes}
         </>
@@ -244,20 +219,32 @@ const CommentsSection = (props) => {
 
     // update page to include new comment on submit
     const handleSubmit = (event) => {
+
         event.preventDefault()
-        const newComment = {
-            user: props.userId,
-            comment: value,
-            recipe: props.recipeId,
-            createdAt: Date.now()
+
+        if (props.signedIn) {
+
+            // don't add empty comments
+            if (value !== '') {
+                const newComment = {
+                    user: props.userId,
+                    comment: value,
+                    recipe: props.recipeId,
+                    createdAt: Date.now()
+                }
+    
+                //TODO: store newComment in database
+    
+    
+                //update page to include new comment
+                setComments(comments.concat([newComment]))
+                setValue('')
+            }
         }
-
-        //TODO: store newComment in database
-
-
-        //update page to include new comment
-        setComments(comments.concat([newComment]))
-        setValue('')
+        else {
+            // show sign-in modal if a not-signed in user attempts to comment on the recipe
+            props.setShowModal(true)
+        }
 
         
     }

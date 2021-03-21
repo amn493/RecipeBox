@@ -1,9 +1,36 @@
-.recipesFollowersAndFollowing{
-    display: 'flex', 'flex-direction', 'row';
-    align-Items: 'center';
-    justify-Content: 'center';
+.profileStatsSection{
+    text-align: center;
+    margin: auto;
 }
 
-.recipesCount{
-    pointer-events: 'none';
+.profilePicture {
+    width: 100px;
+    height: 100px;
+    margin-right: 10px;
+}
+
+.userFirstAndLastName {
+    font-size: larger;
+}
+
+.profileStat {
+    padding: 10px 20px;
+}
+
+.profileStatNumber {
+    font-size: large;
+}
+
+.profileStatLink {
+    color: black;
+}
+
+.profileStatLink:hover {
+    text-decoration: none;
+    color: black;
+    opacity: 50%;
+}
+
+.userBio {
+    font-size: small;
 }

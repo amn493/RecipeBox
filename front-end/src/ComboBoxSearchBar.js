@@ -1,4 +1,4 @@
-import React from 'react'
+import { useState, useMemo } from 'react'
 import {matchSorter} from 'match-sorter'
 import {
     Combobox,
@@ -20,7 +20,7 @@ let listForSearch = [] //users or tags
 let placeholder = "" //"@..." or "#..."
 
 const ComboBoxSearchBar = (props) => {
-    
+
     if(props.isTag === true) { // if isTag is true, this component is being used to search for tags
         listForSearch = props.tags
         placeholder="#..."
@@ -31,21 +31,31 @@ const ComboBoxSearchBar = (props) => {
 
     return(
         <div className="comboBox">
-            {ComboBoxSearchResults()}
+            <ComboBoxSearchResults setSelection={props.setSelection} />
         </div>
     )
 
 }
 
-const ComboBoxSearchResults = () => {
+const ComboBoxSearchResults = (props) => {
 
-    const [term, setTerm] = React.useState("");
+    const [term, setTerm] = useState('');
     const results = useMatch(term);
     const handleChange = (event) => setTerm(event.target.value);
 
+
+    const handleSelect = (item) => {
+        //update the state variable with the selected value
+        props.setSelection(item)
+
+        //reset the text field
+        setTerm('')
+    }
+
+
     return (
-        <Combobox>
-            <ComboboxInput classname="comboBoxInput" placeholder={placeholder}
+        <Combobox onSelect={handleSelect}>
+            <ComboboxInput className="comboBoxInput" placeholder={placeholder} value={term}
                 onChange={handleChange} 
             />
             {results && (
@@ -71,7 +81,7 @@ const ComboBoxSearchResults = () => {
 }
 
 const useMatch= (term) => {
-    return React.useMemo(
+    return useMemo(
         () => term.trim() === ""
             ? null
             : matchSorter(listForSearch, term, {

@@ -1,4 +1,4 @@
-import React from 'react'
+import { React, useState } from 'react'
 
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom'
 
@@ -9,13 +9,35 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import RecipePage from './RecipePage.js'
 import FeedPage from './FeedPage.js'
 import Navbar from './Navbar'
+import BrowseRecipesPage from './BrowseRecipesPage.js'
+import ProfilePage from './ProfilePage.js'
+import SignInForm from './SignInForm'
+
 
 
 function App() {
 
-  let signedIn = true // change this when sign-in is implemented
-  
-  let user = {
+  // comment out and uncomment the following to test with or without a signed-in user
+
+  const [signedIn, setSignedIn] = useState(
+    //false // no signed-in user
+    true // signed-in user
+    )
+  const [user, setUser] = useState(
+    /*{
+    username: '',
+    password: '',
+    firstName: '',
+    lastName: '',
+    bio: '',
+    followers: [],
+    following: [],
+    liked: [],
+    slug: '',
+    imagePath: '',
+    id: null
+  }*/ // no signed-in user
+  {
     username: 'anonymous',
     password: 'Abc123',
     firstName: 'Anonymous',
@@ -25,14 +47,16 @@ function App() {
     following: [2,3,4,8,9],
     liked: [1,3,5,10,33],
     slug: 'anonymous',
+    imagePath: 'https://picsum.photos/200',
     id: 1
-  } // change this when sign-in is implemented
-
+  } // signed-in user
+  )
 
 
   return (
-    <div className='App' id='outer-container' className = "container">
-      <Navbar signedIn="true"/>
+    <div className='App container' id='outer-container'>
+      {/*<HamburgerNotSignedIn pageWrapId={ 'page-wrap' } outerContainerId={ 'outer-container' } />*/}
+      <Navbar />
       <main id='page-wrap'>
         <BrowserRouter>
 
@@ -45,27 +69,25 @@ function App() {
               {signedIn ? <Redirect to="/feed" /> : <Redirect to="/browse-recipes" />}
             </Route>
             
-            {/* SIGN IN PAGE
+            {/* SIGN IN PAGE */}
             <Route path="/sign-in">
-              //insert corresponding page component tag here
+                {signedIn ? <Redirect to={'/user-' + user.slug} /> : <SignInForm />}
             </Route>
-            */}
 
             {/* CREATE ACCOUNT PAGE
             <Route path="/create-account">
-              //insert corresponding page component tag here
+              {signedIn ? <Redirect to={'/user-' + user.slug} /> : //insert corresponding page component tag here }
             </Route>
             */}
 
-            {/* BROWSE RECIPES PAGE
+            {/* BROWSE RECIPES PAGE */}
             <Route path="/browse-recipes">
-              //insert corresponding page component tag here
+              <BrowseRecipesPage user={user} />
             </Route>
-            */}
 
             {/* RECIPE PAGE */}
             <Route path="/recipe-:slug">
-              <RecipePage />
+              <RecipePage user={user} signedIn={signedIn} />
             </Route>
 
             {/* BROWSE USERS PAGE
@@ -74,12 +96,10 @@ function App() {
             </Route>
             */}
 
-            {/* USER PROFILE AND MY PROFILE PAGES
+            {/* USER PROFILE AND MY PROFILE PAGES */}
             <Route path="/user-:slug">
-              //insert corresponding page component tag here
-              (add an additional component that renders the correct page after comparing slug with the signed-in user's slug and insert here)
+              <ProfilePage user={user} signedIn={signedIn} />
             </Route>
-            */}
 
             {/* FOLLOWERS PAGE
             <Route path="/user-:slug/followers">
@@ -95,36 +115,36 @@ function App() {
 
             {/* EDIT PROFILE PAGE
             <Route path="/edit-profile">
-              //insert corresponding page component tag here
+              {signedIn ? //insert corresponding page component tag here : <Redirect to="/sign-in" />}
             </Route>
             */}
 
             {/* FEED PAGE */}
             <Route path="/feed">
-              <FeedPage user={user}/>
+              {signedIn ? <FeedPage user={user} /> : <Redirect to="/sign-in" />}
             </Route>
 
             {/* NEW RECIPE PAGE
             <Route path="/new-recipe">
-              //insert corresponding page component tag here
+              {signedIn ? //insert corresponding page component tag here : <Redirect to="/sign-in" />}
             </Route>
             */}
 
             {/* MY RECIPE BOX PAGE
             <Route path="/my-recipe-box">
-              //insert corresponding page component tag here
+              {signedIn ? //insert corresponding page component tag here : <Redirect to="/sign-in" />}
             </Route>
             */}
 
             {/* SETTINGS PAGE
             <Route path="/settings">
-              //insert corresponding page component tag here
+              {signedIn ? //insert corresponding page component tag here : <Redirect to="/sign-in" />}
             </Route>
             */}
 
             {/* BLOCKED USERS PAGE
             <Route path="/settings/blocked-users">
-              //insert corresponding page component tag here
+              {signedIn ? //insert corresponding page component tag here : <Redirect to="/sign-in" />}
             </Route>
             */}
 
