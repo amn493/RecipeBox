@@ -14,7 +14,11 @@ import ProfilePage from './ProfilePage.js'
 import SignInForm from './SignInForm'
 import AppSettings from './AppSettings'
 // import BlockedUsers from './BlockedUsers'
+import FollowingPage from './FollowingPage.js'
+import SignInForm from './SignInForm.js'
 import CreateAccountPage from './CreateAccountPage.js'
+import FollowersPage from './FollowersPage.js'
+import FollowingPage from './FollowingPage.js'
 import BrowseUsersPage from './BrowseUsersPage.js'
 
 function App() {
@@ -81,7 +85,6 @@ function App() {
       <Navbar signedIn="false"/>
       <main id='page-wrap'>
         <BrowserRouter>
-
           {/* TODO: uncomment and complete the corresponding route when you implement a page component */}
 
           <Switch>
@@ -117,21 +120,19 @@ function App() {
             </Route>
 
             {/* USER PROFILE AND MY PROFILE PAGES */}
-            <Route path="/user-:slug">
+            <Route exact path="/user-:slug">
               <ProfilePage user={user} signedIn={signedIn} />
             </Route>
 
-            {/* FOLLOWERS PAGE
-            <Route path="/user-:slug/followers">
-              //insert corresponding page component tag here
+            {/* FOLLOWERS PAGE */}
+            <Route exact path="/user-:slug/followers">
+              <FollowersPage user={user} />
             </Route>
-            */}
 
-            {/* FOLLOWING PAGE
-            <Route path="/user-:slug/following">
-              //insert corresponding page component tag here
+            {/* FOLLOWING PAGE */}
+            <Route exact path="/user-:slug/following">
+              <FollowingPage user={user} />
             </Route>
-            */}
 
             {/* EDIT PROFILE PAGE
             <Route path="/edit-profile">
