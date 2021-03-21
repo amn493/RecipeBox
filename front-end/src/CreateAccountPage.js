@@ -14,54 +14,57 @@ const CreateAccountPage = (props) =>  {
   const [password, setPassword] = useState('')
   const [ReEnterPassword, setReEnterPassword] = useState('')
   const [email, setEmail] = useState('')
-  var error = false
-  var errorMessages = []
+  const [error, setError] = useState(false)
+  const [errorMessages, setErrorMessages] = useState([])
 
   function handleSubmit(event) {
-    event.preventDefault()
+    // event.preventDefault()
+    return validateForm()
   }
 
+  const emailRegex = /^\S+@\S+\.\S+$/;
   const nameRegex = /^[a-z ,.'-]+$/i;
   const usernameRegex = /^[a-z._-]+$/i;
-  const emailRegex = /^\S+@\S+\.\S+$/;
+  const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/
 
   function validateForm() {
+    // Validate email
+    if (!emailRegex.test(email)) {
+      setError = true
+      setErrorMessages(errorMessages.concat(['Please enter a valid email.']))
+    }
+    
     // Validate first and last name
     if (!nameRegex.test(firstName)) {
-        error = true
-        errorMessages.push('First name is empty or contains invalid characters.')
+        setError = true
+        setErrorMessages(errorMessages.concat(['First name is empty or contains invalid characters.']))
     }
     if (!nameRegex.test(lastName)) {
-        error = true
-        errorMessages.push('Last name is empty or contains invalid characters.')
+      setError = true
+      setErrorMessages(errorMessages.concat(['Last name is empty or contains invalid characters.']))
     }
     
     // Validate username
     if (!usernameRegex.test(username)) {
-        error = true
-        errorMessages.push('Username is empty or contains invalid characters')
+      setError = true
+      setErrorMessages(errorMessages.concat(['Username is empty or contains invalid characters']))
     }
 
     // Validate password
     if (password.length === 0) {
-        error = true
-        errorMessages.push('Password cannot be empty.')
+      setError = true
+      setErrorMessages(errorMessages.concat(['Password cannot be empty.']))
     }
-    if (password.length < 8) {
-        error = true
-        errorMessages.push('Password must be at least 8 characters.')
+    if (!passwordRegex.test(password)) {
+      setError = true
+      setErrorMessages(errorMessages.concat(['Password must contain at least 8 characters, have 1 uppercase letter, ' + 
+        '1 lowercase letter, and 1 number.']))
     }
     if (!(password === ReEnterPassword)) {
-        error = true
-        errorMessages.push('Passwords do not match.')
+      setError = true
+      setErrorMessages(errorMessages.concat(['Passwords do not match.']))
     }
-
-    // Validate email
-    if (!emailRegex.test(email)) {
-        error = true
-        errorMessages.push('Please enter a valid email.')
-    }
-    return !error
+    return error
   }
 
   return (
@@ -71,6 +74,15 @@ const CreateAccountPage = (props) =>  {
           <p key={errorIndex}>{message}</p>)) }
       </p>
       <Form onSubmit={handleSubmit}>
+      <Form.Group className='formInput' controlId='email'>
+          <Form.Control
+            size='md'
+            type='email'
+            placeholder='Email'
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+      </Form.Group>
       <Form.Group className='formInput' controlId='firstName'>
           <Form.Control
             size='md'
@@ -79,7 +91,7 @@ const CreateAccountPage = (props) =>  {
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
           />
-        </Form.Group>
+      </Form.Group>
       <Form.Group className='formInput' controlId='lastName'>
           <Form.Control
             size='md'
@@ -110,23 +122,14 @@ const CreateAccountPage = (props) =>  {
         <Form.Group className='formInput' controlId='reEnterPassword'>
           <Form.Control
             size='md'
-            type='reEnterPassword'
+            type='password'
             placeholder='Re-enter Password'
             value={ReEnterPassword}
             onChange={(e) => setReEnterPassword(e.target.value)}
           />
         </Form.Group>
-        <Form.Group className='formInput' controlId='email'>
-          <Form.Control
-            size='md'
-            type='email'
-            placeholder='Email'
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </Form.Group>
-        <Button className='submit' type='submit' variant='outline-dark' disabled={!validateForm()}>
-          Sign In
+        <Button className='submit' type='submit' variant='outline-dark' disabled={handleSubmit()}>
+          Create Account
         </Button>
       </Form>
       <div className='redirectCreateAccount'>

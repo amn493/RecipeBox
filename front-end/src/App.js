@@ -77,7 +77,7 @@ function App() {
 
             {/* CREATE ACCOUNT PAGE */}
             <Route path="/create-account">
-              <CreateAccountPage />
+            {signedIn ? <Redirect to={'/user-' + user.slug} /> : <CreateAccountPage />}
             </Route>
 
             {/* BROWSE RECIPES PAGE */}
