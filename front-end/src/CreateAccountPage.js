@@ -18,8 +18,33 @@ const CreateAccountPage = (props) =>  {
   const [errorMessages, setErrorMessages] = useState([])
 
   function handleSubmit(event) {
-    // event.preventDefault()
-    return validateForm()
+    setError(false)
+    setErrorMessages([])
+
+    event.preventDefault()
+    validateForm()
+  }
+
+  function emptyField() {
+    if (email.length === 0) {
+      return true;
+    }
+    if (firstName.length === 0) {
+      return true;
+    }
+    if (lastName.length === 0) {
+      return true;
+    }
+    if (username.length === 0) {
+      return true;
+    }
+    if (password.length === 0) {
+      return true;
+    }
+    if (ReEnterPassword.length === 0) {
+      return true;
+    }
+    return false;
   }
 
   const emailRegex = /^\S+@\S+\.\S+$/;
@@ -37,24 +62,20 @@ const CreateAccountPage = (props) =>  {
     // Validate first and last name
     if (!nameRegex.test(firstName)) {
         setError = true
-        setErrorMessages(errorMessages.concat(['First name is empty or contains invalid characters.']))
+        setErrorMessages(errorMessages.concat(['First name contains invalid characters.']))
     }
     if (!nameRegex.test(lastName)) {
       setError = true
-      setErrorMessages(errorMessages.concat(['Last name is empty or contains invalid characters.']))
+      setErrorMessages(errorMessages.concat(['Last name contains invalid characters.']))
     }
     
     // Validate username
     if (!usernameRegex.test(username)) {
       setError = true
-      setErrorMessages(errorMessages.concat(['Username is empty or contains invalid characters']))
+      setErrorMessages(errorMessages.concat(['Username contains invalid characters']))
     }
 
     // Validate password
-    if (password.length === 0) {
-      setError = true
-      setErrorMessages(errorMessages.concat(['Password cannot be empty.']))
-    }
     if (!passwordRegex.test(password)) {
       setError = true
       setErrorMessages(errorMessages.concat(['Password must contain at least 8 characters, have 1 uppercase letter, ' + 
@@ -64,7 +85,6 @@ const CreateAccountPage = (props) =>  {
       setError = true
       setErrorMessages(errorMessages.concat(['Passwords do not match.']))
     }
-    return error
   }
 
   return (
@@ -128,7 +148,7 @@ const CreateAccountPage = (props) =>  {
             onChange={(e) => setReEnterPassword(e.target.value)}
           />
         </Form.Group>
-        <Button className='submit' type='submit' variant='outline-dark' disabled={handleSubmit()}>
+        <Button className='submit' type='submit' variant='outline-dark' disabled={emptyField}>
           Create Account
         </Button>
       </Form>
