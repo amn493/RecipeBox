@@ -1,7 +1,16 @@
 .editProfilePageBody {
-    text-align: center;
+    text-align: left;
+}
+
+.centerPhoto {
+    align-content: center;
 }
 
 .editProfilePageForm {
     margin-top: 10%;
+}
+
+.submitButton {
+    text-align: center;
+    width: 100%;
 }

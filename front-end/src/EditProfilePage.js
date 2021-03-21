@@ -8,28 +8,32 @@ import Button from 'react-bootstrap/Button'
 const EditProfilePage = (props) => {
     return (
         <>
-            <div className="editProfilePageBody">
+            <div className="centerPhoto">
                 <img src={props.user.imagePath} alt="Current Profile Picture"></img>
                 <br />
                 <a href ="/">Change Photo</a>
+            </div>
+
+            <div className="editProfilePageBody">
 
                 <Form className="editProfilePageForm">
 
                     <Form.Group>
                         <Form.Label>First Name</Form.Label>
-                        <Form.Control type="text" placeholder={props.user.firstName} />
+                        <Form.Control type="text" value={props.user.firstName} />
                         <br />
                         <Form.Label>Last Name</Form.Label>
-                        <Form.Control type="text" placeholder={props.user.lastName} />
+                        <Form.Control type="text" value={props.user.lastName} />
                         <br/>
                         <Form.Label>Username</Form.Label>
-                        <Form.Control type="text" placeholder={"@" + props.user.username} />
+                        <Form.Control type="text" value={"@" + props.user.username} />
                         <br />
-                        <Form.Control as="textarea" rows={4} placeholder={props.user.bio} />
+                        <Form.Label>Bio</Form.Label>
+                        <Form.Control as="textarea" rows={4} value={props.user.bio} />
                         <br />
 
                     </Form.Group>
-                    <Button variant="primary" type="submit">
+                    <Button className ="submitButton" variant="primary" type="submit">
                         Submit
                     </Button>
                 </Form>
