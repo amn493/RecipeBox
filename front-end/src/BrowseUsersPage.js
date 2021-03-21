@@ -9,8 +9,6 @@ import SmallUserPreview from './SmallUserPreview.js'
 // Does not expect any argument for props
 // Example - <BrowseRecipesPage />
 const BrowseUsersPage = (props) => {
-    // To display a search prompt
-    const [search, setSearch] = useState(true)
 
     // Request all users on initial render
     const [allUsers, setAllUsers] = useState([])
@@ -138,9 +136,7 @@ const BrowseUsersPage = (props) => {
     // Filter users based on keyword entered by the user
     useEffect(() => {
         // Set users array to only include user whose name contains the filter keyword
-        setUsers(allUsers.filter(user => ((filterKeyword !== '') ? user.name.toLowerCase().includes(filterKeyword.toLowerCase()) : true)))
-        // Removes search message to be displayed
-        setSearch(false)
+        // setUsers(allUsers.filter(user => ((filterKeyword !== '') ? user.name.toLowerCase().includes(filterKeyword.toLowerCase()) : true)))
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [filterKeyword]) // Update users when a new keyword is entered
@@ -150,9 +146,6 @@ const BrowseUsersPage = (props) => {
         <div className='browseUsers'>
             <div className='browseUserSearch'>
                 <KeyWordSearchBar isRecipe={false} filter={filterKeyword} setFilter={setFilterKeyword} />
-                <p className={search ? 'searchMessage' : 'hidden'}>
-                    Enter Name or Username Above to Search for Users
-                </p>
                 <div className='userPreviews'>
                     {users.sort((a, b) => a.firstName.localeCompare(b.firstName)).map((user, i) => (<SmallUserPreview user={user} isBlockedUserProfile={false} key={i}/>))}
                 </div>
