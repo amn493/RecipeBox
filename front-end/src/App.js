@@ -13,7 +13,7 @@ import Navbar from './Navbar'
 import BrowseRecipesPage from './BrowseRecipesPage.js'
 import ProfilePage from './ProfilePage.js'
 import SignInForm from './SignInForm'
-
+import EditProfilePage from './EditProfilePage.js'
 
 
 function App() {
@@ -114,11 +114,10 @@ function App() {
             </Route>
             */}
 
-            {/* EDIT PROFILE PAGE
+            {/* EDIT PROFILE PAGE */}
             <Route path="/edit-profile">
-              {signedIn ? //insert corresponding page component tag here : <Redirect to="/sign-in" />}
+              {signedIn ? <EditProfilePage user={user} signedIn={signedIn} /> : <Redirect to="/sign-in" />}
             </Route>
-            */}
 
             {/* FEED PAGE */}
             <Route path="/feed">
