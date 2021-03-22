@@ -3,6 +3,7 @@ import axios from 'axios'
 import { useParams } from 'react-router-dom'
 import Tab from 'react-bootstrap/Tab'
 import Nav from 'react-bootstrap/Nav'
+import Button from 'react-bootstrap/Button'
 import { ViewList, ViewStacked } from 'react-bootstrap-icons'
 
 import ProfileHeader from './ProfileHeader.js'
@@ -81,7 +82,7 @@ const ProfilePage = (props) => {
                         slug: 'foobar'
                     },
                     name: 'Guacamole',
-                    imagePath: 'logo192.png',
+                    imagePath: 'https://picsum.photos/200',
                     tags: ['mexican', 'vegan'],
                     caption: "my secret recipe:)",
                     ingredients: [
@@ -115,7 +116,7 @@ const ProfilePage = (props) => {
                         slug: 'foobar'
                     },
                     name: 'Tacos',
-                    imagePath: 'logo192.png',
+                    imagePath: 'https://picsum.photos/200',
                     tags: ['mexican', 'appetizer'],
                     caption: "my secret recipe:)",
                     ingredients: [
@@ -149,7 +150,7 @@ const ProfilePage = (props) => {
                         slug: 'foobar'
                     },
                     name: 'Tofu',
-                    imagePath: 'logo192.png',
+                    imagePath: 'https://picsum.photos/200',
                     tags: ['vegan'],
                     caption: "my secret recipe:)",
                     ingredients: [
@@ -196,7 +197,7 @@ const ProfilePage = (props) => {
                 <ProfileHeader user={profileUser} recipeCount={recipes.length} />
 
                 {(slug === props.user.slug) ?
-                    <a className="editProfileButton" href="/edit-profile">Edit Profile</a>
+                    <Button block size="sm" variant="outline-secondary" className="editProfileButton" href="/edit-profile">Edit Profile</Button>
                 :
                     <FollowButton profileUserId={profileUser.id} currentUser={props.user} signedIn={props.signedIn} setShowModal={setShowModal} />
                 }
