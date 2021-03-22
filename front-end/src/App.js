@@ -82,7 +82,7 @@ function App() {
 
             {/* BROWSE RECIPES PAGE */}
             <Route path="/browse-recipes">
-              <BrowseRecipesPage />
+              <BrowseRecipesPage user={user} />
             </Route>
 
             {/* RECIPE PAGE */}
