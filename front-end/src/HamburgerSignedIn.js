@@ -1,9 +1,8 @@
-import './HamburgerSignedIn.css'
+import './HamburgerNotSignedIn.css'
 // NavDropdown imports
 import NavDropdown from 'react-bootstrap/NavDropdown'
 import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
-import { BsList } from 'react-icons/bs'
 
 const HamburgerSignedIn = (props) => {
 
@@ -17,7 +16,7 @@ const HamburgerSignedIn = (props) => {
         <div className="recipeboxNavDropdown">
             <Navbar collapseOnSelect expand="lg">
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-                <Navbar.Brand className={rbxLogoPadding} href="/">Recipe Box</Navbar.Brand>
+                <Navbar.Brand className="rbxLogo {rbxLogoPadding}" href="/">RecipeBox</Navbar.Brand>
                 <Navbar.Collapse id="responsive-navbar-nav">
                     <Nav className="mr-auto">
                         <NavDropdown.Divider />
@@ -31,7 +30,7 @@ const HamburgerSignedIn = (props) => {
                         <NavDropdown.Item className="rbxSpaceAdjustment" href="/settings">Settings</NavDropdown.Item>
                         <NavDropdown.Divider />
                         {/* What's the best way to make this functional? */}
-                        <NavDropdown.Item className="rbxSpaceAdjustment" href="">Sign Out</NavDropdown.Item>
+                        <NavDropdown.Item className="rbxSpaceAdjustment" href="/sign-in">Sign Out</NavDropdown.Item>
                     </Nav>
                 </Navbar.Collapse>
             </Navbar>

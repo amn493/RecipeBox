@@ -93,48 +93,61 @@ const AppSettings = (props) => {
         loadedTagsToBlock?
             
             <div className="appSettings">
-
+            
                 {/* Email Notifications toggle switch*/}
-                <div className="emailNotifSettings">
-                    <div className='emailSwitch'id={1}>
-                        <p className="emailNotifLabel">Email Notifications</p>
-                        <div className="emailSwitchMaster">
-                        <div className='custom-control custom-switch'id={1}>
-                            <input
-                                type='checkbox'
-                                className='custom-control-input'
-                                id='customSwitches1'
-                                checked={emailNotifs ? 'checked' : ''}
-                                onClick={() => setEmailNotifs(!emailNotifs)}
-                            />
-                            <label className='custom-control-label' id={1} htmlFor='customSwitches1'>
-                            </label>
-                            </div>
-                        </div>
-                    </div><hr/>
-                
-                    {/* New Likes toggle switch*/}
-                    <div className='notifsSwitchSubEmails'id={2}>
-                        <p className="emailNotifLabel">New Likes</p>
-                        <div className="indentedButton">
-                        <div className='custom-control custom-switch' id={2}>
-                            <input
-                                type='checkbox'
-                                className='custom-control-input'
-                                id='customSwitches2'
-                                checked={emailNotifs && likesNotifs ? 'checked' : ''}
-                                onClick={() => setLikesNotifs(!likesNotifs)}
-                            />
-                            <label className='custom-control-label' id={2} htmlFor='customSwitches2'>
-                            </label>
-                            </div>
-                        </div>
-                    </div>
-                    <hr/>
+				<div className="emailNotifSettings">
+				<table className="notifTable">
+
+                    <tr className='emailSwitch' id={1}>
+						<td>
+                        	<div className="emailNotifLabel">Email Notifications</div>
+						</td>
+						<td className="tableRight">
+							<div className="emailSwitchMaster">
+								<div className='custom-control custom-switch'id={1}>
+									<input
+										type='checkbox'
+										className='custom-control-input'
+										id='customSwitches1'
+										checked={emailNotifs ? 'checked' : ''}
+										onClick={() => setEmailNotifs(!emailNotifs)}
+									/>
+									<label className="custom-control-label" id={1} htmlFor='customSwitches1'/>
+								</div>
+							</div>
+						</td>
+                    </tr><hr/>
+
+                        <tr className='notifsSwitchSubEmails'>
+                            {/* New Likes toggle switch*/}
+                                <td>
+                                    <div className="emailNotifLabel">New Likes</div>
+                                </td>
+                                <td className="tableRight">
+                                    <div className="indentedButton">
+                                        <div className='custom-control custom-switch' id={2}>
+                                            <input
+                                                type='checkbox'
+                                                className='custom-control-input'
+                                                id='customSwitches2'
+                                                checked={emailNotifs && likesNotifs ? 'checked' : ''}
+                                                onClick={() => setLikesNotifs(!likesNotifs)}
+                                            />
+                                            
+                                                <label className='custom-control-label' id={2} htmlFor='customSwitches2'/>
+                                            
+                                        </div>
+                                    </div>
+                                </td>
+                        </tr>
+                        <hr/>
 
                     {/* New Comments toggle switch*/}
-                    <div className='notifsSwitchSubEmails'id={3}>
-                        <p className="emailNotifLabel">New Comments</p>
+                    <tr className='notifsSwitchSubEmails'id={3}>
+                        <td>
+                            <div className="emailNotifLabel">New Comments</div>
+                        </td>
+                        <td className="tableRight">
                         <div className="indentedButton">
                         <div className='custom-control custom-switch' id={3}>
                             <input
@@ -144,15 +157,18 @@ const AppSettings = (props) => {
                                 checked={emailNotifs && commentsNotifs ? 'checked' : ''}
                                 onClick={() => setCommentsNotifs(!commentsNotifs)}
                             />
-                            <label className='custom-control-label' id={3} htmlFor='customSwitches3'>
-                            </label>
+                            <label className='custom-control-label' id={3} htmlFor='customSwitches3'/>
                             </div>
                         </div>
-                    </div><hr/>
+                        </td>
+                    </tr><hr/>
 
                     {/* New Followers toggle switch*/}
-                    <div className='notifsSwitchSubEmails'id={4}>
-                        <p className="emailNotifLabel">New Followers</p>
+                    <tr className='notifsSwitchSubEmails'id={4}>
+                        <td>
+                            <div className="emailNotifLabel">New Followers</div>
+                        </td>
+                        <td className="tableRight">
                         <div className="indentedButton">
                         <div className='custom-control custom-switch' id={4}>
                             <input
@@ -162,15 +178,18 @@ const AppSettings = (props) => {
                                 checked={emailNotifs && followersNotifs ? 'checked' : ''}
                                 onClick={() => setFollowersNotifs(!followersNotifs)}
                             />
-                            <label className='custom-control-label' id={4} htmlFor='customSwitches4'>
-                            </label>
+                            <label className='custom-control-label' id={4} htmlFor='customSwitches4' />
                             </div>
                         </div>
-                    </div><hr/>
+                        </td>
+                    </tr><hr/>
 
                     {/* New Posts toggle switch*/}
-                    <div className='notifsSwitchSubEmails'id={5}>
-                        <p className="emailNotifLabel">New Posts from Following</p>
+                    <tr className='notifsSwitchSubEmails'id={5}>
+                        <td>
+                            <div className="emailNotifLabel">New Posts from Following</div>
+                        </td>
+                        <td className="tableRight">
                         <div className="indentedButton">
                         <div className='custom-control custom-switch' id={5}>
                             <input
@@ -180,12 +199,14 @@ const AppSettings = (props) => {
                                 checked={emailNotifs && postsNotifs ? 'checked' : ''}
                                 onClick={() => setPostsNotifs(!postsNotifs)}
                             />
-                            <label className='custom-control-label' id={5} htmlFor='customSwitches5'>
-                            </label>
+                            <label className='custom-control-label' id={5} htmlFor='customSwitches5'/>
                             </div>
                         </div>
-                    </div>
-                </div><br/><br/>
+                        </td>
+                    </tr>
+				</table>
+				</div>
+				<br/><br/>
 
                 {/* go to blocked users page*/}
                 <div className="blockedUsers">
@@ -196,7 +217,7 @@ const AppSettings = (props) => {
 
                 {/* blocked tags section*/}
                 <div className="blockedTags">
-                    <b className="blockedTagsHeader">Blocked Tags</b><br></br><p className="blockedTagsSubHeader">(click to unblock)</p>
+                    <b className="blockedTagsHeader">Blocked Tags</b><br></br>
                     <div className="blockedTagsDisplay">
                         <div classname="actualBlockedTags">
                             {blockedTagsList.map((selectTag, i) => <TagButton tag={selectTag} tags={tagsToBlock} filterTags={blockedTagsList} setTags={setTagsToBlock} setFilterTags={addBlockedTagToList} key={i} />)}<hr/>
@@ -218,8 +239,8 @@ const AppSettings = (props) => {
                 
             </div>
        
-       :
-            <></> 
+       	:
+            <></>
     )
 }
 

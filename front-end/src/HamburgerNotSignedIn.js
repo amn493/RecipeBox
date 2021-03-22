@@ -12,8 +12,8 @@ const HamburgerNotSignedIn = (props) => {
         <div className="recipeboxNavDropdown">
             <Navbar collapseOnSelect expand="lg">
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-                <Navbar.Brand href="/">Recipe Box</Navbar.Brand>
-                <Navbar.Collapse id="responsive-navbar-nav">
+                <Navbar.Brand className="rbxLogo" href="/">RecipeBox</Navbar.Brand>
+                <Navbar.Collapse className="navCollapseElement" id="responsive-navbar-nav">
                     <Nav className="mr-auto">
                         <NavDropdown.Divider />
                         <NavDropdown.Item className="rbxSpaceAdjustment" href="/sign-in">Sign-In</NavDropdown.Item>
