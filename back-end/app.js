@@ -6,6 +6,9 @@ const morgan = require("morgan") // middleware for nice logging of incoming HTTP
 const multer = require("multer") // middleware to handle HTTP POST requests with file uploads
 
 
+// use the bodyparser middleware to parse any data included in a request
+app.use(express.json()) // decode JSON-formatted incoming POST data
+app.use(express.urlencoded({ extended: true })) // decode url-encoded incoming POST data
 app.use(morgan("dev")) // dev style gives a concise color-coded style of log output
 
 
