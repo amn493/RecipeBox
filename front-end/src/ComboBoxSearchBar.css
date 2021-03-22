@@ -2,4 +2,8 @@
     display: flex;
     align-Items: 'center';
     justify-Content: 'center';
+    width: 100%;
 } 
+.comboBoxInput{
+    width: 100%;
+}
