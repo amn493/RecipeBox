@@ -4,10 +4,6 @@
   flex-direction: column;
 }
   
-.signIn form {
-  margin: 0 auto;
-}
-  
 .username {
   margin: 15px auto;
 }
