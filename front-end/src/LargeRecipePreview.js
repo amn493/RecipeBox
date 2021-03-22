@@ -14,11 +14,11 @@ const LargeRecipePreview = (props) => {
             <img className="largeRecipePreviewImage" src={props.recipe.imagePath} alt="food" />
             <table className="largeRecipePreviewTable largeRecipePreviewTopTable">
                 <tr>
-                    <td>
+                    <td className="largeRecipePreviewTopTableCell">
                         <a className="largeRecipePreviewRecipeName" href={'/recipe-' + props.recipe.slug}>{props.recipe.name}</a>
                     </td>
-                    <td className="largeRecipePreviewTableRightCol">
-                        <div className="liked">
+                    <td className="largeRecipePreviewTableRightCol largeRecipePreviewLikedCol largeRecipePreviewTopTableCell">
+                        <div className="likedLarge">
                             <img className="heartImage" src={liked ? 'heartFill.png' : 'heartOutline.png'} alt={liked ? 'heart fill' : 'heart outline'}></img>
                             {props.recipe.likes}
                         </div>
