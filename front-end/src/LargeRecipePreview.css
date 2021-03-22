@@ -53,8 +53,12 @@
     text-decoration: none;
 }
 
-.liked {
+.likedLarge {
     display: inline-block;
+}
+
+.largeRecipePreviewLikedCol {
+    width: 46px;
 }
 
 .largeRecipePreviewTable {
@@ -67,4 +71,8 @@
 
 .largeRecipePreviewTableRightCol {
    text-align: right;
+}
+
+.largeRecipePreviewTopTableCell {
+    vertical-align: baseline;
 }
