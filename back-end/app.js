@@ -5,6 +5,7 @@ const app = express() // instantiate an Express object
 const morgan = require("morgan") // middleware for nice logging of incoming HTTP requests
 const multer = require("multer") // middleware to handle HTTP POST requests with file uploads
 const axios = require("axios") // middleware for making requests to APIs
+require("dotenv").config({ silent: true }) // load environmental variables from a hidden file named .env
 
 
 // use the bodyparser middleware to parse any data included in a request
