@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import axios from 'axios'
 import ComboBoxSearchBar from './ComboBoxSearchBar.js'
 import SmallUserPreview from './SmallUserPreview'
-
+import Button from 'react-bootstrap/Button'
 import './BlockedUsers.css'
 
 //expects the current user object
@@ -104,9 +104,14 @@ const BlockedUsers = (props) => {
 
                 <div className="backToSettings">
                     <a href="/settings"><br/><br/>
-                        <button>Back to settings</button>
+                        <Button className='submitButton' type='submit' variant='secondary'>Back to settings</Button>
                     </a>
-                </div><br/><hr/>
+                    <hr/>
+                </div>
+                <div className="blockedUsersTitle">
+                    <p className="blockedUsersPTag">Blocked Users</p>
+                    <hr/>
+                </div>
                 <b>Enter a username to block</b>
                 <div className="addBlockedUser"> 
                     {/* prompt user to block any user who is not currently in their blocklist */}
