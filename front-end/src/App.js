@@ -11,7 +11,7 @@ import FeedPage from './FeedPage.js'
 import Navbar from './Navbar.js'
 import BrowseRecipesPage from './BrowseRecipesPage.js'
 import ProfilePage from './ProfilePage.js'
-// import NewRecipePage from './NewRecipePage.js'
+import NewRecipePage from './NewRecipePage.js'
 import SignInForm from './SignInForm.js'
 import BlockedUsers from './BlockedUsers.js'
 import AppSettings from './AppSettings.js'
@@ -146,9 +146,9 @@ function App() {
             </Route>
 
             {/* NEW RECIPE PAGE */}
-            {/* <Route path="/new-recipe">
+            <Route path="/new-recipe">
               {signedIn ? <NewRecipePage user={user} /> : <Redirect to="/sign-in" />}
-            </Route> */}
+            </Route>
 
             {/* MY RECIPE BOX PAGE
             <Route path="/my-recipe-box">
