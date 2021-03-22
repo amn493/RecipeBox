@@ -1,36 +1,45 @@
-.emailSwitch {
-    display: table;
-}
 .emailSwitchMaster{
-    padding-left: 9vw;
+    display: inline;
 }
 .notifsSwitchSubEmails {
-    display: table;
-    max-width: 25vw;
+    display: inline;
     padding-left: 7vw;
-    left: 5vw;
 }
-.custom-control .custom-switch{
-    vertical-align: middle;
-    display: table-cell;
+
+.emailSwitch {
+    display: inline;
+}
+
+.notifTable {
+    width: 100%;
+}
+
+.custom-control-label {
+    display: inline;
 }
 
 .emailNotifLabel{
-    vertical-align: middle; 
-    display: table-cell;
+    display: inline;
+}
+
+.emailNotifToggle {
+    display: inline;
+}
+
+.tableRight {
+    float: right;
 }
 
 .indentedButton{
-    padding-left:12em;
-    position: absolute;
-    left: 15em;
+    text-align: right;
+    display: inline;
 }
 
 .blockedTagsHeader{
     display: inline-block;
-    pointer-events: 'none';
     width: 20em;
 }
+
 .blockedTagsSubHeader{
     font-size: 12px;
 }
@@ -38,23 +47,11 @@
     max-height:100;
 }
 
-.blockedTags .blockedTagsForm{
-    width: 20em;
-}
-
-
 .blockedTagsDisplay{
-    float:left;
-    position: relative;
-    max-width: 50vw;
-    border: 1px solid blue;
-    padding: 2vw;
-    margin-bottom: 300px;
+    border: 1px solid grey;
+    padding: 10px;
 }
 
 .signOutButton{
-    margin-left: 3vw;
-    padding-left: 5vw;
-    padding-top: 20vw;
-    align-items: center;
+
 }

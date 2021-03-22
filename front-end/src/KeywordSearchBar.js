@@ -56,7 +56,7 @@ const KeywordSearchBar = (props) => {
                     onChange={handleChange}
                     value={value}
                 />
-                <Button variant="primary" type="submit" className="searchButton " onClick={handleSubmit}>Search</Button>
+                <Button variant="secondary" type="submit" className="searchButton " onClick={handleSubmit}>Search</Button>
             </InputGroup>
         </div>
     )

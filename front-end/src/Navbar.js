@@ -1,9 +1,7 @@
 import './Navbar.css'
-import NavbarRightSignedOut from './NavbarRightSignedout.js'
 import HamburgerSignedIn from './HamburgerSignedIn'
 import HamburgerNotSignedIn from './HamburgerNotSignedIn'
 // Bootstrap Imports
-import Nav from 'react-bootstrap/Nav'
 
 // props.signedIn -- Whether or user is signed in or not in ordet to display the proper hamburger menu and signin/signout options
 const Navbar = (props) => {
@@ -15,7 +13,7 @@ const Navbar = (props) => {
     }
     
     return (
-        <nav className="navbar-expand-lg rbxNavStyles">
+        <nav className="fixed-top navbar-expand-lg rbxNavStyles">
             <div className="container-fluid">
                 {/* Navbar header of logo and hamburger menu*/}
                 {hamburgerMenu}
