@@ -1,21 +1,64 @@
 .smallRecipePreview {
-    padding-left: 20px;
-    padding-bottom: 20px;
+    margin-bottom: 15px;
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .smallRecipePreviewImage {
     width: 20vw;
     height: 20vw;
-    margin-right: 10px;
+}
+
+.smallRecipePreviewRecipeName {
+    font-size: 19px;
+    font-weight: bold;
+    color: black;
+}
+
+.smallRecipePreviewRecipeName:hover, .smallRecipePreviewRecipeName:active,.smallRecipePreviewUsername:hover, .smallRecipePreviewUsername:active {
+    color: black;
+    opacity: 60%;
+    text-decoration: none;
+}
+
+.smallRecipePreviewUsername {
+    font-weight: bold;
+    color: black;
+    font-size: 14px;
 }
 
 .heartImage {
     width: 20px;
     height: 20px;
-    margin-left: 10px;
     margin-right: 5px;
 }
 
-.smallRecipePreviewUsername {
-    padding-right: 15px;
+.likedSmall {
+    display: inline-block;
+}
+
+.smallRecipePreviewLikedCol {
+    width: 46px;
+}
+
+.smallRecipePreviewTable {
+    width: 100%;
+}
+
+.smallRecipePreviewTopTable {
+    margin-bottom: -8px;
+}
+
+.smallRecipePreviewTableRightCol {
+   text-align: right;
+}
+
+.smallRecipePreviewImageCell {
+    width: 20vw;
+    padding-right: 5px;
+}
+
+.smallRecipePreviewTopTableCell {
+    vertical-align: baseline;
 }
