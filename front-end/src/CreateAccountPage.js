@@ -147,7 +147,7 @@ const CreateAccountPage = (props) =>  {
             onChange={(e) => setReEnterPassword(e.target.value)}
           />
         </Form.Group>
-        <Button className='submitButton' type='submit' variant='outline-dark' disabled={emptyField}>
+        <Button className='submitButton' type='submit' variant='secondary' disabled={emptyField}>
           Create Account
         </Button>
       </Form>
