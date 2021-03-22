@@ -4,6 +4,7 @@ const app = express() // instantiate an Express object
 
 const morgan = require("morgan") // middleware for nice logging of incoming HTTP requests
 const multer = require("multer") // middleware to handle HTTP POST requests with file uploads
+const axios = require("axios") // middleware for making requests to APIs
 
 
 // use the bodyparser middleware to parse any data included in a request
