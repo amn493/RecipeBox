@@ -1,4 +1,12 @@
 .backToSettings{
-    position: absolute; 
     transform: translatey(-75%);
+}
+.blockedUsersTitle{
+    text-align: center;
+    transform: translatey(-75%);
+}
+.blockedUsersPTag{
+    font-weight: 900;
+    font-size: 30px;
+    font-family: sans-serif;
 }
