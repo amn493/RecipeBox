@@ -2,10 +2,11 @@
 .signIn {
   display: flex;
   flex-direction: column;
+  margin-top: 60px;
 }
   
 .username {
-  margin: 15px auto;
+  margin: 0 auto auto auto;
 }
   
 .password {

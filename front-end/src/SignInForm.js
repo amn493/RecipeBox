@@ -23,10 +23,10 @@ const SignInForm = (props) =>  {
   return (
     <div className='signIn'>
       <p className={error ? 'errorMessage' : 'hidden'}>Sign in failed. Username or password is incorrect.</p>
-      <Form onSubmit={handleSubmit}>
+      <Form className='inputs' onSubmit={handleSubmit}>
         <Form.Group className='username' controlId='username'>
           <Form.Control
-            size='lg'
+            size='md'
             type='username'
             placeholder='Username'
             value={username}
@@ -35,7 +35,7 @@ const SignInForm = (props) =>  {
         </Form.Group>
         <Form.Group className='password' controlId='password'>
           <Form.Control
-            size='lg'
+            size='md'
             type='password'
             placeholder='Password'
             value={password}
