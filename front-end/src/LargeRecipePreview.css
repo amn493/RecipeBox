@@ -1,60 +1,70 @@
 .largeRecipePreview {
-    padding-bottom: 40px;
+    margin-bottom: 40px;
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .largeRecipePreviewImage {
     display: block;
-    margin-left: auto;
-    margin-right: auto;
-    width: 90%;
-    padding-bottom: 10px;
+    width: 100%;
+    margin-bottom: 10px;
 }
 
 .largeRecipePreviewRecipeName {
     font-size: 22px;
-    font-weight: 600;
+    font-weight: bold;
     color: black;
 }
 
-.largeRecipePreviewRecipeName:visited,.largeRecipePreviewUsername:visited {
+.largeRecipePreviewRecipeName:hover, .largeRecipePreviewRecipeName:active,.largeRecipePreviewUsername:hover, .largeRecipePreviewUsername:active {
     color: black;
-    text-decoration: none;
-}
-
-.largeRecipePreviewRecipeName:hover,.largeRecipePreviewUsername:hover {
-    color: black;
-    opacity: 65%;
+    opacity: 60%;
     text-decoration: none;
 }
 
 .largeRecipePreviewUsername {
-    padding-right: 15px;
-    font-weight: 600;
+    font-weight: bold;
     color: black;
     font-size: 14px;
-}
-
-.recipeInfo {
-    margin: auto;
-    width: 90%;
 }
 
 .heartImage {
     width: 20px;
     height: 20px;
-    margin-left: 10px;
     margin-right: 5px;
 }
 
 .largeRecipePreviewCaption {
     font-size: 14px;
     margin-top: 10px;
+    margin-bottom: 3px;
 }
 
 .largeRecipePreviewTag {
-    padding-right: 5px;
+    margin-right: 5px;
+    color: rgb(19, 132, 150);
+    font-weight: bold;
+    font-size: 14px;
+}
+.largeRecipePreviewTag:hover, .largeRecipePreviewTag:active {
+    color: rgb(19, 132, 150);
+    opacity: 60%;
+    text-decoration: none;
 }
 
 .liked {
     display: inline-block;
+}
+
+.largeRecipePreviewTable {
+    width: 100%;
+}
+
+.largeRecipePreviewTopTable {
+    margin-bottom: -8px;
+}
+
+.largeRecipePreviewTableRightCol {
+   text-align: right;
 }
