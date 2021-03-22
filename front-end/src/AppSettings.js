@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
-import './AppSettings.css'
 import ComboBoxSearchBar from './ComboBoxSearchBar.js'
 import TagButton from './TagButton'
+import Button from 'react-bootstrap/Button'
+
+import './AppSettings.css'
 
 //expects:
 //current user and signedIn state variable
@@ -100,7 +102,7 @@ const AppSettings = (props) => {
 
                     <tr className='emailSwitch' id={1}>
 						<td>
-                        	<div className="emailNotifLabel">Email Notifications</div>
+                        	<div className="emailNotifLabel"><b>Email Notifications</b></div>
 						</td>
 						<td className="tableRight">
 							<div className="emailSwitchMaster">
@@ -211,7 +213,7 @@ const AppSettings = (props) => {
                 {/* go to blocked users page*/}
                 <div className="blockedUsers">
                     <a href="/settings/blocked-users">
-                        <button className="blockedUsersButton">Blocked Accounts</button>
+                        <Button className='submitButton' type='submit' variant='secondary' >Blocked Accounts</Button>
                     </a>
                 </div><br/><br/>
 
@@ -222,7 +224,7 @@ const AppSettings = (props) => {
                         <div classname="actualBlockedTags">
                             {blockedTagsList.map((selectTag, i) => <TagButton tag={selectTag} tags={tagsToBlock} filterTags={blockedTagsList} setTags={setTagsToBlock} setFilterTags={addBlockedTagToList} key={i} />)}<hr/>
                         </div>
-                        <br/><button className="addBlockedTags" onClick={() => addBlockedTag(true)}> Add Blocked Tag</button><br/>
+                        <br/><Button className='submitButton' type='submit' variant='secondary' onClick={() => addBlockedTag(true)}> Add Blocked Tag</Button><br/>
                         <div className="addBlockedTagsField">
                             { blockedTagAddition && (<ComboBoxSearchBar className="addBlockedTagsField" isTag={true} tags={tagsToBlock} users={[]} setSelection={handleAddBlockedTag}/>) }
                         </div>
@@ -232,7 +234,7 @@ const AppSettings = (props) => {
                 {/* signout button*/}
                 <br/><div className="signOutButton">
                     <a href="/sign-in"><br/><br/> 
-                        <button onClick={() => props.setSignedIn(false)}>Sign Out</button>   
+                        <Button className='submitButton' type='submit' variant='secondary'  onClick={() => props.setSignedIn(false)}>Sign Out</Button>   
                         {/* TODO: handle credentials stuff*/}
                     </a>
                 </div>
