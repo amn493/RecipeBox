@@ -75,7 +75,7 @@ const ComboBoxSearchResults = (props) => {
 
 
     return (
-        <Combobox onSelect={handleSelect}>
+        <Combobox className="searchBar" onSelect={handleSelect}>
             <ComboboxInput className="comboBoxInput" placeholder={placeholder} value={term}
                 onChange={handleChange} 
             />
