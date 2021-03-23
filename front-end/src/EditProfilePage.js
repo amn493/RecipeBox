@@ -38,11 +38,11 @@ const EditProfilePage = (props) => {
                     <Form.Group>
                         
                         <Form.Label>First Name</Form.Label>
-                        <Form.Control type="text" value={firstNameVal} onChange={(newVal) => setFirstNameVal(newVal.value)} />
+                        <Form.Control type="text" value={firstNameVal} onChange={(event) => setFirstNameVal(event.target.value)} />
 
                         <br />
                         <Form.Label>Last Name</Form.Label>
-                        <Form.Control type="text" value={lastNameVal} onChange={(newVal) => setLastNameVal(newVal.value)} />
+                        <Form.Control type="text" value={lastNameVal} onChange={(event) => setLastNameVal(event.target.value)} />
                         <br/>
 
                         <Form.Label>Username</Form.Label>
@@ -51,12 +51,12 @@ const EditProfilePage = (props) => {
                                 <InputGroup.Text id="atIcon"><i><At /></i></InputGroup.Text>
                                 
                             </InputGroup.Prepend>
-                                <Form.Control type="text" value={userNameVal} onChange={(newVal) => setUserNameVal(newVal.value)} />
+                                <Form.Control type="text" value={userNameVal} onChange={(event) => setUserNameVal(event.target.value)} />
                         </InputGroup>
                         <br />
 
                         <Form.Label>Bio</Form.Label>
-                        <Form.Control as="textarea" rows={4} value={bioVal} onChange={(newVal) => setBioVal(newVal.value)} />
+                        <Form.Control as="textarea" rows={4} value={bioVal} onChange={(event) => setBioVal(event.target.value)} />
                         <br />
 
                         <Button className="submitButton" variant="info" type="submit"> {/* TODO: Handle submit via backend vodoo onSubmit="funcName" */}
