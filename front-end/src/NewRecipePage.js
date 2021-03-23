@@ -18,6 +18,12 @@ const NewRecipePage = (props) => {
     const [tagValue, setTagValue] = useState('')
     const [tags, setTags] = useState([])
 
+    // state variables for disabling post recipe button
+    const [emptyField, setEmptyField] = useState(true)
+    const [uploadedImage, setUploadedImage] = useState(false)
+    const [filledIngredientField, setFilledIngredientField] = useState(false)
+    const [filledInstructionField, setFilledInstructionField] = useState(false)
+
     // prevent form from submitting request
     const handleSubmit = (event) => {
         event.preventDefault()
@@ -41,6 +47,12 @@ const NewRecipePage = (props) => {
     // display file name on upload
     useEffect(() => {bsCustomFileInput.init()}, [])
 
+    // check for empty fields
+    useEffect(() => {
+        setEmptyField(!filledIngredientField || !filledInstructionField || nameValue === '' || !uploadedImage)
+        console.log(filledIngredientField, filledInstructionField, nameValue, uploadedImage)
+    }, [filledIngredientField, filledInstructionField, nameValue, uploadedImage])
+
 
     return (
         <div className="newRecipePage">
@@ -62,7 +74,7 @@ const NewRecipePage = (props) => {
                         </InputGroup.Prepend>
                         <FormControl placeholder="tag" value={tagValue} onChange={(event) => setTagValue(event.target.value)} />
                         <InputGroup.Append>
-                            <Button variant="outline-info" onClick={addTag}>Add Tag</Button>
+                            <Button variant="outline-info" onClick={addTag} disabled={tagValue === ''}>Add Tag</Button>
                         </InputGroup.Append>
                     </InputGroup>
 
@@ -72,19 +84,19 @@ const NewRecipePage = (props) => {
 
                 <Form.Group controlId="formIngredientsSection">
                     <Form.Label className="newRecipeSubheading">Ingredients</Form.Label>
-                    <AdditionalFields className="ingredientFields" placeholderText="Enter ingredient" />
+                    <AdditionalFields className="ingredientFields" placeholderText="Enter ingredient" setFilledField={setFilledIngredientField} />
                 </Form.Group>
 
                 <Form.Group controlId="formInstructionsSection">
                     <Form.Label className="newRecipeSubheading">Instructions</Form.Label>
-                    <AdditionalFields className="instructionFields" placeholderText="Enter instruction" />
+                    <AdditionalFields className="instructionFields" placeholderText="Enter instruction" setFilledField={setFilledInstructionField} />
                 </Form.Group>
 
                 <Form.Group controlId="formRecipeImage">
-                    <Form.File id="custom-file" label="Upload recipe image" custom />
+                    <Form.File id="custom-file" label="Upload recipe image" onChange={(event) => setUploadedImage(event.target.value !== '')} custom />
                 </Form.Group>
 
-                <Button block variant="info" className="submitButton" type="submit" onSubmit={handleSubmit}>Post Recipe</Button>
+                <Button block variant="info" className="submitButton" type="submit" onSubmit={handleSubmit} disabled={emptyField}>Post Recipe</Button>
             </Form>
         </div>
     )
@@ -101,6 +113,12 @@ const AdditionalFields = (props) => {
 
     // array for text field jsx elements
     const textFields = []
+
+
+    useEffect(() => {
+        props.setFilledField(values.reduce((acc, val) => val !== '' || acc, false))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, values)
 
 
     // add another text field when add button is clicked
@@ -126,7 +144,7 @@ const AdditionalFields = (props) => {
         textFields.push(
             <InputGroup className="subsectionField mt-1" key={i}>
                 <InputGroup.Prepend>
-                    <InputGroup.Text id="subsectionFieldIcon" key={i}>{(props.placeholderText === 'Enter ingredient') ? <i><Dot /></i> : `${i + 1}.`}</InputGroup.Text>
+                    <InputGroup.Text className="subsectionFieldIcon" key={i}>{(props.placeholderText === 'Enter ingredient') ? <i><Dot /></i> : i + 1}</InputGroup.Text>
                 </InputGroup.Prepend>
                 <Form.Control type="text" name="recipeName" placeholder={props.placeholderText} value={values[i]} onChange={(event) => handleChange(event, i)} />
             </InputGroup>
@@ -136,7 +154,7 @@ const AdditionalFields = (props) => {
     return (
         <>
             {textFields}
-            <Button className="mt-1" variant="outline-info" size="sm" onClick={addField}><i><Plus className="addFieldButton" /></i></Button>
+            <Button className="mt-1" variant="outline-info" size="sm" onClick={addField} disabled={values[fieldCount - 1] === '' || fieldCount === 30}><i><Plus className="addFieldButton" /></i></Button>
         </>
     )
 }
