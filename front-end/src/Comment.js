@@ -15,9 +15,9 @@ const Comment = (props) => {
     const [user, setUser] = useState([])
 
     useEffect(() => {
-        axios('https://my.api.mockaroo.com/animals.json?num=1&key=d9ddfc40aaa')
+        axios('https://my.api.mockaroo.com/user.json?key=f6a27260')
         .then((response) => {
-            setUser(response.data)
+            setUser(response.data[0])
         })
         .catch((err) => {
             console.error(err)
