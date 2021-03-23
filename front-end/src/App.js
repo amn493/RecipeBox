@@ -19,6 +19,7 @@ import CreateAccountPage from './CreateAccountPage.js'
 import FollowersPage from './FollowersPage.js'
 import FollowingPage from './FollowingPage.js'
 import BrowseUsersPage from './BrowseUsersPage.js'
+import EditProfilePage from './EditProfilePage.js'
 
 
 function App() {
@@ -134,11 +135,10 @@ function App() {
               <FollowingPage user={user} />
             </Route>
 
-            {/* EDIT PROFILE PAGE
+            {/* EDIT PROFILE PAGE */}
             <Route path="/edit-profile">
-              {signedIn ? //insert corresponding page component tag here : <Redirect to="/sign-in" />}
+              {signedIn ? <EditProfilePage user={user} signedIn={signedIn} /> : <Redirect to="/sign-in" />}
             </Route>
-            */}
 
             {/* FEED PAGE */}
             <Route path="/feed">
