@@ -46,10 +46,17 @@ const Comment = (props) => {
 
     return (
         <div className='comment'>
-            {props.comment.comment}
-            <br />
-            <a className="username" href={'/user-' + user.slug}>{'@' + user.username}</a>
-            <Timestamp createdAt={props.comment.createdAt} />
+            <p className="commentText">{props.comment.comment}</p>
+            <table className="commentDetailsTable">
+                <tr>
+                    <td className="commentDetailsTableCell">
+                        <a className="commentUsername" href={'/user-' + user.slug}>{'@' + user.username}</a>
+                    </td>
+                    <td className="commentDetailsTableCell commentDetailsTableRightCol">
+                        <Timestamp createdAt={props.comment.createdAt} />
+                    </td>
+                </tr>
+            </table>
         </div>
     )
 }
