@@ -59,8 +59,8 @@ const EditProfilePage = (props) => {
                         <Form.Control as="textarea" rows={4} value={bioVal} onChange={(newVal) => setBioVal(newVal.value)} />
                         <br />
 
-                        <Button className="submitButton" variant="info" type="submit" custom> {/* TODO: Handle submit via backend vodoo onSubmit="funcName" */}
-                            Submit
+                        <Button className="submitButton" variant="info" type="submit"> {/* TODO: Handle submit via backend vodoo onSubmit="funcName" */}
+                            Save Changes
                         </Button>
                     </Form.Group>
 
