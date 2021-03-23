@@ -43,12 +43,12 @@
 
 .largeRecipePreviewTag {
     margin-right: 5px;
-    color: rgb(19, 132, 150);
+    color: rgb(23, 162, 184);
     font-weight: bold;
     font-size: 14px;
 }
 .largeRecipePreviewTag:hover, .largeRecipePreviewTag:active {
-    color: rgb(19, 132, 150);
+    color: rgb(23, 162, 184);
     opacity: 60%;
     text-decoration: none;
 }
