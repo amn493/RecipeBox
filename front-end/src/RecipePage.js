@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { useParams } from 'react-router-dom'
+import InputGroup from 'react-bootstrap/InputGroup'
+import FormControl from 'react-bootstrap/FormControl'
+import Form from 'react-bootstrap/Form'
+import Button from 'react-bootstrap/Button'
 
 import Comment from './Comment.js'
 import Timestamp from './Timestamp'
@@ -127,27 +131,43 @@ const RecipePage = (props) => {
                 <img className="recipeImage" src={recipe.imagePath} alt="food" />
                 <div className="recipeText">
                     <div className="recipeDetails">
-                        <h1 className="recipeName">{recipe.name}</h1>
-                        <LikeButton recipe={recipe} user={props.user} signedIn={props.signedIn} setShowModal={setShowModal} />
-                        <br />
-                        <a className="recipeUsername" href={'/user-' + recipe.user.slug}>{'@' + recipe.user.username}</a>
-                        <Timestamp createdAt={recipe.createdAt} />
-                        <p>{recipe.caption}</p>
+                        <table className="recipeDetailsTable recipeDetailsTopTable">
+                            <tr>
+                                <td className="recipeDetailsTopTableCell">
+                                    <h1 className="recipeName">{recipe.name}</h1>
+                                </td>
+                                <td className="recipeDetailsTableRightCol recipeDetailsTableLikedCol recipeDetailsTopTableCell">
+                                    <LikeButton recipe={recipe} user={props.user} signedIn={props.signedIn} setShowModal={setShowModal} />
+                                </td>
+                            </tr>
+                        </table>
+                        <table className="recipeDetailsTable">
+                            <tr>
+                                <td>
+                                    <a className="recipeUsername" href={'/user-' + recipe.user.slug}>{'@' + recipe.user.username}</a>
+                                </td>
+                                <td className="recipeDetailsTableRightCol">
+                                    <Timestamp createdAt={recipe.createdAt} />
+                                </td>
+                            </tr>
+                        </table>
+                    
+                        <p className="recipeCaption">{recipe.caption}</p>
                         {recipe.tags.map((tag, i) => (<a className="recipeTag" href={'/browserecipes?tag=' + tag} key={i}>{'#' + tag}</a>))}
                     </div>
                     
                     <div className="recipeSubsection">
                         <h2 className="recipeSubheading">Ingredients</h2>
                         <ul className="ingredients">
-                            {recipe.ingredients.map((ingredient, i) => (<li className="ingredient" key={i}>{ingredient}</li>))}
+                            {recipe.ingredients.map((ingredient, i) => (<li className="liIngredient" key={i}><div className="ingredient">{ingredient}</div></li>))}
                         </ul>
                     </div>
                     <br />
                     <div className="recipeSubsection">
                         <h2 className="recipeSubheading">Instructions</h2>
-                        <ul className="instructions">
-                            {recipe.instructions.map((instruction, i) => (<li className="instruction" key={i}>{instruction}</li>))}
-                        </ul>
+                        <ol className="instructions">
+                            {recipe.instructions.map((instruction, i) => (<li className="liInstruction" key={i}><div className="instruction">{instruction}</div></li>))}
+                        </ol>
                     </div>
                     <br />
     
@@ -188,7 +208,7 @@ const LikeButton = (props) => {
 
 
     return (
-        <>
+        <div className="likeButtonDiv">
             <input className="likeButton" type="image" src={liked ? 'heartFill.png' : 'heartOutline.png'} alt={liked ? 'heart fill' : 'heart outline'} onClick={() => {
                 if (props.signedIn) {
                     setLikes(likes + (liked ? -1 : 1))
@@ -200,7 +220,7 @@ const LikeButton = (props) => {
                 }
             }} />
             {likes}
-        </>
+        </div>
         
     )
 }
@@ -260,10 +280,14 @@ const CommentsSection = (props) => {
             <h2 className="recipeSubheading">Comments</h2>
             {comments.map((comment, i) => (<Comment comment={comment} key={i} />))}
         
-            <form onSubmit={handleSubmit}>
-                <input className="textField" type="text" name="comment" value={value} onChange={handleChange} />
-                <input className="submitButton" type="submit" value="Comment" onSubmit={handleSubmit} />
-            </form>
+            <Form onSubmit={handleSubmit}>
+                <InputGroup className="commentFieldAndButton">
+                    <FormControl size="sm" className="commentField" name="comment" value={value} onChange={handleChange} />
+                    <InputGroup.Append>
+                        <Button variant="info" size="sm" className="commentButton" type="submit" onSubmit={handleSubmit}>Comment</Button>
+                    </InputGroup.Append>
+                </InputGroup>
+            </Form>
         </div>
     )
 }
