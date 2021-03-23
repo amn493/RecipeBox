@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import bsCustomFileInput from 'bs-custom-file-input'
+import InputGroup from 'react-bootstrap/InputGroup'
+import { At } from 'react-bootstrap-icons'
 
 // TODO: Validate inputs
 
@@ -37,13 +39,22 @@ const EditProfilePage = (props) => {
                         
                         <Form.Label>First Name</Form.Label>
                         <Form.Control type="text" value={firstNameVal} onChange={(newVal) => setFirstNameVal(newVal.value)} />
+
                         <br />
                         <Form.Label>Last Name</Form.Label>
                         <Form.Control type="text" value={lastNameVal} onChange={(newVal) => setLastNameVal(newVal.value)} />
                         <br/>
+
                         <Form.Label>Username</Form.Label>
-                        <Form.Control type="text" value={"@" + userNameVal} onChange={(newVal) => setUserNameVal(newVal.value)} />
+                        <InputGroup>
+                            <InputGroup.Prepend>
+                                <InputGroup.Text id="atIcon"><i><At /></i></InputGroup.Text>
+                                
+                            </InputGroup.Prepend>
+                                <Form.Control type="text" value={userNameVal} onChange={(newVal) => setUserNameVal(newVal.value)} />
+                        </InputGroup>
                         <br />
+
                         <Form.Label>Bio</Form.Label>
                         <Form.Control as="textarea" rows={4} value={bioVal} onChange={(newVal) => setBioVal(newVal.value)} />
                         <br />
