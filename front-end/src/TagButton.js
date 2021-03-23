@@ -1,3 +1,5 @@
+import Button from 'react-bootstrap/Button';
+
 import './TagButton.css'
 
 const TagButton = (props) => {
@@ -14,7 +16,7 @@ const TagButton = (props) => {
 
     return (
         (props.tag !== '') ?
-            <button className="tagButton" type="button" onClick={handleClick}>{'#' + props.tag}</button>
+            <Button variant="info" size="sm" className="tagButton mr-1 mt-1" onClick={handleClick}>{'#' + props.tag}</Button>
         :
             <></> 
     )

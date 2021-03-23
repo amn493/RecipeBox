@@ -2,11 +2,13 @@
 
 /* TODO: Mark and Bootstrap */
 
-/* Start of default react css
-
 .App {
-  text-align: center;
+  margin-top: 80px;
+  font-family: Helvetica, sans-serif;
 }
+
+
+/* Start of default react css
 
 .App-logo {
   height: 40vmin;

@@ -1,0 +1,53 @@
+.emailSwitchMaster{
+    display: inline;
+}
+.notifsSwitchSubEmails {
+    display: inline;
+    padding-left: 7vw;
+}
+
+.emailSwitch {
+    display: inline;
+}
+
+.notifTable {
+    width: 100%;
+}
+
+.custom-control-label {
+    display: inline;
+}
+
+.emailNotifLabel{
+    display: inline;
+}
+
+.emailNotifToggle {
+    display: inline;
+}
+
+.tableRight {
+    float: right;
+}
+
+.indentedButton{
+    text-align: right;
+    display: inline;
+}
+
+.blockedTagsHeader{
+    display: inline-block;
+    width: 20em;
+}
+
+.blockedTagsSubHeader{
+    font-size: 12px;
+}
+.blockedTagsInput{
+    max-height:100;
+}
+
+.blockedTagsDisplay{
+    border: 1px solid grey;
+    padding: 10px;
+}

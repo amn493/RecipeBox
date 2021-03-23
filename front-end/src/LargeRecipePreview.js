@@ -12,16 +12,32 @@ const LargeRecipePreview = (props) => {
     return (
         <div className="largeRecipePreview">
             <img className="largeRecipePreviewImage" src={props.recipe.imagePath} alt="food" />
-            <div className="recipeInfo">
-                <a className="largeRecipePreviewRecipeName" href={'/recipe-' + props.recipe.slug}>{props.recipe.name}</a>
-                <img className="heartImage" src={liked ? 'heartFill.png' : 'heartOutline.png'} alt={liked ? 'heart fill' : 'heart outline'}></img>
-                {props.recipe.likes}
-                <br />
-                <a className="largeRecipePreviewUsername" href={'/user-' + props.recipe.user.slug}>{'@' + props.recipe.user.username}</a>
-                <Timestamp createdAt={props.recipe.createdAt} />
-                <p>{props.recipe.caption}</p>
-                {props.recipe.tags.map((tag, i) => (<a className="largeRecipePreviewTag" href={'/browserecipes?tag=' + tag} key={i}>{'#' + tag}</a>))}
-            </div>
+            <table className="largeRecipePreviewTable largeRecipePreviewTopTable">
+                <tr>
+                    <td className="largeRecipePreviewTopTableCell">
+                        <a className="largeRecipePreviewRecipeName" href={'/recipe-' + props.recipe.slug}>{props.recipe.name}</a>
+                    </td>
+                    <td className="largeRecipePreviewTableRightCol largeRecipePreviewLikedCol largeRecipePreviewTopTableCell">
+                        <div className="likedLarge">
+                            <img className="heartImage" src={liked ? 'heartFill.png' : 'heartOutline.png'} alt={liked ? 'heart fill' : 'heart outline'}></img>
+                            {props.recipe.likes}
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            <table className="largeRecipePreviewTable">
+                <tr>
+                    <td>
+                        <a className="largeRecipePreviewUsername" href={'/user-' + props.recipe.user.slug}>{'@' + props.recipe.user.username}</a>
+                    </td>
+                    <td className="largeRecipePreviewTableRightCol">
+                        <Timestamp createdAt={props.recipe.createdAt} />
+                    </td>
+                </tr>
+            </table>
+            
+            <p className="largeRecipePreviewCaption">{props.recipe.caption}</p>
+            {props.recipe.tags.map((tag, i) => (<a className="largeRecipePreviewTag" href={'#'/*'/browserecipes?tag=' + tag*/} key={i}>{'#' + tag}</a>))}
         </div>
     )
 }

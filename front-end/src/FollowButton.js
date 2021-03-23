@@ -1,5 +1,8 @@
 import React, { useState } from "react"
+import Button from 'react-bootstrap/Button'
+
 import "./FollowButton.css"
+
 
 const FollowButton = (props) => {
   let state = "Follow"
@@ -34,9 +37,9 @@ const FollowButton = (props) => {
 
 /* component */
   return (
-    <button id="followBtn" className={(text === 'Follow') ? 'followBtnNotFollowing' : 'followBtnFollowing'} onClick={follow}>
+    <Button block size="sm" variant={(text === 'Follow') ? 'info' : 'outline-info'} id="followBtn" className={(text === 'Follow') ? 'followBtnNotFollowing' : 'followBtnFollowing'} onClick={follow}>
       {text}
-    </button>
+    </Button>
   );
 };
 

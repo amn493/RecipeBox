@@ -1,4 +1,4 @@
-.tagButton {
+/*.tagButton {
     margin-right: 5px;
     margin-bottom: 5px;
 
@@ -11,6 +11,6 @@
     font-weight: bold;
 }
 
-.tagButton:hover {
+.tagButton:hover, .tagButton:active {
     opacity: 70%;
-}
+}*/

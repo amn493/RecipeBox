@@ -1,28 +1,22 @@
 import './Navbar.css'
-import NavbarRightSignedOut from './NavbarRightSignedout.js'
-import HamburgerNotSignedIn from './HamburgerNotSignedIn.js'
+import HamburgerSignedIn from './HamburgerSignedIn'
+import HamburgerNotSignedIn from './HamburgerNotSignedIn'
+// Bootstrap Imports
 
+// props.signedIn -- Whether or user is signed in or not in ordet to display the proper hamburger menu and signin/signout options
 const Navbar = (props) => {
 
     // Determine what shows up for navbar sign in/create account buttons
-    let navbarRightOptions = "" // TODO: Setup a state variable cross-page?
-    if(props.signedIn == "true") {
-        navbarRightOptions = <NavbarRightSignedOut />
+    let hamburgerMenu = <HamburgerNotSignedIn />
+    if(props.signedIn === "true") {
+        hamburgerMenu = <HamburgerSignedIn />
     }
     
     return (
-        <nav className="navbar navbar-expand-lg">
+        <nav className="fixed-top navbar-expand-lg rbxNavStyles">
             <div className="container-fluid">
-
                 {/* Navbar header of logo and hamburger menu*/}
-                <div className="navbar-header">
-
-                    <h1 className="rbx-logo-title">RecipeBox</h1>
-                </div>
-
-                {/* Navbar header items depending on whatever a user is signed in or not */}
-                {navbarRightOptions}
-
+                {hamburgerMenu}
             </div>
 
         </nav>
