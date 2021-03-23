@@ -62,11 +62,11 @@ const NewRecipePage = (props) => {
                         </InputGroup.Prepend>
                         <FormControl placeholder="tag" value={tagValue} onChange={(event) => setTagValue(event.target.value)} />
                         <InputGroup.Append>
-                            <Button variant="outline-secondary" onClick={addTag}>Add Tag</Button>
+                            <Button variant="outline-info" onClick={addTag}>Add Tag</Button>
                         </InputGroup.Append>
                     </InputGroup>
 
-                    {tags.map((tag, i) => <Button className="mt-1 mr-1" variant="info" size="sm" onClick={() => removeTag(i)}>{'#' + tags[i]}</Button>)}
+                    {tags.map((tag, i) => <Button className="mt-1 mr-1" variant="secondary" size="sm" onClick={() => removeTag(i)}>{'#' + tags[i]}</Button>)}
                 </Form.Group>
                 
 
@@ -84,7 +84,7 @@ const NewRecipePage = (props) => {
                     <Form.File id="custom-file" label="Upload recipe image" custom />
                 </Form.Group>
 
-                <Button block variant="secondary" className="submitButton" type="submit" onSubmit={handleSubmit}>Post Recipe</Button>
+                <Button block variant="info" className="submitButton" type="submit" onSubmit={handleSubmit}>Post Recipe</Button>
             </Form>
         </div>
     )
@@ -136,7 +136,7 @@ const AdditionalFields = (props) => {
     return (
         <>
             {textFields}
-            <Button className="mt-1" variant="outline-secondary" size="sm" onClick={addField}><i><Plus className="addFieldButton" /></i></Button>
+            <Button className="mt-1" variant="outline-info" size="sm" onClick={addField}><i><Plus className="addFieldButton" /></i></Button>
         </>
     )
 }
