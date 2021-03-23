@@ -1,7 +1,37 @@
 .comment {
-    margin-bottom: 15px;
+    margin-bottom: 10px;
+    background-color: rgb(23, 162, 184, .1);
+    border-radius: 15px;
+    padding: 1px 10px 10px 10px;
 }
 
-.username {
-    margin-right: 15px;
+.commentText {
+    font-size: 13px;
+    margin-top: 10px;
+    margin-bottom: 3px;
+}
+
+.commentUsername {
+    font-weight: bold;
+    color: black;
+    font-size: 13px;
+}
+
+.commentUsername:hover, .commentUsername:active {
+    color: black;
+    opacity: 60%;
+    text-decoration: none;
+}
+
+.commentDetailsTable {
+    width: 100%;
+    margin-top: -6px;
+}
+
+.commentDetailsTableCell {
+    vertical-align: baseline;
+}
+
+.commentDetailsTableRightCol {
+    text-align: right;
 }
