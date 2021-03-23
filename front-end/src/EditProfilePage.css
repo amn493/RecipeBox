@@ -3,7 +3,7 @@
 }
 
 .centerPhoto {
-    align-content: center;
+    text-align: center;
 }
 
 .editProfilePageForm {
@@ -16,7 +16,7 @@
 }
 
 .uploadPhotoButton {
-    width: 50%;
     align-content: right;
     margin-top: 20px;
+    text-align: left;
 }
