@@ -1,0 +1,22 @@
+.editProfilePageBody {
+    text-align: left;
+}
+
+.centerPhoto {
+    text-align: center;
+}
+
+.editProfilePageForm {
+    margin-top: 10%;
+}
+
+.submitButton {
+    text-align: center;
+    width: 100%;
+}
+
+.uploadPhotoButton {
+    align-content: right;
+    margin-top: 20px;
+    text-align: left;
+}

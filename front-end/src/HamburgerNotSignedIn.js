@@ -1,5 +1,4 @@
 import './HamburgerNotSignedIn.css'
-import NavbarRightSignedOut from './NavbarRightSignedout'
 
 import NavDropdown from 'react-bootstrap/NavDropdown'
 import Navbar from 'react-bootstrap/Navbar'
