@@ -19,6 +19,7 @@ import CreateAccountPage from './CreateAccountPage.js'
 import FollowersPage from './FollowersPage.js'
 import FollowingPage from './FollowingPage.js'
 import BrowseUsersPage from './BrowseUsersPage.js'
+import EditProfilePage from './EditProfilePage.js'
 
 
 function App() {

@@ -14,3 +14,9 @@
     text-align: center;
     width: 100%;
 }
+
+.uploadPhotoButton {
+    width: 50%;
+    align-content: right;
+    margin-top: 20px;
+}

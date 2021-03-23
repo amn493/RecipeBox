@@ -8,17 +8,21 @@ import Button from 'react-bootstrap/Button'
 const EditProfilePage = (props) => {
     return (
         <>
-            <div className="centerPhoto">
-                <img src={props.user.imagePath} alt="Current Profile Picture"></img>
-                <br />
-                <a href ="/">Change Photo</a>
-            </div>
 
             <div className="editProfilePageBody">
 
                 <Form className="editProfilePageForm">
 
                     <Form.Group>
+                    <div className="centerPhoto">
+                        <img src={props.user.imagePath} alt="Current Profile Picture"></img>
+                        <br />
+                        <Form.File id="custom-file" className="uploadPhotoButton" label="Change Photo" custom />
+                    </div>
+                    </Form.Group>
+
+                    <Form.Group>
+                        
                         <Form.Label>First Name</Form.Label>
                         <Form.Control type="text" value={props.user.firstName} />
                         <br />
@@ -32,11 +36,12 @@ const EditProfilePage = (props) => {
                         <Form.Control as="textarea" rows={4} value={props.user.bio} />
                         <br />
 
+                        <Button className="submitButton" variant="secondary" type="submit" custom> {/* TODO: Handle submit via backend vodoo onSubmit="funcName" */}
+                            Submit
+                        </Button>
                     </Form.Group>
-                    <Button className ="submitButton" variant="primary" type="submit">
-                        Submit
-                    </Button>
-                </Form>
+
+                    </Form>
             </div>
         </>
     )
