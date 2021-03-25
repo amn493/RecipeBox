@@ -77,6 +77,7 @@
 
 .ingredients, .instructions {
     margin-left: -15px;
+    margin-bottom: 0px;
 }
 
 .liIngredient, .liInstruction {
@@ -92,6 +93,10 @@
 
 .commentsSection {
     margin-bottom: 30px;
+}
+
+.commentFieldAndButton {
+    margin-top: 20px;
 }
 
 .recipeDetailsTableLikedCol {

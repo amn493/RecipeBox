@@ -280,8 +280,8 @@ const CommentsSection = (props) => {
             <h2 className="recipeSubheading">Comments</h2>
             {comments.map((comment, i) => (<Comment comment={comment} key={i} />))}
         
-            <Form onSubmit={handleSubmit}>
-                <InputGroup className="commentFieldAndButton">
+            <Form className="commentFieldAndButton" onSubmit={handleSubmit}>
+                <InputGroup>
                     <FormControl size="sm" className="commentField" name="comment" value={value} onChange={handleChange} />
                     <InputGroup.Append>
                         <Button variant="info" size="sm" className="commentButton" type="submit" onSubmit={handleSubmit}>Comment</Button>
