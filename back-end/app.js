@@ -14,7 +14,23 @@ app.use(express.urlencoded({ extended: true })) // decode url-encoded incoming P
 app.use(morgan("dev")) // dev style gives a concise color-coded style of log output
 
 
-// we will put some server logic here later...
+
+
+
+app.get('/recipe', (req, res) => {
+
+    // fetch recipe where slug === req.query.slug from database
+
+    axios
+    .get('https://my.api.mockaroo.com/recipe.json?key=f6a27260')
+    .then(apiResponse => res.json(apiResponse.data[0]))
+    .catch(err => next(err))
+})
+
+
+
+
+
 
 
 // export the express app we created to make it available to other modules
