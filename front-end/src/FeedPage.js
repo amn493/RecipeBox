@@ -61,11 +61,11 @@ const Feed = (props) => {
             console.log(err)
             setRecBoxRecipes(feedRecipes)
         })
-    })
+    }, [])
 
     return (
         <div className="container">
-            <RecipeList size="large" recipes={feedRecipes} user={props.user} />
+            <RecipeList size="large" recipes={recBoxRecipes} user={props.user} />
         </div>
     )
 }

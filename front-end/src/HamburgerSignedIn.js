@@ -14,7 +14,7 @@ const HamburgerSignedIn = (props) => {
 
     return (
         <div className="recipeboxNavDropdown">
-            <Navbar collapseOnSelect expand="lg">
+            <Navbar collapseOnSelect expand="lg" variant="dark">
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                 <Navbar.Brand className="rbxLogo {rbxLogoPadding}" href="/">RecipeBox</Navbar.Brand>
                 <Navbar.Collapse id="responsive-navbar-nav">
@@ -24,7 +24,7 @@ const HamburgerSignedIn = (props) => {
                         <NavDropdown.Item className="rbxSpaceAdjustment" href="/feed">Feed</NavDropdown.Item>
                         <NavDropdown.Item className="rbxSpaceAdjustment" href="/my-recipe-box">My Recipe Box</NavDropdown.Item>
                         {/* Is this the proper way to navigate... or should we pass in the slug as a propr? Is there a specific way?*/}
-                        <NavDropdown.Item className="rbxSpaceAdjustment" href="/user-:slug">My Profile</NavDropdown.Item>
+                        <NavDropdown.Item className="rbxSpaceAdjustment" href={"/user-"+props.user.slug}>My Profile</NavDropdown.Item>
                         <NavDropdown.Item className="rbxSpaceAdjustment" href="/browse-recipes">Browse Recipes</NavDropdown.Item>
                         <NavDropdown.Item className="rbxSpaceAdjustment" href="/browse-users">Browse Users</NavDropdown.Item>
                         <NavDropdown.Item className="rbxSpaceAdjustment" href="/settings">Settings</NavDropdown.Item>

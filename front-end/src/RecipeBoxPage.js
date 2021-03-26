@@ -76,7 +76,7 @@ const RecipeBoxPage = (props) => {
             console.log(err)
             setRecBoxRecipes(rbxEntries)
         })
-    })
+    }, [])
 
     return (
         <div className="container">

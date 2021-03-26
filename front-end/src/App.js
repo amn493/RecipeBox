@@ -9,7 +9,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import RecipePage from './RecipePage.js'
 import FeedPage from './FeedPage.js'
 import RecipeBoxPage from './RecipeBoxPage.js'
-import Navbar from './Navbar,js'
+import Navbar from './Navbar.js'
 import BrowseRecipesPage from './BrowseRecipesPage.js'
 import ProfilePage from './ProfilePage.js'
 import NewRecipePage from './NewRecipePage.js'
@@ -82,7 +82,7 @@ function App() {
     }) // signed in user
   return (
     <>
-    <Navbar signedIn={signedIn}/>
+    <Navbar signedIn="true" user={user}/>
     <div className='App container' id='outer-container'>
       {/*<HamburgerNotSignedIn pageWrapId={ 'page-wrap' } outerContainerId={ 'outer-container' } />*/}
       <main id='page-wrap'>
