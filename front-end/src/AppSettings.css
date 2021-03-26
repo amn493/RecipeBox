@@ -51,3 +51,21 @@
     border: 1px solid grey;
     padding: 10px;
 }
+
+
+.custom-control-input:checked ~ 
+.custom-control-label::before {
+    border-color: rgb(23, 162, 184) !important;
+    background-color: rgb(23, 162, 184) !important;
+}
+
+.custom-control-input:checked:disabled ~
+.custom-control-label::before {
+    opacity: 60%;
+}
+
+.custom-control-input:not(:checked):disabled ~
+.custom-control-label::before {
+    background-color: white;
+    opacity: 60%;
+}

@@ -111,7 +111,7 @@ const AppSettings = (props) => {
 										type='checkbox'
 										className='custom-control-input'
 										id='customSwitches1'
-										checked={emailNotifs ? 'checked' : ''}
+										checked={emailNotifs}
 										onClick={() => setEmailNotifs(!emailNotifs)}
 									/>
 									<label className="custom-control-label" id={1} htmlFor='customSwitches1'/>
@@ -132,7 +132,8 @@ const AppSettings = (props) => {
                                                 type='checkbox'
                                                 className='custom-control-input'
                                                 id='customSwitches2'
-                                                checked={emailNotifs && likesNotifs ? 'checked' : ''}
+                                                checked={likesNotifs}
+                                                disabled={!emailNotifs}
                                                 onClick={() => setLikesNotifs(!likesNotifs)}
                                             />
                                             
@@ -156,7 +157,8 @@ const AppSettings = (props) => {
                                 type='checkbox'
                                 className='custom-control-input'
                                 id='customSwitches3'
-                                checked={emailNotifs && commentsNotifs ? 'checked' : ''}
+                                checked={commentsNotifs}
+                                disabled={!emailNotifs}
                                 onClick={() => setCommentsNotifs(!commentsNotifs)}
                             />
                             <label className='custom-control-label' id={3} htmlFor='customSwitches3'/>
@@ -177,7 +179,8 @@ const AppSettings = (props) => {
                                 type='checkbox'
                                 className='custom-control-input'
                                 id='customSwitches4'
-                                checked={emailNotifs && followersNotifs ? 'checked' : ''}
+                                checked={followersNotifs}
+                                disabled={!emailNotifs}
                                 onClick={() => setFollowersNotifs(!followersNotifs)}
                             />
                             <label className='custom-control-label' id={4} htmlFor='customSwitches4' />
@@ -198,7 +201,8 @@ const AppSettings = (props) => {
                                 type='checkbox'
                                 className='custom-control-input'
                                 id='customSwitches5'
-                                checked={emailNotifs && postsNotifs ? 'checked' : ''}
+                                checked={postsNotifs}
+                                disabled={!emailNotifs}
                                 onClick={() => setPostsNotifs(!postsNotifs)}
                             />
                             <label className='custom-control-label' id={5} htmlFor='customSwitches5'/>
@@ -213,7 +217,7 @@ const AppSettings = (props) => {
                 {/* go to blocked users page*/}
                 <div className="blockedUsers">
                     <a href="/settings/blocked-users">
-                        <Button className='submitButton' type='submit' variant='secondary' >Blocked Accounts</Button>
+                        <Button className='submitButton' type='submit' variant='info' >Blocked Accounts</Button>
                     </a>
                 </div><br/><br/>
 
@@ -224,7 +228,7 @@ const AppSettings = (props) => {
                         <div classname="actualBlockedTags">
                             {blockedTagsList.map((selectTag, i) => <TagButton tag={selectTag} tags={tagsToBlock} filterTags={blockedTagsList} setTags={setTagsToBlock} setFilterTags={addBlockedTagToList} key={i} />)}<hr/>
                         </div>
-                        <br/><Button className='submitButton' type='submit' variant='secondary' onClick={() => addBlockedTag(true)}> Add Blocked Tag</Button><br/>
+                        <br/><Button className='submitButton' type='submit' variant='info' onClick={() => addBlockedTag(true)}> Add Blocked Tag</Button><br/>
                         <div className="addBlockedTagsField">
                             { blockedTagAddition && (<ComboBoxSearchBar className="addBlockedTagsField" isTag={true} tags={tagsToBlock} users={[]} setSelection={handleAddBlockedTag}/>) }
                         </div>
@@ -234,7 +238,7 @@ const AppSettings = (props) => {
                 {/* signout button*/}
                 <br/><div className="signOutButton">
                     <a href="/sign-in"><br/><br/> 
-                        <Button className='submitButton' type='submit' variant='secondary'  onClick={() => props.setSignedIn(false)}>Sign Out</Button>   
+                        <Button className='submitButton' type='submit' variant='outline-info'  onClick={() => props.setSignedIn(false)}>Sign Out</Button>   
                         {/* TODO: handle credentials stuff*/}
                     </a>
                 </div>
