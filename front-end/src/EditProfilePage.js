@@ -29,11 +29,13 @@ const EditProfilePage = (props) => {
         setIsAnyNameEmpty(
             !userNameVal || !firstNameVal
         )
-
-        if(isAnyNameEmpty) setEmptyNameError( { value: <><div className="errorCode">Username and first name required!</div></> } )
-        else setEmptyNameError ( { value: '' } )
             
     }, [firstNameVal, userNameVal])
+
+    useEffect(() =>{
+        if(isAnyNameEmpty) setEmptyNameError( { value: <><div className="errorCode">Username and first name required!</div></> } )
+        else setEmptyNameError ( { value: '' } )
+    }, [isAnyNameEmpty])
 
     return (
         <>
