@@ -8,7 +8,8 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 // Import pages
 import RecipePage from './RecipePage.js'
 import FeedPage from './FeedPage.js'
-import Navbar from './Navbar.js'
+import RecipeBoxPage from './RecipeBoxPage.js'
+import Navbar from './Navbar,js'
 import BrowseRecipesPage from './BrowseRecipesPage.js'
 import ProfilePage from './ProfilePage.js'
 import NewRecipePage from './NewRecipePage.js'
@@ -150,11 +151,10 @@ function App() {
               {signedIn ? <NewRecipePage user={user} /> : <Redirect to="/sign-in" />}
             </Route>
 
-            {/* MY RECIPE BOX PAGE
+            {/* MY RECIPE BOX PAGE */}
             <Route path="/my-recipe-box">
-              {signedIn ? //insert corresponding page component tag here : <Redirect to="/sign-in" />}
+              {signedIn ? <RecipeBoxPage user={user} /> : <Redirect to="/sign-in" />}
             </Route>
-            */}
 
             {/* SETTINGS PAGE*/
             <Route path="/settings" exact={true}>

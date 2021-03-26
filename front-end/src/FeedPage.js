@@ -1,6 +1,8 @@
 import './FeedPage.css'
 import RecipeList from './RecipeList'
-import LargeRecipePreview from './LargeRecipePreview'
+
+import { useEffect, useState } from 'react'
+import axios from 'axios'
 
 // Pulls recipes from the database for the logged-in feed and generates a recipelist for qualifying recipes
 // Qualifying recipes, e.g. latest recipes posted by those someone has followed
@@ -46,6 +48,20 @@ const Feed = (props) => {
             id:3
         }
     ]
+
+    // Recipe list to show -- Is later re-assigned if/when sorts are applied
+    const [recBoxRecipes, setRecBoxRecipes] = useState([])
+
+    /* Pull in recipes from mockaroo */
+    useEffect(() => {
+        axios('https://my.api.mockaroo.com/recipe.json?key=f6a27260').then((response) => {
+            setRecBoxRecipes(response.data)
+        }).catch((err) =>{
+            // TODO: Print an error to the user, but for now mockaroo is likely
+            console.log(err)
+            setRecBoxRecipes(feedRecipes)
+        })
+    })
 
     return (
         <div className="container">
