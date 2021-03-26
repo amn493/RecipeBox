@@ -17,5 +17,17 @@ app.use(morgan("dev")) // dev style gives a concise color-coded style of log out
 // we will put some server logic here later...
 
 
+
+app.get('/comments', (req, res) => {
+
+    // fetch comments where recipe === req.query.recipeID from database
+
+    axios
+    .get('https://my.api.mockaroo.com/comment.json?key=f6a27260')
+    .then(apiResponse => res.json(apiResponse.data))
+    .catch(err => next(err))
+})
+
+
 // export the express app we created to make it available to other modules
 module.exports = app
