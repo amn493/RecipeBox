@@ -82,7 +82,7 @@ function App() {
     }) // signed in user
   return (
     <>
-    <Navbar signedIn="true" user={user}/>
+    <Navbar signedIn={signedIn} user={user}/>
     <div className='App container' id='outer-container'>
       {/*<HamburgerNotSignedIn pageWrapId={ 'page-wrap' } outerContainerId={ 'outer-container' } />*/}
       <main id='page-wrap'>
