@@ -54,34 +54,34 @@ const CreateAccountPage = (props) =>  {
   function validateForm() {
     // Validate email
     if (!emailRegex.test(email)) {
-      setError = true
+      setError(true)
       setErrorMessages(errorMessages.concat(['Please enter a valid email.']))
     }
     
     // Validate first and last name
     if (!nameRegex.test(firstName)) {
-        setError = true
+        setError(true)
         setErrorMessages(errorMessages.concat(['First name contains invalid characters.']))
     }
     if (!nameRegex.test(lastName)) {
-      setError = true
+      setError(true)
       setErrorMessages(errorMessages.concat(['Last name contains invalid characters.']))
     }
     
     // Validate username
     if (!usernameRegex.test(username)) {
-      setError = true
+      setError(true)
       setErrorMessages(errorMessages.concat(['Username contains invalid characters']))
     }
 
     // Validate password
     if (!passwordRegex.test(password)) {
-      setError = true
+      setError(true)
       setErrorMessages(errorMessages.concat(['Password must contain at least 8 characters, have 1 uppercase letter, ' + 
         '1 lowercase letter, and 1 number.']))
     }
     if (!(password === ReEnterPassword)) {
-      setError = true
+      setError(true)
       setErrorMessages(errorMessages.concat(['Passwords do not match.']))
     }
   }
@@ -147,7 +147,7 @@ const CreateAccountPage = (props) =>  {
             onChange={(e) => setReEnterPassword(e.target.value)}
           />
         </Form.Group>
-        <Button className='submitButton' type='submit' variant='info' block disabled={emptyField}>
+        <Button className='submitButton' type='submit' variant='info' block disabled={emptyField()}>
           Create Account
         </Button>
       </Form>
