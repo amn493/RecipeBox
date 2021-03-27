@@ -1,13 +1,23 @@
 .userPreview{
     display: flex;
     flex-direction: row;
+    margin-bottom: 15px;
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .userPreviewProfileLink {
     text-decoration: none;
     color: #000000;
     float: left;
-    width: 95%;
+    width: 100%;
+}
+
+.userPreviewProfileLink:hover, .userPreviewProfileLink:active {
+    text-decoration: none;
+    color: #000000;
+    opacity: 60%;
 }
 
 .userPreviewContainer {
@@ -16,11 +26,18 @@
     justify-content: flex-start;
     font-size: 4vw;
     align-items: stretch;
-    border: 1px solid black;
 }
 
 .userPreviewFullName {
+    font-size: 16px;
     font-weight: bold;
+    color: black;
+}
+
+.userPreviewUsername {
+    font-weight: bold;
+    color: black;
+    font-size: 14px;
 }
 
 .userPreviewPersonalData {
@@ -28,18 +45,18 @@
 }
 
 .userPreviewNumericalData {
-    margin-right: 2vw;
+    margin-left: 5px;
     flex-grow: 2;
+    position: relative;
     text-align: right;
+    font-size: 11px;
+    font-weight: lighter;
 } 
 
 .smallUserProfilePic{
-    max-width: 10vw;
-    max-height: 10vw;
-}
-
-.userPreviewNumericalData{
-    position:relative;
+    width: 20vw;
+    height: 20vw;
+    margin-right: 5px;
 }
 
 .unBlock{

@@ -35,8 +35,8 @@ const SmallUserPreview = (props) => {
                     
                     {/* flex item : name and username */}
                     <div className="userPreviewPersonalData userPreviewItem">
-                        <p className="userPreviewFullName">{`${props.user.firstName} ${props.user.lastName}`}</p>
-                        <p>{`@${props.user.username}`}</p>
+                        <b className="userPreviewFullName">{`${props.user.firstName} ${props.user.lastName}`}</b>
+                        <p className="userPreviewUsername">{`@${props.user.username}`}</p>
                     </div>
 
                     {/* flex item : number of followers and recipes */}
