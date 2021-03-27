@@ -8,7 +8,7 @@ const Navbar = (props) => {
 
     // Determine what shows up for navbar sign in/create account buttons
     let hamburgerMenu = <HamburgerNotSignedIn user={props.user} />
-    if(props.signedIn === "true") {
+    if(props.signedIn === true) {
         hamburgerMenu = <HamburgerSignedIn user={props.user}/>
     }
     

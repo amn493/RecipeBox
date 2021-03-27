@@ -8,9 +8,9 @@ const HamburgerSignedIn = (props) => {
 
     // TODO: Adjust the rbxLogoClass depending on if it's expanded or contracted
     let rbxLogoPadding = "rbxLogoExpanded"
-    let adjustPadding = () => {
+    /*let adjustPadding = () => {
         rbxLogoPadding === "rbxLogoCollapsed" ? rbxLogoPadding = "rbxLogoExpanded" : rbxLogoPadding = "rbxLogoCollapsed"
-    }
+    } */
 
     return (
         <div className="recipeboxNavDropdown">
