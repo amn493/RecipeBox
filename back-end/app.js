@@ -39,10 +39,15 @@ app.get('/usersbyname', (req, res) => {
     .catch(err => next(err))
 })
 
+app.get('/usersbyid', (req, res) => {
 
+    // fetch users where id === req.query.id from database
 
-
-
+    axios
+    .get('https://my.api.mockaroo.com/user.json?key=f6a27260')
+    .then(apiResponse => res.json(apiResponse.data))
+    .catch(err => next(err))
+})
 
 app.get('/comments', (req, res) => {
 
