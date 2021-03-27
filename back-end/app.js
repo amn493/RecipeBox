@@ -27,7 +27,17 @@ app.get('/recipe', (req, res) => {
     .catch(err => next(err))
 })
 
+app.get('/usersbyname', (req, res) => {
 
+    // fetch users where name === req.query.username 
+    // or name === req.query.firstName
+    // or name === req.query.lastName from database
+
+    axios
+    .get('https://my.api.mockaroo.com/user.json?key=f6a27260')
+    .then(apiResponse => res.json(apiResponse.data))
+    .catch(err => next(err))
+})
 
 
 
