@@ -8,13 +8,12 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 // Import pages
 import RecipePage from './RecipePage.js'
 import FeedPage from './FeedPage.js'
-import RecipeBoxPage from './RecipeBoxPage.js'
+// import RecipeBoxPage from './RecipeBoxPage.js'
 import Navbar from './Navbar.js'
 import BrowseRecipesPage from './BrowseRecipesPage.js'
 import ProfilePage from './ProfilePage.js'
 import NewRecipePage from './NewRecipePage.js'
 import SignInForm from './SignInForm.js'
-import BlockedUsers from './BlockedUsers.js'
 import AppSettings from './AppSettings.js'
 import CreateAccountPage from './CreateAccountPage.js'
 import FollowersPage from './FollowersPage.js'
@@ -152,21 +151,15 @@ function App() {
             </Route>
 
             {/* MY RECIPE BOX PAGE */}
-            <Route path="/my-recipe-box">
+            {/* <Route path="/my-recipe-box">
               {signedIn ? <RecipeBoxPage user={user} /> : <Redirect to="/sign-in" />}
-            </Route>
+            </Route> */}
 
             {/* SETTINGS PAGE*/
             <Route path="/settings" exact={true}>
               {signedIn ? <AppSettings user={user} setSignedIn={setSignedIn}/> : <Redirect to="/sign-in" />}
             </Route>
-            }
-
-            {/* BLOCKED USERS PAGE */}
-            <Route path="/settings/blocked-users">
-              {signedIn ? <BlockedUsers user={user}/> : <Redirect to="/sign-in" />}
-            </Route>
-           
+            }           
 
           </Switch>
         </BrowserRouter>
