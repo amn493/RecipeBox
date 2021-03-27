@@ -20,6 +20,23 @@ const EditProfilePage = (props) => {
     // Display file name when uploaded [taken from NewRecipePage.js]
     useEffect(() => {bsCustomFileInput.init()}, [])
 
+    // Ensure username field is not blank
+    const [isAnyNameEmpty, setIsAnyNameEmpty] = useState(false)
+    const [emptyNameError, setEmptyNameError] = useState({ value: '' })
+
+    useEffect(() => {
+
+        setIsAnyNameEmpty(
+            !userNameVal || !firstNameVal
+        )
+            
+    }, [firstNameVal, userNameVal])
+
+    useEffect(() =>{
+        if(isAnyNameEmpty) setEmptyNameError( { value: <><div className="errorCode">Username and first name required!</div></> } )
+        else setEmptyNameError ( { value: '' } )
+    }, [isAnyNameEmpty])
+
     return (
         <>
 
@@ -58,8 +75,9 @@ const EditProfilePage = (props) => {
                         <Form.Label>Bio</Form.Label>
                         <Form.Control as="textarea" rows={4} value={bioVal} onChange={(event) => setBioVal(event.target.value)} />
                         <br />
-
-                        <Button className="submitButton" variant="info" type="submit"> {/* TODO: Handle submit via backend vodoo onSubmit="funcName" */}
+                        
+                        {emptyNameError.value}
+                        <Button className="submitButton" variant="info" type="submit" disabled={isAnyNameEmpty}> {/* TODO: Handle submit via backend vodoo onSubmit="funcName" */}
                             Save Changes
                         </Button>
                     </Form.Group>
