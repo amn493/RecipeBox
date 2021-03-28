@@ -9,8 +9,16 @@ import axios from 'axios'
 // props.user is the passed in user
 const Feed = (props) => {
 
-    // TODO: Back-end task -- Fill feedEntries. Also need to adjust below so the array contains both "recipe" and "likes"
-    let feedRecipes = axios.get('/feedrecipes')
+    let feedRecipesURL = '/feedrecipes'
+    let feedRecipes = async(reqlink) => {
+        try {
+            let response = await axios.get(reqlink)
+            return response
+        } catch (err) {
+            // TODO: Error component
+        }
+    }
+    feedRecipes(feedRecipesURL)
 
     // Recipe list to show -- Is later re-assigned if/when sorts are applied
     const [recBoxRecipes, setRecBoxRecipes] = useState([])
