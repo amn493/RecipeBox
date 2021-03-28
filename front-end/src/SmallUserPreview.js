@@ -24,27 +24,33 @@ const SmallUserPreview = (props) => {
 
             {/*preview links to the user profile*/ }
             <a className="userPreviewProfileLink" href={props.isBlockedUserProfile ? false : userSlug}> {/*TODO(?): Disable link if component used for blocked users page?*/ }
-
-                { /* css flex container */ }
-                <div className="userPreviewContainer">
-
-                    { /* user profile picture preview */ }
-                    <div className="userPreviewImg">
-                        <img src={props.user.imagePath} alt="" className="smallUserProfilePic"/>
-                    </div>
-                    
-                    {/* flex item : name and username */}
-                    <div className="userPreviewPersonalData userPreviewItem">
-                        <b className="userPreviewFullName">{`${props.user.firstName} ${props.user.lastName}`}</b>
-                        <p className="userPreviewUsername">{`@${props.user.username}`}</p>
-                    </div>
-
-                    {/* flex item : number of followers and recipes */}
-                    <div className="userPreviewNumericalData">
-                        <p>{`${props.user.followers.length} followers`}</p>
-                    </div>
-                </div>
-
+                <table className="userPreviewTable">
+                    <tr>
+                        { /* user profile picture preview */ }
+                        <td className="userPreviewImg">
+                            <img src={props.user.imagePath} alt="" className="smallUserProfilePic"/>
+                        </td>
+                        <td>
+                            <table className="userPreviewTopTable">
+                                <tr>
+                                    <td>
+                                        <b className="userPreviewFullName">{`${props.user.firstName} ${props.user.lastName}`}</b>
+                                    </td>
+                                </tr>
+                            </table>
+                            <table className="userPreviewBottomTable">
+                                <tr>
+                                    <td className="userPreviewBottomCell">
+                                        <b className="userPreviewUsername">{`@${props.user.username}`}</b>
+                                    </td>
+                                    <td className="userPreviewNumericalData userPreviewBottomCell">
+                                            {`${props.user.followers.length} followers`}
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
             </a>
                 
             {/* unblock button if component used for blocked users page */}

@@ -1,6 +1,4 @@
 .userPreview{
-    display: flex;
-    flex-direction: row;
     margin-bottom: 15px;
     width: 90%;
     margin-left: auto;
@@ -9,23 +7,14 @@
 
 .userPreviewProfileLink {
     text-decoration: none;
-    color: #000000;
-    float: left;
+    color: black;
     width: 100%;
 }
 
 .userPreviewProfileLink:hover, .userPreviewProfileLink:active {
     text-decoration: none;
-    color: #000000;
+    color: black;
     opacity: 60%;
-}
-
-.userPreviewContainer {
-    display: flex;
-    flex-flow: row nowrap;
-    justify-content: flex-start;
-    font-size: 4vw;
-    align-items: stretch;
 }
 
 .userPreviewFullName {
@@ -40,24 +29,37 @@
     font-size: 14px;
 }
 
-.userPreviewPersonalData {
-    text-align: left;
-}
-
 .userPreviewNumericalData {
-    margin-left: 5px;
-    flex-grow: 2;
-    position: relative;
-    text-align: right;
     font-size: 11px;
     font-weight: lighter;
+    text-align: right;
 } 
 
 .smallUserProfilePic{
     width: 20vw;
     height: 20vw;
-    margin-right: 5px;
 }
+
+.userPreviewImg {
+    width: 20vw;
+    padding-right: 5px;
+}
+
+.userPreviewTable, .userPreviewBottomTable {
+    width: 100%;
+}
+
+.userPreviewBottomCell {
+    vertical-align: baseline;
+}
+
+
+.userPreviewTopTable {
+    margin-bottom: -8px;
+    width: 100%;
+}
+
+
 
 .unBlock{
     float: left;
