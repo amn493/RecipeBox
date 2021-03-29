@@ -1,0 +1,13 @@
+.pageTitle {
+    text-align: center;
+    margin: 20px;
+}
+
+.recipeBoxFilters {
+    text-align: left;
+    align-content: center;
+}
+
+.sortDropdown {
+    margin-bottom: 20px;
+}
