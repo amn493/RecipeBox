@@ -9,29 +9,14 @@ import axios from 'axios'
 // props.user is the passed in user
 const Feed = (props) => {
 
-    let feedRecipesURL = '/feedrecipes'
-    let feedRecipes = async(reqlink) => {
-        try {
-            let response = await axios.get(reqlink)
-            return response
-        } catch (err) {
-            // TODO: Error component
-        }
-    }
-    feedRecipes(feedRecipesURL)
-
     // Recipe list to show -- Is later re-assigned if/when sorts are applied
     const [recBoxRecipes, setRecBoxRecipes] = useState([])
 
-    /* Pull in recipes from mockaroo */
-    useEffect(() => {
-        axios('https://my.api.mockaroo.com/recipe.json?key=f6a27260').then((response) => {
-            setRecBoxRecipes(response.data)
-        }).catch((err) =>{
-            // TODO: Print an error to the user, but for now mockaroo is likely
-            console.log(err)
-            setRecBoxRecipes(feedRecipes)
-        })
+    /* Pull in recipes from mockaroo using the GET route handler */
+    useEffect(async() => {
+        const response = await axios.get('/feedrecipes')
+        setRecBoxRecipes(response)
+        // This will be set to some dummy value that we can check in order to return an error component
     }, [])
 
     return (
