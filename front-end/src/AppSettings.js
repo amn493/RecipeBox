@@ -164,7 +164,6 @@ const AppSettings = (props) => {
     }, [props.user.username])
 
 
-    const [blockedTagAddition, addBlockedTag] = useState(true) //value changed when 'add blocked tags' button is pressed, in turn triggering combo-box appearance
     const [blockedTagsList, addBlockedTagToList] = useState(props.user.blockedTags) //list of current user's blocked tags
 
     const handleAddBlockedTag = (props) => {
@@ -305,7 +304,7 @@ const AppSettings = (props) => {
 
                 {/* blocked users section*/}
                 <div className="blockedUsers">
-                        <div className="emailNotifLabel"><b>Blocked Users</b></div><hr/>
+                    <div className="emailNotifLabel"><b>Blocked Users</b></div><hr/>
                     <b>Enter a username to block</b>
                     <div className="addBlockedUser"> 
                         {/* prompt user to block any user who is not currently in their blocklist */}
@@ -325,9 +324,9 @@ const AppSettings = (props) => {
                         <div className="actualBlockedTags">
                             {blockedTagsList.map((selectTag, i) => <TagButton tag={selectTag} tags={tagsToBlock} filterTags={blockedTagsList} setTags={setTagsToBlock} setFilterTags={addBlockedTagToList} key={i} />)}<hr/>
                         </div>
-                        <br/><Button className='submitButton' type='submit' variant='secondary' onClick={() => addBlockedTag(true)}> Add Blocked Tag</Button><br/>
+                        <b>Enter a tag to block</b>
                         <div className="addBlockedTagsField">
-                            { blockedTagAddition && (<ComboBoxSearchBar className="addBlockedTagsField" isTag={true} tags={tagsToBlock} users={[]} setSelection={handleAddBlockedTag}/>) }
+                            { (<ComboBoxSearchBar className="addBlockedTagsField" isTag={true} tags={tagsToBlock} users={[]} setSelection={handleAddBlockedTag}/>) }
                         </div>
                     </div><br/>
                 </div>
