@@ -309,7 +309,7 @@ const AppSettings = (props) => {
                     <b>Enter a username to block</b>
                     <div className="addBlockedUser"> 
                         {/* prompt user to block any user who is not currently in their blocklist */}
-                        <ComboBoxSearchBar className="addBlockedUsersField" isTag={false} tags={[]} users={usersToBlock.map((user, i) => (blockedUsers.includes(usersToBlock[i]) ? false : user.username))} setSelection={blockUser}/>
+                        <ComboBoxSearchBar className="addBlockedUsersField" isTag={false} tags={[]} users={usersToBlock.filter((user) => (!blockedUsers.includes(user))).map((user) => user.username)} setSelection={blockUser}/>
                     </div>
     
                     {/* preview for each of current user's blocked users */}
@@ -322,7 +322,7 @@ const AppSettings = (props) => {
                 <div className="blockedTags">
                     <b className="blockedTagsHeader">Blocked Tags</b><br></br>
                     <div className="blockedTagsDisplay">
-                        <div classname="actualBlockedTags">
+                        <div className="actualBlockedTags">
                             {blockedTagsList.map((selectTag, i) => <TagButton tag={selectTag} tags={tagsToBlock} filterTags={blockedTagsList} setTags={setTagsToBlock} setFilterTags={addBlockedTagToList} key={i} />)}<hr/>
                         </div>
                         <br/><Button className='submitButton' type='submit' variant='secondary' onClick={() => addBlockedTag(true)}> Add Blocked Tag</Button><br/>
