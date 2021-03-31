@@ -118,6 +118,22 @@ app.post('/comment', (req, res) => {
     res.json(data)
 })
 
+app.post('/likerecipe', (req, res) => {
+
+    // update signed-in user (_id === req.body.userID)'s liked array appropriately
+
+    const updatedLiked = req.body.liked
+    if(req.body.like) {
+        updatedLiked.push(req.body.recipeID)
+    }
+    else {
+        updatedLiked.splice(updatedLiked.indexOf(req.body.recipeID), 1)
+    }
+
+    // update recipe (_id === req.body.recipeID)'s likes count
+
+    res.json(updatedLiked)
+})
 
 
 
