@@ -13,10 +13,23 @@ const Feed = (props) => {
     const [recBoxRecipes, setRecBoxRecipes] = useState([])
 
     /* Pull in recipes from mockaroo using the GET route handler */
-    useEffect(async() => {
-        const response = await axios.get('/feedrecipes')
-        setRecBoxRecipes(response)
-        // This will be set to some dummy value that we can check in order to return an error component
+    useEffect(() => {
+
+        // Get a list of feed recipes
+        // userid is the logged in user so we can get their following
+        // timestamp is the current time to pull recipes from a certain timeframe, e.g. a week
+
+        // `http://localhost:4000/feedrecipes?userid=${userid}?timestamp=${currentTime}`
+        let userid = props.user.id
+        let currentTime = Date.now()
+        axios(`http://localhost:4000/feedrecipes?userid=${userid}?timestamp=${currentTime}`).then((response) => {
+            setRecBoxRecipes(response.data)
+        }).catch((err) => {
+            console.log(err)
+            setRecBoxRecipes()
+        })
+
+        
     }, [])
 
     return (

@@ -56,6 +56,8 @@ app.get('/feedrecipes', (req, res) =>  {
 
     // fetch a list of recipes given an user's name (thus getting their likes)
     // as well as a timestamp
+    // User's id passed in via ?userid
+    // Timestamp passed in via ?timestamp
 
     axios
     .get('https://my.api.mockaroo.com/recipe.json?key=f6a27260')

@@ -8,7 +8,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 // Import pages
 import RecipePage from './RecipePage.js'
 import FeedPage from './FeedPage.js'
-import RecipeBoxPage from './RecipeBoxPage.js'
+// import RecipeBoxPage from './RecipeBoxPage.js'
 import Navbar from './Navbar.js'
 import BrowseRecipesPage from './BrowseRecipesPage.js'
 import ProfilePage from './ProfilePage.js'
