@@ -110,7 +110,7 @@ app.post('/comment', (req, res) => {
 
 app.post('/blockuser', (req, res) => {
 
-    // block or unblock user
+    // block or unblock a user
 
     const data = {
         id: req.body.id,
