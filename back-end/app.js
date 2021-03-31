@@ -83,5 +83,23 @@ app.get('/comments', (req, res) => {
 })
 
 
+
+
+app.post('/comment', (req, res) => {
+
+    // store new comment
+
+    const data = {
+        recipe: req.body.recipe,
+        user: req.body.user,
+        comment: req.body.comment,
+        createdAt: req.body.createdAt
+    }
+    res.json(data)
+})
+
+
+
+
 // export the express app we created to make it available to other modules
 module.exports = app
