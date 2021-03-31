@@ -222,6 +222,24 @@ app.post('/blockuser', (req, res) => {
 
 })
 
+app.post('/updateuserinfo', (req, res) => {
+    // recieve post data from updating user's basic info
+    const updateData = {
+        username: req.body.username,
+        password: req.body.password,
+        email: req.body.email,
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        bio: req.body.bio,
+        imagePath: req.body.imagePath
+    }
+    
+    // update the user's user object (in database?)
+    
+    // send a response to the user
+    const responseData = 'Successfully updated profile'
+    res.json(responseData)
+})
 
 
 
