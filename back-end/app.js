@@ -5,6 +5,7 @@ const app = express() // instantiate an Express object
 const morgan = require("morgan") // middleware for nice logging of incoming HTTP requests
 const multer = require("multer") // middleware to handle HTTP POST requests with file uploads
 const axios = require("axios") // middleware for making requests to APIs
+const cors = require('cors');
 require("dotenv").config({ silent: true }) // load environmental variables from a hidden file named .env
 
 
@@ -13,6 +14,18 @@ app.use(express.json()) // decode JSON-formatted incoming POST data
 app.use(express.urlencoded({ extended: true })) // decode url-encoded incoming POST data
 app.use(morgan("dev")) // dev style gives a concise color-coded style of log output
 
+// fix CORS error by allowing requests from localhost:3000
+const whitelist = ['http://localhost:3000']
+const corsOptions = {
+    origin: function (origin, callback) {
+      if (whitelist.indexOf(origin) !== -1) {
+        callback(null, true)
+      } else {
+        callback(new Error('Not allowed by CORS'))
+      }
+    }
+}
+app.use(cors(corsOptions))
 
 
 
@@ -27,12 +40,27 @@ app.get('/recipe', (req, res) => {
     .catch(err => next(err))
 })
 
+app.get('/usersbyname', (req, res) => {
 
+    // fetch users where name === req.query.username 
+    // or name === req.query.firstName
+    // or name === req.query.lastName from database
 
+    axios
+    .get('https://my.api.mockaroo.com/user.json?key=f6a27260')
+    .then(apiResponse => res.json(apiResponse.data))
+    .catch(err => next(err))
+})
 
+app.get('/usersbyid', (req, res) => {
 
+    // fetch users where id === req.query.id from database
 
-
+    axios
+    .get('https://my.api.mockaroo.com/user.json?key=f6a27260')
+    .then(apiResponse => res.json(apiResponse.data))
+    .catch(err => next(err))
+})
 
 app.get('/comments', (req, res) => {
 
