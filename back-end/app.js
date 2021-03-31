@@ -120,14 +120,20 @@ app.post('/comment', (req, res) => {
 
 app.post('/blockuser', (req, res) => {
 
-    // block or unblock a user
+    // update signed-in user's blockedUsers array appropriately
 
-    const data = {
-        id: req.body.id,
-        addBlock: req.body.addBlock,
+    const updatedBlockedUsers = req.body.blockedUsers
+    if(req.body.addBlock) {
+        updatedBlockedUsers.push(req.body.id)
     }
-    res.json(data)
+    else {
+        updatedBlockedUsers.splice(updatedBlockedUsers.indexOf(req.body.id), 1)
+    }
+    
+    res.json(updatedBlockedUsers)
+
 })
+
 
 
 
