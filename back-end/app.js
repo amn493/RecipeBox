@@ -82,6 +82,16 @@ app.get('/comments', (req, res) => {
     .catch(err => next(err))
 })
 
+app.get('/recipesbyuser', (req, res, next) => {
+
+    // fetch recipes where user.id === req.query.userID from database
+
+    axios
+    .get('https://my.api.mockaroo.com/recipe.json?key=f6a27260')
+    .then(apiResponse => res.json(apiResponse.data.slice(0, 18)))
+    .catch(err => next(err))
+})
+
 app.get('/tags', (req, res, next) => {
 
     // fetch all tags from database
