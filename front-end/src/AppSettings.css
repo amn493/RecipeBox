@@ -35,6 +35,10 @@
     display: inline;
 }
 
+.blockedTags{
+    padding-top: 5%;
+}
+
 .blockedTagsHeader{
     display: inline-block;
     width: 20em;
@@ -50,4 +54,17 @@
 .blockedTagsDisplay{
     border: 1px solid grey;
     padding: 10px;
+}
+
+.backToSettings{
+    transform: translatey(-75%);
+}
+.blockedUsersTitle{
+    text-align: center;
+    transform: translatey(-75%);
+}
+.blockedUsersPTag{
+    font-weight: 900;
+    font-size: 30px;
+    font-family: sans-serif;
 }
