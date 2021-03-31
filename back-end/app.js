@@ -30,7 +30,7 @@ app.use(cors(corsOptions))
 
 
 
-app.get('/recipe', (req, res) => {
+app.get('/recipe', (req, res, next) => {
 
     // fetch recipe where slug === req.query.slug from database
 
@@ -40,7 +40,7 @@ app.get('/recipe', (req, res) => {
     .catch(err => next(err))
 })
 
-app.get('/usersbyname', (req, res) => {
+app.get('/usersbyname', (req, res, next) => {
 
     // fetch users where name === req.query.username 
     // or name === req.query.firstName
@@ -52,7 +52,7 @@ app.get('/usersbyname', (req, res) => {
     .catch(err => next(err))
 })
 
-app.get('/usersbyid', (req, res) => {
+app.get('/usersbyid', (req, res, next) => {
 
     // fetch users where id === req.query.id from database
 
@@ -62,7 +62,7 @@ app.get('/usersbyid', (req, res) => {
     .catch(err => next(err))
 })
 
-app.get('/userbyid', (req, res) => {
+app.get('/userbyid', (req, res, next) => {
 
     // fetch user where _id === req.query.id from database
 
@@ -72,7 +72,7 @@ app.get('/userbyid', (req, res) => {
     .catch(err => next(err))
 })
 
-app.get('/comments', (req, res) => {
+app.get('/comments', (req, res, next) => {
 
     // fetch comments where recipe === req.query.recipeID from database
 
