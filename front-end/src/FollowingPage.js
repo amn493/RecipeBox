@@ -125,6 +125,78 @@ const FollowingPage = (props) => {
                             posts: true
                         },
                     id: 3
+                },
+                {
+                    username: 'pizzalover2020',
+                    password: '12345',
+                    email: 'makepizza@foo.org',
+                    firstName: 'Pizza',
+                    lastName: 'Lover',
+                    bio: 'How to make pizza from scratch!',
+                    followers: [1,2,3,4,5,5,6,7],
+                    following: [1,2,3,4,5],
+                    liked: [1,2,3,4,5],
+                    slug: 'pizza_lover',
+                    imagePath: 'https://picsum.photos/250',
+                    blockedUsers: [25],
+                    blockedTags: [],
+                    notificationSettings: 
+                        {
+                            emailNotifications: true,
+                            likes: false,
+                            comments: false,
+                            follows: false,
+                            posts: true
+                        },
+                    id: 4
+                },
+                {
+                    username: 'sweetandsalty',
+                    password: '12345',
+                    email: 'icecream@foo.org',
+                    firstName: 'Sweet',
+                    lastName: 'Salty',
+                    bio: 'Check out my homemade icecream!',
+                    followers: [1,2,3,4,5,5,6,7,8,9],
+                    following: [1,2,3,4,5,6,7,8,9,1,2,3],
+                    liked: [1,2,3,4],
+                    slug: 'sweet_and_salty',
+                    imagePath: 'https://picsum.photos/250',
+                    blockedUsers: [13],
+                    blockedTags: [],
+                    notificationSettings: 
+                        {
+                            emailNotifications: true,
+                            likes: false,
+                            comments: false,
+                            follows: false,
+                            posts: true
+                        },
+                    id: 5
+                },
+                {
+                    username: 'homechef',
+                    password: '12345',
+                    email: 'cook_at_home@foo.org',
+                    firstName: 'Home',
+                    lastName: 'Chef',
+                    bio: 'All homemade',
+                    followers: [1,2,3,4,5,5,6,7,8,9,1,2,3,4,5,6,7,8],
+                    following: [1,2,3],
+                    liked: [1,2,3,4,5,6,7,8,9,1,2,3],
+                    slug: 'home_chef',
+                    imagePath: 'https://picsum.photos/250',
+                    blockedUsers: [13],
+                    blockedTags: [],
+                    notificationSettings: 
+                        {
+                            emailNotifications: false,
+                            likes: false,
+                            comments: false,
+                            follows: false,
+                            posts: false
+                        },
+                    id: 6
                 }
             ]
 
@@ -139,8 +211,23 @@ const FollowingPage = (props) => {
     const [filterKeyword, setFilterKeyword] = useState('')
     // Filter following based on keyword entered by the user
     useEffect(() => {
-        // Set following array to only include following whose name contains the filter keyword
-        // setFollowing(allFollowing.filter(followingUser => ((filterKeyword !== '') ? followingUser.name.toLowerCase().includes(filterKeyword.toLowerCase()) : true)))
+        // Function to filter through all following users based on keyword search term entered
+        function searchName(followingUser) {
+            const match = filterKeyword.toLowerCase()
+            const names = match.split(' ')
+            // Compares every word in search term against username, firstName, and lastName
+            for (let i = 0; i < names.length; i++) {
+                if (followingUser.username.toLowerCase().includes(names[i]) ||
+                    followingUser.firstName.toLowerCase().includes(names[i]) || 
+                    followingUser.lastName.toLowerCase().includes(names[i])) {
+                        return true;
+                }
+            }
+            return false;
+        }
+
+        // Set following array to only include user whose name contains the filter keyword
+        setFollowing(allFollowing.filter(searchName))
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [filterKeyword]) // Update following when a new keyword is entered
