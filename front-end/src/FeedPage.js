@@ -26,7 +26,7 @@ const Feed = (props) => {
             setRecBoxRecipes(response.data)
         }).catch((err) => {
             console.log(err)
-            setRecBoxRecipes()
+            setRecBoxRecipes() // Returns empty, that way we can check in the RecipeList component if it's empty and return an error if so (e.g. "no recipes found")
         })
 
         
