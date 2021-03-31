@@ -92,6 +92,16 @@ app.get('/comments', (req, res, next) => {
     .catch(err => next(err))
 })
 
+app.get('/tags', (req, res, next) => {
+
+    // fetch all tags from database
+
+    axios
+    .get('https://my.api.mockaroo.com/tag.json?key=f6a27260')
+    .then(apiResponse => res.json(apiResponse.data.map(tag => tag.tag)))
+    .catch(err => next(err))
+})
+
 
 
 
