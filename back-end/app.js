@@ -147,6 +147,23 @@ app.post('/updateuserinfo', (req, res, next) => {
     const responseData = 'Successfully updated profile'
     res.json(responseData)
 })
+app.post('/likerecipe', (req, res) => {
+
+    // update signed-in user (_id === req.body.userID)'s liked array appropriately
+
+    const updatedLiked = req.body.liked
+    if(req.body.like) {
+        updatedLiked.push(req.body.recipeID)
+    }
+    else {
+        updatedLiked.splice(updatedLiked.indexOf(req.body.recipeID), 1)
+    }
+
+    // update recipe (_id === req.body.recipeID)'s likes count
+
+    res.json(updatedLiked)
+})
+
 
 
 // export the express app we created to make it available to other modules
