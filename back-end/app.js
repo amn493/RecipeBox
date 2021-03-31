@@ -118,7 +118,7 @@ app.post('/comment', (req, res) => {
     res.json(data)
 })
 
-app.post('/updateuserinfo', (req, res) => {
+app.post('/updateuserinfo', (req, res, next) => {
     // recieve post data from updating user's basic info
     const updateData = {
         username: req.body.username,
