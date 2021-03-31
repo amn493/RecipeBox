@@ -62,6 +62,16 @@ app.get('/usersbyid', (req, res) => {
     .catch(err => next(err))
 })
 
+app.get('/userbyslug', (req, res, next) => {
+
+    // fetch user where slug === req.query.slug from database
+
+    axios
+    .get('https://my.api.mockaroo.com/user.json?key=f6a27260')
+    .then(apiResponse => res.json(apiResponse.data[0]))
+    .catch(err => next(err))
+})
+
 app.get('/comments', (req, res) => {
 
     // fetch comments where recipe === req.query.recipeID from database
