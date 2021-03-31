@@ -206,6 +206,15 @@ app.post('/likerecipe', (req, res) => {
     // update recipe (_id === req.body.recipeID)'s likes count
 
     res.json(updatedLiked)
+app.post('/blockuser', (req, res) => {
+
+    // block or unblock user
+
+    const data = {
+        id: req.body.id,
+        addBlock: req.body.addBlock,
+    }
+    res.json(data)
 })
 
 
