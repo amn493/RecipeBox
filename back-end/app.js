@@ -30,7 +30,7 @@ app.use(cors(corsOptions))
 
 
 
-app.get('/recipe', (req, res) => {
+app.get('/recipe', (req, res, next) => {
 
     // fetch recipe where slug === req.query.slug from database
 
@@ -40,7 +40,7 @@ app.get('/recipe', (req, res) => {
     .catch(err => next(err))
 })
 
-app.get('/usersbyname', (req, res) => {
+app.get('/usersbyname', (req, res, next) => {
 
     // fetch users where name === req.query.username 
     // or name === req.query.firstName
@@ -52,13 +52,23 @@ app.get('/usersbyname', (req, res) => {
     .catch(err => next(err))
 })
 
-app.get('/usersbyid', (req, res) => {
+app.get('/usersbyid', (req, res, next) => {
 
     // fetch users where id === req.query.id from database
 
     axios
     .get('https://my.api.mockaroo.com/user.json?key=f6a27260')
     .then(apiResponse => res.json(apiResponse.data))
+    .catch(err => next(err))
+})
+
+app.get('/userbyid', (req, res, next) => {
+
+    // fetch user where _id === req.query.id from database
+
+    axios
+    .get('https://my.api.mockaroo.com/user.json?key=f6a27260')
+    .then(apiResponse => res.json(apiResponse.data[0]))
     .catch(err => next(err))
 })
 
@@ -72,7 +82,7 @@ app.get('/userbyslug', (req, res, next) => {
     .catch(err => next(err))
 })
 
-app.get('/comments', (req, res) => {
+app.get('/comments', (req, res, next) => {
 
     // fetch comments where recipe === req.query.recipeID from database
 
@@ -81,6 +91,24 @@ app.get('/comments', (req, res) => {
     .then(apiResponse => res.json(apiResponse.data))
     .catch(err => next(err))
 })
+
+
+
+
+app.post('/comment', (req, res) => {
+
+    // store new comment
+
+    const data = {
+        recipe: req.body.recipe,
+        user: req.body.user,
+        comment: req.body.comment,
+        createdAt: req.body.createdAt
+    }
+    res.json(data)
+})
+
+
 
 
 // export the express app we created to make it available to other modules
