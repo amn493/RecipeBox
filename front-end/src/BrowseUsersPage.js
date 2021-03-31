@@ -44,10 +44,10 @@ const BrowseUsersPage = (props) => {
                     notificationSettings: 
                         {
                             emailNotifications: false,
-                            likes: true,
-                            comments: true,
+                            likes: false,
+                            comments: false,
                             follows: false,
-                            posts: true
+                            posts: false
                         },
                     id: 1
                 },
@@ -91,7 +91,7 @@ const BrowseUsersPage = (props) => {
                     blockedTags: [],
                     notificationSettings: 
                         {
-                            emailNotifications: false,
+                            emailNotifications: true,
                             likes: true,
                             comments: true,
                             follows: false,
@@ -145,7 +145,7 @@ const BrowseUsersPage = (props) => {
                             follows: false,
                             posts: true
                         },
-                    id: 3
+                    id: 4
                 },
                 {
                     username: 'sweetandsalty',
@@ -169,7 +169,7 @@ const BrowseUsersPage = (props) => {
                             follows: false,
                             posts: true
                         },
-                    id: 3
+                    id: 5
                 },
                 {
                     username: 'homechef',
@@ -187,13 +187,13 @@ const BrowseUsersPage = (props) => {
                     blockedTags: [],
                     notificationSettings: 
                         {
-                            emailNotifications: true,
+                            emailNotifications: false,
                             likes: false,
                             comments: false,
                             follows: false,
-                            posts: true
+                            posts: false
                         },
-                    id: 3
+                    id: 6
                 }
             ]
 
