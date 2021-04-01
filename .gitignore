@@ -124,3 +124,5 @@ typings/
 ## Jekyll artifacts
 **/.jekyll-cache
 **/_site/
+back-end/package-lock.json
+front-end/package-lock.json
