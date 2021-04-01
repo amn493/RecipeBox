@@ -156,7 +156,7 @@ const RecipePage = (props) => {
                         </table>
                     
                         <p className="recipeCaption">{recipe.caption}</p>
-                        {recipe.tags.map((tag, i) => (<a className="recipeTag" href={'/browserecipes?tag=' + tag} key={i}>{'#' + tag}</a>))}
+                        {recipe.tags.map((tag, i) => (<a className="recipeTag text-info" href={'/browserecipes?tag=' + tag} key={i}>{'#' + tag}</a>))}
                     </div>
                     
                     <div className="recipeSubsection">
