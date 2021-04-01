@@ -103,6 +103,16 @@ app.get('/comments', (req, res, next) => {
     .catch(err => next(err))
 })
 
+app.get('/recipesbyuser', (req, res, next) => {
+
+    // fetch recipes where user.id === req.query.userID from database
+
+    axios
+    .get('https://my.api.mockaroo.com/recipe.json?key=f6a27260')
+    .then(apiResponse => res.json(apiResponse.data.slice(0, 18)))
+    .catch(err => next(err))
+})
+
 app.get('/tags', (req, res, next) => {
 
     // fetch all tags from database
@@ -110,6 +120,17 @@ app.get('/tags', (req, res, next) => {
     axios
     .get('https://my.api.mockaroo.com/tag.json?key=f6a27260')
     .then(apiResponse => res.json(apiResponse.data.map(tag => tag.tag)))
+    .catch(err => next(err))
+})
+
+app.get('/filteredrecipes', (req, res, next) => {
+
+    // fetch recipes where name contains req.query.keyword and tags includes all tags in req.query.tags from database
+
+    axios
+    .get('https://my.api.mockaroo.com/recipe.json?key=f6a27260')
+    // mock filtering to demonstrate how the filter works
+    .then(apiResponse => res.json(apiResponse.data.filter(recipe => ((req.query.keyword !== '') ? recipe.name.toLowerCase().includes(req.query.keyword.toLowerCase()) : true) && ((req.query.tags.length === 0 || (req.query.tags.length === 1 && req.query.tags[0] === '')) ? true : req.query.tags.reduce((acc, filterTag) => acc && ((filterTag !== '') ? recipe.tags.includes(filterTag) : true), true)))))
     .catch(err => next(err))
 })
 
@@ -129,6 +150,38 @@ app.post('/comment', (req, res) => {
     res.json(data)
 })
 
+app.post('/blockuser', (req, res) => {
+
+    // update signed-in user (_id === req.body.userID)'s blockedUsers array appropriately
+
+    const updatedBlockedUsers = req.body.blockedUsers
+    if(req.body.addBlock) {
+        updatedBlockedUsers.push(req.body.blockedUserID)
+    }
+    else {
+        updatedBlockedUsers.splice(updatedBlockedUsers.indexOf(req.body.blockedUserID), 1)
+    }
+    
+    res.json(updatedBlockedUsers)
+
+})
+
+app.post('/likerecipe', (req, res) => {
+
+    // update signed-in user (_id === req.body.userID)'s liked array appropriately
+
+    const updatedLiked = req.body.liked
+    if(req.body.like) {
+        updatedLiked.push(req.body.recipeID)
+    }
+    else {
+        updatedLiked.splice(updatedLiked.indexOf(req.body.recipeID), 1)
+    }
+
+    // update recipe (_id === req.body.recipeID)'s likes count
+
+    res.json(updatedLiked)
+})
 
 
 
