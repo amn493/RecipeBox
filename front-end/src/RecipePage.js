@@ -32,10 +32,10 @@ const RecipePage = (props) => {
 
     useEffect(() => {
         // fetch the recipe that corresponds to the slug from the url
-        axios('http://my.api.mockaroo.com/recipe.json?key=f6a27260')
+        axios(`http://localhost:4000/recipe?slug=${slug}`)
         .then((response) => {
             
-            setRecipe(response.data[0]) //TODO: change when database is integrated
+            setRecipe(response.data)
             setLoadedRecipe(true)
         })
         .catch((err) => {
