@@ -71,7 +71,7 @@ const RecipeBoxPage = (props) => {
     // https://my.api.mockaroo.com/recipe.json?key=f6a27260
     /* Pull in recipes from mockaroo */
     useEffect(() => {
-        axios('/0000').then((response) => {
+        axios('https://my.api.mockaroo.com/recipe.json?key=f6a27260').then((response) => {
             setRecBoxRecipes(response.data)
         }).catch((err) =>{
             // TODO: Print an error to the user, but for now mockaroo is likely
@@ -87,7 +87,7 @@ const RecipeBoxPage = (props) => {
 
     /* Return a simple true/false for ascendingOrder */
     let isAscending = () => {
-        let ascVal = ascendingOrder === 'Ascending' ? true : false
+        return ascendingOrder === 'Ascending' ? true : false
     }
 
     /* Sorting! */
@@ -97,7 +97,10 @@ const RecipeBoxPage = (props) => {
         // Sort by date posted -- TODO is to test! Mockaroo doesn't give us the greatest of dates
         if(sortByString === 'Sort by Date Posted') {
             resultingRecipes = resultingRecipes.sort((a,b) => {
-                return a.createdAt > b.createdAt ? 1 : -1
+                if(isAscending())
+                    return a.createdAt > b.createdAt ? 1 : -1
+                else
+                    return a.createdAt < b.createdAt ? 1 : -1
             })
         }
 
@@ -109,7 +112,10 @@ const RecipeBoxPage = (props) => {
         // Sort by like count
         if(sortByString === 'Sort by Like Count') {
             resultingRecipes = resultingRecipes.sort((a,b) => {
-                return a.likes > b.likes ? 1 : -1
+                if(isAscending())
+                    return a.likes > b.likes ? 1 : -1
+                else
+                    return a.likes < b.likes ? 1 : -1
             })
         }
 
