@@ -145,7 +145,7 @@ app.post('/comment', (req, res) => {
         recipe: req.body.recipe,
         user: req.body.user,
         comment: req.body.comment,
-        createdAt: req.body.createdAt
+        createdAt: Date.now()
     }
     res.json(data)
 })
@@ -171,6 +171,22 @@ app.post('/newrecipe', upload.single('recipeimage'), (req,res) => {
     res.json(newRecipe)
 
     // update/store each tag where tag.tag in req.body.tags (if tag doesn't exist count = 1, else count += 1)
+  
+})
+
+app.post('/blockuser', (req, res) => {
+
+    // update signed-in user (_id === req.body.userID)'s blockedUsers array appropriately
+
+    const updatedBlockedUsers = req.body.blockedUsers
+    if(req.body.addBlock) {
+        updatedBlockedUsers.push(req.body.blockedUserID)
+    }
+    else {
+        updatedBlockedUsers.splice(updatedBlockedUsers.indexOf(req.body.blockedUserID), 1)
+    }
+    
+    res.json(updatedBlockedUsers)
 })
 
 app.post('/likerecipe', (req, res) => {

@@ -19,7 +19,7 @@ const FollowersPage = (props) => {
     const [followers, setFollowers] = useState([])
 
     useEffect(() => {
-        // Fetch all followers
+        // Fetch all followers (followers are an array of user objects)
         axios('https://my.api.mockaroo.com/user.json?key=f6a27260')
         .then((response) => {
             setAllFollowers(response.data)
@@ -125,6 +125,78 @@ const FollowersPage = (props) => {
                             posts: true
                         },
                     id: 3
+                },
+                {
+                    username: 'pizzalover2020',
+                    password: '12345',
+                    email: 'makepizza@foo.org',
+                    firstName: 'Pizza',
+                    lastName: 'Lover',
+                    bio: 'How to make pizza from scratch!',
+                    followers: [1,2,3,4,5,5,6,7],
+                    following: [1,2,3,4,5],
+                    liked: [1,2,3,4,5],
+                    slug: 'pizza_lover',
+                    imagePath: 'https://picsum.photos/250',
+                    blockedUsers: [25],
+                    blockedTags: [],
+                    notificationSettings: 
+                        {
+                            emailNotifications: true,
+                            likes: false,
+                            comments: false,
+                            follows: false,
+                            posts: true
+                        },
+                    id: 4
+                },
+                {
+                    username: 'sweetandsalty',
+                    password: '12345',
+                    email: 'icecream@foo.org',
+                    firstName: 'Sweet',
+                    lastName: 'Salty',
+                    bio: 'Check out my homemade icecream!',
+                    followers: [1,2,3,4,5,5,6,7,8,9],
+                    following: [1,2,3,4,5,6,7,8,9,1,2,3],
+                    liked: [1,2,3,4],
+                    slug: 'sweet_and_salty',
+                    imagePath: 'https://picsum.photos/250',
+                    blockedUsers: [13],
+                    blockedTags: [],
+                    notificationSettings: 
+                        {
+                            emailNotifications: true,
+                            likes: false,
+                            comments: false,
+                            follows: false,
+                            posts: true
+                        },
+                    id: 5
+                },
+                {
+                    username: 'homechef',
+                    password: '12345',
+                    email: 'cook_at_home@foo.org',
+                    firstName: 'Home',
+                    lastName: 'Chef',
+                    bio: 'All homemade',
+                    followers: [1,2,3,4,5,5,6,7,8,9,1,2,3,4,5,6,7,8],
+                    following: [1,2,3],
+                    liked: [1,2,3,4,5,6,7,8,9,1,2,3],
+                    slug: 'home_chef',
+                    imagePath: 'https://picsum.photos/250',
+                    blockedUsers: [13],
+                    blockedTags: [],
+                    notificationSettings: 
+                        {
+                            emailNotifications: false,
+                            likes: false,
+                            comments: false,
+                            follows: false,
+                            posts: false
+                        },
+                    id: 6
                 }
             ]
 
@@ -139,8 +211,23 @@ const FollowersPage = (props) => {
     const [filterKeyword, setFilterKeyword] = useState('')
     // Filter followers based on keyword entered by the user
     useEffect(() => {
-        // Set followers array to only include followers whose name contains the filter keyword
-        // setFollowers(allFollowers.filter(follower => ((filterKeyword !== '') ? follower.name.toLowerCase().includes(filterKeyword.toLowerCase()) : true)))
+        // Function to filter through all followers based on keyword search term entered
+        function searchName(follower) {
+            const match = filterKeyword.toLowerCase()
+            const names = match.split(' ')
+            // Compares every word in search term against username, firstName, and lastName
+            for (let i = 0; i < names.length; i++) {
+                if (follower.username.toLowerCase().includes(names[i]) ||
+                    follower.firstName.toLowerCase().includes(names[i]) || 
+                    follower.lastName.toLowerCase().includes(names[i])) {
+                        return true;
+                }
+            }
+            return false;
+        }
+
+        // Set users array to only include followers whose name contains the filter keyword
+        setFollowers(allFollowers.filter(searchName))
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [filterKeyword]) // Update followers when a new keyword is entered
@@ -158,7 +245,8 @@ const FollowersPage = (props) => {
             </div>
             <div className='followersList'>
                 <div className='followerUserPreview'>
-                    {followers.sort((a, b) => a.firstName.localeCompare(b.firstName)).map((follower, i) => (<SmallUserPreview user={follower} isBlockedUserProfile={false} key={i}/>))}
+                    {followers.length === 0 ? 'No users found in search' : followers.sort((a, b) => a.firstName.localeCompare(b.firstName)).map((follower, i) => 
+                        (<SmallUserPreview user={follower} isBlockedUserProfile={false} key={i}/>))}
                 </div>
             </div>
         </div>
