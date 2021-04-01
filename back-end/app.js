@@ -139,6 +139,22 @@ app.post('/comment', (req, res) => {
     res.json(data)
 })
 
+app.post('/blockuser', (req, res) => {
+
+    // update signed-in user (_id === req.body.userID)'s blockedUsers array appropriately
+
+    const updatedBlockedUsers = req.body.blockedUsers
+    if(req.body.addBlock) {
+        updatedBlockedUsers.push(req.body.blockedUserID)
+    }
+    else {
+        updatedBlockedUsers.splice(updatedBlockedUsers.indexOf(req.body.blockedUserID), 1)
+    }
+    
+    res.json(updatedBlockedUsers)
+
+})
+
 app.post('/likerecipe', (req, res) => {
 
     // update signed-in user (_id === req.body.userID)'s liked array appropriately
