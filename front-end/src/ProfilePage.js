@@ -64,124 +64,126 @@ const ProfilePage = (props) => {
     const [loadedRecipes, setLoadedRecipes] = useState(false)
 
     useEffect(() => {
-        // fetch user's recipes
-        axios('https://my.api.mockaroo.com/recipe.json?key=f6a27260')
-        .then((response) => {
-            setRecipes(response.data.slice(0, 18))
-            setLoadedRecipes(true)
-        })
-        .catch((err) => {
-            console.error(err)
+        if (profileUser.username) {
+            // fetch user's recipes
+            axios(`http://localhost:4000/recipesbyuser?userID=${profileUser.id}`)
+            .then((response) => {
+                setRecipes(response.data.sort((a, b) => b.createdAt - a.createdAt))
+                setLoadedRecipes(true)
+            })
+            .catch((err) => {
+                console.error(err)
 
-            // make some backup fake data
-            const backupData = [
-                {
-                    user: {
-                        id: 1,
-                        username: 'foobar',
-                        slug: 'foobar'
-                    },
-                    name: 'Guacamole',
-                    imagePath: 'https://picsum.photos/200',
-                    tags: ['mexican', 'vegan'],
-                    caption: "my secret recipe:)",
-                    ingredients: [
-                        '3 avocados', 
-                        '1 tomato', 
-                        '1/2 yellow onion', 
-                        '2 jalapeños', 
-                        '1/4 bunch cilantro', 
-                        '1 lime', 
-                        'salt', 
-                        'pepper'
-                    ],
-                    instructions: [
-                        'Mash the avocados', 
-                        'Dice the tomato, onion, and jalapeños', 
-                        'Chop the cilantro', 
-                        'Put everything in a bowl', 
-                        'Squeeze in the lime', 
-                        'Add salt and pepper to taste', 
-                        'Mix'
-                    ],
-                    likes: 36,
-                    createdAt: 1615864425952,
-                    slug: 'foobar-guacamole',
-                    id: 1
-                    },
+                // make some backup fake data
+                const backupData = [
                     {
-                    user: {
-                        id: 1,
-                        username: 'foobar',
-                        slug: 'foobar'
-                    },
-                    name: 'Tacos',
-                    imagePath: 'https://picsum.photos/200',
-                    tags: ['mexican', 'appetizer'],
-                    caption: "my secret recipe:)",
-                    ingredients: [
-                        '3 avocados', 
-                        '1 tomato', 
-                        '1/2 yellow onion', 
-                        '2 jalapeños', 
-                        '1/4 bunch cilantro', 
-                        '1 lime', 
-                        'salt', 
-                        'pepper'
-                    ],
-                    instructions: [
-                        'Mash the avocados', 
-                        'Dice the tomato, onion, and jalapeños', 
-                        'Chop the cilantro', 
-                        'Put everything in a bowl', 
-                        'Squeeze in the lime', 
-                        'Add salt and pepper to taste', 
-                        'Mix'
-                    ],
-                    likes: 12,
-                    createdAt: 1615864425952,
-                    slug: 'foobar-tacos',
-                    id: 2
-                    },
-                    {
-                    user: {
-                        id: 1,
-                        username: 'foobar',
-                        slug: 'foobar'
-                    },
-                    name: 'Tofu',
-                    imagePath: 'https://picsum.photos/200',
-                    tags: ['vegan'],
-                    caption: "my secret recipe:)",
-                    ingredients: [
-                        '3 avocados', 
-                        '1 tomato', 
-                        '1/2 yellow onion', 
-                        '2 jalapeños', 
-                        '1/4 bunch cilantro', 
-                        '1 lime', 
-                        'salt', 
-                        'pepper'
-                    ],
-                    instructions: [
-                        'Mash the avocados', 
-                        'Dice the tomato, onion, and jalapeños', 
-                        'Chop the cilantro', 
-                        'Put everything in a bowl', 
-                        'Squeeze in the lime', 
-                        'Add salt and pepper to taste', 
-                        'Mix'
-                    ],
-                    likes: 30,
-                    createdAt: 1615864425952,
-                    slug: 'foobar-tofu',
-                    id: 3
-                    }
-            ]
+                        user: {
+                            id: 1,
+                            username: 'foobar',
+                            slug: 'foobar'
+                        },
+                        name: 'Guacamole',
+                        imagePath: 'https://picsum.photos/200',
+                        tags: ['mexican', 'vegan'],
+                        caption: "my secret recipe:)",
+                        ingredients: [
+                            '3 avocados', 
+                            '1 tomato', 
+                            '1/2 yellow onion', 
+                            '2 jalapeños', 
+                            '1/4 bunch cilantro', 
+                            '1 lime', 
+                            'salt', 
+                            'pepper'
+                        ],
+                        instructions: [
+                            'Mash the avocados', 
+                            'Dice the tomato, onion, and jalapeños', 
+                            'Chop the cilantro', 
+                            'Put everything in a bowl', 
+                            'Squeeze in the lime', 
+                            'Add salt and pepper to taste', 
+                            'Mix'
+                        ],
+                        likes: 36,
+                        createdAt: 1615864425952,
+                        slug: 'foobar-guacamole',
+                        id: 1
+                        },
+                        {
+                        user: {
+                            id: 1,
+                            username: 'foobar',
+                            slug: 'foobar'
+                        },
+                        name: 'Tacos',
+                        imagePath: 'https://picsum.photos/200',
+                        tags: ['mexican', 'appetizer'],
+                        caption: "my secret recipe:)",
+                        ingredients: [
+                            '3 avocados', 
+                            '1 tomato', 
+                            '1/2 yellow onion', 
+                            '2 jalapeños', 
+                            '1/4 bunch cilantro', 
+                            '1 lime', 
+                            'salt', 
+                            'pepper'
+                        ],
+                        instructions: [
+                            'Mash the avocados', 
+                            'Dice the tomato, onion, and jalapeños', 
+                            'Chop the cilantro', 
+                            'Put everything in a bowl', 
+                            'Squeeze in the lime', 
+                            'Add salt and pepper to taste', 
+                            'Mix'
+                        ],
+                        likes: 12,
+                        createdAt: 1615864425952,
+                        slug: 'foobar-tacos',
+                        id: 2
+                        },
+                        {
+                        user: {
+                            id: 1,
+                            username: 'foobar',
+                            slug: 'foobar'
+                        },
+                        name: 'Tofu',
+                        imagePath: 'https://picsum.photos/200',
+                        tags: ['vegan'],
+                        caption: "my secret recipe:)",
+                        ingredients: [
+                            '3 avocados', 
+                            '1 tomato', 
+                            '1/2 yellow onion', 
+                            '2 jalapeños', 
+                            '1/4 bunch cilantro', 
+                            '1 lime', 
+                            'salt', 
+                            'pepper'
+                        ],
+                        instructions: [
+                            'Mash the avocados', 
+                            'Dice the tomato, onion, and jalapeños', 
+                            'Chop the cilantro', 
+                            'Put everything in a bowl', 
+                            'Squeeze in the lime', 
+                            'Add salt and pepper to taste', 
+                            'Mix'
+                        ],
+                        likes: 30,
+                        createdAt: 1615864425952,
+                        slug: 'foobar-tofu',
+                        id: 3
+                        }
+                ]
 
-            setRecipes(backupData)
-            setLoadedRecipes(true)
-        })
+                setRecipes(backupData)
+                setLoadedRecipes(true)
+            })
+        }
     }, [profileUser])
 
     // state variable for storing the active tab
