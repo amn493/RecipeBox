@@ -44,10 +44,10 @@ const BrowseUsersPage = (props) => {
                     notificationSettings: 
                         {
                             emailNotifications: false,
-                            likes: true,
-                            comments: true,
+                            likes: false,
+                            comments: false,
                             follows: false,
-                            posts: true
+                            posts: false
                         },
                     id: 1
                 },
@@ -91,7 +91,7 @@ const BrowseUsersPage = (props) => {
                     blockedTags: [],
                     notificationSettings: 
                         {
-                            emailNotifications: false,
+                            emailNotifications: true,
                             likes: true,
                             comments: true,
                             follows: false,
@@ -106,7 +106,7 @@ const BrowseUsersPage = (props) => {
                     firstName: 'Bar',
                     lastName: 'Family',
                     bio: 'A house of chefs',
-                    followers: [1,2,3,4,5,5,6,7],
+                    followers: [1,2,3,4,5,5,6],
                     following: [1,2,3,4,5],
                     liked: [1,2,3,4,5],
                     slug: 'foobar_and_family',
@@ -122,6 +122,78 @@ const BrowseUsersPage = (props) => {
                             posts: true
                         },
                     id: 3
+                },
+                {
+                    username: 'pizzalover2020',
+                    password: '12345',
+                    email: 'makepizza@foo.org',
+                    firstName: 'Pizza',
+                    lastName: 'Lover',
+                    bio: 'How to make pizza from scratch!',
+                    followers: [1,2,3,4,5,5,6,7],
+                    following: [1,2,3,4,5],
+                    liked: [1,2,3,4,5],
+                    slug: 'pizza_lover',
+                    imagePath: 'https://picsum.photos/250',
+                    blockedUsers: [25],
+                    blockedTags: [],
+                    notificationSettings: 
+                        {
+                            emailNotifications: true,
+                            likes: false,
+                            comments: false,
+                            follows: false,
+                            posts: true
+                        },
+                    id: 4
+                },
+                {
+                    username: 'sweetandsalty',
+                    password: '12345',
+                    email: 'icecream@foo.org',
+                    firstName: 'Sweet',
+                    lastName: 'Salty',
+                    bio: 'Check out my homemade icecream!',
+                    followers: [1,2,3,4,5,5,6,7,8,9],
+                    following: [1,2,3,4,5,6,7,8,9,1,2,3],
+                    liked: [1,2,3,4],
+                    slug: 'sweet_and_salty',
+                    imagePath: 'https://picsum.photos/250',
+                    blockedUsers: [13],
+                    blockedTags: [],
+                    notificationSettings: 
+                        {
+                            emailNotifications: true,
+                            likes: false,
+                            comments: false,
+                            follows: false,
+                            posts: true
+                        },
+                    id: 5
+                },
+                {
+                    username: 'homechef',
+                    password: '12345',
+                    email: 'cook_at_home@foo.org',
+                    firstName: 'Home',
+                    lastName: 'Chef',
+                    bio: 'All homemade',
+                    followers: [1,2,3,4,5,5,6,7,8,9,1,2,3,4,5,6,7,8],
+                    following: [1,2,3],
+                    liked: [1,2,3,4,5,6,7,8,9,1,2,3],
+                    slug: 'home_chef',
+                    imagePath: 'https://picsum.photos/250',
+                    blockedUsers: [13],
+                    blockedTags: [],
+                    notificationSettings: 
+                        {
+                            emailNotifications: false,
+                            likes: false,
+                            comments: false,
+                            follows: false,
+                            posts: false
+                        },
+                    id: 6
                 }
             ]
 
@@ -135,8 +207,23 @@ const BrowseUsersPage = (props) => {
     const [filterKeyword, setFilterKeyword] = useState('')
     // Filter users based on keyword entered by the user
     useEffect(() => {
+        // Function to filter through all users based on keyword search term entered
+        function searchName(user) {
+            const match = filterKeyword.toLowerCase()
+            const names = match.split(' ')
+            // Compares every word in search term against username, firstName, and lastName
+            for (let i = 0; i < names.length; i++) {
+                if (user.username.toLowerCase().includes(names[i]) ||
+                    user.firstName.toLowerCase().includes(names[i]) || 
+                    user.lastName.toLowerCase().includes(names[i])) {
+                        return true;
+                }
+            }
+            return false;
+        }
+
         // Set users array to only include user whose name contains the filter keyword
-        // setUsers(allUsers.filter(user => ((filterKeyword !== '') ? user.name.toLowerCase().includes(filterKeyword.toLowerCase()) : true)))
+        setUsers(allUsers.filter(searchName))
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [filterKeyword]) // Update users when a new keyword is entered
@@ -147,7 +234,8 @@ const BrowseUsersPage = (props) => {
             <div className='browseUserSearch'>
                 <KeyWordSearchBar isRecipe={false} filter={filterKeyword} setFilter={setFilterKeyword} />
                 <div className='userPreviews'>
-                    {users.sort((a, b) => a.firstName.localeCompare(b.firstName)).map((user, i) => (<SmallUserPreview user={user} isBlockedUserProfile={false} key={i}/>))}
+                    {users.length === 0 ? 'No users found in search' : users.sort((a, b) => a.firstName.localeCompare(b.firstName)).map((user, i) => 
+                        (<SmallUserPreview user={user} isBlockedUserProfile={false} key={i}/>))}
                 </div>
             </div>
             <div className='recommendedUsers'>
