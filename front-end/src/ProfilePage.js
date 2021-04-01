@@ -27,9 +27,9 @@ const ProfilePage = (props) => {
 
     useEffect(() => {
         // fetch the user whose profile is being displayed (slug = slug)
-        axios('https://my.api.mockaroo.com/user.json?key=f6a27260')
+        axios(`http://localhost:4000/userbyslug?slug=${slug}`)
         .then((response) => {
-            setProfileUser(response.data[0])
+            setProfileUser(response.data)
             setLoadedUser(true)
         })
         .catch((err) => {
@@ -55,7 +55,7 @@ const ProfilePage = (props) => {
             setProfileUser(backupData[0])
             setLoadedUser(true)
         })
-    }, [])
+    }, [slug])
 
 
 
