@@ -167,7 +167,6 @@ const AppSettings = (props) => {
     const [blockedTagsList, addBlockedTagToList] = useState(props.user.blockedTags) //list of current user's blocked tags
 
     const handleAddBlockedTag = (props) => {
-        addBlockedTag(true)
         if (blockedTagsList.includes(props) === false){
             addBlockedTagToList(blockedTagsList.concat(props)) //change (1) list of user's blocked tags
             let index = tagsToBlock.indexOf(props)

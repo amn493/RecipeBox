@@ -18,10 +18,10 @@ const BrowseRecipesPage = (props) => {
 
     useEffect(() => {
         // fetch all tags
-        axios('https://my.api.mockaroo.com/tag.json?key=f6a27260')
+        axios('http://localhost:4000/tags')
         .then((response) => {
             
-            setTags(response.data.map(tag => tag.tag))
+            setTags(response.data)
         })
         .catch((err) => {
             console.error(err)
