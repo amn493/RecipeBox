@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { useParams } from 'react-router-dom'
+import { ArrowLeftCircleFill } from 'react-bootstrap-icons'
 
 import './FollowersPage.css'
 import KeyWordSearchBar from './KeywordSearchBar.js'
@@ -236,7 +237,7 @@ const FollowersPage = (props) => {
     return (
         <div className='followers'>
             <div className='followersHeading'>
-                <a className='backLink' href='javascript:history.back()'>Back</a>
+                <a className='backLink text-info' href='javascript:history.back()'><i><ArrowLeftCircleFill /></i></a>
                 <h3 className='userName'>{props.user.firstName} {props.user.lastName}</h3>
                 <h4 className='title'>Followers</h4>
             </div>
@@ -245,7 +246,7 @@ const FollowersPage = (props) => {
             </div>
             <div className='followersList'>
                 <div className='followerUserPreview'>
-                    {followers.length === 0 ? 'No users found in search' : followers.sort((a, b) => a.firstName.localeCompare(b.firstName)).map((follower, i) => 
+                    {followers.length === 0 ? <p className="noFollowersFoundMessage">No users found</p> : followers.sort((a, b) => a.firstName.localeCompare(b.firstName)).map((follower, i) => 
                         (<SmallUserPreview user={follower} isBlockedUserProfile={false} key={i}/>))}
                 </div>
             </div>
