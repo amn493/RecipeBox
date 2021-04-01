@@ -4,6 +4,7 @@ const app = express() // instantiate an Express object
 
 const morgan = require("morgan") // middleware for nice logging of incoming HTTP requests
 const multer = require("multer") // middleware to handle HTTP POST requests with file uploads
+const path = require('path');
 const axios = require("axios") // middleware for making requests to APIs
 const cors = require('cors');
 require("dotenv").config({ silent: true }) // load environmental variables from a hidden file named .env
@@ -26,6 +27,16 @@ const corsOptions = {
     }
 }
 app.use(cors(corsOptions))
+
+
+// MULTER 
+
+// object for storage option for multer
+const storage = multer.diskStorage({destination: (req,file,cb) => cb(null, path.join(__dirname, '../front-end/public/uploads')), filename: (req,file,cb) => cb(null, `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`)})
+  
+// middleware for multer (save files with new name + proper extension to avoid collisions)
+const upload = multer({fileFilter: (req, file, cb) => cb(null, ['image/jpeg', 'image/png'].includes(file.mimetype)), storage: storage})
+  
 
 
 
@@ -157,6 +168,29 @@ app.post('/updateuserinfo', (req, res, next) => {
     const responseData = 'Successfully updated profile'
     res.json(responseData)
 })
+app.post('/newrecipe', upload.single('recipeimage'), (req,res) => {
+
+    // store new recipe
+  
+    const newRecipe = {
+        user: {
+            id: +req.body.userID,
+            username: req.body.username
+        },
+        name: req.body.name,
+        imagePath: path.join('/uploads/', req.file.filename),
+        tags: req.body.tags.split(','),
+        caption: req.body.caption,
+        ingredients: req.body.ingredients.split(',').map(ingredient => ingredient.trim()).filter(ingredient => ingredient !== ''),
+        instructions: req.body.instructions.split(',').map(instruction => instruction.trim()).filter(instruction => instruction !== ''),
+        likes: 0,
+        createdAt: Date.now()
+    }
+    res.json(newRecipe)
+
+    // update/store each tag where tag.tag in req.body.tags (if tag doesn't exist count = 1, else count += 1)
+})
+
 app.post('/likerecipe', (req, res) => {
 
     // update signed-in user (_id === req.body.userID)'s liked array appropriately
