@@ -83,7 +83,7 @@ app.post('/comment', (req, res) => {
         recipe: req.body.recipe,
         user: req.body.user,
         comment: req.body.comment,
-        createdAt: req.body.createdAt
+        createdAt: Date.now()
     }
     res.json(data)
 })
