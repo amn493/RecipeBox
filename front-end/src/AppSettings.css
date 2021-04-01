@@ -51,11 +51,6 @@
     max-height:100;
 }
 
-.blockedTagsDisplay{
-    border: 1px solid grey;
-    padding: 10px;
-}
-
 
 .custom-control-input:checked ~ 
 .custom-control-label::before {
@@ -85,4 +80,8 @@
     font-weight: 900;
     font-size: 30px;
     font-family: sans-serif;
+}
+
+.settingsInstructionText {
+    font-size: 13px;
 }

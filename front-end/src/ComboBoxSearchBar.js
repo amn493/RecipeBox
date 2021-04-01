@@ -30,7 +30,7 @@ const ComboBoxSearchBar = (props) => {
                 <td className="iconCell comboCell">
                     <InputGroup className="icon">
 
-                        props.isTag === true ?
+                        {props.isTag === true ?
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="searchHashIcon"><i><Hash /></i></InputGroup.Text>
                             </InputGroup.Prepend>
@@ -38,6 +38,7 @@ const ComboBoxSearchBar = (props) => {
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="searchAtIcon"><i><At /></i></InputGroup.Text>
                             </InputGroup.Prepend>   
+                        }
 
                     </InputGroup>
                 </td>

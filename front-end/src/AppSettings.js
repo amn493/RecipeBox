@@ -300,15 +300,15 @@ const AppSettings = (props) => {
                             </div>
                         </div>
                         </td>
-                    </tr>
+                    </tr><hr/>
 				</table>
 				</div>
 				<br/><br/>
 
                 {/* blocked users section*/}
                 <div className="blockedUsers">
-                    <div className="emailNotifLabel"><b>Blocked Users</b></div><hr/>
-                    <b>Enter a username to block</b>
+                    <p><b>Blocked Users</b></p>
+                    <b className="settingsInstructionText">Enter a username to block</b>
                     <div className="addBlockedUser"> 
                         {/* prompt user to block any user who is not currently in their blocklist */}
                         <ComboBoxSearchBar className="addBlockedUsersField" isTag={false} tags={[]} users={usersToBlock.filter((user) => (!blockedUsers.includes(user))).map((user) => user.username)} setSelection={blockUser}/>
@@ -320,22 +320,25 @@ const AppSettings = (props) => {
                     </div>
                 </div>
 
+                <br/>
+
                 {/* blocked tags section*/}
                 <div className="blockedTags">
-                    <b className="blockedTagsHeader">Blocked Tags</b><br></br>
+                    <p><b className="blockedTagsHeader">Blocked Tags</b></p>
                     <div className="blockedTagsDisplay">
-                        <div className="actualBlockedTags">
-                            {blockedTagsList.map((selectTag, i) => <TagButton tag={selectTag} tags={tagsToBlock} filterTags={blockedTagsList} setTags={setTagsToBlock} setFilterTags={addBlockedTagToList} key={i} />)}<hr/>
-                        </div>
-                        <b>Enter a tag to block</b>
+                        <b className="settingsInstructionText">Enter a tag to block</b>
                         <div className="addBlockedTagsField">
                             { (<ComboBoxSearchBar className="addBlockedTagsField" isTag={true} tags={tagsToBlock} users={[]} setSelection={handleAddBlockedTag}/>) }
                         </div>
-                    </div><br/>
+                        <br/>
+                        <div className="actualBlockedTags">
+                            {blockedTagsList.map((selectTag, i) => <TagButton tag={selectTag} tags={tagsToBlock} filterTags={blockedTagsList} setTags={setTagsToBlock} setFilterTags={addBlockedTagToList} key={i} />)}
+                        </div>
+                    </div>
                 </div>
 
                 {/* signout button*/}
-                <br/><div className="signOutButton">
+                <div className="signOutButton">
                     <a href="/sign-in"><br/><br/> 
                         <Button className='submitButton' type='submit' variant='outline-info'  onClick={() => props.setSignedIn(false)}>Sign Out</Button>   
                         {/* TODO: handle credentials stuff*/}
