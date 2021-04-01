@@ -43,7 +43,7 @@ const ComboBoxSearchBar = (props) => {
                     </InputGroup>
                 </td>
                 <td className="comboCell">
-                    <ComboBoxSearchResults setSelection={props.setSelection} listForSearch={props.isTag ? props.tags : props.users} placeholder={props.isTag ? 'e.g: "dairy"' : "John Smith / username"} />
+                    <ComboBoxSearchResults setSelection={props.setSelection} listForSearch={props.isTag ? props.tags : props.users} placeholder={props.isTag ? 'tag' : "username"} />
                 </td>
             </tr>
         </table>
