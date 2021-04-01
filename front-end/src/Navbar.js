@@ -7,9 +7,9 @@ import HamburgerNotSignedIn from './HamburgerNotSignedIn'
 const Navbar = (props) => {
 
     // Determine what shows up for navbar sign in/create account buttons
-    let hamburgerMenu = <HamburgerNotSignedIn />
-    if(props.signedIn === "true") {
-        hamburgerMenu = <HamburgerSignedIn />
+    let hamburgerMenu = <HamburgerNotSignedIn user={props.user} />
+    if(props.signedIn === true) {
+        hamburgerMenu = <HamburgerSignedIn user={props.user}/>
     }
     
     return (

@@ -35,6 +35,10 @@
     display: inline;
 }
 
+.blockedTags{
+    padding-top: 5%;
+}
+
 .blockedTagsHeader{
     display: inline-block;
     width: 20em;
@@ -68,4 +72,17 @@
 .custom-control-label::before {
     background-color: white;
     opacity: 60%;
+}
+
+.backToSettings{
+    transform: translatey(-75%);
+}
+.blockedUsersTitle{
+    text-align: center;
+    transform: translatey(-75%);
+}
+.blockedUsersPTag{
+    font-weight: 900;
+    font-size: 30px;
+    font-family: sans-serif;
 }

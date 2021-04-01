@@ -9,7 +9,7 @@ import Nav from 'react-bootstrap/Nav'
 const HamburgerNotSignedIn = (props) => {
     return (
         <div className="recipeboxNavDropdown">
-            <Navbar collapseOnSelect expand="lg">
+            <Navbar collapseOnSelect expand="lg" variant="dark">
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                 <Navbar.Brand className="rbxLogo" href="/">RecipeBox</Navbar.Brand>
                 <Navbar.Collapse className="navCollapseElement" id="responsive-navbar-nav">

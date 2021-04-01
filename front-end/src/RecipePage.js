@@ -32,10 +32,10 @@ const RecipePage = (props) => {
 
     useEffect(() => {
         // fetch the recipe that corresponds to the slug from the url
-        axios('https://my.api.mockaroo.com/recipe.json?key=f6a27260')
+        axios(`http://localhost:4000/recipe?slug=${slug}`)
         .then((response) => {
             
-            setRecipe(response.data[0]) //TODO: change when database is integrated
+            setRecipe(response.data)
             setLoadedRecipe(true)
         })
         .catch((err) => {
@@ -90,33 +90,36 @@ const RecipePage = (props) => {
     const [comments, setComments] = useState([])
 
     useEffect(() => {
-        axios('https://my.api.mockaroo.com/comment.json?key=f6a27260')
-        .then((response) => {
-            setComments(response.data) //TODO: change when database is integrated
-            setLoadedComments(true)
-        })
-        .catch((err) => {
-            console.error(err)
+        if (loadedRecipe) {
+            axios(`http://localhost:4000/comments?recipeID=${recipe.id}`)
+            .then((response) => {
+                setComments(response.data.sort((a, b) => a.createdAt - b.createdAt))
+                setLoadedComments(true)
+            })
+            .catch((err) => {
+                console.error(err)
 
-            // make some backup fake data
-            const backupData = [
-                {
-                    recipe: 2, // a reference to a Recipe object
-                    user: 5, // a reference to a User object
-                    comment: 'Love this recipe!',
-                    createdAt: 1615864460796
-                },
-                {
-                    recipe: 2, // a reference to a Recipe object
-                    user: 12, // a reference to a User object
-                    comment: 'This recipe is amazing',
-                    createdAt: 1615864472221
-                }
-            ]
+                // make some backup fake data
+                const backupData = [
+                    {
+                        recipe: 2, // a reference to a Recipe object
+                        user: 5, // a reference to a User object
+                        comment: 'Love this recipe!',
+                        createdAt: 1615864460796
+                    },
+                    {
+                        recipe: 2, // a reference to a Recipe object
+                        user: 12, // a reference to a User object
+                        comment: 'This recipe is amazing',
+                        createdAt: 1615864472221
+                    }
+                ]
 
-            setComments(backupData)
-            setLoadedComments(true)
-        })
+                setComments(backupData)
+                setLoadedComments(true)
+            })
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [loadedRecipe])
 
 

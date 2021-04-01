@@ -31,11 +31,11 @@ const NewRecipePage = (props) => {
 
     // add tag button pressed
     const addTag = () => {
-        if(tagValue !== '') {
+        if(tagValue.trim() !== '') {
             // add tag to tags array and clear tag field
-            setTags(tags.concat([tagValue]))
-            setTagValue('')
+            setTags(tags.concat([tagValue.trim()]))
         }
+        setTagValue('')
     }
 
     // tag clicked

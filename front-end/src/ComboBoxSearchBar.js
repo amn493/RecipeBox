@@ -18,52 +18,50 @@ import { At, Hash } from 'react-bootstrap-icons'
 //Expects a list of all tags available in database (tags), a list of all users available in the database (users), and 
 //a boolean isTag, which, if true, prompts a user for tags, and if false, prompts a search for users
 
-let listForSearch = [] //users or tags
-let placeholder = "" 
+
 
 const ComboBoxSearchBar = (props) => {
-    const adjacentIcon = () =>{
-        return(
-            props.isTag === true ?
-                <InputGroup.Prepend>
-                    <InputGroup.Text id="searchHashIcon"><i><Hash /></i></InputGroup.Text>
-                </InputGroup.Prepend>
-            
-            :
-    
-                <InputGroup.Prepend>
-                    <InputGroup.Text id="searchAtIcon"><i><At /></i></InputGroup.Text>
-                </InputGroup.Prepend>
-        )
-    }
 
-    if(props.isTag === true) { // if isTag is true, this component is being used to search for tags
-        listForSearch = props.tags
-        placeholder='e.g: "dairy"'
-    } else{
-        listForSearch = props.users
-        placeholder="John Smith / username"
-    }
+
 
     return(
         <table className="comboBox">
             <tr>
                 <td className="iconCell comboCell">
                     <InputGroup className="icon">
-                        {adjacentIcon()}
+
+                        props.isTag === true ?
+                            <InputGroup.Prepend>
+                                <InputGroup.Text id="searchHashIcon"><i><Hash /></i></InputGroup.Text>
+                            </InputGroup.Prepend>
+                        :
+                            <InputGroup.Prepend>
+                                <InputGroup.Text id="searchAtIcon"><i><At /></i></InputGroup.Text>
+                            </InputGroup.Prepend>   
+
                     </InputGroup>
                 </td>
                 <td className="comboCell">
-                    <ComboBoxSearchResults setSelection={props.setSelection} />
+                    <ComboBoxSearchResults setSelection={props.setSelection} listForSearch={props.isTag ? props.tags : props.users} placeholder={props.isTag ? 'e.g: "dairy"' : "John Smith / username"} />
                 </td>
             </tr>
         </table>
     )
-
 }
 
 
 const ComboBoxSearchResults = (props) => {
+
+    const useMatch= (term) => {
+        return useMemo(
+            () => term.trim() === ""
+                ? null
+                : matchSorter(props.listForSearch, term, {
+                keys: [(item) => `${item}`],
+                }),
+            [term]
+        )
+    }
 
     const [term, setTerm] = useState('');
     const results = useMatch(term);
@@ -81,7 +79,7 @@ const ComboBoxSearchResults = (props) => {
 
     return (
         <Combobox className="comboSearchBar" onSelect={handleSelect}>
-            <ComboboxInput className="comboBoxInput" placeholder={placeholder} value={term}
+            <ComboboxInput className="comboBoxInput" placeholder={props.placeholder} value={term}
                 onChange={handleChange} 
             />
             {results && (
@@ -106,15 +104,6 @@ const ComboBoxSearchResults = (props) => {
     )
 }
 
-const useMatch= (term) => {
-    return useMemo(
-        () => term.trim() === ""
-            ? null
-            : matchSorter(listForSearch, term, {
-            keys: [(item) => `${item}`],
-            }),
-        [term]
-    )
-}
+
 
 export default ComboBoxSearchBar;

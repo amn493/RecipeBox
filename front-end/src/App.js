@@ -8,12 +8,12 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 // Import pages
 import RecipePage from './RecipePage.js'
 import FeedPage from './FeedPage.js'
+import RecipeBoxPage from './RecipeBoxPage.js'
 import Navbar from './Navbar.js'
 import BrowseRecipesPage from './BrowseRecipesPage.js'
 import ProfilePage from './ProfilePage.js'
 import NewRecipePage from './NewRecipePage.js'
 import SignInForm from './SignInForm.js'
-import BlockedUsers from './BlockedUsers.js'
 import AppSettings from './AppSettings.js'
 import CreateAccountPage from './CreateAccountPage.js'
 import FollowersPage from './FollowersPage.js'
@@ -81,7 +81,7 @@ function App() {
     }) // signed in user
   return (
     <>
-    <Navbar signedIn="true"/>
+    <Navbar signedIn={signedIn} user={user}/>
     <div className='App container' id='outer-container'>
       {/*<HamburgerNotSignedIn pageWrapId={ 'page-wrap' } outerContainerId={ 'outer-container' } />*/}
       <main id='page-wrap'>
@@ -150,23 +150,16 @@ function App() {
               {signedIn ? <NewRecipePage user={user} /> : <Redirect to="/sign-in" />}
             </Route>
 
-            {/* MY RECIPE BOX PAGE
+            {/* MY RECIPE BOX PAGE */}
             <Route path="/my-recipe-box">
-              {signedIn ? //insert corresponding page component tag here : <Redirect to="/sign-in" />}
+              {signedIn ? <RecipeBoxPage user={user} /> : <Redirect to="/sign-in" />}
             </Route>
-            */}
 
             {/* SETTINGS PAGE*/
             <Route path="/settings" exact={true}>
               {signedIn ? <AppSettings user={user} setSignedIn={setSignedIn}/> : <Redirect to="/sign-in" />}
             </Route>
-            }
-
-            {/* BLOCKED USERS PAGE */}
-            <Route path="/settings/blocked-users">
-              {signedIn ? <BlockedUsers user={user}/> : <Redirect to="/sign-in" />}
-            </Route>
-           
+            }           
 
           </Switch>
         </BrowserRouter>
