@@ -200,6 +200,7 @@ const AppSettings = (props) => {
 								<div className='custom-control custom-switch'id={1}>
 									<input
 										type='checkbox'
+                                        name='email'
 										className='custom-control-input'
 										id='customSwitches1'
 										checked={emailNotifs}
@@ -221,6 +222,7 @@ const AppSettings = (props) => {
                                         <div className='custom-control custom-switch' id={2}>
                                             <input
                                                 type='checkbox'
+                                                name='likes'
                                                 className='custom-control-input'
                                                 id='customSwitches2'
                                                 checked={likesNotifs}
@@ -246,6 +248,7 @@ const AppSettings = (props) => {
                         <div className='custom-control custom-switch' id={3}>
                             <input
                                 type='checkbox'
+                                name='comments'
                                 className='custom-control-input'
                                 id='customSwitches3'
                                 checked={commentsNotifs}
@@ -268,6 +271,7 @@ const AppSettings = (props) => {
                         <div className='custom-control custom-switch' id={4}>
                             <input
                                 type='checkbox'
+                                name='followers'
                                 className='custom-control-input'
                                 id='customSwitches4'
                                 checked={followersNotifs}
@@ -290,6 +294,7 @@ const AppSettings = (props) => {
                         <div className='custom-control custom-switch' id={5}>
                             <input
                                 type='checkbox'
+                                name='posts'
                                 className='custom-control-input'
                                 id='customSwitches5'
                                 checked={postsNotifs}

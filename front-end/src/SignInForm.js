@@ -53,7 +53,9 @@ const SignInForm = (props) =>  {
       <div className='redirectSignIn'>
         Don't have an account?
       </div>
-      <a className='createAccountLink' href='/create-account'>Create Account</a>
+      <div className='createAccountDiv'>
+        <a className='createAccountLink text-info' href='/create-account'>Create Account</a>
+      </div>
     </div>
   );
 }

@@ -10,7 +10,7 @@ import ProfileHeader from './ProfileHeader.js'
 import FollowButton from './FollowButton.js'
 import SmallRecipePreview from './SmallRecipePreview.js'
 import LargeRecipePreview from './LargeRecipePreview.js'
-import SignInModal from './SignInModal.js'
+import CreateAccountModal from './CreateAccountModal.js'
 
 import './ProfilePage.css'
 import { ButtonGroup, InputGroup } from 'react-bootstrap'
@@ -234,7 +234,7 @@ const ProfilePage = (props) => {
                     </Tab.Container>
                 </div>
 
-                <SignInModal show={showModal} setShow={setShowModal} />
+                <CreateAccountModal show={showModal} setShow={setShowModal} />
             </div>
         :
             <></>

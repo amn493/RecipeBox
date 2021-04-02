@@ -5,18 +5,17 @@
   margin-top: 20px;
 }
   
+.signInDiv {
+  text-align: center;
+}
+
 .signInLink {
-  display: flex;
-  justify-content: center;
-  color: rgb(23, 162, 184);
   font-weight: bold;
 }
 
 .signInLink:hover, .signInLink:active {
-  color: rgb(23, 162, 184);
   font-weight: bold;
   text-decoration: none;
-  opacity: 60%;
 }
 
 .hidden {
