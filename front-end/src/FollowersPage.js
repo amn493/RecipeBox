@@ -15,12 +15,14 @@ const FollowersPage = (props) => {
 
     // Request all followers on initial render
     const [user, setUser] = useState([])
+    const [loadedUser, setLoadedUser] = useState(false)
 
     useEffect(() => {
         // fetch the user whose profile is being displayed (slug = slug)
         axios(`http://localhost:4000/userbyslug?slug=${slug}`)
         .then((response) => {
             setUser(response.data)
+            setLoadedUser(true)
         })
         .catch((err) => {
             console.error(err)
@@ -43,6 +45,7 @@ const FollowersPage = (props) => {
             ]
 
             setUser(backupData[0])
+            setLoadedUser(true)
         })
     }, [slug])
 
@@ -51,6 +54,7 @@ const FollowersPage = (props) => {
     const [allFollowers, setAllFollowers] = useState([])
     // Array of followers to be displayed
     const [followers, setFollowers] = useState([])
+    const [loadedFollowers, setLoadedFollowers] = useState(false)
 
     useEffect(() => {
         // Fetch all followers (followers are an array of user objects)
@@ -59,6 +63,7 @@ const FollowersPage = (props) => {
             .then((response) => {
                 setAllFollowers(response.data)
                 setFollowers(response.data)
+                setLoadedFollowers(true)
             })
             .catch((err) => {
                 console.error(err)
@@ -237,6 +242,7 @@ const FollowersPage = (props) => {
 
                 setAllFollowers(backupData)
                 setFollowers(backupData)
+                setLoadedFollowers(true)
             })
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -270,22 +276,24 @@ const FollowersPage = (props) => {
 
 
     return (
-        <div className='followers'>
-            <div className='followersHeading'>
-            <a className='backLink' href='{/user-${slug}}'>Back</a>
-                <h3 className='username'>@{user.username}</h3>
-                <h4 className='title'>{`${user.followers.length} ${user.followers.length !== 1 ? 'Followers' : 'Follower'}`}</h4>
-            </div>
-            <div className='userSearchBar'>
-                <KeyWordSearchBar isRecipe={false} filter={filterKeyword} setFilter={setFilterKeyword} />
-            </div>
-            <div className='followersList'>
-                <div className='followerUserPreview'>
-                    {followers.length === 0 ? 'No users found in search' : followers.sort((a, b) => a.firstName.localeCompare(b.firstName)).map((follower, i) => 
-                        (<SmallUserPreview user={follower} isBlockedUserProfile={false} key={i}/>))}
+        loadedUser && loadedFollowers ?
+            <div className='followers'>
+                <div className='followersHeading'>
+                <a className='backLink' href='{/user-${slug}}'>Back</a>
+                    <h3 className='username'>@{user.username}</h3>
+                    <h4 className='title'>{`${user.followers.length} ${user.followers.length !== 1 ? 'Followers' : 'Follower'}`}</h4>
+                </div>
+                <div className='userSearchBar'>
+                    <KeyWordSearchBar isRecipe={false} filter={filterKeyword} setFilter={setFilterKeyword} />
+                </div>
+                <div className='followersList'>
+                    <div className='followerUserPreview'>
+                        {followers.length === 0 ? 'No users found in search' : followers.sort((a, b) => a.firstName.localeCompare(b.firstName)).map((follower, i) => 
+                            (<SmallUserPreview user={follower} isBlockedUserProfile={false} key={i}/>))}
+                    </div>
                 </div>
             </div>
-        </div>
+        : <></>
     )
 }
 
