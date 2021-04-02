@@ -206,7 +206,22 @@ app.post('/likerecipe', (req, res) => {
     res.json(updatedLiked)
 })
 
+app.post('/notificationSettings', (req, res) => {
 
+    // recieve updated notification settings
+    const updatedNotificationSettings = {
+        email: req.body.email,
+        likes: req.body.likes,
+        comments: req.body.comments,
+        followers: req.body.followers,
+        posts: req.body.posts
+    }
+
+    // update the settings
+
+    // send response
+    res.json(data)
+})
 
 // export the express app we created to make it available to other modules
 module.exports = app

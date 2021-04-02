@@ -200,6 +200,7 @@ const AppSettings = (props) => {
 								<div className='custom-control custom-switch'id={1}>
 									<input
 										type='checkbox'
+                                        name='email'
 										className='custom-control-input'
 										id='customSwitches1'
 										checked={emailNotifs ? 'checked' : ''}
@@ -221,6 +222,7 @@ const AppSettings = (props) => {
                                         <div className='custom-control custom-switch' id={2}>
                                             <input
                                                 type='checkbox'
+                                                name='likes'
                                                 className='custom-control-input'
                                                 id='customSwitches2'
                                                 checked={emailNotifs && likesNotifs ? 'checked' : ''}
@@ -245,6 +247,7 @@ const AppSettings = (props) => {
                         <div className='custom-control custom-switch' id={3}>
                             <input
                                 type='checkbox'
+                                name='comments'
                                 className='custom-control-input'
                                 id='customSwitches3'
                                 checked={emailNotifs && commentsNotifs ? 'checked' : ''}
@@ -266,6 +269,7 @@ const AppSettings = (props) => {
                         <div className='custom-control custom-switch' id={4}>
                             <input
                                 type='checkbox'
+                                name='followers'
                                 className='custom-control-input'
                                 id='customSwitches4'
                                 checked={emailNotifs && followersNotifs ? 'checked' : ''}
@@ -287,6 +291,7 @@ const AppSettings = (props) => {
                         <div className='custom-control custom-switch' id={5}>
                             <input
                                 type='checkbox'
+                                name='posts'
                                 className='custom-control-input'
                                 id='customSwitches5'
                                 checked={emailNotifs && postsNotifs ? 'checked' : ''}
