@@ -1,27 +1,24 @@
 /* Styling for the create account page*/
-.createAccount {
-    display: flex;
-    flex-direction: column;
-  }
-    
-  .formInput {
-    margin: 15px auto;
-  }
-    
-  .createAccount button {
-    margin: 15px auto;
-    display: flex;
-    justify-content: center;
-  }
-    
-  .redirectCreateAccount {
-    display: flex;
-    justify-content: center;
-  }
-    
-  .signInLink {
-    display: flex;
-    justify-content: center;
-    margin-left: 10px;
-    color: rgb(0, 0, 0)
-  }
+.redirectCreateAccount {
+  text-align: center;
+  font-size: 15px;
+  margin-top: 20px;
+}
+  
+.signInLink {
+  display: flex;
+  justify-content: center;
+  color: rgb(23, 162, 184);
+  font-weight: bold;
+}
+
+.signInLink:hover, .signInLink:active {
+  color: rgb(23, 162, 184);
+  font-weight: bold;
+  text-decoration: none;
+  opacity: 60%;
+}
+
+.hidden {
+  display: none;
+}

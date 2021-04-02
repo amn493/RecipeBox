@@ -27,13 +27,13 @@ const ProfileHeader = (props) => {
           <td className="profileStat">
             <b className="profileStatNumber">{props.recipeCount}</b>
             <br />
-            <small className="profileStatText">{'Recipes'}</small>
+            <small className="profileStatText">{(props.recipeCount !== 1) ? 'Recipes': 'Recipe'}</small>
           </td>
           <td className="profileStat">
             <a className="profileStatLink" href={`/user-${props.user.slug}/followers`}>
               <b className="profileStatNumber">{props.user.followers.length}</b>
               <br />
-              <small className="profileStatText">{'Followers'}</small>
+              <small className="profileStatText">{(props.user.followers.length !== 1) ? 'Followers' : 'Follower'}</small>
             </a>
           </td>
           <td className="profileStat">
