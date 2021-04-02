@@ -214,7 +214,7 @@ app.post('/notificationSettings', (req, res) => {
         likes: req.body.likes,
         comments: req.body.comments,
         followers: req.body.followers,
-        posts: req.body.posts
+        posts: req.body.posts,
         id: req.body.id
     }
 
