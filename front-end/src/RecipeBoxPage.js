@@ -6,9 +6,11 @@ import { useEffect, useState } from 'react'
 import axios from 'axios'
 import ComboBoxSearchBar from './ComboBoxSearchBar'
 import Dropdown from 'react-bootstrap/Dropdown'
-import DropdownButton from 'react-bootstrap/DropdownButton'
+import InputGroup from 'react-bootstrap/InputGroup'
 import Button from 'react-bootstrap/Button'
 import ButtonGroup from 'react-bootstrap/ButtonGroup'
+import { ArrowDown, SortUp } from 'react-bootstrap-icons'
+import { SortDown } from 'react-bootstrap-icons'
 
 // Pulls recipes from the database for the logged-in feed and generates a recipelist for qualifying recipes
 // Qualifying recipes, e.g. latest recipes posted by those someone has followed
@@ -66,7 +68,7 @@ const RecipeBoxPage = (props) => {
 
     // Adjust dropdown and ordering
     const [sortByString, setSortByString] = useState('Sort by Date Posted')
-    const [ascendingOrder, setAscendingOrder] = useState('Ascending')
+    const [ascendingOrder, setAscendingOrder] = useState(true)
 
     // https://my.api.mockaroo.com/recipe.json?key=f6a27260
     /* Pull in recipes from mockaroo */
@@ -85,11 +87,6 @@ const RecipeBoxPage = (props) => {
         setSortByString('Sort by ' + sortingString)
     }
 
-    /* Return a simple true/false for ascendingOrder */
-    let isAscending = () => {
-        return ascendingOrder === 'Ascending' ? true : false
-    }
-
     /* Sorting! */
     let sortRecBoxRecipes = () => {
         let resultingRecipes = recBoxRecipes
@@ -97,22 +94,17 @@ const RecipeBoxPage = (props) => {
         // Sort by date posted -- TODO is to test! Mockaroo doesn't give us the greatest of dates
         if(sortByString === 'Sort by Date Posted') {
             resultingRecipes = resultingRecipes.sort((a,b) => {
-                if(isAscending())
+                if(ascendingOrder)
                     return a.createdAt > b.createdAt ? 1 : -1
                 else
                     return a.createdAt < b.createdAt ? 1 : -1
             })
         }
 
-        // Sort by date liked
-        if(sortByString === 'Sort by Date Liked') {
-            // TBD whenever we store that
-        }
-
         // Sort by like count
         if(sortByString === 'Sort by Like Count') {
             resultingRecipes = resultingRecipes.sort((a,b) => {
-                if(isAscending())
+                if(ascendingOrder)
                     return a.likes > b.likes ? 1 : -1
                 else
                     return a.likes < b.likes ? 1 : -1
@@ -129,20 +121,26 @@ const RecipeBoxPage = (props) => {
             {/* Sort and filter */}
             <div className="recipeBoxFilters">
                 <div className="sortDropdown">
-                    <Dropdown as={ButtonGroup}>
-                        <Button variant="info">{sortByString}</Button>
+                    <InputGroup>
+                        <InputGroup.Prepend>
+                            <Button variant="outline-info" onClick={() => {ascendingOrder === true ? setAscendingOrder(false) : setAscendingOrder(true)}}>
+                                {ascendingOrder === true ? <SortDown /> : <SortUp />}
+                            </Button>
+                            <Button variant="info">{sortByString}</Button>
+                        </InputGroup.Prepend>
+                        <InputGroup.Append>
+                            <Dropdown>
 
-                        <Dropdown.Toggle split variant="info" id="dropdown-split-basic" />
-                        <Dropdown.Menu>
-                            <Dropdown.Item onClick={() => onDatePosted("Date Posted")}>Date Posted</Dropdown.Item>
-                            <Dropdown.Item onClick={() => onDatePosted("Date Liked")}>Date Liked</Dropdown.Item>
-                            <Dropdown.Item onClick={() => onDatePosted("Like Count")}>Like Count</Dropdown.Item>
-                        </Dropdown.Menu>
-                    </Dropdown>
 
-                    <div className="orderingButton">
-                        <Button variant="secondary" onClick={() => {ascendingOrder === 'Ascending' ? setAscendingOrder('Descending') : setAscendingOrder('Ascending')}}>{ascendingOrder}</Button>
-                    </div>
+                                <Dropdown.Toggle split variant="info" id="dropdown-split-basic" />
+                                <Dropdown.Menu>
+                                    <Dropdown.Item onClick={() => onDatePosted("Date Posted")}>Date Posted</Dropdown.Item>
+                                    <Dropdown.Item onClick={() => onDatePosted("Like Count")}>Like Count</Dropdown.Item>
+                                </Dropdown.Menu>
+                            </Dropdown>
+                        </InputGroup.Append>
+                    </InputGroup>
+
                 </div>
 
                 <ComboBoxSearchBar isTag={true} tags={filterTags} setSelection={setFilterTags} />
