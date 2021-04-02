@@ -209,17 +209,19 @@ const BrowseUsersPage = (props) => {
     useEffect(() => {
         // Function to filter through all users based on keyword search term entered
         function searchName(user) {
-            const match = filterKeyword.toLowerCase()
-            const names = match.split(' ')
-            // Compares every word in search term against username, firstName, and lastName
-            for (let i = 0; i < names.length; i++) {
-                if (user.username.toLowerCase().includes(names[i]) ||
-                    user.firstName.toLowerCase().includes(names[i]) || 
-                    user.lastName.toLowerCase().includes(names[i])) {
-                        return true;
+            if (filterKeyword) {
+                const match = filterKeyword.toLowerCase()
+                const names = match.split(' ')
+                // Compares every word in search term against username, firstName, and lastName
+                for (let i = 0; i < names.length; i++) {
+                    if (user.username.toLowerCase().includes(names[i]) ||
+                        user.firstName.toLowerCase().includes(names[i]) || 
+                        user.lastName.toLowerCase().includes(names[i])) {
+                            return true;
+                    }
                 }
+                return false;
             }
-            return false;
         }
 
         // Set users array to only include user whose name contains the filter keyword
@@ -234,7 +236,7 @@ const BrowseUsersPage = (props) => {
             <div className='browseUserSearch'>
                 <KeyWordSearchBar isRecipe={false} filter={filterKeyword} setFilter={setFilterKeyword} />
                 <div className='userPreviews'>
-                    {users.length === 0 ? 'No users found in search' : users.sort((a, b) => a.firstName.localeCompare(b.firstName)).map((user, i) => 
+                    {(users.length === 0 && filterKeyword) ? 'No users found in search' : users.sort((a, b) => a.firstName.localeCompare(b.firstName)).map((user, i) => 
                         (<SmallUserPreview user={user} isBlockedUserProfile={false} key={i}/>))}
                 </div>
             </div>
