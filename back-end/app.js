@@ -1,6 +1,7 @@
 // import and instantiate express
 const express = require('express') // CommonJS import style!
 
+
 const app = express() // instantiate an Express object
 
 const morgan = require('morgan') // middleware for nice logging of incoming HTTP requests
@@ -15,6 +16,7 @@ app.use(express.json()) // decode JSON-formatted incoming POST data
 app.use(express.urlencoded({ extended: true })) // decode url-encoded incoming POST data
 app.use(morgan('dev')) // dev style gives a concise color-coded style of log output
 
+
 // fix CORS error by allowing requests from localhost
 const corsOptions = {
     origin: 'http://localhost'
@@ -26,6 +28,7 @@ app.use(cors(corsOptions))
 // object for storage option for multer
 const storage = multer.diskStorage({
   destination: (req, file, cb) =>
+
     cb(null, path.join(__dirname, '../front-end/public/uploads')),
   filename: (req, file, cb) =>
     cb(
@@ -33,6 +36,7 @@ const storage = multer.diskStorage({
       `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`
     ),
 })
+
 
 // middleware for multer (save files with new name + proper extension to avoid collisions)
 const upload = multer({
@@ -49,6 +53,7 @@ app.get('/recipe', (req, res, next) => {
     .then((apiResponse) => res.json(apiResponse.data[0]))
     .catch((err) => next(err))
 })
+
 
 app.get('/usersbyname', (req, res, next) => {
   // fetch users where name === req.query.username
@@ -81,6 +86,7 @@ app.get('/usersbyid', (req, res, next) => {
     .catch((err) => next(err))
 })
 
+
 app.get('/userbyid', (req, res, next) => {
   // fetch user where _id === req.query.id from database
 
@@ -89,6 +95,7 @@ app.get('/userbyid', (req, res, next) => {
     .then((apiResponse) => res.json(apiResponse.data[0]))
     .catch((err) => next(err))
 })
+
 
 app.get('/userbyslug', (req, res, next) => {
   // fetch user where slug === req.query.slug from database
@@ -99,6 +106,7 @@ app.get('/userbyslug', (req, res, next) => {
     .catch((err) => next(err))
 })
 
+
 app.get('/comments', (req, res, next) => {
   // fetch comments where recipe === req.query.recipeID from database
 
@@ -107,6 +115,7 @@ app.get('/comments', (req, res, next) => {
     .then((apiResponse) => res.json(apiResponse.data))
     .catch((err) => next(err))
 })
+
 
 app.get('/recipesbyuser', (req, res, next) => {
   // fetch recipes where user.id === req.query.userID from database
@@ -117,6 +126,7 @@ app.get('/recipesbyuser', (req, res, next) => {
     .catch((err) => next(err))
 })
 
+
 app.get('/tags', (req, res, next) => {
   // fetch all tags from database
 
@@ -125,6 +135,7 @@ app.get('/tags', (req, res, next) => {
     .then((apiResponse) => res.json(apiResponse.data.map((tag) => tag.tag)))
     .catch((err) => next(err))
 })
+
 
 app.get('/filteredrecipes', (req, res, next) => {
   // fetch recipes where name contains req.query.keyword and tags includes all tags in req.query.tags from database
@@ -136,17 +147,20 @@ app.get('/filteredrecipes', (req, res, next) => {
       res.json(
         apiResponse.data.filter(
           (recipe) =>
+
             (req.query.keyword !== ''
               ? recipe.name
                   .toLowerCase()
                   .includes(req.query.keyword.toLowerCase())
               : true) &&
             (req.query.tags.length === 0 ||
+
             (req.query.tags.length === 1 && req.query.tags[0] === '')
               ? true
               : req.query.tags.reduce(
                   (acc, filterTag) =>
                     acc &&
+
                     (filterTag !== '' ? recipe.tags.includes(filterTag) : true),
                   true
                 ))
@@ -155,6 +169,7 @@ app.get('/filteredrecipes', (req, res, next) => {
     )
     .catch((err) => next(err))
 })
+
 
 app.post('/comment', (req, res) => {
   // store new comment
@@ -168,6 +183,7 @@ app.post('/comment', (req, res) => {
   res.json(data)
 })
 
+
 app.post('/newrecipe', upload.single('recipeimage'), (req, res) => {
   // store new recipe
 
@@ -177,6 +193,7 @@ app.post('/newrecipe', upload.single('recipeimage'), (req, res) => {
       username: req.body.username,
     },
     name: req.body.name,
+
     imagePath: path.join('/uploads/', req.file.filename),
     tags: req.body.tags.split(','),
     caption: req.body.caption,
@@ -196,6 +213,7 @@ app.post('/newrecipe', upload.single('recipeimage'), (req, res) => {
   // update/store each tag where tag.tag in req.body.tags (if tag doesn't exist count = 1, else count += 1)
 })
 
+
 app.post('/blockuser', (req, res) => {
   // update signed-in user (_id === req.body.userID)'s blockedUsers array appropriately
 
@@ -212,6 +230,7 @@ app.post('/blockuser', (req, res) => {
   res.json(updatedBlockedUsers)
 })
 
+
 app.post('/likerecipe', (req, res) => {
   // update signed-in user (_id === req.body.userID)'s liked array appropriately
 
@@ -223,9 +242,35 @@ app.post('/likerecipe', (req, res) => {
   }
 
   // update recipe (_id === req.body.recipeID)'s likes count
-
   res.json(updatedLiked)
 })
+
+app.post("/followuser", (req, res) => {
+  // update signed-in user (_id === req.body.userID)'s following array appropriately
+  // update followed user's followers array appropriately
+
+  const updatedSignedInUserFollowing = req.body.signedInUserFollowing
+  const updatedFollowedUserFollowers = req.body.followedUserFollowers
+
+  if (req.body.follow) {
+    updatedSignedInUserFollowing.push(req.body.followedUserID)
+    updatedFollowedUserFollowers.push(req.body.userID)
+  } else {
+    updatedSignedInUserFollowing.splice(
+      updatedSignedInUserFollowing.indexOf(req.body.followedUserID),
+      1
+    )
+    updatedFollowedUserFollowers.splice(
+      updatedFollowedUserFollowers.indexOf(req.body.userID),
+      1
+    )
+  }
+
+  res.json({
+    signedInUserFollowing: updatedSignedInUserFollowing,
+    FollowedUserFollowers: updatedFollowedUserFollowers,
+  })
+
 
 app.post('/notificationSettings', (req, res) => {
 
