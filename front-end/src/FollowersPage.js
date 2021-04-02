@@ -62,8 +62,8 @@ const FollowersPage = (props) => {
         if (user.followers) {
             axios('https://my.api.mockaroo.com/user.json?key=f6a27260')
             .then((response) => {
-                setAllFollowers(response.data)
-                setFollowers(response.data)
+                setAllFollowers(response.data.slice(0, user.followers.length))
+                setFollowers(response.data.slice(0, user.followers.length))
                 setLoadedFollowers(true)
             })
             .catch((err) => {
@@ -241,8 +241,8 @@ const FollowersPage = (props) => {
                     }
                 ]
 
-                setAllFollowers(backupData)
-                setFollowers(backupData)
+                setAllFollowers(backupData.slice(0, user.followers.length))
+                setFollowers(backupData.slice(0, user.followers.length))
                 setLoadedFollowers(true)
             })
         }

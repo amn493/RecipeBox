@@ -62,8 +62,8 @@ const FollowingPage = (props) => {
         if (user.following) {
             axios('https://my.api.mockaroo.com/user.json?key=f6a27260')
             .then((response) => {
-                setAllFollowing(response.data)
-                setFollowing(response.data)
+                setAllFollowing(response.data.slice(0, user.following.length))
+                setFollowing(response.data.slice(0, user.following.length))
                 setLoadedFollowing(true)
             })
             .catch((err) => {
@@ -241,8 +241,8 @@ const FollowingPage = (props) => {
                     }
                 ]
 
-                setAllFollowing(backupData)
-                setFollowing(backupData)
+                setAllFollowing(backupData.slice(0, user.following.length))
+                setFollowing(backupData.slice(0, user.following.length))
                 setLoadedFollowing(true)
             })
         }
