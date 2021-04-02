@@ -88,11 +88,13 @@ const CreateAccountPage = (props) =>  {
 
   return (
     <div className='createAccount'>
-      <p className={error ? 'errorMessage' : 'hidden'}>
-          { errorMessages.map((message, errorIndex) => (
-          <p key={errorIndex}>{message}</p>)) }
-      </p>
       <Form onSubmit={handleSubmit}>
+      <Form.Group className={error ? 'text-muted' : 'hidden'}>
+        <Form.Text>
+            { errorMessages.map((message, errorIndex) => (
+            <p key={errorIndex}>{message}</p>)) }
+        </Form.Text>
+      </Form.Group>
       <Form.Group className='formInput' controlId='email'>
           <Form.Control
             size='md'
@@ -154,7 +156,9 @@ const CreateAccountPage = (props) =>  {
       <div className='redirectCreateAccount'>
         Already have an account?
       </div>
-      <a className='signInLink' href='/sign-in'>Sign in</a>
+      <div className='signInDiv'>
+        <a className='signInLink text-info' href='/sign-in'>Sign in</a>
+      </div>
     </div>
   )
 }
