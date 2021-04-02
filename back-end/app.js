@@ -206,12 +206,13 @@ app.post('/likerecipe', (req, res) => {
     res.json(updatedLiked)
 })
 
-app.post('/updateuserinfo', (req, res, next) => {
+app.post('/updateuserinfo', upload.single('profilepicture'), (req, res) => {
     // recieve post data from updating user's basic info
     const updatedUserInfo = {
         username: req.body.username,
         firstName: req.body.firstName,
         lastName: req.body.lastName,
+        id: req.body.id,
         imagePath: path.join('/uploads/', req.file.filename)
     }
     
