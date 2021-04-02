@@ -6,7 +6,6 @@
 .profilePicture {
     width: 100px;
     height: 100px;
-    margin-right: 10px;
 }
 
 .userFirstAndLastName {
@@ -33,4 +32,18 @@
 
 .userBio {
     font-size: small;
+}
+
+.profileTopTable {
+    width: 100%;
+}
+
+.profilePictureCell {
+    width: 113px;
+}
+
+.plusButtonCell {
+    text-align: right;
+    vertical-align: top;
+    width: 34px;
 }
