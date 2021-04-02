@@ -16,12 +16,14 @@ const FollowingPage = (props) => {
 
     // Request all followers on initial render
     const [user, setUser] = useState([])
+    const [loadedUser, setLoadedUser] = useState(false)
 
     useEffect(() => {
         // fetch the user whose profile is being displayed (slug = slug)
         axios(`http://localhost:4000/userbyslug?slug=${slug}`)
         .then((response) => {
             setUser(response.data)
+            setLoadedUser(true)
         })
         .catch((err) => {
             console.error(err)
@@ -44,6 +46,7 @@ const FollowingPage = (props) => {
             ]
 
             setUser(backupData[0])
+            setLoadedUser(true)
         })
     }, [slug])
 
@@ -52,6 +55,7 @@ const FollowingPage = (props) => {
     const [allFollowing, setAllFollowing] = useState([])
     // Array of following to be displayed
     const [following, setFollowing] = useState([])
+    const [loadedFollowing, setLoadedFollowing] = useState(false)
 
     useEffect(() => {
         // Fetch all following
@@ -60,6 +64,7 @@ const FollowingPage = (props) => {
             .then((response) => {
                 setAllFollowing(response.data)
                 setFollowing(response.data)
+                setLoadedFollowing(true)
             })
             .catch((err) => {
                 console.error(err)
@@ -238,6 +243,7 @@ const FollowingPage = (props) => {
 
                 setAllFollowing(backupData)
                 setFollowing(backupData)
+                setLoadedFollowing(true)
             })
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -271,22 +277,24 @@ const FollowingPage = (props) => {
 
 
     return (
-        <div className='following'>
-            <div className='followingHeading'>
-                <a className='backLinkFollowing text-info' href={`/user-${slug}`}><i><ArrowLeftCircleFill /></i></a>
-                <h3 className='userNameFollowing'>@{user.username}</h3>
-                <h4 className='title'>{user.following.length} Following</h4>
-            </div>
-            <div className='userSearchBarFollowing'>
-                <KeyWordSearchBar isRecipe={false} filter={filterKeyword} setFilter={setFilterKeyword} />
-            </div>
-            <div className='followingList'>
-                <div className='followingUserPreview'>
-                    {following.length === 0 ? <p className="noFollowingFoundMessage">No users found</p> : following.sort((a, b) => a.firstName.localeCompare(b.firstName)).map((followingUser, i) => 
-                        (<SmallUserPreview user={followingUser} isBlockedUserProfile={false} key={i}/>))}
+        loadedUser && loadedFollowing ?
+            <div className='following'>
+                <div className='followingHeading'>
+                    <a className='backLinkFollowing text-info' href={`/user-${slug}`}><i><ArrowLeftCircleFill /></i></a>
+                    <h3 className='userNameFollowing'>@{user.username}</h3>
+                    <h4 className='title'>{user.following.length} Following</h4>
+                </div>
+                <div className='userSearchBarFollowing'>
+                    <KeyWordSearchBar isRecipe={false} filter={filterKeyword} setFilter={setFilterKeyword} />
+                </div>
+                <div className='followingList'>
+                    <div className='followingUserPreview'>
+                        {following.length === 0 ? <p className="noFollowingFoundMessage">No users found</p> : following.sort((a, b) => a.firstName.localeCompare(b.firstName)).map((followingUser, i) => 
+                            (<SmallUserPreview user={followingUser} isBlockedUserProfile={false} key={i}/>))}
+                    </div>
                 </div>
             </div>
-        </div>
+        : <></>
     )
 }
 
