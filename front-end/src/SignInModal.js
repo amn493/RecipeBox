@@ -1,6 +1,8 @@
 import Modal from 'react-bootstrap/Modal'
 import SignInForm from './SignInForm'
 
+import './SignInModal.css'
+
 
 const SignInModal = (props) => {
   
@@ -9,7 +11,7 @@ const SignInModal = (props) => {
     return (
       <>
         <Modal centered show={props.show} onHide={handleClose}>
-          <Modal.Body><SignInForm /></Modal.Body>
+          <Modal.Body className="signInModal"><SignInForm /></Modal.Body>
         </Modal>
       </>
     )
