@@ -1,7 +1,6 @@
 // import and instantiate express
 const express = require('express') // CommonJS import style!
 
-
 const app = express() // instantiate an Express object
 
 const morgan = require('morgan') // middleware for nice logging of incoming HTTP requests
@@ -16,10 +15,9 @@ app.use(express.json()) // decode JSON-formatted incoming POST data
 app.use(express.urlencoded({ extended: true })) // decode url-encoded incoming POST data
 app.use(morgan('dev')) // dev style gives a concise color-coded style of log output
 
-
 // fix CORS error by allowing requests from localhost
 const corsOptions = {
-    origin: 'http://localhost'
+  origin: 'http://localhost',
 }
 app.use(cors(corsOptions))
 
@@ -28,7 +26,6 @@ app.use(cors(corsOptions))
 // object for storage option for multer
 const storage = multer.diskStorage({
   destination: (req, file, cb) =>
-
     cb(null, path.join(__dirname, '../front-end/public/uploads')),
   filename: (req, file, cb) =>
     cb(
@@ -36,7 +33,6 @@ const storage = multer.diskStorage({
       `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`
     ),
 })
-
 
 // middleware for multer (save files with new name + proper extension to avoid collisions)
 const upload = multer({
@@ -54,7 +50,6 @@ app.get('/recipe', (req, res, next) => {
     .catch((err) => next(err))
 })
 
-
 app.get('/usersbyname', (req, res, next) => {
   // fetch users where name === req.query.username
   // or name === req.query.firstName
@@ -66,15 +61,14 @@ app.get('/usersbyname', (req, res, next) => {
     .catch((err) => next(err))
 })
 
-app.get('/feedrecipes', (req, res, next) =>  {
+app.get('/feedrecipes', (req, res, next) => {
+  // fetch a list of recipes given an user's name (thus getting their likes)
+  // as well as a timestamp
 
-    // fetch a list of recipes given an user's name (thus getting their likes)
-    // as well as a timestamp
-
-    axios
+  axios
     .get('https://my.api.mockaroo.com/recipe.json?key=f6a27260')
-    .then(apiResponse => res.json(apiResponse.data))
-    .catch(err => next(err))
+    .then((apiResponse) => res.json(apiResponse.data))
+    .catch((err) => next(err))
 })
 
 app.get('/usersbyid', (req, res, next) => {
@@ -86,7 +80,6 @@ app.get('/usersbyid', (req, res, next) => {
     .catch((err) => next(err))
 })
 
-
 app.get('/userbyid', (req, res, next) => {
   // fetch user where _id === req.query.id from database
 
@@ -95,7 +88,6 @@ app.get('/userbyid', (req, res, next) => {
     .then((apiResponse) => res.json(apiResponse.data[0]))
     .catch((err) => next(err))
 })
-
 
 app.get('/userbyslug', (req, res, next) => {
   // fetch user where slug === req.query.slug from database
@@ -106,7 +98,6 @@ app.get('/userbyslug', (req, res, next) => {
     .catch((err) => next(err))
 })
 
-
 app.get('/comments', (req, res, next) => {
   // fetch comments where recipe === req.query.recipeID from database
 
@@ -115,7 +106,6 @@ app.get('/comments', (req, res, next) => {
     .then((apiResponse) => res.json(apiResponse.data))
     .catch((err) => next(err))
 })
-
 
 app.get('/recipesbyuser', (req, res, next) => {
   // fetch recipes where user.id === req.query.userID from database
@@ -126,7 +116,6 @@ app.get('/recipesbyuser', (req, res, next) => {
     .catch((err) => next(err))
 })
 
-
 app.get('/tags', (req, res, next) => {
   // fetch all tags from database
 
@@ -135,7 +124,6 @@ app.get('/tags', (req, res, next) => {
     .then((apiResponse) => res.json(apiResponse.data.map((tag) => tag.tag)))
     .catch((err) => next(err))
 })
-
 
 app.get('/filteredrecipes', (req, res, next) => {
   // fetch recipes where name contains req.query.keyword and tags includes all tags in req.query.tags from database
@@ -147,20 +135,17 @@ app.get('/filteredrecipes', (req, res, next) => {
       res.json(
         apiResponse.data.filter(
           (recipe) =>
-
             (req.query.keyword !== ''
               ? recipe.name
                   .toLowerCase()
                   .includes(req.query.keyword.toLowerCase())
               : true) &&
             (req.query.tags.length === 0 ||
-
             (req.query.tags.length === 1 && req.query.tags[0] === '')
               ? true
               : req.query.tags.reduce(
                   (acc, filterTag) =>
                     acc &&
-
                     (filterTag !== '' ? recipe.tags.includes(filterTag) : true),
                   true
                 ))
@@ -169,7 +154,6 @@ app.get('/filteredrecipes', (req, res, next) => {
     )
     .catch((err) => next(err))
 })
-
 
 app.post('/comment', (req, res) => {
   // store new comment
@@ -182,7 +166,6 @@ app.post('/comment', (req, res) => {
   }
   res.json(data)
 })
-
 
 app.post('/newrecipe', upload.single('recipeimage'), (req, res) => {
   // store new recipe
@@ -213,7 +196,6 @@ app.post('/newrecipe', upload.single('recipeimage'), (req, res) => {
   // update/store each tag where tag.tag in req.body.tags (if tag doesn't exist count = 1, else count += 1)
 })
 
-
 app.post('/blockuser', (req, res) => {
   // update signed-in user (_id === req.body.userID)'s blockedUsers array appropriately
 
@@ -230,7 +212,6 @@ app.post('/blockuser', (req, res) => {
   res.json(updatedBlockedUsers)
 })
 
-
 app.post('/likerecipe', (req, res) => {
   // update signed-in user (_id === req.body.userID)'s liked array appropriately
 
@@ -245,7 +226,7 @@ app.post('/likerecipe', (req, res) => {
   res.json(updatedLiked)
 })
 
-app.post("/followuser", (req, res) => {
+app.post('/followuser', (req, res) => {
   // update signed-in user (_id === req.body.userID)'s following array appropriately
   // update followed user's followers array appropriately
 
@@ -270,40 +251,39 @@ app.post("/followuser", (req, res) => {
     signedInUserFollowing: updatedSignedInUserFollowing,
     FollowedUserFollowers: updatedFollowedUserFollowers,
   })
-
+})
 
 app.post('/notificationSettings', (req, res) => {
+  // recieve updated notification settings
+  const updatedNotificationSettings = {
+    email: req.body.email,
+    likes: req.body.likes,
+    comments: req.body.comments,
+    followers: req.body.followers,
+    posts: req.body.posts,
+    id: req.body.id,
+  }
 
-    // recieve updated notification settings
-    const updatedNotificationSettings = {
-        email: req.body.email,
-        likes: req.body.likes,
-        comments: req.body.comments,
-        followers: req.body.followers,
-        posts: req.body.posts,
-        id: req.body.id
-    }
+  // update the settings
 
-    // update the settings
-
-    // send response
-    res.json(updatedNotificationSettings)
+  // send response
+  res.json(updatedNotificationSettings)
 })
 
 app.post('/updateuserinfo', upload.single('profilepicture'), (req, res) => {
-    // recieve post data from updating user's basic info
-    const updatedUserInfo = {
-        username: req.body.username,
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        id: req.body.id,
-        imagePath: path.join('/uploads/', req.file.filename)
-    }
-    
-    // update the user's user object (in database)
+  // recieve post data from updating user's basic info
+  const updatedUserInfo = {
+    username: req.body.username,
+    firstName: req.body.firstName,
+    lastName: req.body.lastName,
+    id: req.body.id,
+    imagePath: path.join('/uploads/', req.file.filename),
+  }
 
-    // send a response to the user (sending data back to test)
-    res.json(updatedUserInfo)
+  // update the user's user object (in database)
+
+  // send a response to the user (sending data back to test)
+  res.json(updatedUserInfo)
 })
 
 // export the express app we created to make it available to other modules
