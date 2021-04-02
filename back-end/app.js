@@ -224,17 +224,17 @@ app.post('/blockuser', (req, res) => {
 
 app.post('/updateuserinfo', (req, res, next) => {
     // recieve post data from updating user's basic info
-    const data = {
+    const updatedUserInfo = {
         username: req.body.username,
         firstName: req.body.firstName,
         lastName: req.body.lastName,
-        imagePath: req.body.imagePath
+        imagePath: path.join('/uploads/', req.file.filename)
     }
     
-    // update the user's user object (in database?)
-    
-    // send a response to the user (sending back data to test)
-    res.json(data)
+    // update the user's user object (in database)
+
+    // send a response to the user (sending data back to test)
+    res.json(updatedUserInfo)
 })
 
 
