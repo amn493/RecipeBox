@@ -152,22 +152,19 @@ app.post('/comment', (req, res) => {
 
 app.post('/updateuserinfo', (req, res, next) => {
     // recieve post data from updating user's basic info
-    const updateData = {
+    const updatedUserInfo = {
         username: req.body.username,
-        password: req.body.password,
-        email: req.body.email,
         firstName: req.body.firstName,
         lastName: req.body.lastName,
-        bio: req.body.bio,
-        imagePath: req.body.imagePath
+        imagePath: path.join('/uploads/', req.file.filename)
     }
     
-    // update the user's user object (in database?)
-    
-    // send a response to the user
-    const responseData = 'Successfully updated profile'
-    res.json(responseData)
+    // update the user's user object (in database)
+
+    // send a response to the user (sending data back to test)
+    res.json(updatedUserInfo)
 })
+
 app.post('/newrecipe', upload.single('recipeimage'), (req,res) => {
 
     // store new recipe
@@ -206,6 +203,8 @@ app.post('/likerecipe', (req, res) => {
     // update recipe (_id === req.body.recipeID)'s likes count
 
     res.json(updatedLiked)
+})
+    
 app.post('/blockuser', (req, res) => {
 
     // update signed-in user (_id === req.body.userID)'s blockedUsers array appropriately
@@ -221,22 +220,6 @@ app.post('/blockuser', (req, res) => {
     res.json(updatedBlockedUsers)
 
 })
-
-app.post('/updateuserinfo', (req, res, next) => {
-    // recieve post data from updating user's basic info
-    const updatedUserInfo = {
-        username: req.body.username,
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        imagePath: path.join('/uploads/', req.file.filename)
-    }
-    
-    // update the user's user object (in database)
-
-    // send a response to the user (sending data back to test)
-    res.json(updatedUserInfo)
-})
-
 
 
 // export the express app we created to make it available to other modules
