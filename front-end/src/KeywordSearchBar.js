@@ -3,9 +3,8 @@ import { useState } from 'react'
 import { InputGroup } from 'react-bootstrap'
 import { FormControl } from 'react-bootstrap'
 import { Button } from 'react-bootstrap'
-import UserIcon from './usericon.png'
-import RecipeIcon from './recipeicon.png'
 import './KeywordSearchBar.css'
+import { BookmarkHeart } from 'react-bootstrap-icons'
 
 //Component for a keyword search bar
 //functional for searching recipe names and users
@@ -19,13 +18,13 @@ const KeywordSearchBar = (props) => {
     let searchIcon = "" //small royalty-free recipe/user profile icons displayed next to search bar
     let placeholder = ""
 
-    if (props.isRecipe === true){
-        searchIcon = RecipeIcon
+    if (props.isRecipe === true) {
+        searchIcon = 'recipeicon.png'
         placeholder = "Search recipes by keyword"
 
-        
-    } else{
-        searchIcon = UserIcon
+
+    } else {
+        searchIcon = 'usericon.png'
         placeholder = "John Smith / @username"
     }
 
@@ -44,12 +43,16 @@ const KeywordSearchBar = (props) => {
         props.setFilter(value)
     }
 
-    
+
     return (
         <div className="searchBar">
             <InputGroup className="inputGroup">
                 <InputGroup.Prepend>
-                    <InputGroup.Text id="basic-addon1"><img src={searchIcon} className="searchIcon" alt=""/></InputGroup.Text>
+                    {!props.isRecipeBox ?
+                        <InputGroup.Text id="basic-addon1"><img src={searchIcon} className="searchIcon" alt="" /></InputGroup.Text>
+                        :
+                        <InputGroup.Text id="basic-addon1"><i><BookmarkHeart /></i></InputGroup.Text>
+                    }
                 </InputGroup.Prepend>
                 <FormControl
                     placeholder={placeholder}

@@ -20,40 +20,40 @@ const RecipeBoxPage = (props) => {
     // TODO: Back-end task -- Fill rbxEntries. Also need to adjust below so the array contains both "recipe" and "likes"
     let rbxEntries = [
         {
-            imagePath:'https://picsum.photos/300',
-            slug:'foobar-guacamole',
-            name:'Guacamole',
-            user:{
-            username:'foobar',
-            slug:'foobar'
-                },
-            likes:36,
-            createdAt:1615864425952,
-            caption:'Because who doesn\'t love guac?',
-            tags:[
-            'mexican',
-            'spicy',
-            'dip'
+            imagePath: 'https://picsum.photos/300',
+            slug: 'foobar-guacamole',
+            name: 'Guacamole',
+            user: {
+                username: 'foobar',
+                slug: 'foobar'
+            },
+            likes: 36,
+            createdAt: 1615864425952,
+            caption: 'Because who doesn\'t love guac?',
+            tags: [
+                'mexican',
+                'spicy',
+                'dip'
             ],
-            id:2
+            id: 2
         },
         {
-            imagePath:'https://picsum.photos/300',
-            slug:'foobar-guacamole',
-            name:'GuacaMOLE',
-            user:{
-            username:'foobar',
-            slug:'foobar'
-                },
-            likes:20,
-            createdAt:1615264429952,
-            caption:'Because who doesn\'t love GUACAMOLE!?',
-            tags:[
-            'mexican',
-            'spicy',
-            'dip'
+            imagePath: 'https://picsum.photos/300',
+            slug: 'foobar-guacamole',
+            name: 'GuacaMOLE',
+            user: {
+                username: 'foobar',
+                slug: 'foobar'
+            },
+            likes: 20,
+            createdAt: 1615264429952,
+            caption: 'Because who doesn\'t love GUACAMOLE!?',
+            tags: [
+                'mexican',
+                'spicy',
+                'dip'
             ],
-            id:3
+            id: 3
         }
     ]
 
@@ -70,7 +70,7 @@ const RecipeBoxPage = (props) => {
     useEffect(() => {
         axios('https://my.api.mockaroo.com/recipe.json?key=f6a27260').then((response) => {
             setRecBoxRecipes(response.data)
-        }).catch((err) =>{
+        }).catch((err) => {
             // TODO: Print an error to the user, but for now mockaroo is likely
             console.log(err)
             setRecBoxRecipes(rbxEntries)
@@ -87,9 +87,9 @@ const RecipeBoxPage = (props) => {
         let resultingRecipes = recBoxRecipes
 
         // Sort by date posted -- TODO is to test! Mockaroo doesn't give us the greatest of dates
-        if(sortByString === 'Sort by Date Posted') {
-            resultingRecipes = resultingRecipes.sort((a,b) => {
-                if(ascendingOrder)
+        if (sortByString === 'Sort by Date Posted') {
+            resultingRecipes = resultingRecipes.sort((a, b) => {
+                if (ascendingOrder)
                     return a.createdAt > b.createdAt ? 1 : -1
                 else
                     return a.createdAt < b.createdAt ? 1 : -1
@@ -97,9 +97,9 @@ const RecipeBoxPage = (props) => {
         }
 
         // Sort by like count
-        if(sortByString === 'Sort by Like Count') {
-            resultingRecipes = resultingRecipes.sort((a,b) => {
-                if(ascendingOrder)
+        if (sortByString === 'Sort by Like Count') {
+            resultingRecipes = resultingRecipes.sort((a, b) => {
+                if (ascendingOrder)
                     return a.likes > b.likes ? 1 : -1
                 else
                     return a.likes < b.likes ? 1 : -1
@@ -117,35 +117,35 @@ const RecipeBoxPage = (props) => {
     useEffect(() => {
         // fetch all tags
         axios('http://localhost:4000/tags')
-        .then((response) => {
-            setTags(response.data)
-        })
-        .catch((err) => {
-            console.error(err)
+            .then((response) => {
+                setTags(response.data)
+            })
+            .catch((err) => {
+                console.error(err)
 
-            // make some backup fake data
-            const backupData = [
-                {
-                    tag: 'vegan',
-                    count: 10,
-                    id: 1
-                },
-                {
-                    tag: 'appetizer',
-                    count: 34,
-                    id: 2
-                },
-                {
-                    tag: 'mexican',
-                    count: 22,
-                    id: 3
-                }
-            ]
+                // make some backup fake data
+                const backupData = [
+                    {
+                        tag: 'vegan',
+                        count: 10,
+                        id: 1
+                    },
+                    {
+                        tag: 'appetizer',
+                        count: 34,
+                        id: 2
+                    },
+                    {
+                        tag: 'mexican',
+                        count: 22,
+                        id: 3
+                    }
+                ]
 
-            setTags(backupData.map(tag => tag.tag))
-        })
+                setTags(backupData.map(tag => tag.tag))
+            })
     }, [])
-    
+
     const [tagSelection, setTagSelection] = useState('')
 
     useEffect(() => {
@@ -158,44 +158,42 @@ const RecipeBoxPage = (props) => {
             setTags(tags.slice(0, tagIndex).concat(tags.slice(tagIndex + 1)))
         }
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [tagSelection])
 
     return (
-        <div className="container">
-            {/* Title */}
-            <h2 className="pageTitle">My Recipe Box</h2>
+        <div>
 
             {/* Sort and filter */}
             <div className="recipeBoxFilters">
-                <div className="sortDropdown">
-                        
-                    <Dropdown as={ButtonGroup}>
 
-                        <Button variant="outline-info" onClick={() => {ascendingOrder === true ? setAscendingOrder(false) : setAscendingOrder(true)}}>
+                <div className="sortDropdown">
+                    <ButtonGroup className="sortButtonGroup" >
+                        <Dropdown as={ButtonGroup} className="sortDropdownButton">
+                            <Dropdown.Toggle split variant="info" id="dropdown-basic">{sortByString} </Dropdown.Toggle>
+                            <Dropdown.Menu>
+                                <Dropdown.Item onClick={() => onDatePosted("Date Posted")}>Date Posted</Dropdown.Item>
+                                <Dropdown.Item onClick={() => onDatePosted("Like Count")}>Like Count</Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
+                        <Button variant="outline-info" onClick={() => { ascendingOrder === true ? setAscendingOrder(false) : setAscendingOrder(true) }}>
                             {ascendingOrder === true ? <SortUp /> : <SortDown />}
                         </Button>
-
-                        <Dropdown.Toggle split variant="info" id="dropdown-basic">{sortByString} </Dropdown.Toggle>
-                        <Dropdown.Menu>
-                            <Dropdown.Item onClick={() => onDatePosted("Date Posted")}>Date Posted</Dropdown.Item>
-                            <Dropdown.Item onClick={() => onDatePosted("Like Count")}>Like Count</Dropdown.Item>
-                        </Dropdown.Menu>
-                    </Dropdown>
-                  
+                    </ButtonGroup>
                 </div>
 
                 <div className="recipeNameSearchbar">
-                    <KeywordSearchBar isRecipe={true} filter={filterKeyword} setFilter={setFilterKeyword}/>
+                    <KeywordSearchBar isRecipe={true} isRecipeBox={true} filter={filterKeyword} setFilter={setFilterKeyword} />
                 </div>
                 <ComboBoxSearchBar isTag={true} tags={tags} setSelection={setTagSelection} />
                 <div className="tagButtonsSection">
                     {filterTags.map((tag, i) => <TagButton tag={tag} filterTags={filterTags} setFilterTags={setFilterTags} tags={tags} setTags={setTags} key={i} />)}
                 </div>
+
             </div>
 
             {/* Generate the list of recipes */}
-            <br/>
+            <br />
 
             {sortRecBoxRecipes()}
             <RecipeList size="small" recipes={recBoxRecipes} user={props.user} />
