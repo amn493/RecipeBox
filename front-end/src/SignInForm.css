@@ -1,32 +1,24 @@
 /* Styling for the sign in form*/
-.signIn {
-  display: flex;
-  flex-direction: column;
-  margin-top: 60px;
-}
-  
-.username {
-  margin: 0 auto auto auto;
-}
-  
-.password {
-  margin: 15px auto;
-}
-  
-.signIn button {
-  margin: 15px auto;
-  display: flex;
-  justify-content: center;
-}
-  
+
 .redirectSignIn {
-  display: flex;
-  justify-content: center;
+  text-align: center;
+  font-size: 15px;
+  margin-top: 20px;
 }
   
+.createAccountDiv {
+  text-align: center;
+}
+
 .createAccountLink {
-  display: flex;
-  justify-content: center;
-  margin-left: 10px;
-  color: rgb(0, 0, 0)
+  font-weight: bold;
+}
+
+.createAccountLink:hover, .createAccountLink:active {
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.hidden {
+  display: none;
 }

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
+import { useLocation } from "react-router-dom"
 
 import LargeRecipePreview from './LargeRecipePreview.js'
 import KeywordSearchBar from './KeywordSearchBar.js'
@@ -10,9 +11,12 @@ import './BrowseRecipesPage.css'
 
 
 const BrowseRecipesPage = (props) => {
+    
+    const query = new URLSearchParams(useLocation().search)
+    console.log(query.get('tag'))
 
     const [filterKeyword, setFilterKeyword] = useState('')
-    const [filterTags, setFilterTags] = useState([])
+    const [filterTags, setFilterTags] = useState(query.get('tag') ? [query.get('tag')] : [])
 
     // request all tags on initial render
     const [tags, setTags] = useState([])
@@ -46,8 +50,9 @@ const BrowseRecipesPage = (props) => {
                 }
             ]
 
-            setTags(backupData.map(tag => tag.tag))
+            setTags(backupData.map(tag => tag.tag).filter(tag => !filterTags.includes(tag)))
         })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
 

@@ -48,14 +48,11 @@
 
 .recipeTag {
     margin-right: 5px;
-    color: rgb(23, 162, 184);
     font-weight: bold;
     font-size: 14px;
 }
 
 .recipeTag:hover, .recipeTag:active {
-    color: rgb(23, 162, 184);
-    opacity: 60%;
     text-decoration: none;
 }
 
@@ -77,6 +74,7 @@
 
 .ingredients, .instructions {
     margin-left: -15px;
+    margin-bottom: 0px;
 }
 
 .liIngredient, .liInstruction {
@@ -92,6 +90,10 @@
 
 .commentsSection {
     margin-bottom: 30px;
+}
+
+.commentFieldAndButton {
+    margin-top: 20px;
 }
 
 .recipeDetailsTableLikedCol {
