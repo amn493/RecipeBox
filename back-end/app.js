@@ -206,6 +206,20 @@ app.post('/likerecipe', (req, res) => {
     res.json(updatedLiked)
 })
 
+app.post('/updateuserinfo', (req, res, next) => {
+    // recieve post data from updating user's basic info
+    const updatedUserInfo = {
+        username: req.body.username,
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        imagePath: path.join('/uploads/', req.file.filename)
+    }
+    
+    // update the user's user object (in database)
+
+    // send a response to the user (sending data back to test)
+    res.json(updatedUserInfo)
+})
 
 
 // export the express app we created to make it available to other modules
