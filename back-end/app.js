@@ -15,16 +15,9 @@ app.use(express.json()) // decode JSON-formatted incoming POST data
 app.use(express.urlencoded({ extended: true })) // decode url-encoded incoming POST data
 app.use(morgan("dev")) // dev style gives a concise color-coded style of log output
 
-// fix CORS error by allowing requests from localhost:3000
-const whitelist = ['http://localhost:3000']
+// fix CORS error by allowing requests from localhost
 const corsOptions = {
-    origin: function (origin, callback) {
-      if (whitelist.indexOf(origin) !== -1) {
-        callback(null, true)
-      } else {
-        callback(new Error('Not allowed by CORS'))
-      }
-    }
+    origin: 'http://localhost'
 }
 app.use(cors(corsOptions))
 
@@ -63,7 +56,7 @@ app.get('/usersbyname', (req, res, next) => {
     .catch(err => next(err))
 })
 
-app.get('/feedrecipes', (req, res) =>  {
+app.get('/feedrecipes', (req, res, next) =>  {
 
     // fetch a list of recipes given an user's name (thus getting their likes)
     // as well as a timestamp
