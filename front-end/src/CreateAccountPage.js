@@ -88,11 +88,13 @@ const CreateAccountPage = (props) =>  {
 
   return (
     <div className='createAccount'>
-      <p className={error ? 'errorMessage' : 'hidden'}>
-          { errorMessages.map((message, errorIndex) => (
-          <p key={errorIndex}>{message}</p>)) }
-      </p>
       <Form onSubmit={handleSubmit}>
+      <Form.Group className={error ? 'text-muted' : 'hidden'}>
+        <Form.Text>
+            { errorMessages.map((message, errorIndex) => (
+            <p key={errorIndex}>{message}</p>)) }
+        </Form.Text>
+      </Form.Group>
       <Form.Group className='formInput' controlId='email'>
           <Form.Control
             size='md'
