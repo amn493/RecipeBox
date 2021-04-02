@@ -28,33 +28,33 @@ const ProfilePage = (props) => {
     useEffect(() => {
         // fetch the user whose profile is being displayed (slug = slug)
         axios(`http://localhost:4000/userbyslug?slug=${slug}`)
-        .then((response) => {
-            setProfileUser(response.data)
-            setLoadedUser(true)
-        })
-        .catch((err) => {
-            console.error(err)
+            .then((response) => {
+                setProfileUser(response.data)
+                setLoadedUser(true)
+            })
+            .catch((err) => {
+                console.error(err)
 
-            // make some backup fake data
-            const backupData = [
-                {
-                    username: 'anonymous',
-                    password: 'Abc123',
-                    firstName: 'Anonymous',
-                    lastName: 'User',
-                    bio: 'fun, easy recipes!',
-                    followers: [2,3,5,7,9],
-                    following: [2,3,4,8,9],
-                    liked: [1,3,5,10,33],
-                    slug: 'anonymous',
-                    imagePath: 'https://picsum.photos/200',
-                    id: 1
+                // make some backup fake data
+                const backupData = [
+                    {
+                        username: 'anonymous',
+                        password: 'Abc123',
+                        firstName: 'Anonymous',
+                        lastName: 'User',
+                        bio: 'fun, easy recipes!',
+                        followers: [2, 3, 5, 7, 9],
+                        following: [2, 3, 4, 8, 9],
+                        liked: [1, 3, 5, 10, 33],
+                        slug: 'anonymous',
+                        imagePath: 'https://picsum.photos/200',
+                        id: 1
                     }
-            ]
+                ]
 
-            setProfileUser(backupData[0])
-            setLoadedUser(true)
-        })
+                setProfileUser(backupData[0])
+                setLoadedUser(true)
+            })
     }, [slug])
 
 
@@ -67,122 +67,122 @@ const ProfilePage = (props) => {
         if (profileUser.username) {
             // fetch user's recipes
             axios(`http://localhost:4000/recipesbyuser?userID=${profileUser.id}`)
-            .then((response) => {
-                setRecipes(response.data.sort((a, b) => b.createdAt - a.createdAt))
-                setLoadedRecipes(true)
-            })
-            .catch((err) => {
-                console.error(err)
+                .then((response) => {
+                    setRecipes(response.data.sort((a, b) => b.createdAt - a.createdAt))
+                    setLoadedRecipes(true)
+                })
+                .catch((err) => {
+                    console.error(err)
 
-                // make some backup fake data
-                const backupData = [
-                    {
-                        user: {
-                            id: 1,
-                            username: 'foobar',
-                            slug: 'foobar'
-                        },
-                        name: 'Guacamole',
-                        imagePath: 'https://picsum.photos/200',
-                        tags: ['mexican', 'vegan'],
-                        caption: "my secret recipe:)",
-                        ingredients: [
-                            '3 avocados', 
-                            '1 tomato', 
-                            '1/2 yellow onion', 
-                            '2 jalapeños', 
-                            '1/4 bunch cilantro', 
-                            '1 lime', 
-                            'salt', 
-                            'pepper'
-                        ],
-                        instructions: [
-                            'Mash the avocados', 
-                            'Dice the tomato, onion, and jalapeños', 
-                            'Chop the cilantro', 
-                            'Put everything in a bowl', 
-                            'Squeeze in the lime', 
-                            'Add salt and pepper to taste', 
-                            'Mix'
-                        ],
-                        likes: 36,
-                        createdAt: 1615864425952,
-                        slug: 'foobar-guacamole',
-                        id: 1
+                    // make some backup fake data
+                    const backupData = [
+                        {
+                            user: {
+                                id: 1,
+                                username: 'foobar',
+                                slug: 'foobar'
+                            },
+                            name: 'Guacamole',
+                            imagePath: 'https://picsum.photos/200',
+                            tags: ['mexican', 'vegan'],
+                            caption: "my secret recipe:)",
+                            ingredients: [
+                                '3 avocados',
+                                '1 tomato',
+                                '1/2 yellow onion',
+                                '2 jalapeños',
+                                '1/4 bunch cilantro',
+                                '1 lime',
+                                'salt',
+                                'pepper'
+                            ],
+                            instructions: [
+                                'Mash the avocados',
+                                'Dice the tomato, onion, and jalapeños',
+                                'Chop the cilantro',
+                                'Put everything in a bowl',
+                                'Squeeze in the lime',
+                                'Add salt and pepper to taste',
+                                'Mix'
+                            ],
+                            likes: 36,
+                            createdAt: 1615864425952,
+                            slug: 'foobar-guacamole',
+                            id: 1
                         },
                         {
-                        user: {
-                            id: 1,
-                            username: 'foobar',
-                            slug: 'foobar'
-                        },
-                        name: 'Tacos',
-                        imagePath: 'https://picsum.photos/200',
-                        tags: ['mexican', 'appetizer'],
-                        caption: "my secret recipe:)",
-                        ingredients: [
-                            '3 avocados', 
-                            '1 tomato', 
-                            '1/2 yellow onion', 
-                            '2 jalapeños', 
-                            '1/4 bunch cilantro', 
-                            '1 lime', 
-                            'salt', 
-                            'pepper'
-                        ],
-                        instructions: [
-                            'Mash the avocados', 
-                            'Dice the tomato, onion, and jalapeños', 
-                            'Chop the cilantro', 
-                            'Put everything in a bowl', 
-                            'Squeeze in the lime', 
-                            'Add salt and pepper to taste', 
-                            'Mix'
-                        ],
-                        likes: 12,
-                        createdAt: 1615864425952,
-                        slug: 'foobar-tacos',
-                        id: 2
+                            user: {
+                                id: 1,
+                                username: 'foobar',
+                                slug: 'foobar'
+                            },
+                            name: 'Tacos',
+                            imagePath: 'https://picsum.photos/200',
+                            tags: ['mexican', 'appetizer'],
+                            caption: "my secret recipe:)",
+                            ingredients: [
+                                '3 avocados',
+                                '1 tomato',
+                                '1/2 yellow onion',
+                                '2 jalapeños',
+                                '1/4 bunch cilantro',
+                                '1 lime',
+                                'salt',
+                                'pepper'
+                            ],
+                            instructions: [
+                                'Mash the avocados',
+                                'Dice the tomato, onion, and jalapeños',
+                                'Chop the cilantro',
+                                'Put everything in a bowl',
+                                'Squeeze in the lime',
+                                'Add salt and pepper to taste',
+                                'Mix'
+                            ],
+                            likes: 12,
+                            createdAt: 1615864425952,
+                            slug: 'foobar-tacos',
+                            id: 2
                         },
                         {
-                        user: {
-                            id: 1,
-                            username: 'foobar',
-                            slug: 'foobar'
-                        },
-                        name: 'Tofu',
-                        imagePath: 'https://picsum.photos/200',
-                        tags: ['vegan'],
-                        caption: "my secret recipe:)",
-                        ingredients: [
-                            '3 avocados', 
-                            '1 tomato', 
-                            '1/2 yellow onion', 
-                            '2 jalapeños', 
-                            '1/4 bunch cilantro', 
-                            '1 lime', 
-                            'salt', 
-                            'pepper'
-                        ],
-                        instructions: [
-                            'Mash the avocados', 
-                            'Dice the tomato, onion, and jalapeños', 
-                            'Chop the cilantro', 
-                            'Put everything in a bowl', 
-                            'Squeeze in the lime', 
-                            'Add salt and pepper to taste', 
-                            'Mix'
-                        ],
-                        likes: 30,
-                        createdAt: 1615864425952,
-                        slug: 'foobar-tofu',
-                        id: 3
+                            user: {
+                                id: 1,
+                                username: 'foobar',
+                                slug: 'foobar'
+                            },
+                            name: 'Tofu',
+                            imagePath: 'https://picsum.photos/200',
+                            tags: ['vegan'],
+                            caption: "my secret recipe:)",
+                            ingredients: [
+                                '3 avocados',
+                                '1 tomato',
+                                '1/2 yellow onion',
+                                '2 jalapeños',
+                                '1/4 bunch cilantro',
+                                '1 lime',
+                                'salt',
+                                'pepper'
+                            ],
+                            instructions: [
+                                'Mash the avocados',
+                                'Dice the tomato, onion, and jalapeños',
+                                'Chop the cilantro',
+                                'Put everything in a bowl',
+                                'Squeeze in the lime',
+                                'Add salt and pepper to taste',
+                                'Mix'
+                            ],
+                            likes: 30,
+                            createdAt: 1615864425952,
+                            slug: 'foobar-tofu',
+                            id: 3
                         }
-                ]
+                    ]
 
-                setRecipes(backupData)
-                setLoadedRecipes(true)
-            })
+                    setRecipes(backupData)
+                    setLoadedRecipes(true)
+                })
         }
     }, [profileUser])
 
@@ -199,11 +199,11 @@ const ProfilePage = (props) => {
                 <ProfileHeader user={profileUser} recipeCount={recipes.length} />
 
                 {(slug === props.user.slug) ?
-                    <Button block size="sm" variant="outline-secondary" className="editProfileButton" href="/edit-profile">Edit Profile</Button>
-                :
+                    <Button block size="sm" variant="outline-info" className="editProfileButton" href="/edit-profile">Edit Profile</Button>
+                    :
                     <FollowButton profileUserId={profileUser.id} currentUser={props.user} signedIn={props.signedIn} setShowModal={setShowModal} />
                 }
-                
+
                 <div className="tabContainer">
                     <Tab.Container defaultActiveKey="small">
                         <Nav variant="tabs" className="justify-content-center w-100 nav-fill">
@@ -214,7 +214,7 @@ const ProfilePage = (props) => {
                                 <Nav.Link eventKey="large" onSelect={() => setActiveTab('large')}>{<i><ViewStacked className={(activeTab === 'large') ? 'activeTab' : 'inactiveTab'} /></i>}</Nav.Link>
                             </Nav.Item>
                         </Nav>
-                
+
                         <Tab.Content>
                             <Tab.Pane eventKey="small">
                                 <div className="recipesSection">
@@ -232,7 +232,7 @@ const ProfilePage = (props) => {
 
                 <CreateAccountModal show={showModal} setShow={setShowModal} />
             </div>
-        :
+            :
             <></>
     )
 }
