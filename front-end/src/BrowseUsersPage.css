@@ -1,5 +1,21 @@
 /* Styling for BrowseUsersPage */
-.userPreviews {
-    display: flex;
-    flex-direction: column;
+
+.noUsersFoundMessage {
+    font-size: 14px;
+    font-weight: lighter;
+    text-align: center;
+}
+
+.recommendedUsersTitle {
+    font-size: 18px;
+    display: block;
+    margin-bottom: 20px;
+}
+
+.browseUsersSearchBar {
+    margin-bottom: 30px;
+}
+
+.browseUserSearch {
+    margin-bottom: 30px;
 }

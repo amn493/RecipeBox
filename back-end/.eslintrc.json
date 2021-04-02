@@ -1,0 +1,21 @@
+{
+    
+    "extends": [
+        "eslint:recommended",
+        "plugin:react/recommended",
+        "plugin:node/recommended",
+        "airbnb",
+        "prettier"
+    ],
+    
+    "plugins": [
+        "prettier"
+    ],
+    "rules": {
+        "prettier/prettier" : "error",
+        "no-unused-vars" : "warn",
+        "func-names" : "off",
+        "no-process-exit" : "off",
+        "object-shorthand" : "off"
+    }
+}

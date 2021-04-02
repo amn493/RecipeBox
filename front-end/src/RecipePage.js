@@ -10,7 +10,7 @@ import Comment from './Comment.js'
 import Timestamp from './Timestamp'
 
 import './RecipePage.css'
-import SignInModal from './SignInModal.js'
+import CreateAccountModal from './CreateAccountModal.js'
 
 
 // Recipe Page
@@ -156,7 +156,7 @@ const RecipePage = (props) => {
                         </table>
                     
                         <p className="recipeCaption">{recipe.caption}</p>
-                        {recipe.tags.map((tag, i) => (<a className="recipeTag" href={'/browserecipes?tag=' + tag} key={i}>{'#' + tag}</a>))}
+                        {recipe.tags.map((tag, i) => (<a className="recipeTag  text-info" href={`/browse-recipes?tag=${tag}`} key={i}>{'#' + tag}</a>))}
                     </div>
                     
                     <div className="recipeSubsection">
@@ -178,7 +178,7 @@ const RecipePage = (props) => {
                     
                 </div>
 
-                <SignInModal show={showModal} setShow={setShowModal} />
+                <CreateAccountModal show={showModal} setShow={setShowModal} />
             </div> 
         )
     }
@@ -283,8 +283,8 @@ const CommentsSection = (props) => {
             <h2 className="recipeSubheading">Comments</h2>
             {comments.map((comment, i) => (<Comment comment={comment} key={i} />))}
         
-            <Form onSubmit={handleSubmit}>
-                <InputGroup className="commentFieldAndButton">
+            <Form className="commentFieldAndButton" onSubmit={handleSubmit}>
+                <InputGroup>
                     <FormControl size="sm" className="commentField" name="comment" value={value} onChange={handleChange} />
                     <InputGroup.Append>
                         <Button variant="info" size="sm" className="commentButton" type="submit" onSubmit={handleSubmit}>Comment</Button>
