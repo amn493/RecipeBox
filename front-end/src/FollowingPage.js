@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { useParams } from 'react-router-dom'
+import { ArrowLeftCircleFill } from 'react-bootstrap-icons'
 
 import './FollowingPage.css'
 import KeyWordSearchBar from './KeywordSearchBar.js'
@@ -272,16 +273,16 @@ const FollowingPage = (props) => {
     return (
         <div className='following'>
             <div className='followingHeading'>
-            <a className='backLink' href='{/user-${slug}}'>Back</a>
-                <h3 className='userName'>@{user.username}</h3>
+                <a className='backLinkFollowing text-info' href={`/user-${slug}`}><i><ArrowLeftCircleFill /></i></a>
+                <h3 className='userNameFollowing'>@{user.username}</h3>
                 <h4 className='title'>{user.following.length} Following</h4>
             </div>
-            <div className='userSearchBar'>
+            <div className='userSearchBarFollowing'>
                 <KeyWordSearchBar isRecipe={false} filter={filterKeyword} setFilter={setFilterKeyword} />
             </div>
             <div className='followingList'>
                 <div className='followingUserPreview'>
-                    {following.length === 0 ? 'No users found in search' : following.sort((a, b) => a.firstName.localeCompare(b.firstName)).map((followingUser, i) => 
+                    {following.length === 0 ? <p className="noFollowingFoundMessage">No users found</p> : following.sort((a, b) => a.firstName.localeCompare(b.firstName)).map((followingUser, i) => 
                         (<SmallUserPreview user={followingUser} isBlockedUserProfile={false} key={i}/>))}
                 </div>
             </div>

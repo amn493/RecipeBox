@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 
-import './BrowseRecipesPage.css'
+import './BrowseUsersPage.css'
 import KeyWordSearchBar from './KeywordSearchBar.js'
 import SmallUserPreview from './SmallUserPreview.js'
 
@@ -234,16 +234,19 @@ const BrowseUsersPage = (props) => {
     return(
         <div className='browseUsers'>
             <div className='browseUserSearch'>
-                <KeyWordSearchBar isRecipe={false} filter={filterKeyword} setFilter={setFilterKeyword} />
+                <div className="browseUsersSearchBar">
+                    <KeyWordSearchBar isRecipe={false} filter={filterKeyword} setFilter={setFilterKeyword} />
+                </div>
                 <div className='userPreviews'>
-                    {(users.length === 0 && filterKeyword) ? 'No users found in search' : users.sort((a, b) => a.firstName.localeCompare(b.firstName)).map((user, i) => 
+                    {(users.length === 0 && filterKeyword) ? <p className="noUsersFoundMessage">No users found</p> : users.sort((a, b) => a.firstName.localeCompare(b.firstName)).map((user, i) => 
                         (<SmallUserPreview user={user} isBlockedUserProfile={false} key={i}/>))}
                 </div>
             </div>
+            <hr />
             <div className='recommendedUsers'>
-                <h3 className='recommendedUsersTitle'>
+                <b className='recommendedUsersTitle'>
                     Recommended Users
-                </h3>
+                </b>
                 <div className='userPreviews'>
                     {allUsers.sort((a, b) => a.firstName.localeCompare(b.firstName)).map((user, i) => (<SmallUserPreview user={user} isBlockedUserProfile={false} key={i}/>))} 
                 </div>
