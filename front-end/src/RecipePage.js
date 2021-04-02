@@ -10,7 +10,7 @@ import Comment from './Comment.js'
 import Timestamp from './Timestamp'
 
 import './RecipePage.css'
-import SignInModal from './SignInModal.js'
+import CreateAccountModal from './CreateAccountModal.js'
 
 
 // Recipe Page
@@ -178,7 +178,7 @@ const RecipePage = (props) => {
                     
                 </div>
 
-                <SignInModal show={showModal} setShow={setShowModal} />
+                <CreateAccountModal show={showModal} setShow={setShowModal} />
             </div> 
         )
     }
