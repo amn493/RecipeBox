@@ -241,6 +241,21 @@ app.post('/notificationSettings', (req, res) => {
     res.json(updatedNotificationSettings)
 })
 
+app.post('/updateuserinfo', upload.single('profilepicture'), (req, res) => {
+    // recieve post data from updating user's basic info
+    const updatedUserInfo = {
+        username: req.body.username,
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        id: req.body.id,
+        imagePath: path.join('/uploads/', req.file.filename)
+    }
+    
+    // update the user's user object (in database)
+
+    // send a response to the user (sending data back to test)
+    res.json(updatedUserInfo)
+})
 
 // export the express app we created to make it available to other modules
 module.exports = app
