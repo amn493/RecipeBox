@@ -68,7 +68,7 @@ const RecipeBoxPage = (props) => {
 
     // Adjust dropdown and ordering
     const [sortByString, setSortByString] = useState('Sort by Date Posted')
-    const [ascendingOrder, setAscendingOrder] = useState(true)
+    const [ascendingOrder, setAscendingOrder] = useState(false)
 
     // https://my.api.mockaroo.com/recipe.json?key=f6a27260
     /* Pull in recipes from mockaroo */
@@ -121,26 +121,20 @@ const RecipeBoxPage = (props) => {
             {/* Sort and filter */}
             <div className="recipeBoxFilters">
                 <div className="sortDropdown">
-                    <InputGroup>
-                        <InputGroup.Prepend>
-                            <Button variant="outline-info" onClick={() => {ascendingOrder === true ? setAscendingOrder(false) : setAscendingOrder(true)}}>
-                                {ascendingOrder === true ? <SortDown /> : <SortUp />}
-                            </Button>
-                            <Button variant="info">{sortByString}</Button>
-                        </InputGroup.Prepend>
-                        <InputGroup.Append>
-                            <Dropdown>
+                        
+                    <Dropdown as={ButtonGroup}>
 
+                        <Button variant="outline-info" onClick={() => {ascendingOrder === true ? setAscendingOrder(false) : setAscendingOrder(true)}}>
+                            {ascendingOrder === true ? <SortUp /> : <SortDown />}
+                        </Button>
 
-                                <Dropdown.Toggle split variant="info" id="dropdown-split-basic" />
-                                <Dropdown.Menu>
-                                    <Dropdown.Item onClick={() => onDatePosted("Date Posted")}>Date Posted</Dropdown.Item>
-                                    <Dropdown.Item onClick={() => onDatePosted("Like Count")}>Like Count</Dropdown.Item>
-                                </Dropdown.Menu>
-                            </Dropdown>
-                        </InputGroup.Append>
-                    </InputGroup>
-
+                        <Dropdown.Toggle split variant="info" id="dropdown-basic">{sortByString} </Dropdown.Toggle>
+                        <Dropdown.Menu>
+                            <Dropdown.Item onClick={() => onDatePosted("Date Posted")}>Date Posted</Dropdown.Item>
+                            <Dropdown.Item onClick={() => onDatePosted("Like Count")}>Like Count</Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
+                  
                 </div>
 
                 <ComboBoxSearchBar isTag={true} tags={filterTags} setSelection={setFilterTags} />
