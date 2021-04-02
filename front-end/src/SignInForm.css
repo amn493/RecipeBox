@@ -6,18 +6,17 @@
   margin-top: 20px;
 }
   
+.createAccountDiv {
+  text-align: center;
+}
+
 .createAccountLink {
-  display: flex;
-  justify-content: center;
-  color: rgb(23, 162, 184);
   font-weight: bold;
 }
 
 .createAccountLink:hover, .createAccountLink:active {
-  color: rgb(23, 162, 184);
   font-weight: bold;
   text-decoration: none;
-  opacity: 60%;
 }
 
 .hidden {

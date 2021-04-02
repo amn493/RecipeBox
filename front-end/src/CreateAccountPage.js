@@ -156,7 +156,9 @@ const CreateAccountPage = (props) =>  {
       <div className='redirectCreateAccount'>
         Already have an account?
       </div>
-      <a className='signInLink' href='/sign-in'>Sign in</a>
+      <div className='signInDiv'>
+        <a className='signInLink text-info' href='/sign-in'>Sign in</a>
+      </div>
     </div>
   )
 }
