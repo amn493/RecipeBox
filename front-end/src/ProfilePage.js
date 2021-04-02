@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom'
 import Tab from 'react-bootstrap/Tab'
 import Nav from 'react-bootstrap/Nav'
 import Button from 'react-bootstrap/Button'
-import { ViewList, ViewStacked } from 'react-bootstrap-icons'
+import { Plus, ViewList, ViewStacked } from 'react-bootstrap-icons'
 
 import ProfileHeader from './ProfileHeader.js'
 import FollowButton from './FollowButton.js'
@@ -13,6 +13,7 @@ import LargeRecipePreview from './LargeRecipePreview.js'
 import SignInModal from './SignInModal.js'
 
 import './ProfilePage.css'
+import { ButtonGroup, InputGroup } from 'react-bootstrap'
 
 
 const ProfilePage = (props) => {
@@ -199,7 +200,10 @@ const ProfilePage = (props) => {
                 <ProfileHeader user={profileUser} recipeCount={recipes.length} />
 
                 {(slug === props.user.slug) ?
-                    <Button block size="sm" variant="outline-secondary" className="editProfileButton" href="/edit-profile">Edit Profile</Button>
+                    <ButtonGroup size="sm" className="profileButtons" >
+                        <Button variant="outline-info" className="editProfileButton" href="/edit-profile">Edit Profile</Button>
+                        <Button variant="info" className="newRecipeButton" href="./new-recipe"><i><Plus /></i></Button>
+                    </ButtonGroup>
                 :
                     <FollowButton profileUserId={profileUser.id} currentUser={props.user} signedIn={props.signedIn} setShowModal={setShowModal} />
                 }
