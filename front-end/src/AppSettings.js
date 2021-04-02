@@ -5,15 +5,14 @@ import TagButton from './TagButton'
 import Button from 'react-bootstrap/Button'
 import SmallUserPreview from './SmallUserPreview'
 
-
 import './AppSettings.css'
 
 //expects:
 //current user and signedIn state variable
 const AppSettings = (props) => {
 
-
-
+        const [blockedUsersOnRender] = useState(props.user.blockedUsers) 
+        const [blockedUsersSample] = useState([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]) 
         const [loadedUsers, setLoadedUsers] = useState(false)
         const [blockedUsers, setBlockedUsers] = useState([]) //user info for each user currently blocked
         const [usersToBlock, setUsersToBlock] = useState([]) //user info for currently blockable users
@@ -28,15 +27,17 @@ const AppSettings = (props) => {
                 let index = blockedUsers.indexOf(props)
                 setBlockedUsers(blockedUsers.slice(0,index).concat(blockedUsers.slice(index+1,blockedUsers.length)))
                 setUsersToBlock(usersToBlock.includes(props) ? usersToBlock : usersToBlock.concat(props))
+                
             }
         }
     
-        //retrieve blocked/blockable users
+        //retrieve blocked users using GET handler
         useEffect(() => {
-            axios('https://my.api.mockaroo.com/user.json?key=f6a27260')
+            axios(`http://localhost:4000/usersbyid?ids=${blockedUsersSample.reduce((acc, distinctId) => acc + `&ids=${distinctId}`)}`)
             .then((response) => {
-                setBlockedUsers((response.data).slice(1,1+props.user.blockedUsers.length)) //TODO: replace with actual blocked users list
-                setUsersToBlock((response.data).slice(1,20))
+                console.log(response.data)
+                setBlockedUsers(response.data.filter((user) => (blockedUsersOnRender.includes(user.id))))
+                setUsersToBlock(response.data.filter((user) => (!blockedUsers.includes(user)))) 
                 setLoadedUsers(true)
             })
             .catch((err) => {
@@ -101,7 +102,8 @@ const AppSettings = (props) => {
                 setUsersToBlock((backupData).slice(props.user.blockedUsers.length,backupData.length))
                 setLoadedUsers(true)
             })
-        },[props.user.username])
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        },[])
 
     // request all tags that current user has the opportunity to block
     const [tagsToBlock, setTagsToBlock] = useState([])
@@ -190,125 +192,151 @@ const AppSettings = (props) => {
                 {/* Email Notifications toggle switch*/}
 				<div className="emailNotifSettings">
 				<table className="notifTable">
-
-                    <tr className='emailSwitch' id={1}>
-						<td>
-                        	<div className="emailNotifLabel"><b>Email Notifications</b></div>
-						</td>
-						<td className="tableRight">
-							<div className="emailSwitchMaster">
-								<div className='custom-control custom-switch'id={1}>
-									<input
-										type='checkbox'
-                                        name='email'
-										className='custom-control-input'
-										id='customSwitches1'
-										checked={emailNotifs}
-										onClick={() => setEmailNotifs(!emailNotifs)}
-									/>
-									<label className="custom-control-label" id={1} htmlFor='customSwitches1'/>
-								</div>
-							</div>
-						</td>
-                    </tr><hr/>
-
-                        <tr className='notifsSwitchSubEmails'>
-                            {/* New Likes toggle switch*/}
-                                <td>
-                                    <div className="emailNotifLabel">New Likes</div>
-                                </td>
-                                <td className="tableRight">
-                                    <div className="indentedButton">
-                                        <div className='custom-control custom-switch' id={2}>
-                                            <input
-                                                type='checkbox'
-                                                name='likes'
-                                                className='custom-control-input'
-                                                id='customSwitches2'
-                                                checked={likesNotifs}
-                                                disabled={!emailNotifs}
-                                                onClick={() => setLikesNotifs(!likesNotifs)}
-                                            />
-                                            
-                                                <label className='custom-control-label' id={2} htmlFor='customSwitches2'/>
-                                            
-                                        </div>
+                    <tbody>
+                        <tr className='emailSwitch' id={1}>
+                            <td>
+                                <div className="emailNotifLabel"><b>Email Notifications</b></div>
+                            </td>
+                            <td className="tableRight">
+                                <div className="emailSwitchMaster">
+                                    <div className='custom-control custom-switch'id={1}>
+                                        <input
+                                            type='checkbox'
+                                            className='custom-control-input'
+                                            id='customSwitches1'
+                                            checked={emailNotifs}
+                                            onClick={() => setEmailNotifs(!emailNotifs)}
+                                            onChange={e => {}}
+                                        />
+                                        <label className="custom-control-label" id={1} htmlFor='customSwitches1'/>
                                     </div>
-                                </td>
+                                </div>
+                            </td>
+
                         </tr>
-                        <hr/>
+                            
+                        {/* simulating <hr> (horitzontal rule) for style*/}
+                        <tr className="borderedtr">
+                            <td className="borderedtd"></td>
+                        </tr>
 
-                    {/* New Comments toggle switch*/}
-                    <tr className='notifsSwitchSubEmails'id={3}>
-                        <td>
-                            <div className="emailNotifLabel">New Comments</div>
-                        </td>
-                        <td className="tableRight">
-                        <div className="indentedButton">
-                        <div className='custom-control custom-switch' id={3}>
-                            <input
-                                type='checkbox'
-                                name='comments'
-                                className='custom-control-input'
-                                id='customSwitches3'
-                                checked={commentsNotifs}
-                                disabled={!emailNotifs}
-                                onClick={() => setCommentsNotifs(!commentsNotifs)}
-                            />
-                            <label className='custom-control-label' id={3} htmlFor='customSwitches3'/>
-                            </div>
-                        </div>
-                        </td>
-                    </tr><hr/>
+                         {/* New Likes toggle switch*/}
+                        <tr className='notifsSwitchSubEmails'>
+                            <td>
+                                <div className="emailNotifLabel">New Likes</div>
+                            </td>
+                            <td className="tableRight">
+                                <div className="indentedButton">
+                                    <div className='custom-control custom-switch' id={2}>
+                                        <input
+                                            type='checkbox'
+                                            className='custom-control-input'
+                                            id='customSwitches2'
+                                            checked={likesNotifs}
+                                            disabled={!emailNotifs}
+                                            onClick={() => setLikesNotifs(!likesNotifs)}
+                                            onChange={e => {}}
+                                        />
+                                        
+                                            <label className='custom-control-label' id={2} htmlFor='customSwitches2'/>
+                                        
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        
+                        {/* simulating <hr> (horitzontal rule) for style*/}
+                        <tr className="borderedtr">
+                            <td className="borderedtd"></td>
+                        </tr>
 
-                    {/* New Followers toggle switch*/}
-                    <tr className='notifsSwitchSubEmails'id={4}>
-                        <td>
-                            <div className="emailNotifLabel">New Followers</div>
-                        </td>
-                        <td className="tableRight">
-                        <div className="indentedButton">
-                        <div className='custom-control custom-switch' id={4}>
-                            <input
-                                type='checkbox'
-                                name='followers'
-                                className='custom-control-input'
-                                id='customSwitches4'
-                                checked={followersNotifs}
-                                disabled={!emailNotifs}
-                                onClick={() => setFollowersNotifs(!followersNotifs)}
-                            />
-                            <label className='custom-control-label' id={4} htmlFor='customSwitches4' />
+                        {/* New Comments toggle switch*/}
+                        <tr className='notifsSwitchSubEmails'id={3}>
+                            <td>
+                                <div className="emailNotifLabel">New Comments</div>
+                            </td>
+                            <td className="tableRight">
+                            <div className="indentedButton">
+                            <div className='custom-control custom-switch' id={3}>
+                                <input
+                                    type='checkbox'
+                                    className='custom-control-input'
+                                    id='customSwitches3'
+                                    checked={commentsNotifs}
+                                    disabled={!emailNotifs}
+                                    onClick={() => setCommentsNotifs(!commentsNotifs)}
+                                    onChange={e => {}}
+                                />
+                                <label className='custom-control-label' id={3} htmlFor='customSwitches3'/>
+                                </div>
                             </div>
-                        </div>
-                        </td>
-                    </tr><hr/>
+                            </td>
+                        </tr>
 
-                    {/* New Posts toggle switch*/}
-                    <tr className='notifsSwitchSubEmails'id={5}>
-                        <td>
-                            <div className="emailNotifLabel">New Posts from Following</div>
-                        </td>
-                        <td className="tableRight">
-                        <div className="indentedButton">
-                        <div className='custom-control custom-switch' id={5}>
-                            <input
-                                type='checkbox'
-                                name='posts'
-                                className='custom-control-input'
-                                id='customSwitches5'
-                                checked={postsNotifs}
-                                disabled={!emailNotifs}
-                                onClick={() => setPostsNotifs(!postsNotifs)}
-                            />
-                            <label className='custom-control-label' id={5} htmlFor='customSwitches5'/>
+                        {/* simulating <hr> (horitzontal rule) for style*/}
+                        <tr className="borderedtr">
+                            <td className="borderedtd"></td>
+                        </tr>
+
+                        {/* New Followers toggle switch*/}
+                        <tr className='notifsSwitchSubEmails'id={4}>
+                            <td>
+                                <div className="emailNotifLabel">New Followers</div>
+                            </td>
+                            <td className="tableRight">
+                            <div className="indentedButton">
+                            <div className='custom-control custom-switch' id={4}>
+                                <input
+                                    type='checkbox'
+                                    className='custom-control-input'
+                                    id='customSwitches4'
+                                    checked={followersNotifs}
+                                    disabled={!emailNotifs}
+                                    onClick={() => setFollowersNotifs(!followersNotifs)}
+                                    onChange={e => {}}
+                                />
+                                <label className='custom-control-label' id={4} htmlFor='customSwitches4' />
+                                </div>
                             </div>
-                        </div>
-                        </td>
-                    </tr><hr/>
-				</table>
-				</div>
-				<br/><br/>
+                            </td>
+                        </tr>
+
+                        {/* simulating <hr> (horitzontal rule) for style*/}
+                        <tr className="borderedtr">
+                            <td className="borderedtd"></td>
+                        </tr>
+
+                        {/* New Posts toggle switch*/}
+                        <tr className='notifsSwitchSubEmails'id={5}>
+                            <td>
+                                <div className="emailNotifLabel">New Posts from Following</div>
+                            </td>
+                            <td className="tableRight">
+                            <div className="indentedButton">
+                            <div className='custom-control custom-switch' id={5}>
+                                <input
+                                    type='checkbox'
+                                    className='custom-control-input'
+                                    id='customSwitches5'
+                                    checked={postsNotifs}
+                                    disabled={!emailNotifs}
+                                    onChange={e => {}}
+                                />
+                                <label className='custom-control-label' id={5} htmlFor='customSwitches5'/>
+                                </div>
+                            </div>
+                            </td>
+                        </tr>
+
+                        {/* simulating <hr> (horitzontal rule) for style*/}
+                        <tr className="borderedtr">
+                            <td className="borderedtd"></td>
+                        </tr>
+
+                    </tbody>
+                </table>
+                </div>
+                <br/><br/>
 
                 {/* blocked users section*/}
                 <div className="blockedUsers">

@@ -51,6 +51,37 @@
     max-height:100;
 }
 
+.blockedTagsDisplay{
+    border: 1px solid grey;
+    padding: 10px;
+}
+
+.backToSettings{
+    transform: translatey(-75%);
+}
+.blockedUsersTitle{
+    text-align: center;
+    transform: translatey(-75%);
+}
+.blockedUsersPTag{
+    font-weight: 900;
+    font-size: 30px;
+    font-family: sans-serif;
+}
+
+.borderedtr {
+    border-bottom: 1px solid #cecece;
+    padding-top: 1%;
+    display: block;
+}
+
+.borderedtd {
+    display: block;
+}
+
+.settingsInstructionText {
+    font-size: 13px;
+}
 
 .custom-control-input:checked ~ 
 .custom-control-label::before {
@@ -67,21 +98,4 @@
 .custom-control-label::before {
     background-color: white;
     opacity: 60%;
-}
-
-.backToSettings{
-    transform: translatey(-75%);
-}
-.blockedUsersTitle{
-    text-align: center;
-    transform: translatey(-75%);
-}
-.blockedUsersPTag{
-    font-weight: 900;
-    font-size: 30px;
-    font-family: sans-serif;
-}
-
-.settingsInstructionText {
-    font-size: 13px;
 }
