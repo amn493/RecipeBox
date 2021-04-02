@@ -26,26 +26,28 @@ const ComboBoxSearchBar = (props) => {
 
     return(
         <table className="comboBox">
-            <tr>
-                <td className="iconCell comboCell">
-                    <InputGroup className="icon">
+            <tbody>
+                <tr>
+                    <td className="iconCell comboCell">
+                        <InputGroup className="icon">
 
-                        {props.isTag === true ?
-                            <InputGroup.Prepend>
-                                <InputGroup.Text id="searchHashIcon"><i><Hash /></i></InputGroup.Text>
-                            </InputGroup.Prepend>
-                        :
-                            <InputGroup.Prepend>
-                                <InputGroup.Text id="searchAtIcon"><i><At /></i></InputGroup.Text>
-                            </InputGroup.Prepend>   
-                        }
+                            {props.isTag === true ?
+                                <InputGroup.Prepend>
+                                    <InputGroup.Text id="searchHashIcon"><i><Hash /></i></InputGroup.Text>
+                                </InputGroup.Prepend>
+                            :
+                                <InputGroup.Prepend>
+                                    <InputGroup.Text id="searchAtIcon"><i><At /></i></InputGroup.Text>
+                                </InputGroup.Prepend>   
+                            }
 
-                    </InputGroup>
-                </td>
-                <td className="comboCell">
-                    <ComboBoxSearchResults setSelection={props.setSelection} listForSearch={props.isTag ? props.tags : props.users} placeholder={props.isTag ? 'tag' : "username"} />
-                </td>
-            </tr>
+                        </InputGroup>
+                    </td>
+                    <td className="comboCell">
+                        <ComboBoxSearchResults setSelection={props.setSelection} listForSearch={props.isTag ? props.tags : props.users} placeholder={props.isTag ? 'tag' : "username"} />
+                    </td>
+                </tr>
+            </tbody>
         </table>
     )
 }

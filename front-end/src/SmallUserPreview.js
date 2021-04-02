@@ -14,40 +14,46 @@ const SmallUserPreview = (props) => {
         <div className="userPreview">
 
             {/*preview links to the user profile*/ }
-            <a className="userPreviewProfileLink" href={props.isBlockedUserProfile ? false : userSlug}> {/*TODO(?): Disable link if component used for blocked users page?*/ }
+            <a className="userPreviewProfileLink" href={props.isBlockedUserProfile ? undefined : userSlug}> {/*TODO(?): Disable link if component used for blocked users page?*/ }
                 <table className="userPreviewTable">
-                    <tr>
-                        { /* user profile picture preview */ }
-                        <td className="userPreviewImg">
-                            <img src={props.user.imagePath} alt="" className="smallUserProfilePic"/>
-                        </td>
-                        <td>
-                            <table className="userPreviewTopTable">
-                                <tr>
-                                    <td>
-                                        <b className="userPreviewFullName">{`${props.user.firstName} ${props.user.lastName}`}</b>
-                                    </td>
-                                    <td className="unBlock">
-                                        {props.isBlockedUserProfile ?
-                                                <Button variant='info' size='sm' className="unBlockUserButton" onClick={props.handleClick}>Unblock</Button>
-                                            :
-                                                <></>
-                                        }
-                                    </td>
-                                </tr>
-                            </table>
-                            <table className="userPreviewBottomTable">
-                                <tr>
-                                    <td className="userPreviewBottomCell">
-                                        <b className="userPreviewUsername">{`@${props.user.username}`}</b>
-                                    </td>
-                                    <td className="userPreviewNumericalData userPreviewBottomCell">
-                                            {`${props.user.followers.length} followers`}
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
+                    <tbody>
+                        <tr>
+                            { /* user profile picture preview */ }
+                            <td className="userPreviewImg">
+                                <img src={props.user.imagePath} alt="" className="smallUserProfilePic"/>
+                            </td>
+                            <td>
+                                <table className="userPreviewTopTable">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <b className="userPreviewFullName">{`${props.user.firstName} ${props.user.lastName}`}</b>
+                                            </td>
+                                            <td className="unBlock">
+                                                {props.isBlockedUserProfile ?
+                                                        <Button variant='info' size='sm' className="unBlockUserButton" onClick={props.handleClick}>Unblock</Button>
+                                                    :
+                                                        <></>
+                                                }
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <table className="userPreviewBottomTable">
+                                    <tbody>
+                                        <tr>
+                                            <td className="userPreviewBottomCell">
+                                                <b className="userPreviewUsername">{`@${props.user.username}`}</b>
+                                            </td>
+                                            <td className="userPreviewNumericalData userPreviewBottomCell">
+                                                    {`${props.user.followers.length} followers`}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    </tbody>
                 </table>
             </a>
         </div>
