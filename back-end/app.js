@@ -215,12 +215,13 @@ app.post('/notificationSettings', (req, res) => {
         comments: req.body.comments,
         followers: req.body.followers,
         posts: req.body.posts
+        id: req.body.id
     }
 
     // update the settings
 
     // send response
-    res.json(data)
+    res.json(updatedNotificationSettings)
 })
 
 // export the express app we created to make it available to other modules
