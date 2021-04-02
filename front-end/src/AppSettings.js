@@ -12,7 +12,6 @@ import './AppSettings.css'
 const AppSettings = (props) => {
 
         const [blockedUsersOnRender] = useState(props.user.blockedUsers) 
-        const [blockedUsersSample] = useState([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]) 
         const [loadedUsers, setLoadedUsers] = useState(false)
         const [blockedUsers, setBlockedUsers] = useState([]) //user info for each user currently blocked
         const [usersToBlock, setUsersToBlock] = useState([]) //user info for currently blockable users
@@ -33,7 +32,7 @@ const AppSettings = (props) => {
     
         //retrieve blocked users using GET handler
         useEffect(() => {
-            axios(`http://localhost:4000/usersbyid?ids=${blockedUsersSample.reduce((acc, distinctId) => acc + `&ids=${distinctId}`)}`)
+            axios(`http://localhost:4000/usersbyid`)
             .then((response) => {
                 console.log(response.data)
                 setBlockedUsers(response.data.filter((user) => (blockedUsersOnRender.includes(user.id))))
@@ -320,6 +319,7 @@ const AppSettings = (props) => {
                                     id='customSwitches5'
                                     checked={postsNotifs}
                                     disabled={!emailNotifs}
+	    			    onClick={() => setPostsNotifs(!postsNotifs)}
                                     onChange={e => {}}
                                 />
                                 <label className='custom-control-label' id={5} htmlFor='customSwitches5'/>
