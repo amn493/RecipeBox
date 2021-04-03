@@ -7,7 +7,6 @@ const morgan = require('morgan') // middleware for nice logging of incoming HTTP
 const multer = require('multer') // middleware to handle HTTP POST requests with file uploads
 const path = require('path')
 const axios = require('axios') // middleware for making requests to APIs
-const cors = require('cors')
 require('dotenv').config({ silent: true }) // load environmental variables from a hidden file named .env
 
 // use the bodyparser middleware to parse any data included in a request
@@ -15,11 +14,16 @@ app.use(express.json()) // decode JSON-formatted incoming POST data
 app.use(express.urlencoded({ extended: true })) // decode url-encoded incoming POST data
 app.use(morgan('dev')) // dev style gives a concise color-coded style of log output
 
-// fix CORS error by allowing requests from localhost
-const corsOptions = {
-  origin: 'http://localhost',
-}
-app.use(cors(corsOptions))
+// CORS
+
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', 'http://localhost:3000')
+  res.header(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept'
+  )
+  next()
+})
 
 // MULTER
 
