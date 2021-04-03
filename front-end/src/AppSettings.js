@@ -11,22 +11,44 @@ import './AppSettings.css'
 //current user and signedIn state variable
 const AppSettings = (props) => {
 
-        const [blockedUsersOnRender] = useState(props.user.blockedUsers) 
+        const [currentUser] =  useState(props.user)
+        const [blockedUsersOnRender] = useState(props.user.blockedUsers)
         const [loadedUsers, setLoadedUsers] = useState(false)
         const [blockedUsers, setBlockedUsers] = useState([]) //user info for each user currently blocked
         const [usersToBlock, setUsersToBlock] = useState([]) //user info for currently blockable users
     
         const blockUser = (props) => { //function to add a blocked user
-            usersToBlock.map((user) =>  user.username === props ? setBlockedUsers(blockedUsers.concat(user)) : null) 
+            axios.post('http://localhost:4000/blockuser', 
+            {addBlock: true, 
+            signedInUserId: currentUser.id,
+            signedInblockedUsers: blockedUsers.map((user) => user.id),
+            signedInUserFollowing: currentUser.following,
+            signedInUserFollowers:  currentUser.followers,
+            blockedUserID: usersToBlock.map((user) =>  user.username === props ? user.id : null),
+            blockedUserFollowing: usersToBlock.map((user) =>  user.username === props ? user.following : []),
+            blockedUserFollowers: usersToBlock.map((user) =>  user.username === props ? user.followers : []),
+            })
+            .then(() => { usersToBlock.map((user) =>  user.username === props ? setBlockedUsers(blockedUsers.concat(user)) : null)}) 
         }
     
         const unBlockUser = (props) => { //function to unblock a user
             if (blockedUsers.includes(props) === true){
-                console.log(props)
-                let index = blockedUsers.indexOf(props)
-                setBlockedUsers(blockedUsers.slice(0,index).concat(blockedUsers.slice(index+1,blockedUsers.length)))
-                setUsersToBlock(usersToBlock.includes(props) ? usersToBlock : usersToBlock.concat(props))
-                
+
+                axios.post('http://localhost:4000/blockuser', 
+                {addBlock: false, 
+                signedInUserId: currentUser.id,
+                signedInblockedUsers: blockedUsers.map((user) => user.id),
+                signedInUserFollowing: currentUser.following,
+                signedInUserFollowers:  currentUser.followers,
+                blockedUserID: props.id,
+                blockedUserFollowing: props.following,
+                blockedUserFollowers: props.followers,
+                })
+                .then(() => {
+                    let index = blockedUsers.indexOf(props)
+                    setBlockedUsers(blockedUsers.slice(0,index).concat(blockedUsers.slice(index+1,blockedUsers.length)))
+                    setUsersToBlock(usersToBlock.includes(props) ? usersToBlock : usersToBlock.concat(props))
+                })
             }
         }
     
