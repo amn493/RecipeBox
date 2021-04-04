@@ -201,19 +201,40 @@ app.post('/newrecipe', upload.single('recipeimage'), (req, res) => {
 })
 
 app.post('/blockuser', (req, res) => {
-  // update signed-in user (_id === req.body.userID)'s blockedUsers array appropriately
+  // update signed-in user's blockedUsers array appropriately
+  // update signed-in users's following/followers array appropriately
+  // update blocked user's following/followers array appropriately
 
-  const updatedBlockedUsers = req.body.blockedUsers
+  const updatedSignedInBlockedUsers = req.body.signedInblockedUsers
+
+  const updatedSignedInUserFollowing = req.body.signedInUserFollowing
+  const updatedSignedInUserFollowers = req.body.signedInUserFollowers
+  const updatedblockedUserFollowing = req.body.blockedUserFollowing
+  const updatedblockedUserFollowers = req.body.blockedUserFollowers
+
+
   if (req.body.addBlock) {
-    updatedBlockedUsers.push(req.body.blockedUserID)
+    updatedSignedInBlockedUsers.push(req.body.blockedUserID)
+
+    if (updatedSignedInUserFollowing.includes(req.body.blockedUserID)){
+        updatedSignedInUserFollowing.splice(updatedSignedInUserFollowing.indexOf(req.body.blockedUserID), 1)
+        updatedblockedUserFollowers.splice(updatedblockedUserFollowers.indexOf(req.body.signedInUserID), 1)   
+    }
+    if (updatedSignedInUserFollowers.includes(req.body.blockedUserID)){
+        updatedSignedInUserFollowers.splice(updatedSignedInUserFollowers.indexOf(req.body.blockedUserID), 1)
+        updatedblockedUserFollowing.splice(updatedblockedUserFollowing.indexOf(req.body.signedInUserID), 1)   
+    }
+
   } else {
-    updatedBlockedUsers.splice(
-      updatedBlockedUsers.indexOf(req.body.blockedUserID),
-      1
-    )
+    updatedSignedInBlockedUsers.splice(
+      updatedSignedInBlockedUsers.indexOf(req.body.blockedUserID), 1)
   }
 
-  res.json(updatedBlockedUsers)
+  res.json({signedInBlockedUsers: updatedSignedInBlockedUsers,
+    signedInUserFollowing: updatedSignedInUserFollowing,
+    signedInUserFollowers: updatedSignedInUserFollowers,
+    blockedUserFollowers: updatedblockedUserFollowers,
+    blockedUserFollowing: updatedblockedUserFollowing})
 })
 
 app.post('/likerecipe', (req, res) => {
