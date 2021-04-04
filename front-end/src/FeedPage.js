@@ -19,10 +19,9 @@ const Feed = (props) => {
         // userid is the logged in user so we can get their following
         // timestamp is the current time to pull recipes from a certain timeframe, e.g. a week
 
-        // `http://localhost:4000/feedrecipes?userid=${userid}?timestamp=${currentTime}`
-        let userid = props.user.id
-        let currentTime = Date.now()
-        axios(`http://localhost:4000/feedrecipes?userid=${userid}?timestamp=${currentTime}`).then((response) => {
+        let followingArray = props.user.following
+
+        axios(`http://localhost:4000/feedrecipes?following=${(followingArray.length > 0) ? followingArray.reduce((acc, following) => acc + `&following=${following}`, `following=`) : `following=`}`).then((response) => {
             setRecBoxRecipes(response.data)
         }).catch((err) => {
             console.log(err)
