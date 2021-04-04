@@ -11,8 +11,12 @@ import './AppSettings.css'
 //current user and signedIn state variable
 const AppSettings = (props) => {
 
+<<<<<<< HEAD
         const [currentUser] =  useState(props.user)
         const [blockedUsersOnRender] = useState(props.user.blockedUsers)
+=======
+        const [blockedUsersOnRender] = useState(props.user.blockedUsers) 
+>>>>>>> e958a4e (Removed a modified file from pull request)
         const [loadedUsers, setLoadedUsers] = useState(false)
         const [blockedUsers, setBlockedUsers] = useState([]) //user info for each user currently blocked
         const [usersToBlock, setUsersToBlock] = useState([]) //user info for currently blockable users
