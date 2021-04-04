@@ -257,7 +257,7 @@ app.post('/followuser', (req, res) => {
   })
 })
 
-app.post('/notificationsettings', (req, res) => {
+app.post('/notificationSettings', (req, res) => {
   // recieve updated notification settings
   const updatedNotificationSettings = {
     email: req.body.email,
