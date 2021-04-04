@@ -16,6 +16,7 @@ const FollowingPage = (props) => {
 
     // Request all followers on initial render
     const [user, setUser] = useState([])
+    const [userFollowingIds, setUserFollowingIds] = useState([])
     const [loadedUser, setLoadedUser] = useState(false)
 
     useEffect(() => {
@@ -23,6 +24,7 @@ const FollowingPage = (props) => {
         axios(`http://localhost:4000/userbyslug?slug=${slug}`)
         .then((response) => {
             setUser(response.data)
+            setUserFollowingIds(response.data.following)
             setLoadedUser(true)
         })
         .catch((err) => {
@@ -46,6 +48,7 @@ const FollowingPage = (props) => {
             ]
 
             setUser(backupData[0])
+            setUserFollowingIds(backupData[0].following)
             setLoadedUser(true)
         })
     }, [slug])
@@ -60,8 +63,10 @@ const FollowingPage = (props) => {
     useEffect(() => {
         // Fetch all following
         if (user.following) {
-            axios('https://my.api.mockaroo.com/user.json?key=f6a27260')
+            console.log((user.following).reduce((acc,userFromFollowing)=>acc+`&ids=${userFromFollowing}`))
+            axios(`http://localhost:4000/usersbyid?id=${(user.following).reduce((acc,userFromFollowing)=>acc+`&id=${userFromFollowing}`)}`)
             .then((response) => {
+                console.log(response.data)
                 setAllFollowing(response.data.slice(0, user.following.length))
                 setFollowing(response.data.slice(0, user.following.length))
                 setLoadedFollowing(true)
@@ -246,8 +251,7 @@ const FollowingPage = (props) => {
                 setLoadedFollowing(true)
             })
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [user])
+    }, [user.following])
 
 
     // For keyword search bar
