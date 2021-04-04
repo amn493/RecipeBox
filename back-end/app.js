@@ -55,9 +55,9 @@ app.get('/recipe', (req, res, next) => {
 })
 
 app.get('/usersbyname', (req, res, next) => {
-  // fetch users where name === req.query.username
-  // or name === req.query.firstName
-  // or name === req.query.lastName from database
+  // fetch users where username === req.query.name
+  // or firstName === req.query.name
+  // or lastName === req.query.name from database
 
   axios
     .get('https://my.api.mockaroo.com/user.json?key=f6a27260')
