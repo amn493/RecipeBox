@@ -1,3 +1,5 @@
+import Button from 'react-bootstrap/Button'
+
 import './SmallUserPreview.css'
 
 //This component is used in both the blocked users page and browse users page
@@ -5,17 +7,6 @@ import './SmallUserPreview.css'
 //To include the component without 'unblock' buttons for each user, specify isBlockedUserProfile=false
 //Otherwise, pass in isBlockedUserProfile=true
 const SmallUserPreview = (props) => {
-    
-    const unBlockUserButton = (props) => { //includes 'unblock' button if component used for blocked users page
-        return (
-            <button className="unBlockUserButton" onClick={props.handleClick}>{'Unblock'}</button>
-        )
-    }
-
-    let unBlockUserOption = "" 
-    if(props.isBlockedUserProfile === true) { //if component is being used for blocked users page
-        unBlockUserOption = unBlockUserButton(props) //return blocked user to blocked users page
-    }
 
     let userSlug = "/user-" + props.user.slug
 
@@ -23,35 +14,48 @@ const SmallUserPreview = (props) => {
         <div className="userPreview">
 
             {/*preview links to the user profile*/ }
-            <a className="userPreviewProfileLink" href={props.isBlockedUserProfile ? false : userSlug}> {/*TODO(?): Disable link if component used for blocked users page?*/ }
-
-                { /* css flex container */ }
-                <div className="userPreviewContainer">
-
-                    { /* user profile picture preview */ }
-                    <div className="userPreviewImg">
-                        <img src={props.user.imagePath} alt="" className="smallUserProfilePic"/>
-                    </div>
-                    
-                    {/* flex item : name and username */}
-                    <div className="userPreviewPersonalData userPreviewItem">
-                        <p className="userPreviewFullName">{`${props.user.firstName} ${props.user.lastName}`}</p>
-                        <p>{`@${props.user.username}`}</p>
-                    </div>
-
-                    {/* flex item : number of followers and recipes */}
-                    <div className="userPreviewNumericalData">
-                        <p>{`${props.user.followers.length} followers`}</p>
-                    </div>
-                </div>
-
+            <a className="userPreviewProfileLink" href={props.isBlockedUserProfile ? undefined : userSlug}> {/*TODO(?): Disable link if component used for blocked users page?*/ }
+                <table className="userPreviewTable">
+                    <tbody>
+                        <tr>
+                            { /* user profile picture preview */ }
+                            <td className="userPreviewImg">
+                                <img src={props.user.imagePath} alt="" className="smallUserProfilePic"/>
+                            </td>
+                            <td>
+                                <table className="userPreviewTopTable">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <b className="userPreviewFullName">{`${props.user.firstName} ${props.user.lastName}`}</b>
+                                            </td>
+                                            <td className="unBlock">
+                                                {props.isBlockedUserProfile ?
+                                                        <Button variant='info' size='sm' className="unBlockUserButton" onClick={props.handleClick}>Unblock</Button>
+                                                    :
+                                                        <></>
+                                                }
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <table className="userPreviewBottomTable">
+                                    <tbody>
+                                        <tr>
+                                            <td className="userPreviewBottomCell">
+                                                <b className="userPreviewUsername">{`@${props.user.username}`}</b>
+                                            </td>
+                                            <td className="userPreviewNumericalData userPreviewBottomCell">
+                                                    {`${props.user.followers.length} followers`}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </a>
-                
-            {/* unblock button if component used for blocked users page */}
-            <div className="unBlock"> 
-                {unBlockUserOption} 
-            </div>
-
         </div>
     )
 

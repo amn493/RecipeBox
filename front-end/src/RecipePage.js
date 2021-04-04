@@ -10,7 +10,7 @@ import Comment from './Comment.js'
 import Timestamp from './Timestamp'
 
 import './RecipePage.css'
-import SignInModal from './SignInModal.js'
+import CreateAccountModal from './CreateAccountModal.js'
 
 
 // Recipe Page
@@ -32,10 +32,10 @@ const RecipePage = (props) => {
 
     useEffect(() => {
         // fetch the recipe that corresponds to the slug from the url
-        axios('https://my.api.mockaroo.com/recipe.json?key=f6a27260')
+        axios(`http://localhost:4000/recipe?slug=${slug}`)
         .then((response) => {
             
-            setRecipe(response.data[0]) //TODO: change when database is integrated
+            setRecipe(response.data)
             setLoadedRecipe(true)
         })
         .catch((err) => {
@@ -90,33 +90,36 @@ const RecipePage = (props) => {
     const [comments, setComments] = useState([])
 
     useEffect(() => {
-        axios('https://my.api.mockaroo.com/comment.json?key=f6a27260')
-        .then((response) => {
-            setComments(response.data) //TODO: change when database is integrated
-            setLoadedComments(true)
-        })
-        .catch((err) => {
-            console.error(err)
+        if (loadedRecipe) {
+            axios(`http://localhost:4000/comments?recipeID=${recipe.id}`)
+            .then((response) => {
+                setComments(response.data.sort((a, b) => a.createdAt - b.createdAt))
+                setLoadedComments(true)
+            })
+            .catch((err) => {
+                console.error(err)
 
-            // make some backup fake data
-            const backupData = [
-                {
-                    recipe: 2, // a reference to a Recipe object
-                    user: 5, // a reference to a User object
-                    comment: 'Love this recipe!',
-                    createdAt: 1615864460796
-                },
-                {
-                    recipe: 2, // a reference to a Recipe object
-                    user: 12, // a reference to a User object
-                    comment: 'This recipe is amazing',
-                    createdAt: 1615864472221
-                }
-            ]
+                // make some backup fake data
+                const backupData = [
+                    {
+                        recipe: 2, // a reference to a Recipe object
+                        user: 5, // a reference to a User object
+                        comment: 'Love this recipe!',
+                        createdAt: 1615864460796
+                    },
+                    {
+                        recipe: 2, // a reference to a Recipe object
+                        user: 12, // a reference to a User object
+                        comment: 'This recipe is amazing',
+                        createdAt: 1615864472221
+                    }
+                ]
 
-            setComments(backupData)
-            setLoadedComments(true)
-        })
+                setComments(backupData)
+                setLoadedComments(true)
+            })
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [loadedRecipe])
 
 
@@ -153,7 +156,7 @@ const RecipePage = (props) => {
                         </table>
                     
                         <p className="recipeCaption">{recipe.caption}</p>
-                        {recipe.tags.map((tag, i) => (<a className="recipeTag" href={'/browserecipes?tag=' + tag} key={i}>{'#' + tag}</a>))}
+                        {recipe.tags.map((tag, i) => (<a className="recipeTag  text-info" href={`/browse-recipes?tag=${tag}`} key={i}>{'#' + tag}</a>))}
                     </div>
                     
                     <div className="recipeSubsection">
@@ -175,7 +178,7 @@ const RecipePage = (props) => {
                     
                 </div>
 
-                <SignInModal show={showModal} setShow={setShowModal} />
+                <CreateAccountModal show={showModal} setShow={setShowModal} />
             </div> 
         )
     }
@@ -280,8 +283,8 @@ const CommentsSection = (props) => {
             <h2 className="recipeSubheading">Comments</h2>
             {comments.map((comment, i) => (<Comment comment={comment} key={i} />))}
         
-            <Form onSubmit={handleSubmit}>
-                <InputGroup className="commentFieldAndButton">
+            <Form className="commentFieldAndButton" onSubmit={handleSubmit}>
+                <InputGroup>
                     <FormControl size="sm" className="commentField" name="comment" value={value} onChange={handleChange} />
                     <InputGroup.Append>
                         <Button variant="info" size="sm" className="commentButton" type="submit" onSubmit={handleSubmit}>Comment</Button>

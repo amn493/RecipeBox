@@ -1,9 +1,22 @@
 .comboBox{
-    display: flex;
-    align-Items: 'center';
-    justify-Content: 'center';
     width: 100%;
 } 
 .comboBoxInput{
     width: 100%;
+    border: 1px solid lightgray;
+    border-radius: 4px;
+    padding-left: 13px;
+    height: 38px;
+}
+
+.icon {
+    margin-right: -2px;
+}
+
+.iconCell {
+    width: 35px;
+}
+
+.comboCell {
+    padding: 0;
 }

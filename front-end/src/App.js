@@ -150,11 +150,10 @@ function App() {
               {signedIn ? <NewRecipePage user={user} /> : <Redirect to="/sign-in" />}
             </Route>
 
-            {/* MY RECIPE BOX PAGE 
+            {/* MY RECIPE BOX PAGE */ }
             <Route path="/my-recipe-box">
               {signedIn ? <RecipeBoxPage user={user} /> : <Redirect to="/sign-in" />}
             </Route>
-            */}
 
             {/* SETTINGS PAGE*/
             <Route path="/settings" exact={true}>

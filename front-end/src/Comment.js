@@ -15,9 +15,9 @@ const Comment = (props) => {
     const [user, setUser] = useState([])
 
     useEffect(() => {
-        axios('https://my.api.mockaroo.com/user.json?key=f6a27260')
+        axios(`http://localhost:4000/userbyid?id=${props.comment.user}`)
         .then((response) => {
-            setUser(response.data[0])
+            setUser(response.data)
         })
         .catch((err) => {
             console.error(err)

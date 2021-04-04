@@ -16,7 +16,7 @@ const TagButton = (props) => {
 
     return (
         (props.tag !== '') ?
-            <Button variant="info" size="sm" className="tagButton mr-1 mt-1" onClick={handleClick}>{'#' + props.tag}</Button>
+            <Button variant="secondary" size="sm" className="tagButton mr-1 mt-1" onClick={handleClick}>{'#' + props.tag}</Button>
         :
             <></> 
     )

@@ -5,6 +5,9 @@ import FormControl from 'react-bootstrap/FormControl'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import bsCustomFileInput from 'bs-custom-file-input'
+import axios from 'axios'
+import { Redirect } from 'react-router-dom'
+
 
 import './NewRecipePage.css'
 
@@ -17,6 +20,9 @@ const NewRecipePage = (props) => {
     const [captionValue, setCaptionValue] = useState('')
     const [tagValue, setTagValue] = useState('')
     const [tags, setTags] = useState([])
+    const [ingredientValues, setIngredientValues] = useState([''])
+    const [instructionValues, setInstructionValues] = useState([''])
+    const [imageFile, setImageFile] = useState()
 
     // state variables for disabling post recipe button
     const [emptyField, setEmptyField] = useState(true)
@@ -24,18 +30,39 @@ const NewRecipePage = (props) => {
     const [filledIngredientField, setFilledIngredientField] = useState(false)
     const [filledInstructionField, setFilledInstructionField] = useState(false)
 
-    // prevent form from submitting request
+    // state for when form is submitted successfully
+    const [submitted, setSubmitted] = useState(false)
+
+    // make post request on form submission
     const handleSubmit = (event) => {
         event.preventDefault()
+
+        const headers = { 
+            'Content-Type': 'multipart/form-data'
+        }
+
+        const newRecipe = new FormData()
+        newRecipe.append('userID', props.user.id)
+        newRecipe.append('username', props.user.username)
+        newRecipe.append('name', nameValue)
+        newRecipe.append('recipeimage', imageFile)
+        newRecipe.append('tags', tags)
+        newRecipe.append('caption', captionValue)
+        newRecipe.append('ingredients', ingredientValues)
+        newRecipe.append('instructions', instructionValues)
+        
+        axios.post('http://localhost:4000/newrecipe', newRecipe, { headers })
+        .then(response => setSubmitted(true))
     }
 
     // add tag button pressed
     const addTag = () => {
-        if(tagValue !== '') {
+        const newTag = tagValue.trim()
+        if(tagValue.trim() !== '' && !tags.includes(newTag)) {
             // add tag to tags array and clear tag field
-            setTags(tags.concat([tagValue]))
-            setTagValue('')
+            setTags(tags.concat([newTag]))
         }
+        setTagValue('')
     }
 
     // tag clicked
@@ -50,55 +77,62 @@ const NewRecipePage = (props) => {
     // check for empty fields
     useEffect(() => {
         setEmptyField(!filledIngredientField || !filledInstructionField || nameValue === '' || !uploadedImage)
-        console.log(filledIngredientField, filledInstructionField, nameValue, uploadedImage)
     }, [filledIngredientField, filledInstructionField, nameValue, uploadedImage])
 
+    const fileUploaded = (event) => {
+        setUploadedImage(event.target.value !== '')
+        setImageFile(event.target.files[0])
+    }
 
     return (
-        <div className="newRecipePage">
+        !submitted ?
+        
+            <div className="newRecipePage">
 
-            <Form onSubmit={handleSubmit}>
+                <Form onSubmit={handleSubmit}>
 
-                <Form.Group controlId="formRecipeName">
-                    <Form.Control className="textField" type="text" name="recipeName" placeholder="Recipe name" value={nameValue} onChange={(event) => setNameValue(event.target.value)} />
-                </Form.Group>
-                
-                <Form.Group controlId="formCaption">
-                    <Form.Control className="textField" type="text" name="caption" placeholder="Caption" value={captionValue} onChange={(event) => setCaptionValue(event.target.value)} />
-                </Form.Group>
+                    <Form.Group controlId="formRecipeName">
+                        <Form.Control className="textField" type="text" name="recipeName" placeholder="Recipe name" value={nameValue} onChange={(event) => setNameValue(event.target.value)} />
+                    </Form.Group>
+                    
+                    <Form.Group controlId="formCaption">
+                        <Form.Control className="textField" type="text" name="caption" placeholder="Caption" value={captionValue} onChange={(event) => setCaptionValue(event.target.value)} />
+                    </Form.Group>
 
-                <Form.Group controlId="formTags">
-                    <InputGroup className="tagField">
-                        <InputGroup.Prepend>
-                            <InputGroup.Text id="hashIcon"><i><Hash /></i></InputGroup.Text>
-                        </InputGroup.Prepend>
-                        <FormControl placeholder="tag" value={tagValue} onChange={(event) => setTagValue(event.target.value)} />
-                        <InputGroup.Append>
-                            <Button variant="outline-info" onClick={addTag} disabled={tagValue === ''}>Add Tag</Button>
-                        </InputGroup.Append>
-                    </InputGroup>
+                    <Form.Group controlId="formTags">
+                        <InputGroup className="tagField">
+                            <InputGroup.Prepend>
+                                <InputGroup.Text id="hashIcon"><i><Hash /></i></InputGroup.Text>
+                            </InputGroup.Prepend>
+                            <FormControl placeholder="tag" value={tagValue} onChange={(event) => setTagValue(event.target.value)} />
+                            <InputGroup.Append>
+                                <Button variant="outline-info" onClick={addTag} disabled={tagValue === ''}>Add Tag</Button>
+                            </InputGroup.Append>
+                        </InputGroup>
 
-                    {tags.map((tag, i) => <Button className="mt-1 mr-1" variant="secondary" size="sm" onClick={() => removeTag(i)}>{'#' + tags[i]}</Button>)}
-                </Form.Group>
-                
+                        {tags.map((tag, i) => <Button className="mt-1 mr-1" variant="secondary" size="sm" onClick={() => removeTag(i)} key={i}>{'#' + tags[i]}</Button>)}
+                    </Form.Group>
+                    
 
-                <Form.Group controlId="formIngredientsSection">
-                    <Form.Label className="newRecipeSubheading">Ingredients</Form.Label>
-                    <AdditionalFields className="ingredientFields" placeholderText="Enter ingredient" setFilledField={setFilledIngredientField} />
-                </Form.Group>
+                    <Form.Group controlId="formIngredientsSection">
+                        <Form.Label className="newRecipeSubheading">Ingredients</Form.Label>
+                        <AdditionalFields className="ingredientFields" placeholderText="Enter ingredient" setFilledField={setFilledIngredientField} values={ingredientValues} setValues={setIngredientValues} />
+                    </Form.Group>
 
-                <Form.Group controlId="formInstructionsSection">
-                    <Form.Label className="newRecipeSubheading">Instructions</Form.Label>
-                    <AdditionalFields className="instructionFields" placeholderText="Enter instruction" setFilledField={setFilledInstructionField} />
-                </Form.Group>
+                    <Form.Group controlId="formInstructionsSection">
+                        <Form.Label className="newRecipeSubheading">Instructions</Form.Label>
+                        <AdditionalFields className="instructionFields" placeholderText="Enter instruction" setFilledField={setFilledInstructionField} values={instructionValues} setValues={setInstructionValues} />
+                    </Form.Group>
 
-                <Form.Group controlId="formRecipeImage">
-                    <Form.File id="custom-file" label="Upload recipe image" onChange={(event) => setUploadedImage(event.target.value !== '')} custom />
-                </Form.Group>
+                    <Form.Group controlId="formRecipeImage">
+                        <Form.File id="custom-file" label="Upload recipe image" onChange={fileUploaded} custom />
+                    </Form.Group>
 
-                <Button block variant="info" className="submitButton" type="submit" onSubmit={handleSubmit} disabled={emptyField}>Post Recipe</Button>
-            </Form>
-        </div>
+                    <Button block variant="info" className="submitButton" type="submit" onSubmit={handleSubmit} disabled={emptyField}>Post Recipe</Button>
+                </Form>
+            </div>
+        :
+            <Redirect to={`/user-${props.user.slug}`} />
     )
 }
 
@@ -109,34 +143,30 @@ const AdditionalFields = (props) => {
 
     // state variables for number of fields and field values
     const [fieldCount, setFieldCount] = useState(1)
-    const [values, setValues] = useState([''])
 
     // array for text field jsx elements
     const textFields = []
 
 
     useEffect(() => {
-        props.setFilledField(values.reduce((acc, val) => val !== '' || acc, false))
+        props.setFilledField(props.values.reduce((acc, val) => val !== '' || acc, false))
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, values)
+    }, [props.values])
 
 
     // add another text field when add button is clicked
     const addField = () => {
-
-        console.log(values.length)
-        console.log(JSON.stringify(values))
-        if(values[values.length - 1] !== '') {
+        if(props.values[props.values.length - 1] !== '') {
             setFieldCount(fieldCount + 1)
-            setValues(values.concat(['']))
+            props.setValues(props.values.concat(['']))
         }
     }
     
     // update appropriate text field as user types into it
     const handleChange = (event, i) => {
-        const temp = values.slice()
+        const temp = props.values.slice()
         temp[i] = event.target.value
-        setValues(temp)
+        props.setValues(temp)
     }
 
 
@@ -146,7 +176,7 @@ const AdditionalFields = (props) => {
                 <InputGroup.Prepend>
                     <InputGroup.Text className="subsectionFieldIcon" key={i}>{(props.placeholderText === 'Enter ingredient') ? <i><Dot /></i> : i + 1}</InputGroup.Text>
                 </InputGroup.Prepend>
-                <Form.Control type="text" name="recipeName" placeholder={props.placeholderText} value={values[i]} onChange={(event) => handleChange(event, i)} />
+                <Form.Control type="text" name="recipeName" placeholder={props.placeholderText} value={props.values[i]} onChange={(event) => handleChange(event, i)} />
             </InputGroup>
         )
     }
@@ -154,7 +184,7 @@ const AdditionalFields = (props) => {
     return (
         <>
             {textFields}
-            <Button className="mt-1" variant="outline-info" size="sm" onClick={addField} disabled={values[fieldCount - 1] === '' || fieldCount === 30}><i><Plus className="addFieldButton" /></i></Button>
+            <Button className="mt-1" variant="outline-info" size="sm" onClick={addField} disabled={props.values[fieldCount - 1] === '' || fieldCount === 30}><i><Plus className="addFieldButton" /></i></Button>
         </>
     )
 }
