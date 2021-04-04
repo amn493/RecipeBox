@@ -11,7 +11,6 @@ import './AppSettings.css'
 //current user and signedIn state variable
 const AppSettings = (props) => {
 
-        const [currentUser] =  useState(props.user)
         const [blockedUsersOnRender] = useState(props.user.blockedUsers) 
         const [loadedUsers, setLoadedUsers] = useState(false)
         const [blockedUsers, setBlockedUsers] = useState([]) //user info for each user currently blocked
@@ -176,22 +175,6 @@ const AppSettings = (props) => {
         }
     }
 
-    const handleChangedNotifSwitch = () => {
-        const headers = { 
-            'Content-Type': 'multipart/form-data'
-        }
-
-        const updatedNotificationSettings = new FormData()
-        updatedNotificationSettings.append('email', emailNotifs)
-        updatedNotificationSettings.append('likes', likesNotifs)
-        updatedNotificationSettings.append('comments', commentsNotifs)
-        updatedNotificationSettings.append('followers', followersNotifs)
-        updatedNotificationSettings.append('posts', postsNotifs)
-        updatedNotificationSettings.append('id', currentUser.id)
-
-        axios.post('http://localhost:4000/notificationsettings', updatedNotificationSettings, { headers })
-    }
-
     const [emailNotifs, setEmailNotifs] = useState(props.user.notificationSettings.emailNotifications)
     const [likesNotifs, setLikesNotifs] = useState(props.user.notificationSettings.likes)
     const [commentsNotifs, setCommentsNotifs] = useState(props.user.notificationSettings.comments)
@@ -221,8 +204,7 @@ const AppSettings = (props) => {
                                             className='custom-control-input'
                                             id='customSwitches1'
                                             checked={emailNotifs}
-                                            onClick={() => {setEmailNotifs(!emailNotifs)
-                                                            handleChangedNotifSwitch()}}
+                                            onClick={() => setEmailNotifs(!emailNotifs)}
                                             onChange={e => {}}
                                         />
                                         <label className="custom-control-label" id={1} htmlFor='customSwitches1'/>
@@ -251,8 +233,7 @@ const AppSettings = (props) => {
                                             id='customSwitches2'
                                             checked={likesNotifs}
                                             disabled={!emailNotifs}
-                                            onClick={() => {setLikesNotifs(!likesNotifs)
-                                                            handleChangedNotifSwitch()}}
+                                            onClick={() => setLikesNotifs(!likesNotifs)}
                                             onChange={e => {}}
                                         />
                                         
@@ -282,8 +263,7 @@ const AppSettings = (props) => {
                                     id='customSwitches3'
                                     checked={commentsNotifs}
                                     disabled={!emailNotifs}
-                                    onClick={() => {setCommentsNotifs(!commentsNotifs)
-                                                    handleChangedNotifSwitch()}}
+                                    onClick={() => setCommentsNotifs(!commentsNotifs)}
                                     onChange={e => {}}
                                 />
                                 <label className='custom-control-label' id={3} htmlFor='customSwitches3'/>
@@ -311,8 +291,7 @@ const AppSettings = (props) => {
                                     id='customSwitches4'
                                     checked={followersNotifs}
                                     disabled={!emailNotifs}
-                                    onClick={() => {setFollowersNotifs(!followersNotifs)
-                                                    handleChangedNotifSwitch()}}
+                                    onClick={() => setFollowersNotifs(!followersNotifs)}
                                     onChange={e => {}}
                                 />
                                 <label className='custom-control-label' id={4} htmlFor='customSwitches4' />
@@ -340,8 +319,7 @@ const AppSettings = (props) => {
                                     id='customSwitches5'
                                     checked={postsNotifs}
                                     disabled={!emailNotifs}
-                                    onClick={() => {setPostsNotifs(!postsNotifs)
-                                                    handleChangedNotifSwitch()}}
+	    			    onClick={() => setPostsNotifs(!postsNotifs)}
                                     onChange={e => {}}
                                 />
                                 <label className='custom-control-label' id={5} htmlFor='customSwitches5'/>
