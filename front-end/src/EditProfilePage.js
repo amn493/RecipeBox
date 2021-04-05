@@ -75,7 +75,7 @@ const EditProfilePage = (props) => {
             <>
                 <div className="editProfilePageBody">
 
-                    <Form className="editProfilePageForm">
+                    <Form className="editProfilePageForm" onSubmit={handleSubmit}> 
 
                         <Form.Group>
                         <div className="centerPhoto">
@@ -110,7 +110,7 @@ const EditProfilePage = (props) => {
                             <br />
                             
                             {emptyNameError.value}
-                            <Button className="submitButton" variant="info" type="submit" onSubmit={handleSubmit} disabled={isAnyNameEmpty}>
+                            <Button className="submitButton" variant="info" type="submit" disabled={isAnyNameEmpty}>
                                 Save Changes
                             </Button>
                         </Form.Group>
