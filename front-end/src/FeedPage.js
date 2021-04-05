@@ -28,8 +28,7 @@ const Feed = (props) => {
             console.log(err)
             setRecBoxRecipes("none") // Returns empty, that way we can check in the RecipeList component if it's empty and return an error if so (e.g. "no recipes found")
         })
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+    }, [props.user.following])
 
     return (
         <>
