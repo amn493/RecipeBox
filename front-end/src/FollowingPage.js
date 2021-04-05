@@ -65,15 +65,15 @@ const FollowingPage = (props) => {
     useEffect(() => {
         // Fetch all following
         if (user.following) {
-            axios('https://my.api.mockaroo.com/user.json?key=f6a27260')
-                .then((response) => {
-                    setAllFollowing(response.data.slice(0, user.following.length))
-                    setFollowing(response.data.slice(0, user.following.length))
-                    setLoadedFollowing(true)
-                })
-                .catch((err) => {
-                    console.error(err)
-                    setReqError(true)
+            axios(`http://localhost:4000/usersbyid?id=${(user.following).reduce((acc,userFromFollowing)=>acc+`&id=${userFromFollowing}`)}`)
+            .then((response) => {
+                setAllFollowing(response.data.slice(0, user.following.length))
+                setFollowing(response.data.slice(0, user.following.length))
+                setLoadedFollowing(true)
+            })
+            .catch((err) => {
+                console.error(err)
+                setReqError(true)
 
                     // Backup fake data
                     const backupData = [
@@ -252,8 +252,7 @@ const FollowingPage = (props) => {
                     setLoadedFollowing(true)
                 })
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [user])
+    }, [user.following])
 
 
     // For keyword search bar

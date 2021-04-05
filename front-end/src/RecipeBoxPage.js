@@ -68,10 +68,12 @@ const RecipeBoxPage = (props) => {
     const [sortByString, setSortByString] = useState('Sort by Date Posted')
     const [ascendingOrder, setAscendingOrder] = useState(false)
 
-    // https://my.api.mockaroo.com/recipe.json?key=f6a27260
-    /* Pull in recipes from mockaroo */
+    /* Pull in recipes from route handler */
+    let likedRecipes = props.user.liked
+
     useEffect(() => {
-        axios('https://my.api.mockaroo.com/recipe.json?key=f6a27260').then((response) => {
+        axios(`http://localhost:4000/filteredrecipes?keyword=${filterKeyword}${(filterTags.length > 0) ? filterTags.reduce((acc, tag) => acc + `&tags=${tag}`, `&tags=`) : `&tags=`}${(likedRecipes.length > 0) ? likedRecipes.reduce((acc, likedRec) => acc + `&liked=${likedRec}`, `&liked=`) : `&liked=`}`)
+        .then((response) => {
             setRecBoxRecipes(response.data)
         }).catch((err) => {
             // TODO: Print an error to the user, but for now mockaroo is likely
