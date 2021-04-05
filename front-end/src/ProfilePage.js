@@ -11,11 +11,14 @@ import FollowButton from './FollowButton.js'
 import SmallRecipePreview from './SmallRecipePreview.js'
 import LargeRecipePreview from './LargeRecipePreview.js'
 import CreateAccountModal from './CreateAccountModal.js'
+import ErrorComponent from './ErrorComponent.js'
 
 import './ProfilePage.css'
 
 
 const ProfilePage = (props) => {
+
+    const [reqError, setReqError] = useState(false)
 
     // get slug from url params
     const { slug } = useParams();
@@ -34,6 +37,7 @@ const ProfilePage = (props) => {
             })
             .catch((err) => {
                 console.error(err)
+                setReqError(true)
 
                 // make some backup fake data
                 const backupData = [
@@ -73,6 +77,7 @@ const ProfilePage = (props) => {
                 })
                 .catch((err) => {
                     console.error(err)
+                    setReqError(true)
 
                     // make some backup fake data
                     const backupData = [
@@ -194,46 +199,53 @@ const ProfilePage = (props) => {
 
     return (
 
-        loadedUser && loadedRecipes ?
-            <div className="profilePage">
-                <ProfileHeader user={profileUser} recipeCount={recipes.length} />
+        !reqError ?
 
-                {(slug === props.user.slug) ?
-                    <Button block size="sm" variant="outline-info" className="editProfileButton" href="/edit-profile">Edit Profile</Button>
-                    :
-                    <FollowButton profileUserId={profileUser.id} currentUser={props.user} signedIn={props.signedIn} setShowModal={setShowModal} />
-                }
+            loadedUser && loadedRecipes ?
 
-                <div className="tabContainer">
-                    <Tab.Container defaultActiveKey="small">
-                        <Nav variant="tabs" className="justify-content-center w-100 nav-fill">
-                            <Nav.Item>
-                                <Nav.Link activeClassName="" eventKey="small" onSelect={() => setActiveTab('small')}>{<i><ViewList className={(activeTab === 'small') ? 'activeTab' : 'inactiveTab'} /></i>}</Nav.Link>
-                            </Nav.Item>
-                            <Nav.Item>
-                                <Nav.Link eventKey="large" onSelect={() => setActiveTab('large')}>{<i><ViewStacked className={(activeTab === 'large') ? 'activeTab' : 'inactiveTab'} /></i>}</Nav.Link>
-                            </Nav.Item>
-                        </Nav>
+                <div className="profilePage">
+                    <ProfileHeader user={profileUser} recipeCount={recipes.length} />
 
-                        <Tab.Content>
-                            <Tab.Pane eventKey="small">
-                                <div className="recipesSection">
-                                    {recipes.map((recipe, i) => <SmallRecipePreview recipe={recipe} user={props.user} key={i} />)}
-                                </div>
-                            </Tab.Pane>
-                            <Tab.Pane eventKey="large">
-                                <div className="recipesSection">
-                                    {recipes.map((recipe, i) => <LargeRecipePreview recipe={recipe} user={props.user} key={i} />)}
-                                </div>
-                            </Tab.Pane>
-                        </Tab.Content>
-                    </Tab.Container>
+                    {(slug === props.user.slug) ?
+                        <Button block size="sm" variant="outline-info" className="editProfileButton" href="/edit-profile">Edit Profile</Button>
+                        :
+                        <FollowButton profileUserId={profileUser.id} currentUser={props.user} signedIn={props.signedIn} setShowModal={setShowModal} />
+                    }
+
+                    <div className="tabContainer">
+                        <Tab.Container defaultActiveKey="small">
+                            <Nav variant="tabs" className="justify-content-center w-100 nav-fill">
+                                <Nav.Item>
+                                    <Nav.Link activeClassName="" eventKey="small" onSelect={() => setActiveTab('small')}>{<i><ViewList className={(activeTab === 'small') ? 'activeTab' : 'inactiveTab'} /></i>}</Nav.Link>
+                                </Nav.Item>
+                                <Nav.Item>
+                                    <Nav.Link eventKey="large" onSelect={() => setActiveTab('large')}>{<i><ViewStacked className={(activeTab === 'large') ? 'activeTab' : 'inactiveTab'} /></i>}</Nav.Link>
+                                </Nav.Item>
+                            </Nav>
+
+                            <Tab.Content>
+                                <Tab.Pane eventKey="small">
+                                    <div className="recipesSection">
+                                        {recipes.map((recipe, i) => <SmallRecipePreview recipe={recipe} user={props.user} key={i} />)}
+                                    </div>
+                                </Tab.Pane>
+                                <Tab.Pane eventKey="large">
+                                    <div className="recipesSection">
+                                        {recipes.map((recipe, i) => <LargeRecipePreview recipe={recipe} user={props.user} key={i} />)}
+                                    </div>
+                                </Tab.Pane>
+                            </Tab.Content>
+                        </Tab.Container>
+                    </div>
+
+                    <CreateAccountModal show={showModal} setShow={setShowModal} />
                 </div>
+                :
+                <></>
 
-                <CreateAccountModal show={showModal} setShow={setShowModal} />
-            </div>
             :
-            <></>
+
+            <ErrorComponent />
     )
 }
 

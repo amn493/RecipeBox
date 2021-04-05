@@ -8,6 +8,7 @@ import Button from 'react-bootstrap/Button'
 
 import Comment from './Comment.js'
 import Timestamp from './Timestamp'
+import ErrorComponent from './ErrorComponent.js'
 
 import './RecipePage.css'
 import CreateAccountModal from './CreateAccountModal.js'
@@ -18,6 +19,8 @@ import CreateAccountModal from './CreateAccountModal.js'
 // Example: <RecipePage />
 
 const RecipePage = (props) => {
+
+    const [reqError, setReqError] = useState(false)
 
     // get slug from url params
     const { slug } = useParams();
@@ -33,55 +36,56 @@ const RecipePage = (props) => {
     useEffect(() => {
         // fetch the recipe that corresponds to the slug from the url
         axios(`http://localhost:4000/recipe?slug=${slug}`)
-        .then((response) => {
-            
-            setRecipe(response.data)
-            setLoadedRecipe(true)
-        })
-        .catch((err) => {
-            console.error(err)
+            .then((response) => {
 
-            // make some backup fake data
-            const backupData = [
-                {
-                    user: {
-                      id: 1,
-                      username: 'foobar',
-                      slug: 'foobar'
-                    },
-                    name: 'Guacamole',
-                    imagePath: 'https://picsum.photos/300',
-                    tags: ['mexican', 'spicy', 'dip'],
-                    caption: "my secret recipe:)",
-                    ingredients: [
-                        '3 avocados', 
-                        '1 tomato', 
-                        '1/2 yellow onion', 
-                        '2 jalapeños', 
-                        '1/4 bunch cilantro', 
-                        '1 lime', 
-                        'salt', 
-                        'pepper'
-                    ],
-                    instructions: [
-                        'Mash the avocados', 
-                        'Dice the tomato, onion, and jalapeños', 
-                        'Chop the cilantro', 
-                        'Put everything in a bowl', 
-                        'Squeeze in the lime', 
-                        'Add salt and pepper to taste', 
-                        'Mix'
-                    ],
-                    likes: 36,
-                    createdAt: 1615864425952,
-                    slug: 'foobar-guacamole',
-                    id: 2
-                  }
-            ]
+                setRecipe(response.data)
+                setLoadedRecipe(true)
+            })
+            .catch((err) => {
+                console.error(err)
+                setReqError(true)
 
-            setRecipe(backupData[0])
-            setLoadedRecipe(true)
-        })
+                // make some backup fake data
+                const backupData = [
+                    {
+                        user: {
+                            id: 1,
+                            username: 'foobar',
+                            slug: 'foobar'
+                        },
+                        name: 'Guacamole',
+                        imagePath: 'https://picsum.photos/300',
+                        tags: ['mexican', 'spicy', 'dip'],
+                        caption: "my secret recipe:)",
+                        ingredients: [
+                            '3 avocados',
+                            '1 tomato',
+                            '1/2 yellow onion',
+                            '2 jalapeños',
+                            '1/4 bunch cilantro',
+                            '1 lime',
+                            'salt',
+                            'pepper'
+                        ],
+                        instructions: [
+                            'Mash the avocados',
+                            'Dice the tomato, onion, and jalapeños',
+                            'Chop the cilantro',
+                            'Put everything in a bowl',
+                            'Squeeze in the lime',
+                            'Add salt and pepper to taste',
+                            'Mix'
+                        ],
+                        likes: 36,
+                        createdAt: 1615864425952,
+                        slug: 'foobar-guacamole',
+                        id: 2
+                    }
+                ]
+
+                setRecipe(backupData[0])
+                setLoadedRecipe(true)
+            })
     }, [slug])
 
 
@@ -92,34 +96,35 @@ const RecipePage = (props) => {
     useEffect(() => {
         if (loadedRecipe) {
             axios(`http://localhost:4000/comments?recipeID=${recipe.id}`)
-            .then((response) => {
-                setComments(response.data.sort((a, b) => a.createdAt - b.createdAt))
-                setLoadedComments(true)
-            })
-            .catch((err) => {
-                console.error(err)
+                .then((response) => {
+                    setComments(response.data.sort((a, b) => a.createdAt - b.createdAt))
+                    setLoadedComments(true)
+                })
+                .catch((err) => {
+                    console.error(err)
+                    setReqError(true)
 
-                // make some backup fake data
-                const backupData = [
-                    {
-                        recipe: 2, // a reference to a Recipe object
-                        user: 5, // a reference to a User object
-                        comment: 'Love this recipe!',
-                        createdAt: 1615864460796
-                    },
-                    {
-                        recipe: 2, // a reference to a Recipe object
-                        user: 12, // a reference to a User object
-                        comment: 'This recipe is amazing',
-                        createdAt: 1615864472221
-                    }
-                ]
+                    // make some backup fake data
+                    const backupData = [
+                        {
+                            recipe: 2, // a reference to a Recipe object
+                            user: 5, // a reference to a User object
+                            comment: 'Love this recipe!',
+                            createdAt: 1615864460796
+                        },
+                        {
+                            recipe: 2, // a reference to a Recipe object
+                            user: 12, // a reference to a User object
+                            comment: 'This recipe is amazing',
+                            createdAt: 1615864472221
+                        }
+                    ]
 
-                setComments(backupData)
-                setLoadedComments(true)
-            })
+                    setComments(backupData)
+                    setLoadedComments(true)
+                })
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [loadedRecipe])
 
 
@@ -127,69 +132,71 @@ const RecipePage = (props) => {
     const [showModal, setShowModal] = useState(false)
 
 
-    // render the page if all required data has been fetched
-    if(loadedRecipe && loadedComments) {
-        return (
-            <div className="recipe">
-                <img className="recipeImage" src={recipe.imagePath} alt="food" />
-                <div className="recipeText">
-                    <div className="recipeDetails">
-                        <table className="recipeDetailsTable recipeDetailsTopTable">
-                            <tr>
-                                <td className="recipeDetailsTopTableCell">
-                                    <h1 className="recipeName">{recipe.name}</h1>
-                                </td>
-                                <td className="recipeDetailsTableRightCol recipeDetailsTableLikedCol recipeDetailsTopTableCell">
-                                    <LikeButton recipe={recipe} user={props.user} signedIn={props.signedIn} setShowModal={setShowModal} />
-                                </td>
-                            </tr>
-                        </table>
-                        <table className="recipeDetailsTable">
-                            <tr>
-                                <td>
-                                    <a className="recipeUsername" href={'/user-' + recipe.user.slug}>{'@' + recipe.user.username}</a>
-                                </td>
-                                <td className="recipeDetailsTableRightCol">
-                                    <Timestamp createdAt={recipe.createdAt} />
-                                </td>
-                            </tr>
-                        </table>
-                    
-                        <p className="recipeCaption">{recipe.caption}</p>
-                        {recipe.tags.map((tag, i) => (<a className="recipeTag  text-info" href={`/browse-recipes?tag=${tag}`} key={i}>{'#' + tag}</a>))}
+
+    return (
+        !reqError ?
+
+            loadedRecipe && loadedComments ?
+
+                // render the page if all required data has been fetched
+                <div className="recipe">
+                    <img className="recipeImage" src={recipe.imagePath} alt="food" />
+                    <div className="recipeText">
+                        <div className="recipeDetails">
+                            <table className="recipeDetailsTable recipeDetailsTopTable">
+                                <tr>
+                                    <td className="recipeDetailsTopTableCell">
+                                        <h1 className="recipeName">{recipe.name}</h1>
+                                    </td>
+                                    <td className="recipeDetailsTableRightCol recipeDetailsTableLikedCol recipeDetailsTopTableCell">
+                                        <LikeButton recipe={recipe} user={props.user} signedIn={props.signedIn} setShowModal={setShowModal} />
+                                    </td>
+                                </tr>
+                            </table>
+                            <table className="recipeDetailsTable">
+                                <tr>
+                                    <td>
+                                        <a className="recipeUsername" href={'/user-' + recipe.user.slug}>{'@' + recipe.user.username}</a>
+                                    </td>
+                                    <td className="recipeDetailsTableRightCol">
+                                        <Timestamp createdAt={recipe.createdAt} />
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <p className="recipeCaption">{recipe.caption}</p>
+                            {recipe.tags.map((tag, i) => (<a className="recipeTag  text-info" href={`/browse-recipes?tag=${tag}`} key={i}>{'#' + tag}</a>))}
+                        </div>
+
+                        <div className="recipeSubsection">
+                            <h2 className="recipeSubheading">Ingredients</h2>
+                            <ul className="ingredients">
+                                {recipe.ingredients.map((ingredient, i) => (<li className="liIngredient" key={i}><div className="ingredient">{ingredient}</div></li>))}
+                            </ul>
+                        </div>
+                        <br />
+                        <div className="recipeSubsection">
+                            <h2 className="recipeSubheading">Instructions</h2>
+                            <ol className="instructions">
+                                {recipe.instructions.map((instruction, i) => (<li className="liInstruction" key={i}><div className="instruction">{instruction}</div></li>))}
+                            </ol>
+                        </div>
+                        <br />
+
+                        <CommentsSection comments={comments} userId={props.user.id} recipeId={recipe.id} signedIn={props.signedIn} setShowModal={setShowModal} setReqError={setReqError} />
+
                     </div>
-                    
-                    <div className="recipeSubsection">
-                        <h2 className="recipeSubheading">Ingredients</h2>
-                        <ul className="ingredients">
-                            {recipe.ingredients.map((ingredient, i) => (<li className="liIngredient" key={i}><div className="ingredient">{ingredient}</div></li>))}
-                        </ul>
-                    </div>
-                    <br />
-                    <div className="recipeSubsection">
-                        <h2 className="recipeSubheading">Instructions</h2>
-                        <ol className="instructions">
-                            {recipe.instructions.map((instruction, i) => (<li className="liInstruction" key={i}><div className="instruction">{instruction}</div></li>))}
-                        </ol>
-                    </div>
-                    <br />
-    
-                    <CommentsSection comments={comments} userId={props.user.id} recipeId={recipe.id} signedIn={props.signedIn} setShowModal={setShowModal} />
-                    
+
+                    <CreateAccountModal show={showModal} setShow={setShowModal} />
                 </div>
+                :
+                // not all data has been fetched yet
+                <></>
 
-                <CreateAccountModal show={showModal} setShow={setShowModal} />
-            </div> 
-        )
-    }
+            :
 
-    // not all data has been fetched yet
-    else {
-        return (
-            <></>
-        )
-    }
-    
+            <ErrorComponent />
+    )
 }
 
 
@@ -224,7 +231,7 @@ const LikeButton = (props) => {
             }} />
             {likes}
         </div>
-        
+
     )
 }
 
@@ -255,10 +262,10 @@ const CommentsSection = (props) => {
                     recipe: props.recipeId,
                     createdAt: Date.now()
                 }
-    
+
                 //TODO: store newComment in database
-    
-    
+
+
                 //update page to include new comment
                 setComments(comments.concat([newComment]))
                 setValue('')
@@ -269,7 +276,7 @@ const CommentsSection = (props) => {
             props.setShowModal(true)
         }
 
-        
+
     }
 
     // update text field as user types into it
@@ -281,8 +288,8 @@ const CommentsSection = (props) => {
     return (
         <div className="commentsSection">
             <h2 className="recipeSubheading">Comments</h2>
-            {comments.map((comment, i) => (<Comment comment={comment} key={i} />))}
-        
+            {comments.map((comment, i) => (<Comment comment={comment} key={i} setReqError={props.setReqError} />))}
+
             <Form className="commentFieldAndButton" onSubmit={handleSubmit}>
                 <InputGroup>
                     <FormControl size="sm" className="commentField" name="comment" value={value} onChange={handleChange} />

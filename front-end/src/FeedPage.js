@@ -10,6 +10,8 @@ import ErrorComponent from './ErrorComponent'
 // props.user is the passed in user
 const Feed = (props) => {
 
+    const [reqError, setReqError] = useState(false)
+
     // Recipe list to show -- Is later re-assigned if/when sorts are applied
     const [recBoxRecipes, setRecBoxRecipes] = useState([])
 
@@ -26,22 +28,25 @@ const Feed = (props) => {
             setRecBoxRecipes(response.data)
         }).catch((err) => {
             console.log(err)
+            setReqError(true)
             setRecBoxRecipes() // Returns empty, that way we can check in the RecipeList component if it's empty and return an error if so (e.g. "no recipes found")
         })
-
-        
     }, [])
 
     return (
-        <>
+        !reqError ?
 
-        <div className="container">
-            <RecipeList size="large" recipes={recBoxRecipes} user={props.user} />
-        </div>
+            <>
 
-        </>
+                <div className="container">
+                    <RecipeList size="large" recipes={recBoxRecipes} user={props.user} />
+                </div>
 
-        
+            </>
+            :
+            <ErrorComponent />
+
+
     )
 }
 
