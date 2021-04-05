@@ -10,12 +10,13 @@ chai.use(chaiHTTP)
 const app = require('../app.js')
 
 describe('Testing route handler for GET /recipe ', () => {
-  it('should return 200 OK status', () =>
+    it('should return 200 OK status', () => {
     return chai.request(app).get('/recipe?slug=foobar-eggs').then((response) => {
         expect(response.status).to.equal(200)
-      }))
+      })
+    })
 
-  it('should return a recipe object with correct fields', () =>
+  it('should return a recipe object with correct fields', () => {
     return chai.request(app).get('/recipe?slug=foobar-eggs').then((response) => {
         expect((response.body)[0]).to.have.property('name')
         expect((response.body)[0]).to.have.property('imagePath')
@@ -27,7 +28,8 @@ describe('Testing route handler for GET /recipe ', () => {
         expect((response.body)[0]).to.have.property('createdAt')
         expect((response.body)[0]).to.have.property('slug')
         expect((response.body)[0]).to.have.property('id')
-    })).timeout(8000)
+    }).timeout(8000)
+  })
 
     it('should return a recipe object with the correct field types', () => {
         return chai.request(app).get('/recipe?slug=foobar-eggs').then((response) => {
