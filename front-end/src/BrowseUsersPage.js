@@ -10,6 +10,33 @@ import SmallUserPreview from './SmallUserPreview.js'
 // Example - <BrowseRecipesPage />
 const BrowseUsersPage = (props) => {
 
+    // For keyword search bar
+    const [filterKeyword, setFilterKeyword] = useState('')
+    // Filter users based on keyword entered by the user
+    useEffect(() => {
+        // Function to filter through all users based on keyword search term entered
+        function searchName(user) {
+            if (filterKeyword) {
+                const match = filterKeyword.toLowerCase()
+                const names = match.split(' ')
+                // Compares every word in search term against username, firstName, and lastName
+                for (let i = 0; i < names.length; i++) {
+                    if (user.username.toLowerCase().includes(names[i]) ||
+                        user.firstName.toLowerCase().includes(names[i]) || 
+                        user.lastName.toLowerCase().includes(names[i])) {
+                            return true;
+                    }
+                }
+                return false;
+            }
+        }
+
+        // Set users array to only include user whose name contains the filter keyword
+        setUsers(allUsers.filter(searchName))
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [filterKeyword]) // Update users when a new keyword is entered
+
     // Request all users on initial render
     const [allUsers, setAllUsers] = useState([])
     // Array of users to be displayed
@@ -17,7 +44,7 @@ const BrowseUsersPage = (props) => {
 
     useEffect(() => {
         // Fetch all users
-        axios('https://my.api.mockaroo.com/user.json?key=f6a27260')
+        axios(`https://localhost:4000/usersbyname?name=${filterKeyword}`)
         .then((response) => {
             setAllUsers(response.data)
             setUsers([])
@@ -202,33 +229,6 @@ const BrowseUsersPage = (props) => {
         })
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
-
-    // For keyword search bar
-    const [filterKeyword, setFilterKeyword] = useState('')
-    // Filter users based on keyword entered by the user
-    useEffect(() => {
-        // Function to filter through all users based on keyword search term entered
-        function searchName(user) {
-            if (filterKeyword) {
-                const match = filterKeyword.toLowerCase()
-                const names = match.split(' ')
-                // Compares every word in search term against username, firstName, and lastName
-                for (let i = 0; i < names.length; i++) {
-                    if (user.username.toLowerCase().includes(names[i]) ||
-                        user.firstName.toLowerCase().includes(names[i]) || 
-                        user.lastName.toLowerCase().includes(names[i])) {
-                            return true;
-                    }
-                }
-                return false;
-            }
-        }
-
-        // Set users array to only include user whose name contains the filter keyword
-        setUsers(allUsers.filter(searchName))
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [filterKeyword]) // Update users when a new keyword is entered
 
 
     return(
