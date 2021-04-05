@@ -42,14 +42,52 @@ describe("Testing POST to /blockusers API", () => {
        return chai.request(app)
         .post('/blockuser')
         .send({addBlock: addBlock, 
-            signedInBlockedUsers: signedInUserId, 
+            signedInUserId: signedInUserId, 
             signedInBlockedUsers: signedInBlockedUsers,
             signedInUserFollowing: signedInUserFollowing,
             signedInUserFollowers: signedInUserFollowers,
             blockedUserID: blockedUserID,
             blockedUserFollowing: blockedUserFollowing,
             blockedUserFollowers: blockedUserFollowers}).then((response) => { 
-            expect(response.status).to.equal(200)
+                expect(response.status).to.equal(200)
             })
     }).timeout(4000)
+
+    it("should return an object with correct field names", () => { 
+        return chai.request(app)
+         .post('/blockuser')
+         .send({addBlock: addBlock, 
+            signedInUserId: signedInUserId, 
+            signedInBlockedUsers: signedInBlockedUsers,
+            signedInUserFollowing: signedInUserFollowing,
+            signedInUserFollowers: signedInUserFollowers,
+            blockedUserID: blockedUserID,
+            blockedUserFollowing: blockedUserFollowing,
+            blockedUserFollowers: blockedUserFollowers}).then((response) => { 
+                expect(response.body).to.have.property('signedInBlockedUsers')
+                expect(response.body).to.have.property('signedInUserFollowing')
+                expect(response.body).to.have.property('signedInUserFollowers')
+                expect(response.body).to.have.property('blockedUserFollowers')
+                expect(response.body).to.have.property('blockedUserFollowing')
+             })
+     }).timeout(8000)
+
+     it("should return an object with correct field data", () => { 
+        return chai.request(app)
+         .post('/blockuser')
+         .send({addBlock: addBlock, 
+            signedInUserId: signedInUserId, 
+            signedInBlockedUsers: signedInBlockedUsers,
+            signedInUserFollowing: signedInUserFollowing,
+            signedInUserFollowers: signedInUserFollowers,
+            blockedUserID: blockedUserID,
+            blockedUserFollowing: blockedUserFollowing,
+            blockedUserFollowers: blockedUserFollowers}).then((response) => { 
+                expect(response.body.signedInBlockedUsers).to.include(blockedUserID)
+                expect(response.body.signedInUserFollowing).to.not.include(blockedUserID)
+                expect(response.body.signedInUserFollowers).to.not.include(blockedUserID)
+                expect(response.body.blockedUserFollowers).to.not.include(signedInUserId)
+                expect(response.body.blockedUserFollowers).to.not.include(signedInUserId)
+             })
+     }).timeout(8000)
 })
