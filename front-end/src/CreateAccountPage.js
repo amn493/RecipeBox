@@ -23,6 +23,8 @@ const CreateAccountPage = () =>  {
   const [initialReEnterPassword, setInitialReEnterPassword] = useState(true)
 
   function handleSubmit(event) {
+    // TODO: Handle case where user presses Create Account Button without typing 
+    // (display all the error messages)
     event.preventDefault();
   }
 
