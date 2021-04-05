@@ -32,7 +32,7 @@ Standups will [take place on Zoom](https://nyu.zoom.us/j/96743743979) on a re-oc
 
 ### Coding Standards
 
-The editor we will be using is **VS Code.** _Linter and CI TBD._
+The editor we will be using is **VS Code.** Linting follows the AirBnB standard and is run with eslint. _CI TBD._
 
 ## Git Workflow of RecipeBox
 
@@ -42,8 +42,29 @@ For any user's current progress, they push to a develop branch with their name, 
 
 ## How to Contribute
 
-You can contribute to recipebox by first forking the project...
+You can contribute to recipebox by first forking the project and creating your own repository. Create a branch that contains **issue number** that you are working on followed by a **/** with a short version of the task at hand.
+
+When creating a PR, request to merge with the _develop_ branch. 
+
+_RecipeBox is currently being written, so contributing is currently not something we're looking for. If you're somehow here... thanks for your interest!_
 
 ## Building and Testing
 
-_TBD_
+Once you have pulled the repository, the back-end and front-end must be run separately. If you are testing anything like form submissions or loading recipes anywhere on the app, you must run the back-end! That's where all of our routes are.
+
+### Front End
+
+1. Navigate to your repository and into the `front-end` folder. Open a bash terminal and run `npm install`
+1. Once packages have finished installing, go ahead and run `npm start`
+1. The front-end server will begin running on `http://localhost:3000` by default, or some available port if you are prompted
+1. Edit as you wish!
+
+### Back End
+
+1. Navigate to your repository and into the `back-end` folder. Open a bash terminal and run `npm install`
+1. Once packages have finished installing, you can use `nodemon server` to go ahead and start up the server
+    - If you are curious about the routes, you can find all get and post routes in `back-end/app.js`
+1. The back-end server will begin running on `http://localhost:4000` by default. 
+    - _Do not change the port!_ It is specified so that the front-end can communicate with the back-end.
+1. To run any unit tests, simply run `npm test`
+1. Edit as you wish!
