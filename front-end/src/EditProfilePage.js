@@ -79,7 +79,7 @@ const EditProfilePage = (props) => {
 
                         <Form.Group>
                         <div className="centerPhoto">
-                            <img src={props.user.imagePath} alt="Current Profile Picture"></img>
+                            <img src={props.user.imagePath} alt="Current Profile Avatar"></img>
                             <br />
                             <Form.File id="custom-file" className="uploadPhotoButton" label="Change Photo" onChange={fileUploaded} custom />
                         </div>

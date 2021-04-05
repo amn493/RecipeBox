@@ -31,7 +31,7 @@ const Feed = (props) => {
             setReqError(true)
             setRecBoxRecipes() // Returns empty, that way we can check in the RecipeList component if it's empty and return an error if so (e.g. "no recipes found")
         })
-    }, [])
+    }, [props.user.following])
 
     return (
         !reqError ?
@@ -41,7 +41,6 @@ const Feed = (props) => {
                 <div className="container">
                     <RecipeList size="large" recipes={recBoxRecipes} user={props.user} />
                 </div>
-
             </>
             :
             <ErrorComponent />

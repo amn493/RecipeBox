@@ -81,6 +81,7 @@ const RecipeBoxPage = (props) => {
             setReqError(true)
             setRecBoxRecipes(rbxEntries)
         })
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     /* Change dropdown menu according to click */
@@ -94,7 +95,7 @@ const RecipeBoxPage = (props) => {
 
         // Sort by date posted -- TODO is to test! Mockaroo doesn't give us the greatest of dates
         if (sortByString === 'Sort by Date Posted') {
-            resultingRecipes = resultingRecipes.sort((a, b) => {
+            resultingRecipes.sort((a, b) => {
                 if (ascendingOrder)
                     return a.createdAt > b.createdAt ? 1 : -1
                 else
@@ -104,7 +105,7 @@ const RecipeBoxPage = (props) => {
 
         // Sort by like count
         if (sortByString === 'Sort by Like Count') {
-            resultingRecipes = resultingRecipes.sort((a, b) => {
+            resultingRecipes.sort((a, b) => {
                 if (ascendingOrder)
                     return a.likes > b.likes ? 1 : -1
                 else

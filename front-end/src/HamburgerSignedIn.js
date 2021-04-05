@@ -6,12 +6,6 @@ import Nav from 'react-bootstrap/Nav'
 
 const HamburgerSignedIn = (props) => {
 
-    // TODO: Adjust the rbxLogoClass depending on if it's expanded or contracted
-    let rbxLogoPadding = "rbxLogoExpanded"
-    /*let adjustPadding = () => {
-        rbxLogoPadding === "rbxLogoCollapsed" ? rbxLogoPadding = "rbxLogoExpanded" : rbxLogoPadding = "rbxLogoCollapsed"
-    } */
-
     return (
         <div className="recipeboxNavDropdown">
             <Navbar collapseOnSelect expand="lg" variant="dark">
