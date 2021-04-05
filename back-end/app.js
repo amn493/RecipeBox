@@ -168,6 +168,7 @@ app.post('/comment', (req, res) => {
     comment: req.body.comment,
     createdAt: Date.now(),
   }
+  
   res.json(data)
 })
 
