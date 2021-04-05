@@ -31,4 +31,40 @@ describe('Testing route handler for GET /filteredrecipes ', () => {
         // Have chai request app.js and then call the url to that route handler
         expect(response.body.length).to.equal(100)
       }))
+
+  it('elements of the response array should be recipe objects', () =>
+    // Describe what the test is looking for
+    chai
+      .request(app)
+      .get('/filteredrecipes?keyword=&tags=')
+      .then((response) => {
+        // Have chai request app.js and then call the url to that route handler
+        expect(response.body[0])
+          .to.have.property('user')
+          .that.is.an('object')
+          .with.deep.property('id')
+          .that.is.a('number')
+        expect(response.body[0])
+          .to.have.property('user')
+          .with.deep.property('username')
+          .that.is.a('string')
+        expect(response.body[0]).to.have.property('name').that.is.a('string')
+        expect(response.body[0])
+          .to.have.property('imagePath')
+          .that.is.a('string')
+        expect(response.body[0]).to.have.property('tags').that.is.an('array')
+        expect(response.body[0]).to.have.property('caption').that.is.a('string')
+        expect(response.body[0])
+          .to.have.property('ingredients')
+          .that.is.an('array')
+        expect(response.body[0])
+          .to.have.property('instructions')
+          .that.is.an('array')
+        expect(response.body[0]).to.have.property('likes').that.is.a('number')
+        expect(response.body[0])
+          .to.have.property('createdAt')
+          .that.is.a('number')
+        expect(response.body[0]).to.have.property('slug').that.is.a('string')
+        expect(response.body[0]).to.have.property('id').that.is.a('number')
+      }))
 })
