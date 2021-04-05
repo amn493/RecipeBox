@@ -21,7 +21,7 @@ const Feed = (props) => {
 
         let followingArray = props.user.following
 
-        axios(`http://localhost:4000/feedrecipes?following=${(followingArray.length > 0) ? followingArray.reduce((acc, following) => acc + `&following=${following}`, `following=`) : `following=`}`).then((response) => {
+        axios(`http://localhost:4000/feedrecipes?${(followingArray.length > 0) ? followingArray.reduce((acc, following) => acc + `&following=${following}`, `following=`) : `following=`}`).then((response) => {
             setRecBoxRecipes(response.data)
         }).catch((err) => {
             console.log(err)
