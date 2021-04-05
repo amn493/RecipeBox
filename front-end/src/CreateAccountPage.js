@@ -34,7 +34,7 @@ const CreateAccountPage = () =>  {
   const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/
 
   function validateEmail() {
-    if (email.length == 0) {
+    if (email.length === 0) {
       return 'Email cannot be empty'
     }
     if (!emailRegex.test(email)) {
@@ -43,7 +43,7 @@ const CreateAccountPage = () =>  {
   }
 
   function validateFirstName() {
-    if (firstName.length == 0) {
+    if (firstName.length === 0) {
       return 'First name cannot be empty'
     }
     if (!nameRegex.test(firstName)) {
@@ -52,7 +52,7 @@ const CreateAccountPage = () =>  {
   }
 
   function validateLastName() {
-    if (lastName.length == 0) {
+    if (lastName.length === 0) {
       return 'Last name cannot be empty'
     }
     if (!nameRegex.test(lastName)) {
