@@ -11,7 +11,7 @@ const app = require('../app.js')
 
 describe('Testing route handler for GET /recipe ', () => {
   it('should return 200 OK status', () =>
-    chai
+    return chai
       .request(app)
       .get('/recipe?slug=foobar-eggs')
       .then((response) => {
@@ -19,7 +19,7 @@ describe('Testing route handler for GET /recipe ', () => {
       }))
 
   it('should return a recipe object with correct fields', () =>
-    chai
+    return chai
       .request(app)
       .get('/recipe?slug=foobar-eggs')
       .then((response) => {
