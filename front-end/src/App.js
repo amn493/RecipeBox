@@ -30,29 +30,7 @@ function App() {
     //false // no signed-in user
     true // signed-in user
     )
-    const [user, setUser] = useState(
-      /*{
-      username: '',
-      password: '',
-      firstName: '',
-      lastName: '',
-      bio: '',
-      followers: [],
-      following: [],
-      liked: [],
-      slug: '',
-      imagePath: '',
-      id: null,
-      blockedUsers: [],
-      blockedTags: [],
-      notificationSettings: {
-        "emailNotifications": false,
-        "likes": false,
-        "comments": false,
-        "follows": false,
-        "posts": false
-      }
-    }*/ // no signed-in user
+    const [user] = useState( // TODO: setUser removed to clear errors since it was not being used
     {
       username: 'anonymous',
       password: 'Abc123',

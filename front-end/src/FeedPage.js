@@ -26,17 +26,16 @@ const Feed = (props) => {
             setRecBoxRecipes(response.data)
         }).catch((err) => {
             console.log(err)
-            setRecBoxRecipes() // Returns empty, that way we can check in the RecipeList component if it's empty and return an error if so (e.g. "no recipes found")
+            setRecBoxRecipes("none") // Returns empty, that way we can check in the RecipeList component if it's empty and return an error if so (e.g. "no recipes found")
         })
-
-        
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     return (
         <>
 
         <div className="container">
-            <RecipeList size="large" recipes={recBoxRecipes} user={props.user} />
+            {recBoxRecipes === "none" ? <ErrorComponent /> : <RecipeList size="large" recipes={recBoxRecipes} user={props.user} />}
         </div>
 
         </>
