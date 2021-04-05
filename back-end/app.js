@@ -66,9 +66,9 @@ app.get('/usersbyname', (req, res, next) => {
 })
 
 app.get('/feedrecipes', (req, res, next) => {
-  // fetch a list of recipes given an user's name (thus getting their likes)
-  // as well as a timestamp
+  // fetch a list of recipes given an array of users they are following
 
+  // let currentTime = Date.now() for future use
   axios
     .get('https://my.api.mockaroo.com/recipe.json?key=f6a27260')
     .then((apiResponse) => res.json(apiResponse.data))
