@@ -302,6 +302,7 @@ app.post('/updateuserinfo', upload.single('profilepicture'), (req, res) => {
     username: req.body.username,
     firstName: req.body.firstName,
     lastName: req.body.lastName,
+    bio: req.body.bio,
     id: req.body.id,
     imagePath: path.join('/uploads/', req.file.filename),
   }
