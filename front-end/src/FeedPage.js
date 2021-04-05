@@ -10,21 +10,26 @@ import ErrorComponent from './ErrorComponent'
 // props.user is the passed in user
 const Feed = (props) => {
 
-    // TODO: Back-end task -- Fill feedEntries. Also need to adjust below so the array contains both "recipe" and "likes"
-    let feedRecipes = axios.get('/feedrecipes')
-
     // Recipe list to show -- Is later re-assigned if/when sorts are applied
     const [recBoxRecipes, setRecBoxRecipes] = useState([])
 
-    /* Pull in recipes from mockaroo */
+    /* Pull in recipes from mockaroo using the GET route handler */
     useEffect(() => {
-        axios('https://my.api.mockaroo.com/recipe.json?key=f6a27260').then((response) => {
+
+        // Get a list of feed recipes
+        // userid is the logged in user so we can get their following
+        // timestamp is the current time to pull recipes from a certain timeframe, e.g. a week
+
+        let followingArray = props.user.following
+
+        axios(`http://localhost:4000/feedrecipes?${(followingArray.length > 0) ? followingArray.reduce((acc, following) => acc + `&following=${following}`, `following=`) : `following=`}`).then((response) => {
             setRecBoxRecipes(response.data)
-        }).catch((err) =>{
-            // TODO: set rec box recipes to the ErrorComponent
+        }).catch((err) => {
             console.log(err)
-            setRecBoxRecipes(feedRecipes)
+            setRecBoxRecipes() // Returns empty, that way we can check in the RecipeList component if it's empty and return an error if so (e.g. "no recipes found")
         })
+
+        
     }, [])
 
     return (

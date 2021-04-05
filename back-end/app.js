@@ -55,9 +55,9 @@ app.get('/recipe', (req, res, next) => {
 })
 
 app.get('/usersbyname', (req, res, next) => {
-  // fetch users where name === req.query.username
-  // or name === req.query.firstName
-  // or name === req.query.lastName from database
+  // fetch users where username === req.query.name
+  // or firstName === req.query.name
+  // or lastName === req.query.name from database
 
   axios
     .get('https://my.api.mockaroo.com/user.json?key=f6a27260')
@@ -66,9 +66,9 @@ app.get('/usersbyname', (req, res, next) => {
 })
 
 app.get('/feedrecipes', (req, res, next) => {
-  // fetch a list of recipes given an user's name (thus getting their likes)
-  // as well as a timestamp
+  // fetch a list of recipes given an array of users they are following
 
+  // let currentTime = Date.now() for future use
   axios
     .get('https://my.api.mockaroo.com/recipe.json?key=f6a27260')
     .then((apiResponse) => res.json(apiResponse.data))
@@ -168,6 +168,7 @@ app.post('/comment', (req, res) => {
     comment: req.body.comment,
     createdAt: Date.now(),
   }
+  
   res.json(data)
 })
 
@@ -201,19 +202,40 @@ app.post('/newrecipe', upload.single('recipeimage'), (req, res) => {
 })
 
 app.post('/blockuser', (req, res) => {
-  // update signed-in user (_id === req.body.userID)'s blockedUsers array appropriately
+  // update signed-in user's blockedUsers array appropriately
+  // update signed-in users's following/followers array appropriately
+  // update blocked user's following/followers array appropriately
 
-  const updatedBlockedUsers = req.body.blockedUsers
+  const updatedSignedInBlockedUsers = req.body.signedInblockedUsers
+
+  const updatedSignedInUserFollowing = req.body.signedInUserFollowing
+  const updatedSignedInUserFollowers = req.body.signedInUserFollowers
+  const updatedblockedUserFollowing = req.body.blockedUserFollowing
+  const updatedblockedUserFollowers = req.body.blockedUserFollowers
+
+
   if (req.body.addBlock) {
-    updatedBlockedUsers.push(req.body.blockedUserID)
+    updatedSignedInBlockedUsers.push(req.body.blockedUserID)
+
+    if (updatedSignedInUserFollowing.includes(req.body.blockedUserID)){
+        updatedSignedInUserFollowing.splice(updatedSignedInUserFollowing.indexOf(req.body.blockedUserID), 1)
+        updatedblockedUserFollowers.splice(updatedblockedUserFollowers.indexOf(req.body.signedInUserID), 1)   
+    }
+    if (updatedSignedInUserFollowers.includes(req.body.blockedUserID)){
+        updatedSignedInUserFollowers.splice(updatedSignedInUserFollowers.indexOf(req.body.blockedUserID), 1)
+        updatedblockedUserFollowing.splice(updatedblockedUserFollowing.indexOf(req.body.signedInUserID), 1)   
+    }
+
   } else {
-    updatedBlockedUsers.splice(
-      updatedBlockedUsers.indexOf(req.body.blockedUserID),
-      1
-    )
+    updatedSignedInBlockedUsers.splice(
+      updatedSignedInBlockedUsers.indexOf(req.body.blockedUserID), 1)
   }
 
-  res.json(updatedBlockedUsers)
+  res.json({signedInBlockedUsers: updatedSignedInBlockedUsers,
+    signedInUserFollowing: updatedSignedInUserFollowing,
+    signedInUserFollowers: updatedSignedInUserFollowers,
+    blockedUserFollowers: updatedblockedUserFollowers,
+    blockedUserFollowing: updatedblockedUserFollowing})
 })
 
 app.post('/likerecipe', (req, res) => {
