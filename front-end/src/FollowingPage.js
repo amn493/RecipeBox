@@ -246,7 +246,8 @@ const FollowingPage = (props) => {
                 setLoadedFollowing(true)
             })
         }
-    }, [user.following])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [user])
 
 
     // For keyword search bar
