@@ -44,4 +44,10 @@ describe('Testing route handler for GET /userbyslug ', () => {
             expect((response.body)[0]).to.have.property('id').that.is.a('int')
         })
     }).timeout(8000)
+
+    it('should only return one object ', () => {
+        return chai.request(app).get('/userbyslug').then((response) => {
+            expect(response.body.length).to.equal(1)
+        })
+    }).timeout(3000)
 })
