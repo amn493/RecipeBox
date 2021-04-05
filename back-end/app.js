@@ -45,6 +45,8 @@ const upload = multer({
   storage: storage,
 })
 
+/* Begin GET Requests */
+
 app.get('/recipe', (req, res, next) => {
   // fetch recipe where slug === req.query.slug from database
 
@@ -158,6 +160,8 @@ app.get('/filteredrecipes', (req, res, next) => {
     )
     .catch((err) => next(err))
 })
+
+/* Begin POST Requests */
 
 app.post('/comment', (req, res) => {
   // store new comment

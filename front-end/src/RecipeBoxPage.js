@@ -11,11 +11,14 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup'
 import { SortUp } from 'react-bootstrap-icons'
 import { SortDown } from 'react-bootstrap-icons'
 import TagButton from './TagButton.js'
+import ErrorComponent from './ErrorComponent.js'
 
 // Pulls recipes from the database for the logged-in feed and generates a recipelist for qualifying recipes
 // Qualifying recipes, e.g. latest recipes posted by those someone has followed
 // props.user is the passed in user
 const RecipeBoxPage = (props) => {
+
+    const [reqError, setReqError] = useState(false)
 
     // TODO: Back-end task -- Fill rbxEntries. Also need to adjust below so the array contains both "recipe" and "likes"
     let rbxEntries = [
@@ -65,14 +68,17 @@ const RecipeBoxPage = (props) => {
     const [sortByString, setSortByString] = useState('Sort by Date Posted')
     const [ascendingOrder, setAscendingOrder] = useState(false)
 
-    // https://my.api.mockaroo.com/recipe.json?key=f6a27260
-    /* Pull in recipes from mockaroo */
+    /* Pull in recipes from route handler */
+    let likedRecipes = props.user.liked
+
     useEffect(() => {
-        axios('https://my.api.mockaroo.com/recipe.json?key=f6a27260').then((response) => {
+        axios(`http://localhost:4000/filteredrecipes?keyword=${filterKeyword}${(filterTags.length > 0) ? filterTags.reduce((acc, tag) => acc + `&tags=${tag}`, `&tags=`) : `&tags=`}${(likedRecipes.length > 0) ? likedRecipes.reduce((acc, likedRec) => acc + `&liked=${likedRec}`, `&liked=`) : `&liked=`}`)
+        .then((response) => {
             setRecBoxRecipes(response.data)
         }).catch((err) => {
             // TODO: Print an error to the user, but for now mockaroo is likely
             console.log(err)
+            setReqError(true)
             setRecBoxRecipes(rbxEntries)
         })
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -123,6 +129,7 @@ const RecipeBoxPage = (props) => {
             })
             .catch((err) => {
                 console.error(err)
+                setReqError(true)
 
                 // make some backup fake data
                 const backupData = [
@@ -163,42 +170,48 @@ const RecipeBoxPage = (props) => {
     }, [tagSelection])
 
     return (
-        <div>
+        !reqError ?
 
-            {/* Sort and filter */}
-            <div className="recipeBoxFilters">
+            <div>
 
-                <div className="sortDropdown">
-                    <ButtonGroup className="sortButtonGroup" >
-                        <Dropdown as={ButtonGroup} className="sortDropdownButton">
-                            <Dropdown.Toggle split variant="info" id="dropdown-basic">{sortByString} </Dropdown.Toggle>
-                            <Dropdown.Menu>
-                                <Dropdown.Item onClick={() => onDatePosted("Date Posted")}>Date Posted</Dropdown.Item>
-                                <Dropdown.Item onClick={() => onDatePosted("Like Count")}>Like Count</Dropdown.Item>
-                            </Dropdown.Menu>
-                        </Dropdown>
-                        <Button variant="outline-info" onClick={() => { ascendingOrder === true ? setAscendingOrder(false) : setAscendingOrder(true) }}>
-                            {ascendingOrder === true ? <SortUp /> : <SortDown />}
-                        </Button>
-                    </ButtonGroup>
+                {/* Sort and filter */}
+                <div className="recipeBoxFilters">
+
+                    <div className="sortDropdown">
+                        <ButtonGroup className="sortButtonGroup" >
+                            <Dropdown as={ButtonGroup} className="sortDropdownButton">
+                                <Dropdown.Toggle split variant="info" id="dropdown-basic">{sortByString} </Dropdown.Toggle>
+                                <Dropdown.Menu>
+                                    <Dropdown.Item onClick={() => onDatePosted("Date Posted")}>Date Posted</Dropdown.Item>
+                                    <Dropdown.Item onClick={() => onDatePosted("Like Count")}>Like Count</Dropdown.Item>
+                                </Dropdown.Menu>
+                            </Dropdown>
+                            <Button variant="outline-info" onClick={() => { ascendingOrder === true ? setAscendingOrder(false) : setAscendingOrder(true) }}>
+                                {ascendingOrder === true ? <SortUp /> : <SortDown />}
+                            </Button>
+                        </ButtonGroup>
+                    </div>
+
+                    <div className="recipeNameSearchbar">
+                        <KeywordSearchBar isRecipe={true} isRecipeBox={true} filter={filterKeyword} setFilter={setFilterKeyword} />
+                    </div>
+                    <ComboBoxSearchBar isTag={true} tags={tags} setSelection={setTagSelection} />
+                    <div className="tagButtonsSection">
+                        {filterTags.map((tag, i) => <TagButton tag={tag} filterTags={filterTags} setFilterTags={setFilterTags} tags={tags} setTags={setTags} key={i} />)}
+                    </div>
+
                 </div>
 
-                <div className="recipeNameSearchbar">
-                    <KeywordSearchBar isRecipe={true} isRecipeBox={true} filter={filterKeyword} setFilter={setFilterKeyword} />
-                </div>
-                <ComboBoxSearchBar isTag={true} tags={tags} setSelection={setTagSelection} />
-                <div className="tagButtonsSection">
-                    {filterTags.map((tag, i) => <TagButton tag={tag} filterTags={filterTags} setFilterTags={setFilterTags} tags={tags} setTags={setTags} key={i} />)}
-                </div>
+                {/* Generate the list of recipes */}
+                <br />
 
+                {sortRecBoxRecipes()}
+                <RecipeList size="small" recipes={recBoxRecipes} user={props.user} />
             </div>
 
-            {/* Generate the list of recipes */}
-            <br />
+            :
 
-            {sortRecBoxRecipes()}
-            <RecipeList size="small" recipes={recBoxRecipes} user={props.user} />
-        </div>
+            <ErrorComponent />
     )
 }
 
