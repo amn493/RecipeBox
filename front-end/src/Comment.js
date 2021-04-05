@@ -10,36 +10,37 @@ import './Comment.css'
 //Example: <Comment comment={{recipe: 2, user: 5, comment: 'Love this recipe!', createdAt: 1615864460796}} />
 
 const Comment = (props) => {
-    
+
     // request user that authored recipe (user id = props.comment.user) when component is rendered
     const [user, setUser] = useState([])
 
     useEffect(() => {
         axios(`http://localhost:4000/userbyid?id=${props.comment.user}`)
-        .then((response) => {
-            setUser(response.data)
-        })
-        .catch((err) => {
-            console.error(err)
+            .then((response) => {
+                setUser(response.data)
+            })
+            .catch((err) => {
+                console.error(err)
+                props.setReqError(true)
 
-            // make some backup fake data
-            const backupData = [
-                {
-                    username: 'therealfoobar',
-                    //password: // a password hash,
-                    firstName: 'Foo',
-                    lastName: 'Bar',
-                    bio: 'follow me! :)',
-                    //followers: // an array of references to User documents,
-                    //following: // an array of references to User documents,
-                    liked: [], // an array of references to Recipe documents
-                    imagePath: 'https://picsum.photos/200',
-                    slug: 'therealfoobar'
-                  }
-            ]
+                // make some backup fake data
+                const backupData = [
+                    {
+                        username: 'therealfoobar',
+                        //password: // a password hash,
+                        firstName: 'Foo',
+                        lastName: 'Bar',
+                        bio: 'follow me! :)',
+                        //followers: // an array of references to User documents,
+                        //following: // an array of references to User documents,
+                        liked: [], // an array of references to Recipe documents
+                        imagePath: 'https://picsum.photos/200',
+                        slug: 'therealfoobar'
+                    }
+                ]
 
-            setUser(backupData[0])
-        })
+                setUser(backupData[0])
+            })
     }, [props.comment.user])
 
 
