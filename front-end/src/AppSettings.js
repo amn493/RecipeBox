@@ -198,6 +198,22 @@ const AppSettings = (props) => {
 
     const [blockedTagsList, addBlockedTagToList] = useState(props.user.blockedTags) //list of current user's blocked tags
 
+    const handleChangedNotifSwitch = () => {
+        const headers = { 
+            'Content-Type': 'multipart/form-data'
+        }
+
+        const updatedNotificationSettings = new FormData()
+        updatedNotificationSettings.append('email', emailNotifs)
+        updatedNotificationSettings.append('likes', likesNotifs)
+        updatedNotificationSettings.append('comments', commentsNotifs)
+        updatedNotificationSettings.append('followers', followersNotifs)
+        // updatedNotificationSettings.append('posts', postsNotifs)
+        updatedNotificationSettings.append('id', currentUser.id)
+
+        axios.post('http://localhost:4000/notificationsettings', updatedNotificationSettings, { headers })
+    }
+
     const handleAddBlockedTag = (props) => {
         if (blockedTagsList.includes(props) === false) {
             addBlockedTagToList(blockedTagsList.concat(props)) //change (1) list of user's blocked tags
@@ -237,8 +253,8 @@ const AppSettings = (props) => {
                                                     className='custom-control-input'
                                                     id='customSwitches1'
                                                     checked={emailNotifs}
-                                                    onClick={() => setEmailNotifs(!emailNotifs)}
-                                                    onChange={e => { }}
+                                                    onClick={() => {setEmailNotifs(!emailNotifs)
+                                                                    handleChangedNotifSwitch()}}                                                    onChange={e => { }}
                                                 />
                                                 <label className="custom-control-label" id={1} htmlFor='customSwitches1' />
                                             </div>
@@ -266,8 +282,8 @@ const AppSettings = (props) => {
                                                     id='customSwitches2'
                                                     checked={likesNotifs}
                                                     disabled={!emailNotifs}
-                                                    onClick={() => setLikesNotifs(!likesNotifs)}
-                                                    onChange={e => { }}
+                                                    onClick={() => {setLikesNotifs(!likesNotifs)
+                                                                    handleChangedNotifSwitch()}}                                                    onChange={e => { }}
                                                 />
 
                                                 <label className='custom-control-label' id={2} htmlFor='customSwitches2' />
@@ -296,8 +312,8 @@ const AppSettings = (props) => {
                                                     id='customSwitches3'
                                                     checked={commentsNotifs}
                                                     disabled={!emailNotifs}
-                                                    onClick={() => setCommentsNotifs(!commentsNotifs)}
-                                                    onChange={e => { }}
+                                                    onClick={() => {setCommentsNotifs(!commentsNotifs)
+                                                                    handleChangedNotifSwitch()}}                                                    onChange={e => { }}
                                                 />
                                                 <label className='custom-control-label' id={3} htmlFor='customSwitches3' />
                                             </div>
