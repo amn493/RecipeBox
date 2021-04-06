@@ -242,6 +242,20 @@ app.post('/blockuser', (req, res) => {
     blockedUserFollowing: updatedblockedUserFollowing})
 })
 
+app.post('/blocktag', (req, res) => {
+    // update signed-in user's blockedTags array appropriately
+  
+    const updatedSignedInBlockedTags = req.body.signedInBlockedTags
+  
+    if (req.body.addBlock) {
+        updatedSignedInBlockedTags.push(req.body.tagToBlockOrUnblock)
+    } else {
+        updatedSignedInBlockedTags.splice(updatedSignedInBlockedTags.indexOf(req.body.tagToBlockOrUnblock), 1)
+    }
+  
+    res.json({signedInBlockedTags: updatedSignedInBlockedTags})
+})
+
 app.post('/likerecipe', (req, res) => {
   // update signed-in user (_id === req.body.userID)'s liked array appropriately
 
