@@ -213,13 +213,11 @@ const AppSettings = (props) => {
     }
 
     const handleRemoveBlockedTag = (tagToUnblock) => {
-        console.log(blockedTagsList)
-        console.log(tagToUnblock)
         axios.post('http://localhost:4000/blocktag', 
             {addBlock: true, 
             tagToBlockOrUnblock: tagToUnblock,
             signedInBlockedTags: blockedTagsList
-            })
+        })
     }
 
     const [emailNotifs, setEmailNotifs] = useState(props.user.notificationSettings.emailNotifications)
