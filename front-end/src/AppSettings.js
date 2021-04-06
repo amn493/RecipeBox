@@ -210,7 +210,7 @@ const AppSettings = (props) => {
     const [likesNotifs, setLikesNotifs] = useState(props.user.notificationSettings.likes)
     const [commentsNotifs, setCommentsNotifs] = useState(props.user.notificationSettings.comments)
     const [followersNotifs, setFollowersNotifs] = useState(props.user.notificationSettings.follows)
-    const [postsNotifs, setPostsNotifs] = useState(props.user.notificationSettings.posts)
+    // const [postsNotifs, setPostsNotifs] = useState(props.user.notificationSettings.posts)
 
 
     return (
@@ -339,7 +339,7 @@ const AppSettings = (props) => {
                                 </tr>
 
                                 {/* New Posts toggle switch*/}
-                                <tr className='notifsSwitchSubEmails' id={5}>
+                                {/* <tr className='notifsSwitchSubEmails' id={5}>
                                     <td>
                                         <div className="emailNotifLabel">New Posts from Following</div>
                                     </td>
@@ -359,12 +359,12 @@ const AppSettings = (props) => {
                                             </div>
                                         </div>
                                     </td>
-                                </tr>
+                                </tr> */}
 
                                 {/* simulating <hr> (horitzontal rule) for style*/}
-                                <tr className="borderedtr">
+                                {/* <tr className="borderedtr">
                                     <td className="borderedtd"></td>
-                                </tr>
+                                </tr> */}
 
                             </tbody>
                         </table>
