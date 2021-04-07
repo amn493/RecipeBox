@@ -94,3 +94,7 @@
     background-color: white;
     opacity: 60%;
 }
+
+.blockedTagButtonNest{
+    display: inline-block;
+}

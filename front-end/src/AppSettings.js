@@ -198,12 +198,26 @@ const AppSettings = (props) => {
 
     const [blockedTagsList, addBlockedTagToList] = useState(props.user.blockedTags) //list of current user's blocked tags
 
-    const handleAddBlockedTag = (props) => {
-        if (blockedTagsList.includes(props) === false) {
-            addBlockedTagToList(blockedTagsList.concat(props)) //change (1) list of user's blocked tags
-            let index = tagsToBlock.indexOf(props)
-            setTagsToBlock(tagsToBlock.slice(0, index).concat(tagsToBlock.slice(index + 1, tagsToBlock.length))) //(2) list of tags that are available to user to block
+    const handleAddBlockedTag = (tagToBlock) => {
+        if (blockedTagsList.includes(tagToBlock) === false){
+            axios.post('http://localhost:4000/blocktag', 
+                {addBlock: true, 
+                tagToBlockOrUnblock: tagToBlock,
+                signedInBlockedTags: blockedTagsList
+                })
+            .then(() => {
+            addBlockedTagToList(blockedTagsList.concat(tagToBlock)) //change (1) list of user's blocked tags
+            let index = tagsToBlock.indexOf(tagToBlock)
+            setTagsToBlock(tagsToBlock.slice(0,index).concat(tagsToBlock.slice(index+1,tagsToBlock.length))) }) //(2) list of tags that are available to user to block
         }
+    }
+
+    const handleRemoveBlockedTag = (tagToUnblock) => {
+        axios.post('http://localhost:4000/blocktag', 
+            {addBlock: true, 
+            tagToBlockOrUnblock: tagToUnblock,
+            signedInBlockedTags: blockedTagsList
+        })
     }
 
     const [emailNotifs, setEmailNotifs] = useState(props.user.notificationSettings.emailNotifications)
@@ -398,7 +412,7 @@ const AppSettings = (props) => {
                             </div>
                             <br />
                             <div className="actualBlockedTags">
-                                {blockedTagsList.map((selectTag, i) => <TagButton tag={selectTag} tags={tagsToBlock} filterTags={blockedTagsList} setTags={setTagsToBlock} setFilterTags={addBlockedTagToList} key={i} />)}
+                                {blockedTagsList.map((selectTag, i) => <div className="blockedTagButtonNest" key={i} onClick={() => handleRemoveBlockedTag(selectTag)}> {<TagButton tag={selectTag} tags={tagsToBlock} filterTags={blockedTagsList} setTags={setTagsToBlock} setFilterTags={addBlockedTagToList} key={i} />} </div>)}
                             </div>
                         </div>
                     </div>
