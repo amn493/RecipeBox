@@ -198,6 +198,22 @@ const AppSettings = (props) => {
 
     const [blockedTagsList, addBlockedTagToList] = useState(props.user.blockedTags) //list of current user's blocked tags
 
+    const handleChangedNotifSwitch = () => {
+        const headers = { 
+            'Content-Type': 'multipart/form-data'
+        }
+
+        const updatedNotificationSettings = new FormData()
+        updatedNotificationSettings.append('email', emailNotifs)
+        updatedNotificationSettings.append('likes', likesNotifs)
+        updatedNotificationSettings.append('comments', commentsNotifs)
+        updatedNotificationSettings.append('followers', followersNotifs)
+        // updatedNotificationSettings.append('posts', postsNotifs)
+        updatedNotificationSettings.append('id', currentUser.id)
+
+        axios.post('http://localhost:4000/notificationsettings', updatedNotificationSettings, { headers })
+    }
+
     const handleAddBlockedTag = (tagToBlock) => {
         if (blockedTagsList.includes(tagToBlock) === false){
             axios.post('http://localhost:4000/blocktag', 
@@ -224,7 +240,7 @@ const AppSettings = (props) => {
     const [likesNotifs, setLikesNotifs] = useState(props.user.notificationSettings.likes)
     const [commentsNotifs, setCommentsNotifs] = useState(props.user.notificationSettings.comments)
     const [followersNotifs, setFollowersNotifs] = useState(props.user.notificationSettings.follows)
-    const [postsNotifs, setPostsNotifs] = useState(props.user.notificationSettings.posts)
+    // const [postsNotifs, setPostsNotifs] = useState(props.user.notificationSettings.posts)
 
 
     return (
@@ -251,7 +267,8 @@ const AppSettings = (props) => {
                                                     className='custom-control-input'
                                                     id='customSwitches1'
                                                     checked={emailNotifs}
-                                                    onClick={() => setEmailNotifs(!emailNotifs)}
+                                                    onClick={() => {setEmailNotifs(!emailNotifs)
+                                                                    handleChangedNotifSwitch()}}                                                    
                                                     onChange={e => { }}
                                                 />
                                                 <label className="custom-control-label" id={1} htmlFor='customSwitches1' />
@@ -280,7 +297,8 @@ const AppSettings = (props) => {
                                                     id='customSwitches2'
                                                     checked={likesNotifs}
                                                     disabled={!emailNotifs}
-                                                    onClick={() => setLikesNotifs(!likesNotifs)}
+                                                    onClick={() => {setLikesNotifs(!likesNotifs)
+                                                                    handleChangedNotifSwitch()}}                                                    
                                                     onChange={e => { }}
                                                 />
 
@@ -310,7 +328,8 @@ const AppSettings = (props) => {
                                                     id='customSwitches3'
                                                     checked={commentsNotifs}
                                                     disabled={!emailNotifs}
-                                                    onClick={() => setCommentsNotifs(!commentsNotifs)}
+                                                    onClick={() => {setCommentsNotifs(!commentsNotifs)
+                                                                    handleChangedNotifSwitch()}}
                                                     onChange={e => { }}
                                                 />
                                                 <label className='custom-control-label' id={3} htmlFor='customSwitches3' />
@@ -338,7 +357,8 @@ const AppSettings = (props) => {
                                                     id='customSwitches4'
                                                     checked={followersNotifs}
                                                     disabled={!emailNotifs}
-                                                    onClick={() => setFollowersNotifs(!followersNotifs)}
+                                                    onClick={() => {setFollowersNotifs(!followersNotifs)
+                                                                          handleChangedNotifSwitch()}}                                                    onChange={e => { }}
                                                     onChange={e => { }}
                                                 />
                                                 <label className='custom-control-label' id={4} htmlFor='customSwitches4' />
@@ -353,7 +373,7 @@ const AppSettings = (props) => {
                                 </tr>
 
                                 {/* New Posts toggle switch*/}
-                                <tr className='notifsSwitchSubEmails' id={5}>
+                                {/* <tr className='notifsSwitchSubEmails' id={5}>
                                     <td>
                                         <div className="emailNotifLabel">New Posts from Following</div>
                                     </td>
@@ -373,12 +393,12 @@ const AppSettings = (props) => {
                                             </div>
                                         </div>
                                     </td>
-                                </tr>
+                                </tr> */}
 
                                 {/* simulating <hr> (horitzontal rule) for style*/}
-                                <tr className="borderedtr">
+                                {/* <tr className="borderedtr">
                                     <td className="borderedtd"></td>
-                                </tr>
+                                </tr> */}
 
                             </tbody>
                         </table>

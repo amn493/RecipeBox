@@ -323,21 +323,21 @@ app.post('/followuser', (req, res) => {
     })
 })
 
-app.post('/notificationSettings', (req, res) => {
-    // recieve updated notification settings
-    const updatedNotificationSettings = {
-        email: req.body.email,
-        likes: req.body.likes,
-        comments: req.body.comments,
-        followers: req.body.followers,
-        posts: req.body.posts,
-        id: req.body.id
-    }
+app.post('/notificationsettings', (req, res) => {
+  // recieve updated notification settings
+  const updatedNotificationSettings = {
+    email: req.body.email,
+    likes: req.body.likes,
+    comments: req.body.comments,
+    followers: req.body.followers,
+    // posts: req.body.posts,
+    id: req.body.id,
+  }
 
-    // update the settings
+  // update the settings
 
-    // send response
-    res.json(updatedNotificationSettings)
+  // send response
+  res.json(updatedNotificationSettings)
 })
 
 app.post('/updateuserinfo', upload.single('profilepicture'), (req, res) => {
