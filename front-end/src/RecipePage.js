@@ -134,7 +134,7 @@ const RecipePage = (props) => {
 
 
     return (
-        !reqError ?
+        //!reqError ?
 
             loadedRecipe && loadedComments ?
 
@@ -193,9 +193,9 @@ const RecipePage = (props) => {
                 // not all data has been fetched yet
                 <></>
 
-            :
+            //:
 
-            <ErrorComponent />
+            //<ErrorComponent />
     )
 }
 
@@ -263,7 +263,7 @@ const CommentsSection = (props) => {
                     createdAt: Date.now()
                 }
 
-                //TODO: store newComment in database
+                axios.post('http://localhost:4000/comment', newComment)
 
 
                 //update page to include new comment
