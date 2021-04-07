@@ -264,11 +264,12 @@ const CommentsSection = (props) => {
                 }
 
                 axios.post('http://localhost:4000/comment', newComment)
-
-
-                //update page to include new comment
-                setComments(comments.concat([newComment]))
-                setValue('')
+                .then(() => {
+                    //update page to include new comment
+                    setComments(comments.concat([newComment]))
+                    setValue('')
+                })
+                
             }
         }
         else {
