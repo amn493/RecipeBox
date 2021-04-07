@@ -7,10 +7,9 @@ import './Comment.css'
 
 // Component for comment
 // Expects comment (a comment object) as props
-//Example: <Comment comment={{recipe: 2, user: 5, comment: 'Love this recipe!', createdAt: 1615864460796}} />
+// Example: <Comment comment={{recipe: 2, user: 5, comment: 'Love this recipe!', createdAt: 1615864460796}} />
 
 const Comment = (props) => {
-
     // request user that authored recipe (user id = props.comment.user) when component is rendered
     const [user, setUser] = useState([])
 
@@ -27,12 +26,12 @@ const Comment = (props) => {
                 const backupData = [
                     {
                         username: 'therealfoobar',
-                        //password: // a password hash,
+                        // password: // a password hash,
                         firstName: 'Foo',
                         lastName: 'Bar',
                         bio: 'follow me! :)',
-                        //followers: // an array of references to User documents,
-                        //following: // an array of references to User documents,
+                        // followers: // an array of references to User documents,
+                        // following: // an array of references to User documents,
                         liked: [], // an array of references to Recipe documents
                         imagePath: 'https://picsum.photos/200',
                         slug: 'therealfoobar'
@@ -43,15 +42,18 @@ const Comment = (props) => {
             })
     }, [props.comment.user])
 
-
-
     return (
-        <div className='comment'>
+        <div className="comment">
             <p className="commentText">{props.comment.comment}</p>
             <table className="commentDetailsTable">
                 <tr>
                     <td className="commentDetailsTableCell">
-                        <a className="commentUsername" href={'/user-' + user.slug}>{'@' + user.username}</a>
+                        <a
+                            className="commentUsername"
+                            href={`/user-${user.slug}`}
+                        >
+                            {`@${user.username}`}
+                        </a>
                     </td>
                     <td className="commentDetailsTableCell commentDetailsTableRightCol">
                         <Timestamp createdAt={props.comment.createdAt} />

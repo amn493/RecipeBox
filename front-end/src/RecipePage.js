@@ -13,22 +13,19 @@ import ErrorComponent from './ErrorComponent.js'
 import './RecipePage.css'
 import CreateAccountModal from './CreateAccountModal.js'
 
-
 // Recipe Page
 // Expects no props - must be accessed via a url with a slug (/recipes-:slug)
 // Example: <RecipePage />
 
 const RecipePage = (props) => {
-
     const [reqError, setReqError] = useState(false)
 
     // get slug from url params
-    const { slug } = useParams();
+    const { slug } = useParams()
 
     // state variables for knowing when all required data has been fetched from the apis
     const [loadedRecipe, setLoadedRecipe] = useState(false)
     const [loadedComments, setLoadedComments] = useState(false)
-
 
     // request current recipe (slug = slug) on initial render
     const [recipe, setRecipe] = useState([])
@@ -37,7 +34,6 @@ const RecipePage = (props) => {
         // fetch the recipe that corresponds to the slug from the url
         axios(`http://localhost:4000/recipe?slug=${slug}`)
             .then((response) => {
-
                 setRecipe(response.data)
                 setLoadedRecipe(true)
             })
@@ -56,7 +52,7 @@ const RecipePage = (props) => {
                         name: 'Guacamole',
                         imagePath: 'https://picsum.photos/300',
                         tags: ['mexican', 'spicy', 'dip'],
-                        caption: "my secret recipe:)",
+                        caption: 'my secret recipe:)',
                         ingredients: [
                             '3 avocados',
                             '1 tomato',
@@ -88,8 +84,6 @@ const RecipePage = (props) => {
             })
     }, [slug])
 
-
-
     // request comments for current recipe (recipe = recipe.id) on initial render
     const [comments, setComments] = useState([])
 
@@ -97,7 +91,9 @@ const RecipePage = (props) => {
         if (loadedRecipe) {
             axios(`http://localhost:4000/comments?recipeID=${recipe.id}`)
                 .then((response) => {
-                    setComments(response.data.sort((a, b) => a.createdAt - b.createdAt))
+                    setComments(
+                        response.data.sort((a, b) => a.createdAt - b.createdAt)
+                    )
                     setLoadedComments(true)
                 })
                 .catch((err) => {
@@ -127,88 +123,127 @@ const RecipePage = (props) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [loadedRecipe])
 
-
     // state variable for showing sign-in modal
     const [showModal, setShowModal] = useState(false)
 
-
-
     return (
-        //!reqError ?
+        //! reqError ?
 
-            loadedRecipe && loadedComments ?
+        loadedRecipe && loadedComments ? (
+            // render the page if all required data has been fetched
+            <div className="recipe">
+                <img
+                    className="recipeImage"
+                    src={recipe.imagePath}
+                    alt="food"
+                />
+                <div className="recipeText">
+                    <div className="recipeDetails">
+                        <table className="recipeDetailsTable recipeDetailsTopTable">
+                            <tr>
+                                <td className="recipeDetailsTopTableCell">
+                                    <h1 className="recipeName">
+                                        {recipe.name}
+                                    </h1>
+                                </td>
+                                <td className="recipeDetailsTableRightCol recipeDetailsTableLikedCol recipeDetailsTopTableCell">
+                                    <LikeButton
+                                        recipe={recipe}
+                                        user={props.user}
+                                        signedIn={props.signedIn}
+                                        setShowModal={setShowModal}
+                                    />
+                                </td>
+                            </tr>
+                        </table>
+                        <table className="recipeDetailsTable">
+                            <tr>
+                                <td>
+                                    <a
+                                        className="recipeUsername"
+                                        href={`/user-${recipe.user.slug}`}
+                                    >
+                                        {`@${recipe.user.username}`}
+                                    </a>
+                                </td>
+                                <td className="recipeDetailsTableRightCol">
+                                    <Timestamp createdAt={recipe.createdAt} />
+                                </td>
+                            </tr>
+                        </table>
 
-                // render the page if all required data has been fetched
-                <div className="recipe">
-                    <img className="recipeImage" src={recipe.imagePath} alt="food" />
-                    <div className="recipeText">
-                        <div className="recipeDetails">
-                            <table className="recipeDetailsTable recipeDetailsTopTable">
-                                <tr>
-                                    <td className="recipeDetailsTopTableCell">
-                                        <h1 className="recipeName">{recipe.name}</h1>
-                                    </td>
-                                    <td className="recipeDetailsTableRightCol recipeDetailsTableLikedCol recipeDetailsTopTableCell">
-                                        <LikeButton recipe={recipe} user={props.user} signedIn={props.signedIn} setShowModal={setShowModal} />
-                                    </td>
-                                </tr>
-                            </table>
-                            <table className="recipeDetailsTable">
-                                <tr>
-                                    <td>
-                                        <a className="recipeUsername" href={'/user-' + recipe.user.slug}>{'@' + recipe.user.username}</a>
-                                    </td>
-                                    <td className="recipeDetailsTableRightCol">
-                                        <Timestamp createdAt={recipe.createdAt} />
-                                    </td>
-                                </tr>
-                            </table>
-
-                            <p className="recipeCaption">{recipe.caption}</p>
-                            {recipe.tags.map((tag, i) => (<a className="recipeTag  text-info" href={`/browse-recipes?tag=${tag}`} key={i}>{'#' + tag}</a>))}
-                        </div>
-
-                        <div className="recipeSubsection">
-                            <h2 className="recipeSubheading">Ingredients</h2>
-                            <ul className="ingredients">
-                                {recipe.ingredients.map((ingredient, i) => (<li className="liIngredient" key={i}><div className="ingredient">{ingredient}</div></li>))}
-                            </ul>
-                        </div>
-                        <br />
-                        <div className="recipeSubsection">
-                            <h2 className="recipeSubheading">Instructions</h2>
-                            <ol className="instructions">
-                                {recipe.instructions.map((instruction, i) => (<li className="liInstruction" key={i}><div className="instruction">{instruction}</div></li>))}
-                            </ol>
-                        </div>
-                        <br />
-
-                        <CommentsSection comments={comments} userId={props.user.id} recipeId={recipe.id} signedIn={props.signedIn} setShowModal={setShowModal} setReqError={setReqError} />
-
+                        <p className="recipeCaption">{recipe.caption}</p>
+                        {recipe.tags.map((tag, i) => (
+                            <a
+                                className="recipeTag  text-info"
+                                href={`/browse-recipes?tag=${tag}`}
+                                key={i}
+                            >
+                                {`#${tag}`}
+                            </a>
+                        ))}
                     </div>
 
-                    <CreateAccountModal show={showModal} setShow={setShowModal} />
+                    <div className="recipeSubsection">
+                        <h2 className="recipeSubheading">Ingredients</h2>
+                        <ul className="ingredients">
+                            {recipe.ingredients.map((ingredient, i) => (
+                                <li className="liIngredient" key={i}>
+                                    <div className="ingredient">
+                                        {ingredient}
+                                    </div>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                    <br />
+                    <div className="recipeSubsection">
+                        <h2 className="recipeSubheading">Instructions</h2>
+                        <ol className="instructions">
+                            {recipe.instructions.map((instruction, i) => (
+                                <li className="liInstruction" key={i}>
+                                    <div className="instruction">
+                                        {instruction}
+                                    </div>
+                                </li>
+                            ))}
+                        </ol>
+                    </div>
+                    <br />
+
+                    <CommentsSection
+                        comments={comments}
+                        userId={props.user.id}
+                        recipeId={recipe.id}
+                        signedIn={props.signedIn}
+                        setShowModal={setShowModal}
+                        setReqError={setReqError}
+                    />
                 </div>
-                :
-                // not all data has been fetched yet
-                <></>
 
-            //:
+                <CreateAccountModal show={showModal} setShow={setShowModal} />
+            </div>
+        ) : (
+            // not all data has been fetched yet
+            <></>
+        )
 
-            //<ErrorComponent />
+        // :
+
+        // <ErrorComponent />
     )
 }
-
 
 // Component for like button
 // Expects recipe (a recipe object) and user (a user object for the signed-in user) as props
 // Example: <LikeButton recipe={recipe} user={user} />
 
 const LikeButton = (props) => {
-
     // state variables for number of likes recipe has and whether or not the signed-in user has liked the recipe
     const [likes, setLikes] = useState(props.recipe.likes)
-    const [liked, setLiked] = useState(props.user.liked.includes(props.recipeId))
+    const [liked, setLiked] = useState(
+        props.user.liked.includes(props.recipeId)
+    )
 
     /*
     useEffect(() => {
@@ -216,44 +251,42 @@ const LikeButton = (props) => {
       }, [likes])
     */
 
-
     return (
         <div className="likeButtonDiv">
-            <input className="likeButton" type="image" src={liked ? 'heartFill.png' : 'heartOutline.png'} alt={liked ? 'heart fill' : 'heart outline'} onClick={() => {
-                if (props.signedIn) {
-                    setLikes(likes + (liked ? -1 : 1))
-                    setLiked(!liked)
-                }
-                else {
-                    // show sign-in modal if a not-signed in user attempts to like the recipe
-                    props.setShowModal(true)
-                }
-            }} />
+            <input
+                className="likeButton"
+                type="image"
+                src={liked ? 'heartFill.png' : 'heartOutline.png'}
+                alt={liked ? 'heart fill' : 'heart outline'}
+                onClick={() => {
+                    if (props.signedIn) {
+                        setLikes(likes + (liked ? -1 : 1))
+                        setLiked(!liked)
+                    } else {
+                        // show sign-in modal if a not-signed in user attempts to like the recipe
+                        props.setShowModal(true)
+                    }
+                }}
+            />
             {likes}
         </div>
-
     )
 }
-
 
 // Component for comments section
 // Expects comments (an array of comment objects), userId (the id of the signed in user), and recipeId (the id of the current recipe) as props
 // Example: <CommentsSection comments={comments} userId={user.id} recipeId={recipe.id} />
 
 const CommentsSection = (props) => {
-
     // state variables for comments array and text field value
     const [comments, setComments] = useState(props.comments)
     const [value, setValue] = useState('')
 
-
     // update page to include new comment on submit
     const handleSubmit = (event) => {
-
         event.preventDefault()
 
         if (props.signedIn) {
-
             // don't add empty comments
             if (value !== '') {
                 const newComment = {
@@ -263,21 +296,18 @@ const CommentsSection = (props) => {
                     createdAt: Date.now()
                 }
 
-                axios.post('http://localhost:4000/comment', newComment)
-                .then(() => {
-                    //update page to include new comment
-                    setComments(comments.concat([newComment]))
-                    setValue('')
-                })
-                
+                axios
+                    .post('http://localhost:4000/comment', newComment)
+                    .then(() => {
+                        // update page to include new comment
+                        setComments(comments.concat([newComment]))
+                        setValue('')
+                    })
             }
-        }
-        else {
+        } else {
             // show sign-in modal if a not-signed in user attempts to comment on the recipe
             props.setShowModal(true)
         }
-
-
     }
 
     // update text field as user types into it
@@ -285,24 +315,41 @@ const CommentsSection = (props) => {
         setValue(event.target.value)
     }
 
-
     return (
         <div className="commentsSection">
             <h2 className="recipeSubheading">Comments</h2>
-            {comments.map((comment, i) => (<Comment comment={comment} key={i} setReqError={props.setReqError} />))}
+            {comments.map((comment, i) => (
+                <Comment
+                    comment={comment}
+                    key={i}
+                    setReqError={props.setReqError}
+                />
+            ))}
 
             <Form className="commentFieldAndButton" onSubmit={handleSubmit}>
                 <InputGroup>
-                    <FormControl size="sm" className="commentField" name="comment" value={value} onChange={handleChange} />
+                    <FormControl
+                        size="sm"
+                        className="commentField"
+                        name="comment"
+                        value={value}
+                        onChange={handleChange}
+                    />
                     <InputGroup.Append>
-                        <Button variant="info" size="sm" className="commentButton" type="submit" onSubmit={handleSubmit}>Comment</Button>
+                        <Button
+                            variant="info"
+                            size="sm"
+                            className="commentButton"
+                            type="submit"
+                            onSubmit={handleSubmit}
+                        >
+                            Comment
+                        </Button>
                     </InputGroup.Append>
                 </InputGroup>
             </Form>
         </div>
     )
 }
-
-
 
 export default RecipePage

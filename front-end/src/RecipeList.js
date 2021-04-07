@@ -7,32 +7,37 @@ import './RecipeList.css'
 // props.recipes -- The passed in database list of recipes
 // props.user -- This is the user object of the user signed in
 const RecipeList = (props) => {
-    
     // Will put "recipe" and "likes" details here when passed in / fetched from database
-    let recipeArray = props.recipes
-    let previewArray = []
+    const recipeArray = props.recipes
+    const previewArray = []
 
-    recipeArray.forEach(recipeEntry => {
+    recipeArray.forEach((recipeEntry) => {
         // Define whether or not the previews are large and small (default to small)
-        if (props.size === "large"){
-            console.log("Returning large preview...?")
+        if (props.size === 'large') {
+            console.log('Returning large preview...?')
             previewArray.push(
                 <div key={recipeEntry.id} className="entrySingle">
-                    <LargeRecipePreview key={recipeEntry.id} recipe={recipeEntry} user={props.user} />
+                    <LargeRecipePreview
+                        key={recipeEntry.id}
+                        recipe={recipeEntry}
+                        user={props.user}
+                    />
                 </div>
             )
-            
         } else {
             previewArray.push(
                 <div key={recipeEntry.id} className="entrySingle">
-                    <SmallRecipePreview key={recipeEntry.id} recipe={recipeEntry} user={props.user} />
+                    <SmallRecipePreview
+                        key={recipeEntry.id}
+                        recipe={recipeEntry}
+                        user={props.user}
+                    />
                 </div>
             )
         }
-    });
+    })
 
     return previewArray
-
 }
 
 export default RecipeList

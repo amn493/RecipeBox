@@ -9,9 +9,7 @@ import TagButton from './TagButton.js'
 import './BrowseRecipesPage.css'
 import ErrorComponent from './ErrorComponent.js'
 
-
 const BrowseRecipesPage = (props) => {
-
     const [reqError, setReqError] = useState(false)
 
     const [filterKeyword, setFilterKeyword] = useState('')
@@ -24,7 +22,6 @@ const BrowseRecipesPage = (props) => {
         // fetch all tags
         axios('http://localhost:4000/tags')
             .then((response) => {
-
                 setTags(response.data)
             })
             .catch((err) => {
@@ -50,11 +47,9 @@ const BrowseRecipesPage = (props) => {
                     }
                 ]
 
-                setTags(backupData.map(tag => tag.tag))
+                setTags(backupData.map((tag) => tag.tag))
             })
     }, [])
-
-
 
     // array of recipes to be displayed
     const [recipes, setRecipes] = useState([])
@@ -62,7 +57,16 @@ const BrowseRecipesPage = (props) => {
     useEffect(() => {
         if (filterKeyword !== undefined && filterTags !== undefined) {
             // fetch all recipes
-            axios(`http://localhost:4000/filteredrecipes?keyword=${filterKeyword}${(filterTags.length > 0) ? filterTags.reduce((acc, tag) => acc + `&tags=${tag}`, `&tags=`) : `&tags=`}`)
+            axios(
+                `http://localhost:4000/filteredrecipes?keyword=${filterKeyword}${
+                    filterTags.length > 0
+                        ? filterTags.reduce(
+                              (acc, tag) => `${acc}&tags=${tag}`,
+                              `&tags=`
+                          )
+                        : `&tags=`
+                }`
+            )
                 .then((response) => {
                     setRecipes(response.data)
                 })
@@ -81,7 +85,7 @@ const BrowseRecipesPage = (props) => {
                             name: 'Guacamole',
                             imagePath: 'https://picsum.photos/300',
                             tags: ['mexican', 'vegan'],
-                            caption: "my secret recipe:)",
+                            caption: 'my secret recipe:)',
                             ingredients: [
                                 '3 avocados',
                                 '1 tomato',
@@ -115,7 +119,7 @@ const BrowseRecipesPage = (props) => {
                             name: 'Tacos',
                             imagePath: 'https://picsum.photos/300',
                             tags: ['mexican', 'appetizer'],
-                            caption: "my secret recipe:)",
+                            caption: 'my secret recipe:)',
                             ingredients: [
                                 '3 avocados',
                                 '1 tomato',
@@ -149,7 +153,7 @@ const BrowseRecipesPage = (props) => {
                             name: 'Tofu',
                             imagePath: 'https://picsum.photos/300',
                             tags: ['vegan'],
-                            caption: "my secret recipe:)",
+                            caption: 'my secret recipe:)',
                             ingredients: [
                                 '3 avocados',
                                 '1 tomato',
@@ -180,10 +184,7 @@ const BrowseRecipesPage = (props) => {
         }
     }, [filterKeyword, filterTags])
 
-
-
     const [tagSelection, setTagSelection] = useState('')
-
 
     useEffect(() => {
         if (tagSelection !== '') {
@@ -198,29 +199,47 @@ const BrowseRecipesPage = (props) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [tagSelection])
 
-
-
-
-
-
-    return (
-        !reqError ?
-            <div className="browseRecipesPage">
-                <div className="recipeNameSearchbar">
-                    <KeywordSearchBar isRecipe={true} filter={filterKeyword} setFilter={setFilterKeyword} />
-                </div>
-                <ComboBoxSearchBar isTag={true} tags={tags} setSelection={setTagSelection} />
-                <div className="tagButtonsSection">
-                    {filterTags.map((tag, i) => <TagButton tag={tag} filterTags={filterTags} setFilterTags={setFilterTags} tags={tags} setTags={setTags} key={i} />)}
-                </div>
-                <div className="recipesSection">
-                    {recipes.sort((a, b) => b.likes - a.likes).map((recipe, i) => <LargeRecipePreview recipe={recipe} user={props.user} key={i} />)}
-                </div>
+    return !reqError ? (
+        <div className="browseRecipesPage">
+            <div className="recipeNameSearchbar">
+                <KeywordSearchBar
+                    isRecipe
+                    filter={filterKeyword}
+                    setFilter={setFilterKeyword}
+                />
             </div>
-            :
-            <ErrorComponent />
+            <ComboBoxSearchBar
+                isTag
+                tags={tags}
+                setSelection={setTagSelection}
+            />
+            <div className="tagButtonsSection">
+                {filterTags.map((tag, i) => (
+                    <TagButton
+                        tag={tag}
+                        filterTags={filterTags}
+                        setFilterTags={setFilterTags}
+                        tags={tags}
+                        setTags={setTags}
+                        key={i}
+                    />
+                ))}
+            </div>
+            <div className="recipesSection">
+                {recipes
+                    .sort((a, b) => b.likes - a.likes)
+                    .map((recipe, i) => (
+                        <LargeRecipePreview
+                            recipe={recipe}
+                            user={props.user}
+                            key={i}
+                        />
+                    ))}
+            </div>
+        </div>
+    ) : (
+        <ErrorComponent />
     )
 }
-
 
 export default BrowseRecipesPage

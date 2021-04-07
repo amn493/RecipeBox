@@ -10,7 +10,6 @@ import ErrorComponent from './ErrorComponent'
 // Does not expect any argument for props
 // Example - <BrowseRecipesPage />
 const BrowseUsersPage = (props) => {
-
     const [reqError, setReqError] = useState(false)
 
     // For keyword search bar
@@ -24,13 +23,15 @@ const BrowseUsersPage = (props) => {
                 const names = match.split(' ')
                 // Compares every word in search term against username, firstName, and lastName
                 for (let i = 0; i < names.length; i++) {
-                    if (user.username.toLowerCase().includes(names[i]) ||
+                    if (
+                        user.username.toLowerCase().includes(names[i]) ||
                         user.firstName.toLowerCase().includes(names[i]) ||
-                        user.lastName.toLowerCase().includes(names[i])) {
-                        return true;
+                        user.lastName.toLowerCase().includes(names[i])
+                    ) {
+                        return true
                     }
                 }
-                return false;
+                return false
             }
         }
 
@@ -72,8 +73,7 @@ const BrowseUsersPage = (props) => {
                         imagePath: 'https://picsum.photos/250',
                         blockedUsers: [8],
                         blockedTags: [],
-                        notificationSettings:
-                        {
+                        notificationSettings: {
                             emailNotifications: false,
                             likes: false,
                             comments: false,
@@ -89,15 +89,32 @@ const BrowseUsersPage = (props) => {
                         firstName: 'Foo',
                         lastName: 'Bar',
                         bio: 'I love food and love to travel',
-                        followers: [1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8],
+                        followers: [
+                            1,
+                            2,
+                            3,
+                            4,
+                            5,
+                            6,
+                            7,
+                            8,
+                            9,
+                            1,
+                            2,
+                            3,
+                            4,
+                            5,
+                            6,
+                            7,
+                            8
+                        ],
                         following: [1, 2, 3, 4, 5],
                         liked: [1, 2, 3, 4, 5],
                         slug: 'foobar_travels',
                         imagePath: 'https://picsum.photos/250',
                         blockedUsers: [2],
                         blockedTags: [],
-                        notificationSettings:
-                        {
+                        notificationSettings: {
                             emailNotifications: true,
                             likes: true,
                             comments: true,
@@ -120,8 +137,7 @@ const BrowseUsersPage = (props) => {
                         imagePath: 'https://picsum.photos/250',
                         blockedUsers: [],
                         blockedTags: [],
-                        notificationSettings:
-                        {
+                        notificationSettings: {
                             emailNotifications: true,
                             likes: true,
                             comments: true,
@@ -144,8 +160,7 @@ const BrowseUsersPage = (props) => {
                         imagePath: 'https://picsum.photos/250',
                         blockedUsers: [25],
                         blockedTags: [],
-                        notificationSettings:
-                        {
+                        notificationSettings: {
                             emailNotifications: true,
                             likes: false,
                             comments: false,
@@ -168,8 +183,7 @@ const BrowseUsersPage = (props) => {
                         imagePath: 'https://picsum.photos/250',
                         blockedUsers: [25],
                         blockedTags: [],
-                        notificationSettings:
-                        {
+                        notificationSettings: {
                             emailNotifications: true,
                             likes: false,
                             comments: false,
@@ -192,8 +206,7 @@ const BrowseUsersPage = (props) => {
                         imagePath: 'https://picsum.photos/250',
                         blockedUsers: [13],
                         blockedTags: [],
-                        notificationSettings:
-                        {
+                        notificationSettings: {
                             emailNotifications: true,
                             likes: false,
                             comments: false,
@@ -209,15 +222,33 @@ const BrowseUsersPage = (props) => {
                         firstName: 'Home',
                         lastName: 'Chef',
                         bio: 'All homemade',
-                        followers: [1, 2, 3, 4, 5, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8],
+                        followers: [
+                            1,
+                            2,
+                            3,
+                            4,
+                            5,
+                            5,
+                            6,
+                            7,
+                            8,
+                            9,
+                            1,
+                            2,
+                            3,
+                            4,
+                            5,
+                            6,
+                            7,
+                            8
+                        ],
                         following: [1, 2, 3],
                         liked: [1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3],
                         slug: 'home_chef',
                         imagePath: 'https://picsum.photos/250',
                         blockedUsers: [13],
                         blockedTags: [],
-                        notificationSettings:
-                        {
+                        notificationSettings: {
                             emailNotifications: false,
                             likes: false,
                             comments: false,
@@ -234,32 +265,52 @@ const BrowseUsersPage = (props) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
-
-    return (
-        !reqError ?
-
-            <div className='browseUsers'>
-                <div className='browseUserSearch'>
-                    <div className="browseUsersSearchBar">
-                        <KeyWordSearchBar isRecipe={false} filter={filterKeyword} setFilter={setFilterKeyword} />
-                    </div>
-                    <div className='userPreviews'>
-                        {(users.length === 0 && filterKeyword) ? <p className="noUsersFoundMessage">No users found</p> : users.sort((a, b) => a.firstName.localeCompare(b.firstName)).map((user, i) =>
-                            (<SmallUserPreview user={user} isBlockedUserProfile={false} key={i} />))}
-                    </div>
+    return !reqError ? (
+        <div className="browseUsers">
+            <div className="browseUserSearch">
+                <div className="browseUsersSearchBar">
+                    <KeyWordSearchBar
+                        isRecipe={false}
+                        filter={filterKeyword}
+                        setFilter={setFilterKeyword}
+                    />
                 </div>
-                <hr />
-                <div className='recommendedUsers'>
-                    <b className='recommendedUsersTitle'>
-                        Recommended Users
-                </b>
-                    <div className='userPreviews'>
-                        {allUsers.sort((a, b) => a.firstName.localeCompare(b.firstName)).map((user, i) => (<SmallUserPreview user={user} isBlockedUserProfile={false} key={i} />))}
-                    </div>
+                <div className="userPreviews">
+                    {users.length === 0 && filterKeyword ? (
+                        <p className="noUsersFoundMessage">No users found</p>
+                    ) : (
+                        users
+                            .sort((a, b) =>
+                                a.firstName.localeCompare(b.firstName)
+                            )
+                            .map((user, i) => (
+                                <SmallUserPreview
+                                    user={user}
+                                    isBlockedUserProfile={false}
+                                    key={i}
+                                />
+                            ))
+                    )}
                 </div>
             </div>
-            :
-            <ErrorComponent />
+            <hr />
+            <div className="recommendedUsers">
+                <b className="recommendedUsersTitle">Recommended Users</b>
+                <div className="userPreviews">
+                    {allUsers
+                        .sort((a, b) => a.firstName.localeCompare(b.firstName))
+                        .map((user, i) => (
+                            <SmallUserPreview
+                                user={user}
+                                isBlockedUserProfile={false}
+                                key={i}
+                            />
+                        ))}
+                </div>
+            </div>
+        </div>
+    ) : (
+        <ErrorComponent />
     )
 }
 

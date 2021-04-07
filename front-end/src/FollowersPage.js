@@ -12,7 +12,6 @@ import ErrorComponent from './ErrorComponent.js'
 // Expects a user object for props
 // Example - <FollowersPage user={user} />
 const FollowersPage = (props) => {
-
     const [reqError, setReqError] = useState(false)
 
     // get slug from url params
@@ -55,7 +54,6 @@ const FollowersPage = (props) => {
             })
     }, [slug])
 
-
     // Request all followers on initial render
     const [allFollowers, setAllFollowers] = useState([])
     // Array of followers to be displayed
@@ -65,15 +63,21 @@ const FollowersPage = (props) => {
     useEffect(() => {
         // Fetch all followers (followers are an array of user objects)
         if (user.followers) {
-            axios(`http://localhost:4000/usersbyid?id=${(user.followers).reduce((acc,userFromFollowers)=>acc+`&id=${userFromFollowers}`)}`)
-            .then((response) => {
-                setAllFollowers(response.data.slice(0, user.followers.length))
-                setFollowers(response.data.slice(0, user.followers.length))
-                setLoadedFollowers(true)
-            })
-            .catch((err) => {
-                console.error(err)
-                setReqError(true)
+            axios(
+                `http://localhost:4000/usersbyid?id=${user.followers.reduce(
+                    (acc, userFromFollowers) => `${acc}&id=${userFromFollowers}`
+                )}`
+            )
+                .then((response) => {
+                    setAllFollowers(
+                        response.data.slice(0, user.followers.length)
+                    )
+                    setFollowers(response.data.slice(0, user.followers.length))
+                    setLoadedFollowers(true)
+                })
+                .catch((err) => {
+                    console.error(err)
+                    setReqError(true)
 
                     // Backup fake data
                     const backupData = [
@@ -91,8 +95,7 @@ const FollowersPage = (props) => {
                             imagePath: 'https://picsum.photos/250',
                             blockedUsers: [8],
                             blockedTags: [],
-                            notificationSettings:
-                            {
+                            notificationSettings: {
                                 emailNotifications: false,
                                 likes: true,
                                 comments: true,
@@ -108,15 +111,32 @@ const FollowersPage = (props) => {
                             firstName: 'Foo',
                             lastName: 'Bar',
                             bio: 'I love food and love to travel',
-                            followers: [1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8],
+                            followers: [
+                                1,
+                                2,
+                                3,
+                                4,
+                                5,
+                                6,
+                                7,
+                                8,
+                                9,
+                                1,
+                                2,
+                                3,
+                                4,
+                                5,
+                                6,
+                                7,
+                                8
+                            ],
                             following: [1, 2, 3, 4, 5],
                             liked: [1, 2, 3, 4, 5],
                             slug: 'foobar_travels',
                             imagePath: 'https://picsum.photos/250',
                             blockedUsers: [2],
                             blockedTags: [],
-                            notificationSettings:
-                            {
+                            notificationSettings: {
                                 emailNotifications: true,
                                 likes: true,
                                 comments: true,
@@ -139,8 +159,7 @@ const FollowersPage = (props) => {
                             imagePath: 'https://picsum.photos/250',
                             blockedUsers: [],
                             blockedTags: [],
-                            notificationSettings:
-                            {
+                            notificationSettings: {
                                 emailNotifications: false,
                                 likes: true,
                                 comments: true,
@@ -163,8 +182,7 @@ const FollowersPage = (props) => {
                             imagePath: 'https://picsum.photos/250',
                             blockedUsers: [25],
                             blockedTags: [],
-                            notificationSettings:
-                            {
+                            notificationSettings: {
                                 emailNotifications: true,
                                 likes: false,
                                 comments: false,
@@ -187,8 +205,7 @@ const FollowersPage = (props) => {
                             imagePath: 'https://picsum.photos/250',
                             blockedUsers: [25],
                             blockedTags: [],
-                            notificationSettings:
-                            {
+                            notificationSettings: {
                                 emailNotifications: true,
                                 likes: false,
                                 comments: false,
@@ -211,8 +228,7 @@ const FollowersPage = (props) => {
                             imagePath: 'https://picsum.photos/250',
                             blockedUsers: [13],
                             blockedTags: [],
-                            notificationSettings:
-                            {
+                            notificationSettings: {
                                 emailNotifications: true,
                                 likes: false,
                                 comments: false,
@@ -228,15 +244,33 @@ const FollowersPage = (props) => {
                             firstName: 'Home',
                             lastName: 'Chef',
                             bio: 'All homemade',
-                            followers: [1, 2, 3, 4, 5, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8],
+                            followers: [
+                                1,
+                                2,
+                                3,
+                                4,
+                                5,
+                                5,
+                                6,
+                                7,
+                                8,
+                                9,
+                                1,
+                                2,
+                                3,
+                                4,
+                                5,
+                                6,
+                                7,
+                                8
+                            ],
                             following: [1, 2, 3],
                             liked: [1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3],
                             slug: 'home_chef',
                             imagePath: 'https://picsum.photos/250',
                             blockedUsers: [13],
                             blockedTags: [],
-                            notificationSettings:
-                            {
+                            notificationSettings: {
                                 emailNotifications: false,
                                 likes: false,
                                 comments: false,
@@ -254,7 +288,6 @@ const FollowersPage = (props) => {
         }
     }, [user.followers])
 
-
     // For keyword search bar
     const [filterKeyword, setFilterKeyword] = useState('')
     // Filter followers based on keyword entered by the user
@@ -265,13 +298,15 @@ const FollowersPage = (props) => {
             const names = match.split(' ')
             // Compares every word in search term against username, firstName, and lastName
             for (let i = 0; i < names.length; i++) {
-                if (follower.username.toLowerCase().includes(names[i]) ||
+                if (
+                    follower.username.toLowerCase().includes(names[i]) ||
                     follower.firstName.toLowerCase().includes(names[i]) ||
-                    follower.lastName.toLowerCase().includes(names[i])) {
-                    return true;
+                    follower.lastName.toLowerCase().includes(names[i])
+                ) {
+                    return true
                 }
             }
-            return false;
+            return false
         }
 
         // Set users array to only include followers whose name contains the filter keyword
@@ -280,34 +315,54 @@ const FollowersPage = (props) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [filterKeyword]) // Update followers when a new keyword is entered
 
-
-    return (
-        !reqError ?
-
-            loadedUser && loadedFollowers ?
-
-                <div className='followers'>
-                    <div className='followersHeading'>
-                        <a className='backLink text-info' href={`/user-${slug}`}><i><ArrowLeftCircleFill /></i></a>
-                        <h3 className='userName'>@{user.username}</h3>
-                        <h4 className='title'>{`${user.followers.length} ${user.followers.length !== 1 ? 'Followers' : 'Follower'}`}</h4>
-                    </div>
-                    <div className='userSearchBar'>
-                        <KeyWordSearchBar isRecipe={false} filter={filterKeyword} setFilter={setFilterKeyword} />
-                    </div>
-                    <div className='followersList'>
-                        <div className='followerUserPreview'>
-                            {followers.length === 0 ? <p className="noFollowersFoundMessage">No users found</p> : followers.sort((a, b) => a.firstName.localeCompare(b.firstName)).map((follower, i) =>
-                                (<SmallUserPreview user={follower} isBlockedUserProfile={false} key={i} />))}
-                        </div>
+    return !reqError ? (
+        loadedUser && loadedFollowers ? (
+            <div className="followers">
+                <div className="followersHeading">
+                    <a className="backLink text-info" href={`/user-${slug}`}>
+                        <i>
+                            <ArrowLeftCircleFill />
+                        </i>
+                    </a>
+                    <h3 className="userName">@{user.username}</h3>
+                    <h4 className="title">{`${user.followers.length} ${
+                        user.followers.length !== 1 ? 'Followers' : 'Follower'
+                    }`}</h4>
+                </div>
+                <div className="userSearchBar">
+                    <KeyWordSearchBar
+                        isRecipe={false}
+                        filter={filterKeyword}
+                        setFilter={setFilterKeyword}
+                    />
+                </div>
+                <div className="followersList">
+                    <div className="followerUserPreview">
+                        {followers.length === 0 ? (
+                            <p className="noFollowersFoundMessage">
+                                No users found
+                            </p>
+                        ) : (
+                            followers
+                                .sort((a, b) =>
+                                    a.firstName.localeCompare(b.firstName)
+                                )
+                                .map((follower, i) => (
+                                    <SmallUserPreview
+                                        user={follower}
+                                        isBlockedUserProfile={false}
+                                        key={i}
+                                    />
+                                ))
+                        )}
                     </div>
                 </div>
-                :
-                <></>
-
-            :
-
-            <ErrorComponent />
+            </div>
+        ) : (
+            <></>
+        )
+    ) : (
+        <ErrorComponent />
     )
 }
 

@@ -21,130 +21,160 @@ import FollowingPage from './FollowingPage.js'
 import BrowseUsersPage from './BrowseUsersPage.js'
 import EditProfilePage from './EditProfilePage.js'
 
-
 function App() {
+    // comment out and uncomment the following to test with or without a signed-in user
 
-  // comment out and uncomment the following to test with or without a signed-in user
-
-  const [signedIn, setSignedIn] = useState(
-    //false // no signed-in user
-    true // signed-in user
+    const [signedIn, setSignedIn] = useState(
+        // false // no signed-in user
+        true // signed-in user
     )
-    const [user] = useState( // TODO: setUser removed to clear errors since it was not being used
-    {
-      username: 'anonymous',
-      password: 'Abc123',
-      firstName: 'Anonymous',
-      lastName: 'User',
-      bio: 'fun, easy recipes!',
-      followers: [2,3,5,7,9],
-      following: [2,3,4,8,9],
-      liked: [1,3,5,10,33],
-      slug: 'anonymous',
-      imagePath: 'https://picsum.photos/200',
-      id: 1,
-      blockedUsers: [1,5,9],
-      blockedTags: [
-        "breakfast",
-        "gluten",
-        "sugar"
-      ],
-      notificationSettings: {
-        "emailNotifications": true,
-        "likes": true,
-        "comments": false,
-        "follows": false,
-        "posts": true
-      }
-    }) // signed in user
-  return (
-    <>
-    <Navbar signedIn={signedIn} user={user}/>
-    <div className='App container' id='outer-container'>
-      {/*<HamburgerNotSignedIn pageWrapId={ 'page-wrap' } outerContainerId={ 'outer-container' } />*/}
-      <main id='page-wrap'>
-        <BrowserRouter>
-          {/* TODO: uncomment and complete the corresponding route when you implement a page component */}
+    const [user] = useState(
+        // TODO: setUser removed to clear errors since it was not being used
+        {
+            username: 'anonymous',
+            password: 'Abc123',
+            firstName: 'Anonymous',
+            lastName: 'User',
+            bio: 'fun, easy recipes!',
+            followers: [2, 3, 5, 7, 9],
+            following: [2, 3, 4, 8, 9],
+            liked: [1, 3, 5, 10, 33],
+            slug: 'anonymous',
+            imagePath: 'https://picsum.photos/200',
+            id: 1,
+            blockedUsers: [1, 5, 9],
+            blockedTags: ['breakfast', 'gluten', 'sugar'],
+            notificationSettings: {
+                emailNotifications: true,
+                likes: true,
+                comments: false,
+                follows: false,
+                posts: true
+            }
+        }
+    ) // signed in user
+    return (
+        <>
+            <Navbar signedIn={signedIn} user={user} />
+            <div className="App container" id="outer-container">
+                {/* <HamburgerNotSignedIn pageWrapId={ 'page-wrap' } outerContainerId={ 'outer-container' } /> */}
+                <main id="page-wrap">
+                    <BrowserRouter>
+                        {/* TODO: uncomment and complete the corresponding route when you implement a page component */}
 
-          <Switch>
+                        <Switch>
+                            {/* HOME PAGE */}
+                            <Route exact path="/">
+                                {signedIn ? (
+                                    <Redirect to="/feed" />
+                                ) : (
+                                    <Redirect to="/browse-recipes" />
+                                )}
+                            </Route>
 
-            {/* HOME PAGE */}
-            <Route exact path="/">
-              {signedIn ? <Redirect to="/feed" /> : <Redirect to="/browse-recipes" />}
-            </Route>
-            
-            {/* SIGN IN PAGE */}
-            <Route path="/sign-in">
-                {signedIn ? <Redirect to={'/user-' + user.slug} /> : <SignInForm />}
-            </Route>
+                            {/* SIGN IN PAGE */}
+                            <Route path="/sign-in">
+                                {signedIn ? (
+                                    <Redirect to={`/user-${user.slug}`} />
+                                ) : (
+                                    <SignInForm />
+                                )}
+                            </Route>
 
-            {/* CREATE ACCOUNT PAGE */}
-            <Route path="/create-account">
-            {signedIn ? <Redirect to={'/user-' + user.slug} /> : <CreateAccountPage />}
-            </Route>
+                            {/* CREATE ACCOUNT PAGE */}
+                            <Route path="/create-account">
+                                {signedIn ? (
+                                    <Redirect to={`/user-${user.slug}`} />
+                                ) : (
+                                    <CreateAccountPage />
+                                )}
+                            </Route>
 
-            {/* BROWSE RECIPES PAGE */}
-            <Route path="/browse-recipes">
-              <BrowseRecipesPage user={user} />
-            </Route>
+                            {/* BROWSE RECIPES PAGE */}
+                            <Route path="/browse-recipes">
+                                <BrowseRecipesPage user={user} />
+                            </Route>
 
-            {/* RECIPE PAGE */}
-            <Route path="/recipe-:slug">
-              <RecipePage user={user} signedIn={signedIn} />
-            </Route>
+                            {/* RECIPE PAGE */}
+                            <Route path="/recipe-:slug">
+                                <RecipePage user={user} signedIn={signedIn} />
+                            </Route>
 
-            {/* BROWSE USERS PAGE */}
-            <Route path="/browse-users">
-              <BrowseUsersPage />
-            </Route>
+                            {/* BROWSE USERS PAGE */}
+                            <Route path="/browse-users">
+                                <BrowseUsersPage />
+                            </Route>
 
-            {/* USER PROFILE AND MY PROFILE PAGES */}
-            <Route exact path="/user-:slug">
-              <ProfilePage user={user} signedIn={signedIn} />
-            </Route>
+                            {/* USER PROFILE AND MY PROFILE PAGES */}
+                            <Route exact path="/user-:slug">
+                                <ProfilePage user={user} signedIn={signedIn} />
+                            </Route>
 
-            {/* FOLLOWERS PAGE */}
-            <Route exact path="/user-:slug/followers">
-              <FollowersPage user={user} />
-            </Route>
+                            {/* FOLLOWERS PAGE */}
+                            <Route exact path="/user-:slug/followers">
+                                <FollowersPage user={user} />
+                            </Route>
 
-            {/* FOLLOWING PAGE */}
-            <Route exact path="/user-:slug/following">
-              <FollowingPage user={user} />
-            </Route>
+                            {/* FOLLOWING PAGE */}
+                            <Route exact path="/user-:slug/following">
+                                <FollowingPage user={user} />
+                            </Route>
 
-            {/* EDIT PROFILE PAGE */}
-            <Route path="/edit-profile">
-              {signedIn ? <EditProfilePage user={user} signedIn={signedIn} /> : <Redirect to="/sign-in" />}
-            </Route>
+                            {/* EDIT PROFILE PAGE */}
+                            <Route path="/edit-profile">
+                                {signedIn ? (
+                                    <EditProfilePage
+                                        user={user}
+                                        signedIn={signedIn}
+                                    />
+                                ) : (
+                                    <Redirect to="/sign-in" />
+                                )}
+                            </Route>
 
-            {/* FEED PAGE */}
-            <Route path="/feed">
-              {signedIn ? <FeedPage user={user} /> : <Redirect to="/sign-in" />}
-            </Route>
+                            {/* FEED PAGE */}
+                            <Route path="/feed">
+                                {signedIn ? (
+                                    <FeedPage user={user} />
+                                ) : (
+                                    <Redirect to="/sign-in" />
+                                )}
+                            </Route>
 
-            {/* NEW RECIPE PAGE */}
-            <Route path="/new-recipe">
-              {signedIn ? <NewRecipePage user={user} /> : <Redirect to="/sign-in" />}
-            </Route>
+                            {/* NEW RECIPE PAGE */}
+                            <Route path="/new-recipe">
+                                {signedIn ? (
+                                    <NewRecipePage user={user} />
+                                ) : (
+                                    <Redirect to="/sign-in" />
+                                )}
+                            </Route>
 
-            {/* MY RECIPE BOX PAGE */ }
-            <Route path="/my-recipe-box">
-              {signedIn ? <RecipeBoxPage user={user} /> : <Redirect to="/sign-in" />}
-            </Route>
+                            {/* MY RECIPE BOX PAGE */}
+                            <Route path="/my-recipe-box">
+                                {signedIn ? (
+                                    <RecipeBoxPage user={user} />
+                                ) : (
+                                    <Redirect to="/sign-in" />
+                                )}
+                            </Route>
 
-            {/* SETTINGS PAGE*/
-            <Route path="/settings" exact={true}>
-              {signedIn ? <AppSettings user={user} setSignedIn={setSignedIn}/> : <Redirect to="/sign-in" />}
-            </Route>
-            }           
-
-          </Switch>
-        </BrowserRouter>
-      </main>
-    </div>
-    </>
-  )
+                            <Route path="/settings" exact>
+                                {signedIn ? (
+                                    <AppSettings
+                                        user={user}
+                                        setSignedIn={setSignedIn}
+                                    />
+                                ) : (
+                                    <Redirect to="/sign-in" />
+                                )}
+                            </Route>
+                        </Switch>
+                    </BrowserRouter>
+                </main>
+            </div>
+        </>
+    )
 }
 
 export default App

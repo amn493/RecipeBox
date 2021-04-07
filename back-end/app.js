@@ -270,16 +270,19 @@ app.post('/blockuser', (req, res) => {
 
 app.post('/blocktag', (req, res) => {
     // update signed-in user's blockedTags array appropriately
-  
+
     const updatedSignedInBlockedTags = req.body.signedInBlockedTags
-  
+
     if (req.body.addBlock) {
         updatedSignedInBlockedTags.push(req.body.tagToBlockOrUnblock)
     } else {
-        updatedSignedInBlockedTags.splice(updatedSignedInBlockedTags.indexOf(req.body.tagToBlockOrUnblock), 1)
+        updatedSignedInBlockedTags.splice(
+            updatedSignedInBlockedTags.indexOf(req.body.tagToBlockOrUnblock),
+            1
+        )
     }
-  
-    res.json({signedInBlockedTags: updatedSignedInBlockedTags})
+
+    res.json({ signedInBlockedTags: updatedSignedInBlockedTags })
 })
 
 app.post('/likerecipe', (req, res) => {
@@ -324,20 +327,20 @@ app.post('/followuser', (req, res) => {
 })
 
 app.post('/notificationsettings', (req, res) => {
-  // recieve updated notification settings
-  const updatedNotificationSettings = {
-    email: req.body.email,
-    likes: req.body.likes,
-    comments: req.body.comments,
-    followers: req.body.followers,
-    // posts: req.body.posts,
-    id: req.body.id,
-  }
+    // recieve updated notification settings
+    const updatedNotificationSettings = {
+        email: req.body.email,
+        likes: req.body.likes,
+        comments: req.body.comments,
+        followers: req.body.followers,
+        // posts: req.body.posts,
+        id: req.body.id
+    }
 
-  // update the settings
+    // update the settings
 
-  // send response
-  res.json(updatedNotificationSettings)
+    // send response
+    res.json(updatedNotificationSettings)
 })
 
 app.post('/updateuserinfo', upload.single('profilepicture'), (req, res) => {
