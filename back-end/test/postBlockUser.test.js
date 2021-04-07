@@ -28,18 +28,18 @@ const app = require("../app.js")
 
 
 describe("Testing POST to /blockusers API", () => { 
-
-    //dummy data
-    let addBlock = true;
-    let signedInUserId = 23
-    let signedInBlockedUsers = [1, 5, 24, 12, 17, 16, 39]
-    let signedInUserFollowing = [4, 5, 24, 100, 8, 9, 12, 44]
-    let signedInUserFollowers = [4, 5, 12, 22, 8, 20, 11, 46]
-    let blockedUserID = 8
-    let blockedUserFollowing = [45, 12, 15, 9, 23, 44, 1]
-    let blockedUserFollowers = [12, 45, 3, 33, 2, 28, 18]
-    
     it("should return 200 OK status", () => { 
+
+        //dummy data
+        let addBlock = true;
+        let signedInUserId = 23
+        let signedInBlockedUsers = [1, 5, 24, 12, 17, 16, 39]
+        let signedInUserFollowing = [4, 5, 24, 100, 8, 9, 12, 44]
+        let signedInUserFollowers = [4, 5, 12, 22, 8, 20, 11, 46]
+        let blockedUserID = 8
+        let blockedUserFollowing = [45, 12, 15, 9, 23, 44, 1]
+        let blockedUserFollowers = [12, 45, 3, 33, 2, 28, 18]
+        
        return chai.request(app)
         .post('/blockuser')
         .send({addBlock: addBlock, 
@@ -55,6 +55,17 @@ describe("Testing POST to /blockusers API", () => {
     }).timeout(4000)
 
     it("should return an object with correct field names", () => { 
+
+        //dummy data
+        let addBlock = true;
+        let signedInUserId = 23
+        let signedInBlockedUsers = [1, 5, 24, 12, 17, 16, 39]
+        let signedInUserFollowing = [4, 5, 24, 100, 8, 9, 12, 44]
+        let signedInUserFollowers = [4, 5, 12, 22, 8, 20, 11, 46]
+        let blockedUserID = 8
+        let blockedUserFollowing = [45, 12, 15, 9, 23, 44, 1]
+        let blockedUserFollowers = [12, 45, 3, 33, 2, 28, 18]
+    
         return chai.request(app)
          .post('/blockuser')
          .send({addBlock: addBlock, 
@@ -74,6 +85,17 @@ describe("Testing POST to /blockusers API", () => {
      }).timeout(8000)
 
      it("should return an object with correct field data", () => { 
+
+        //dummy data
+        let addBlock = true;
+        let signedInUserId = 23
+        let signedInBlockedUsers = [1, 5, 24, 12, 17, 16, 39]
+        let signedInUserFollowing = [4, 5, 24, 100, 8, 9, 12, 44]
+        let signedInUserFollowers = [4, 5, 12, 22, 8, 20, 11, 46]
+        let blockedUserID = 8
+        let blockedUserFollowing = [45, 12, 15, 9, 23, 44, 1]
+        let blockedUserFollowers = [12, 45, 3, 33, 2, 28, 18]
+    
         return chai.request(app)
          .post('/blockuser')
          .send({addBlock: addBlock, 

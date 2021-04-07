@@ -7,14 +7,16 @@ chai.use(chaiHTTP)
 
 const app = require("../app.js")
 
-//dummy data
-let email = true
-let likes = false
-let comments = true
-let followers = false
-let id = 21
 describe("Testing POST to /blockusers API", () => { 
     it("should return 200 OK status", () => { 
+
+        //dummy data
+        let email = true
+        let likes = false
+        let comments = true
+        let followers = false
+        let id = 21
+
        return chai.request(app)
         .post('/notificationsettings')
         .send({email: email, 
@@ -28,6 +30,14 @@ describe("Testing POST to /blockusers API", () => {
     }).timeout(4000)
 
     it("should return an object with correct field names", () => { 
+
+        //dummy data
+        let email = true
+        let likes = false
+        let comments = true
+        let followers = false
+        let id = 21
+
         return chai.request(app)
          .post('/notificationsettings')
          .send({email: email, 
@@ -45,6 +55,14 @@ describe("Testing POST to /blockusers API", () => {
      }).timeout(8000)
 
      it("should return an object with correct field data types", () => { 
+
+        //dummy data
+        let email = true
+        let likes = false
+        let comments = true
+        let followers = false
+        let id = 21
+
         return chai.request(app)
          .post('/blockuser')
          .send({email: email, 
