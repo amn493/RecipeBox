@@ -41,6 +41,7 @@ const Comment = (props) => {
 
                 setUser(backupData[0])
             })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.comment.user])
 
 

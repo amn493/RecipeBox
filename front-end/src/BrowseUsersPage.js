@@ -47,7 +47,7 @@ const BrowseUsersPage = (props) => {
 
     useEffect(() => {
         // Fetch all users
-        axios(`https://localhost:4000/usersbyname?name=${filterKeyword}`)
+        axios(`http://localhost:4000/usersbyname?name=${filterKeyword}`)
             .then((response) => {
                 setAllUsers(response.data)
                 setUsers([])

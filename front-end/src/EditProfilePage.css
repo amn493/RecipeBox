@@ -6,6 +6,11 @@
     text-align: center;
 }
 
+.profilePic {
+    width: 50%;
+    height: 50%;
+}
+
 .editProfilePageForm {
     margin-top: 10%;
 }
@@ -22,6 +27,6 @@
 }
 
 .errorCode {
-    color: rgba(255,0,0,.6);
+    color: rgba(255, 0, 0, 0.6);
     text-align: center;
 }

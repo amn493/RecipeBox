@@ -9,6 +9,13 @@ const path = require('path')
 const axios = require('axios') // middleware for making requests to APIs
 require('dotenv').config({ silent: true }) // load environmental variables from a hidden file named .env
 
+// passport
+const passport = require('passport')
+const LocalStrategy = require('passport-local').Strategy
+const JwtStrategy = require('passport-jwt').Strategy
+const { ExtractJwt } = require('passport-jwt')
+const JWT = require('jsonwebtoken')
+
 // mongoose + models
 const mongoose = require('mongoose')
 require('./db.js')
@@ -23,13 +30,16 @@ app.use(express.json()) // decode JSON-formatted incoming POST data
 app.use(express.urlencoded({ extended: true })) // decode url-encoded incoming POST data
 app.use(morgan('dev')) // dev style gives a concise color-coded style of log output
 
+// serve static files
+app.use(express.static(path.join(__dirname, '../front-end/public')))
+
 // CORS
 
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', 'http://localhost:3000')
     res.header(
         'Access-Control-Allow-Headers',
-        'Origin, X-Requested-With, Content-Type, Accept'
+        'Origin, X-Requested-With, Content-Type, Accept, Authorization'
     )
     next()
 })
@@ -52,6 +62,155 @@ const upload = multer({
     fileFilter: (req, file, cb) =>
         cb(null, ['image/jpeg', 'image/png'].includes(file.mimetype)),
     storage: storage
+})
+
+// function for choosing a random profile picture
+const getRandomStarterProPic = () => {
+    const imagePaths = [
+        'starterProfilePictures/RBX_PFP_Blue.png',
+        'starterProfilePictures/RBX_PFP_Gold.png',
+        'starterProfilePictures/RBX_PFP_Green.png',
+        'starterProfilePictures/RBX_PFP_Magenta.png',
+        'starterProfilePictures/RBX_PFP_Red.png',
+        'starterProfilePictures/RBX_PFP_Violet.png'
+    ]
+    const index = Math.floor(Math.random() * imagePaths.length)
+    return imagePaths[index]
+}
+
+// PASSPORT
+
+// jwt strategy
+passport.use(
+    new JwtStrategy(
+        {
+            jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+            secretOrKey: process.env.JWT_SECRET
+        },
+        async (payload, done) => {
+            // find user from token
+
+            // eslint-disable-next-line consistent-return
+            User.findById(payload.sub, (err, user) => {
+                if (err) {
+                    done(err, false)
+                } else {
+                    // user doesn't exist
+                    if (!user) {
+                        return done(null, false)
+                    }
+
+                    // user exists
+                    done(null, user)
+                }
+            })
+        }
+    )
+)
+
+// local strategy
+
+// create account
+passport.use(
+    'createaccount',
+    new LocalStrategy(
+        { passReqToCallback: true },
+        (req, username, password, done) => {
+            process.nextTick(() => {
+                // find a user whose email is the same as the forms email
+                // we are checking to see if the user trying to log in already exists
+
+                // eslint-disable-next-line consistent-return
+                User.findOne({ username: username }, (err, user) => {
+                    // if there are any errors, return the error
+                    if (err) {
+                        return done(err)
+                    }
+
+                    // check to see if theres already a user with that username
+                    if (user) {
+                        req.passportErrorMessage = 'Username is already taken'
+                        return done(null, false)
+                    }
+                    // if there is no user with that username
+                    // create the user
+                    const newUser = new User({
+                        username: username,
+                        email: req.body.email,
+                        firstName: req.body.firstName,
+                        lastName: req.body.lastName,
+                        bio: '',
+                        followers: [],
+                        following: [],
+                        liked: [],
+                        imagePath: getRandomStarterProPic(),
+                        blockedUsers: [],
+                        notificationSettings: {
+                            emailNotifications: true,
+                            likes: true,
+                            comments: true,
+                            follows: true
+                        },
+                        createdAt: Date.now()
+                    })
+
+                    newUser.password = newUser.generateHash(password)
+
+                    // save the user
+                    newUser.save((error) => {
+                        if (error) {
+                            throw error
+                        }
+                        return done(null, newUser)
+                    })
+                })
+            })
+        }
+    )
+)
+
+// authenticate account
+passport.use(
+    'signin',
+    new LocalStrategy(
+        { passReqToCallback: true },
+        (req, username, password, done) => {
+            User.findOne({ username: username }, (err, user) => {
+                if (err) {
+                    return done(err, false)
+                }
+                if (!user) {
+                    req.passportErrorMessage = 'Incorrect username'
+                    return done(null, false)
+                }
+                if (!user.validPassword(password)) {
+                    req.passportErrorMessage = 'Incorrect password'
+                    return done(null, false)
+                }
+                return done(null, user)
+            })
+        }
+    )
+)
+
+// jwt sign token
+const signToken = (user) =>
+    JWT.sign(
+        {
+            iss: 'RecipeBox',
+            sub: user.id,
+            iat: Date.now(),
+            exp: new Date().setDate(new Date().getDate() + 1) // tokens expire one day from now
+        },
+        process.env.JWT_SECRET
+    )
+
+// middleware for adding passport error messages to res
+app.use((req, res, next) => {
+    if (req.passportErrorMessage) {
+        res.passportErrorMessage = req.passportErrorMessage
+    }
+    next()
 })
 
 /* Begin GET Requests */
@@ -173,7 +332,44 @@ app.get('/filteredrecipes', (req, res, next) => {
         .catch((err) => next(err))
 })
 
+app.get(
+    '/signedinuser',
+    passport.authenticate('jwt', { session: false }),
+    (req, res) => {
+        res.json({ user: req.user })
+    }
+)
+
 /* Begin POST Requests */
+
+app.post(
+    '/signin',
+    passport.authenticate('signin', {
+        session: false
+    }),
+    (req, res) => {
+        res.json({
+            token: signToken(req.user)
+        })
+    }
+)
+
+app.post(
+    '/createaccount',
+    passport.authenticate('createaccount', {
+        session: false
+    }),
+    (req, res) => {
+        res.json({
+            token: signToken(req.user)
+        })
+    }
+)
+
+app.post('/signout', (req, res) => {
+    req.logout()
+    res.send('Signed out user')
+})
 
 app.post('/comment', (req, res) => {
     // store new comment

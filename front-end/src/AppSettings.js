@@ -212,6 +212,12 @@ const AppSettings = (props) => {
     const [followersNotifs, setFollowersNotifs] = useState(props.user.notificationSettings.follows)
     const [postsNotifs, setPostsNotifs] = useState(props.user.notificationSettings.posts)
 
+    // sign out user when sign out button is clicked
+    const signOutUser = () => {
+        axios.post('http://localhost:4000/signout')
+            .then(() => localStorage.removeItem('token'))
+    }
+
 
     return (
 
@@ -406,7 +412,7 @@ const AppSettings = (props) => {
                     {/* signout button*/}
                     <div className="signOutButton">
                         <a href="/sign-in"><br /><br />
-                            <Button className='submitButton' type='submit' variant='outline-info' onClick={() => props.setSignedIn(false)}>Sign Out</Button>
+                            <Button className='submitButton' type='submit' variant='outline-info' onClick={signOutUser}>Sign Out</Button>
                             {/* TODO: handle credentials stuff*/}
                         </a>
                     </div>
