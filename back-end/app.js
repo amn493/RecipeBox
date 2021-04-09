@@ -317,7 +317,7 @@ app.get('/filteredrecipes', (req, res, next) => {
     ) {
         filter.$and = req.query.tags
             .filter((tag) => tag !== '')
-            .map((tag) => ({ tag: tag }))
+            .map((tag) => ({ tags: tag }))
     }
 
     // filter recipes by liked if request is coming from recipe box page
