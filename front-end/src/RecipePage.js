@@ -263,12 +263,13 @@ const CommentsSection = (props) => {
                     createdAt: Date.now()
                 }
 
-                //TODO: store newComment in database
-
-
-                //update page to include new comment
-                setComments(comments.concat([newComment]))
-                setValue('')
+                axios.post('http://localhost:4000/comment', newComment)
+                .then(() => {
+                    //update page to include new comment
+                    setComments(comments.concat([newComment]))
+                    setValue('')
+                })
+                
             }
         }
         else {
