@@ -291,11 +291,22 @@ app.get('/recipesbyuser', (req, res, next) => {
 })
 
 app.get('/tags', (req, res, next) => {
-    // fetch all tags from database
+    const filter = {}
 
-    axios
-        .get('https://my.api.mockaroo.com/tag.json?key=f6a27260')
-        .then((apiResponse) => res.json(apiResponse.data.map((tag) => tag.tag)))
+    // don't include tags that the user has blocked
+    if (req.query.blockedTags) {
+        filter.tag = {
+            $nin: Array.isArray(req.query.blockedTags)
+                ? req.query.blockedTags
+                : [req.query.blockedTags]
+        }
+    }
+
+    // fetch tags from database
+    Tag.find(filter)
+        .then((tags) => {
+            res.json(tags.map((tag) => tag.tag))
+        })
         .catch((err) => next(err))
 })
 
