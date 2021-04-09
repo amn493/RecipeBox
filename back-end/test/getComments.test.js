@@ -17,7 +17,7 @@ describe("Testing GET for /comments API", () => { // Title of the call in the te
     })
 
     it("should return a non-null array of comments given a recipe ID", () => {
-        return chai.request(app).get('/comments?recipeID=${recipe.id}').then((response) => {
+        return chai.request(app).get('/comments?recipeID=2').then((response) => {
             expect(response.body.length).to.be.greaterThan(0)
         })
     })
