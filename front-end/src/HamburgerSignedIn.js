@@ -1,10 +1,18 @@
-import './HamburgerNotSignedIn.css'
+import './HamburgerSignedIn.css'
 // NavDropdown imports
 import NavDropdown from 'react-bootstrap/NavDropdown'
 import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
 
+import axios from 'axios'
+
 const HamburgerSignedIn = (props) => {
+
+    // sign out user when sign out button is clicked
+    const signOutUser = () => {
+        axios.post('http://localhost:4000/signout')
+            .then(() => localStorage.removeItem('token'))
+    }
 
     return (
         <div className="recipeboxNavDropdown">
@@ -24,7 +32,7 @@ const HamburgerSignedIn = (props) => {
                         <NavDropdown.Item className="rbxSpaceAdjustment" href="/settings">Settings</NavDropdown.Item>
                         <NavDropdown.Divider />
                         {/* What's the best way to make this functional? */}
-                        <NavDropdown.Item className="rbxSpaceAdjustment" href="/sign-in">Sign Out</NavDropdown.Item>
+                        <NavDropdown.Item className="rbxSpaceAdjustment" href="/sign-in" onClick={signOutUser}>Sign Out</NavDropdown.Item>
                     </Nav>
                 </Navbar.Collapse>
             </Navbar>

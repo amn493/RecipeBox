@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const URLSlugs = require('mongoose-url-slugs')
+const bcrypt = require('bcrypt')
 
 // user schema
 const User = new mongoose.Schema({
@@ -8,7 +9,7 @@ const User = new mongoose.Schema({
     email: { type: String, required: true },
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
-    bio: { type: String, required: true },
+    bio: { type: String, required: false },
     followers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     following: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     liked: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Recipe' }],
@@ -59,6 +60,17 @@ const Tag = new mongoose.Schema({
     tag: { type: String, required: true },
     count: { type: Number, required: true }
 })
+
+// BCRYPT
+// check if password is valid
+User.methods.validPassword = function (password) {
+    return bcrypt.compareSync(password, this.password)
+}
+
+// generate password hash
+User.methods.generateHash = function (password) {
+    return bcrypt.hashSync(password, bcrypt.genSaltSync(10), null)
+}
 
 // register schemas so that mongoose knows about them
 mongoose.model('User', User)
