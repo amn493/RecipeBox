@@ -131,8 +131,6 @@ const RecipePage = (props) => {
     // state variable for showing sign-in modal
     const [showModal, setShowModal] = useState(false)
 
-
-
     return (
         !reqError ?
 
@@ -210,12 +208,17 @@ const LikeButton = (props) => {
     const [likes, setLikes] = useState(props.recipe.likes)
     const [liked, setLiked] = useState(props.user.liked.includes(props.recipeId))
 
-    /*
-    useEffect(() => {
-        //TODO: update database
-      }, [likes])
-    */
+    const handleLiked = (isLiked) => {
+        let requestData = {
+            liked: props.user.liked, // pass in user's current liked array
+            like: isLiked, // true false depending on whether or not the recipe was liked
+            userID: props.user.id, // user id
+            recipeID: props.recipe.id // recipe id
 
+        }
+
+        axios.post('http://localhost:4000/likerecipe', requestData)
+    }
 
     return (
         <div className="likeButtonDiv">
@@ -223,6 +226,7 @@ const LikeButton = (props) => {
                 if (props.signedIn) {
                     setLikes(likes + (liked ? -1 : 1))
                     setLiked(!liked)
+                    handleLiked(liked) // to ensure we have things done in the same order
                 }
                 else {
                     // show sign-in modal if a not-signed in user attempts to like the recipe
