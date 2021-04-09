@@ -299,6 +299,15 @@ app.get('/tags', (req, res, next) => {
         .catch((err) => next(err))
 })
 
+app.get('/likedrecipes', (req, res, next) => {
+    // fetch recipes in a user's liked list, then TODO -- pass it through a similar filter to /filteredrecipes
+
+    axios
+        .get('https://my.api.mockaroo.com/recipe.json?key=f6a27260')
+        .then((apiResponse) => res.json(apiResponse.data.slice(0, 10)))
+        .catch((err) => next(err))
+})
+
 app.get('/filteredrecipes', (req, res, next) => {
     // fetch recipes where name contains req.query.keyword and tags includes all tags in req.query.tags from database
 
