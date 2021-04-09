@@ -37,7 +37,7 @@ const Recipe = new mongoose.Schema({
     name: { type: String, required: true },
     imagePath: { type: String, required: true },
     tags: [String],
-    caption: { type: String, required: true },
+    caption: { type: String },
     ingredients: [String],
     instructions: [String],
     likes: { type: Number, required: true },
