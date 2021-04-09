@@ -134,7 +134,7 @@ const RecipePage = (props) => {
 
 
     return (
-        //!reqError ?
+        !reqError ?
 
             loadedRecipe && loadedComments ?
 
@@ -193,9 +193,9 @@ const RecipePage = (props) => {
                 // not all data has been fetched yet
                 <></>
 
-            //:
+            :
 
-            //<ErrorComponent />
+            <ErrorComponent />
     )
 }
 
