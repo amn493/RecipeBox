@@ -310,36 +310,45 @@ app.get('/tags', (req, res, next) => {
         .catch((err) => next(err))
 })
 
+// eslint-disable-next-line consistent-return
 app.get('/filteredrecipes', (req, res, next) => {
-    // fetch recipes where name contains req.query.keyword and tags includes all tags in req.query.tags from database
+    const filter = {}
 
-    axios
-        .get('https://my.api.mockaroo.com/recipe.json?key=f6a27260')
-        // mock filtering to demonstrate how the filter works
-        .then((apiResponse) =>
-            res.json(
-                apiResponse.data.filter(
-                    (recipe) =>
-                        (req.query.keyword !== ''
-                            ? recipe.name
-                                  .toLowerCase()
-                                  .includes(req.query.keyword.toLowerCase())
-                            : true) &&
-                        (req.query.tags.length === 0 ||
-                        (req.query.tags.length === 1 &&
-                            req.query.tags[0] === '')
-                            ? true
-                            : req.query.tags.reduce(
-                                  (acc, filterTag) =>
-                                      acc &&
-                                      (filterTag !== ''
-                                          ? recipe.tags.includes(filterTag)
-                                          : true),
-                                  true
-                              ))
-                )
-            )
+    // filter recipe names by keyword
+    if (req.query.keyword !== '') {
+        filter.$text = { $search: req.query.keyword }
+    }
+
+    // filter recipe tags
+    if (
+        !(
+            req.query.tags.length === 0 ||
+            (req.query.tags.length === 1 && req.query.tags[0] === '')
         )
+    ) {
+        filter.$and = req.query.tags
+            .filter((tag) => tag !== '')
+            .map((tag) => ({ tags: tag }))
+    }
+
+    // filter recipes by liked if request is coming from recipe box page
+    if (req.query.liked !== undefined) {
+        // send back an empty array if user's liked is empty
+        if (req.query.liked === '') {
+            return res.json([])
+        }
+
+        // eslint-disable-next-line no-underscore-dangle
+        filter._id = {
+            $in: req.query.liked.filter((liked) => liked !== '')
+        }
+    }
+
+    // find recipes matching the filter
+    Recipe.find(filter)
+        .then((recipes) => {
+            res.json(recipes)
+        })
         .catch((err) => next(err))
 })
 
