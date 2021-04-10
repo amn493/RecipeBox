@@ -229,9 +229,8 @@ app.get('/usersbyname', (req, res, next) => {
     // or firstName === req.query.name
     // or lastName === req.query.name from database
 
-    axios
-        .get('https://my.api.mockaroo.com/user.json?key=f6a27260')
-        .then((apiResponse) => res.json(apiResponse.data))
+    User.find({ $text: { $search: req.query.name } })
+        .then((users) => res.json(users))
         .catch((err) => next(err))
 })
 
