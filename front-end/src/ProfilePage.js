@@ -38,22 +38,32 @@ const ProfilePage = (props) => {
 
     // request user's recipes on initial render (user.id = profileUser.id)
     const [recipes, setRecipes] = useState()
+    const [userBlocked, setUserBlocked] = useState(false)
 
     useEffect(() => {
         if (profileUser) {
-            // fetch user's recipes
-            axios(
-                `http://localhost:4000/recipesbyuser?userID=${profileUser._id}`
-            )
-                .then((response) => {
-                    setRecipes(response.data)
-                })
-                .catch((err) => {
-                    console.error(err)
-                    setReqError(true)
-                })
+            //if profileUser or user is blocked by the other don't fetch recipes
+            if (
+                props.user._id in profileUser.blockedUsers ||
+                profileUser._id in props.user.blockedUsers
+            ) {
+                setUserBlocked(true)
+            }
+            if (!userBlocked) {
+                // fetch user's recipes
+                axios(
+                    `http://localhost:4000/recipesbyuser?userID=${profileUser._id}`
+                )
+                    .then((response) => {
+                        setRecipes(response.data)
+                    })
+                    .catch((err) => {
+                        console.error(err)
+                        setReqError(true)
+                    })
+            }
         }
-    }, [profileUser])
+    }, [profileUser, props.user.blockedUsers, props.user._id, userBlocked])
 
     // state variable for storing the active tab
     const [activeTab, setActiveTab] = useState('small')
@@ -66,7 +76,7 @@ const ProfilePage = (props) => {
             <div className="profilePage">
                 <ProfileHeader
                     user={profileUser}
-                    recipeCount={recipes.length}
+                    recipeCount={userBlocked ? 0 : recipes.length}
                 />
 
                 {slug === props.user.slug ? (
@@ -136,42 +146,37 @@ const ProfilePage = (props) => {
                         </Nav>
 
                         <Tab.Content>
-                            <Tab.Pane eventKey="small">
-                                {recipes.length > 0 ? (
-                                    <div className="recipesSection">
-                                        {recipes.map((recipe, i) => (
-                                            <SmallRecipePreview
-                                                recipe={recipe}
-                                                user={props.user}
-                                                key={i}
-                                                profileUser={profileUser}
-                                            />
-                                        ))}
-                                    </div>
-                                ) : (
-                                    <p className="noRecipesMessage">
-                                        No recipes yet
-                                    </p>
-                                )}
-                            </Tab.Pane>
-                            <Tab.Pane eventKey="large">
-                                {recipes.length > 0 ? (
-                                    <div className="recipesSection">
-                                        {recipes.map((recipe, i) => (
-                                            <LargeRecipePreview
-                                                recipe={recipe}
-                                                user={props.user}
-                                                key={i}
-                                                profileUser={profileUser}
-                                            />
-                                        ))}
-                                    </div>
-                                ) : (
-                                    <p className="noRecipesMessage">
-                                        No recipes yet
-                                    </p>
-                                )}
-                            </Tab.Pane>
+                            {recipes.length === 0 || userBlocked ? (
+                                /* TODO replace error component with no recipes component if recipes.length is 0 or user is blocked */
+                                <ErrorComponent />
+                            ) : (
+                                <>
+                                    <Tab.Pane eventKey="small">
+                                        <div className="recipesSection">
+                                            {recipes.map((recipe, i) => (
+                                                <SmallRecipePreview
+                                                    recipe={recipe}
+                                                    user={props.user}
+                                                    key={i}
+                                                    profileUser={profileUser}
+                                                />
+                                            ))}
+                                        </div>
+                                    </Tab.Pane>
+                                    <Tab.Pane eventKey="large">
+                                        <div className="recipesSection">
+                                            {recipes.map((recipe, i) => (
+                                                <LargeRecipePreview
+                                                    recipe={recipe}
+                                                    user={props.user}
+                                                    key={i}
+                                                    profileUser={profileUser}
+                                                />
+                                            ))}
+                                        </div>
+                                    </Tab.Pane>
+                                </>
+                            )}
                         </Tab.Content>
                     </Tab.Container>
                 </div>
