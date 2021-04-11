@@ -32,7 +32,7 @@ const FollowButton = (props) => {
                 signedInUserFollowing: props.user.following,
                 followedUserFollowers: props.profileUser.following,
                 follow:
-                    props.profileUser.id in props.user.following ? true : false
+                    props.profileUser.id in props.user.following ? false : true
             }
 
             axios.post('https://localhost:4000/followuser', followData)
