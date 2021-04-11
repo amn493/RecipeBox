@@ -218,9 +218,8 @@ app.use((req, res, next) => {
 app.get('/recipe', (req, res, next) => {
     // fetch recipe where slug === req.query.slug from database
 
-    axios
-        .get('https://my.api.mockaroo.com/recipe.json?key=f6a27260')
-        .then((apiResponse) => res.json(apiResponse.data[0]))
+    Recipe.find({ slug: req.query.slug })
+        .then((recipe) => res.json(recipe))
         .catch((err) => next(err))
 })
 
