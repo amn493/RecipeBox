@@ -15,14 +15,11 @@ import ErrorComponent from './ErrorComponent.js'
 
 import './ProfilePage.css'
 
-
 const ProfilePage = (props) => {
-
     const [reqError, setReqError] = useState(false)
 
     // get slug from url params
-    const { slug } = useParams();
-
+    const { slug } = useParams()
 
     // request user whose profile is being displayed on initial render
     const [profileUser, setProfileUser] = useState([])
@@ -61,135 +58,149 @@ const ProfilePage = (props) => {
             })
     }, [slug])
 
-
-
     // request user's recipes on initial render (user.id = profileUser.id)
     const [recipes, setRecipes] = useState([])
     const [loadedRecipes, setLoadedRecipes] = useState(false)
+    const [userBlocked, setUserBlocked] = useState(false)
 
     useEffect(() => {
         if (profileUser.username) {
-            // fetch user's recipes
-            axios(`http://localhost:4000/recipesbyuser?userID=${profileUser.id}`)
-                .then((response) => {
-                    setRecipes(response.data.sort((a, b) => b.createdAt - a.createdAt))
-                    setLoadedRecipes(true)
-                })
-                .catch((err) => {
-                    console.error(err)
-                    setReqError(true)
+            //if profileUser or user is blocked by the other don't fetch recipes
+            if (
+                props.user.id in profileUser.blockedUsers ||
+                profileUser.id in props.user.blockedUsers
+            ) {
+                setUserBlocked(true)
+            }
+            if (!userBlocked) {
+                // fetch user's recipes
+                axios(
+                    `http://localhost:4000/recipesbyuser?userID=${profileUser.id}`
+                )
+                    .then((response) => {
+                        setRecipes(
+                            response.data.sort(
+                                (a, b) => b.createdAt - a.createdAt
+                            )
+                        )
+                        setLoadedRecipes(true)
+                    })
+                    .catch((err) => {
+                        console.error(err)
+                        setReqError(true)
 
-                    // make some backup fake data
-                    const backupData = [
-                        {
-                            user: {
-                                id: 1,
-                                username: 'foobar',
-                                slug: 'foobar'
+                        // make some backup fake data
+                        const backupData = [
+                            {
+                                user: {
+                                    id: 1,
+                                    username: 'foobar',
+                                    slug: 'foobar'
+                                },
+                                name: 'Guacamole',
+                                imagePath: 'https://picsum.photos/200',
+                                tags: ['mexican', 'vegan'],
+                                caption: 'my secret recipe:)',
+                                ingredients: [
+                                    '3 avocados',
+                                    '1 tomato',
+                                    '1/2 yellow onion',
+                                    '2 jalapeños',
+                                    '1/4 bunch cilantro',
+                                    '1 lime',
+                                    'salt',
+                                    'pepper'
+                                ],
+                                instructions: [
+                                    'Mash the avocados',
+                                    'Dice the tomato, onion, and jalapeños',
+                                    'Chop the cilantro',
+                                    'Put everything in a bowl',
+                                    'Squeeze in the lime',
+                                    'Add salt and pepper to taste',
+                                    'Mix'
+                                ],
+                                likes: 36,
+                                createdAt: 1615864425952,
+                                slug: 'foobar-guacamole',
+                                id: 1
                             },
-                            name: 'Guacamole',
-                            imagePath: 'https://picsum.photos/200',
-                            tags: ['mexican', 'vegan'],
-                            caption: "my secret recipe:)",
-                            ingredients: [
-                                '3 avocados',
-                                '1 tomato',
-                                '1/2 yellow onion',
-                                '2 jalapeños',
-                                '1/4 bunch cilantro',
-                                '1 lime',
-                                'salt',
-                                'pepper'
-                            ],
-                            instructions: [
-                                'Mash the avocados',
-                                'Dice the tomato, onion, and jalapeños',
-                                'Chop the cilantro',
-                                'Put everything in a bowl',
-                                'Squeeze in the lime',
-                                'Add salt and pepper to taste',
-                                'Mix'
-                            ],
-                            likes: 36,
-                            createdAt: 1615864425952,
-                            slug: 'foobar-guacamole',
-                            id: 1
-                        },
-                        {
-                            user: {
-                                id: 1,
-                                username: 'foobar',
-                                slug: 'foobar'
+                            {
+                                user: {
+                                    id: 1,
+                                    username: 'foobar',
+                                    slug: 'foobar'
+                                },
+                                name: 'Tacos',
+                                imagePath: 'https://picsum.photos/200',
+                                tags: ['mexican', 'appetizer'],
+                                caption: 'my secret recipe:)',
+                                ingredients: [
+                                    '3 avocados',
+                                    '1 tomato',
+                                    '1/2 yellow onion',
+                                    '2 jalapeños',
+                                    '1/4 bunch cilantro',
+                                    '1 lime',
+                                    'salt',
+                                    'pepper'
+                                ],
+                                instructions: [
+                                    'Mash the avocados',
+                                    'Dice the tomato, onion, and jalapeños',
+                                    'Chop the cilantro',
+                                    'Put everything in a bowl',
+                                    'Squeeze in the lime',
+                                    'Add salt and pepper to taste',
+                                    'Mix'
+                                ],
+                                likes: 12,
+                                createdAt: 1615864425952,
+                                slug: 'foobar-tacos',
+                                id: 2
                             },
-                            name: 'Tacos',
-                            imagePath: 'https://picsum.photos/200',
-                            tags: ['mexican', 'appetizer'],
-                            caption: "my secret recipe:)",
-                            ingredients: [
-                                '3 avocados',
-                                '1 tomato',
-                                '1/2 yellow onion',
-                                '2 jalapeños',
-                                '1/4 bunch cilantro',
-                                '1 lime',
-                                'salt',
-                                'pepper'
-                            ],
-                            instructions: [
-                                'Mash the avocados',
-                                'Dice the tomato, onion, and jalapeños',
-                                'Chop the cilantro',
-                                'Put everything in a bowl',
-                                'Squeeze in the lime',
-                                'Add salt and pepper to taste',
-                                'Mix'
-                            ],
-                            likes: 12,
-                            createdAt: 1615864425952,
-                            slug: 'foobar-tacos',
-                            id: 2
-                        },
-                        {
-                            user: {
-                                id: 1,
-                                username: 'foobar',
-                                slug: 'foobar'
-                            },
-                            name: 'Tofu',
-                            imagePath: 'https://picsum.photos/200',
-                            tags: ['vegan'],
-                            caption: "my secret recipe:)",
-                            ingredients: [
-                                '3 avocados',
-                                '1 tomato',
-                                '1/2 yellow onion',
-                                '2 jalapeños',
-                                '1/4 bunch cilantro',
-                                '1 lime',
-                                'salt',
-                                'pepper'
-                            ],
-                            instructions: [
-                                'Mash the avocados',
-                                'Dice the tomato, onion, and jalapeños',
-                                'Chop the cilantro',
-                                'Put everything in a bowl',
-                                'Squeeze in the lime',
-                                'Add salt and pepper to taste',
-                                'Mix'
-                            ],
-                            likes: 30,
-                            createdAt: 1615864425952,
-                            slug: 'foobar-tofu',
-                            id: 3
-                        }
-                    ]
+                            {
+                                user: {
+                                    id: 1,
+                                    username: 'foobar',
+                                    slug: 'foobar'
+                                },
+                                name: 'Tofu',
+                                imagePath: 'https://picsum.photos/200',
+                                tags: ['vegan'],
+                                caption: 'my secret recipe:)',
+                                ingredients: [
+                                    '3 avocados',
+                                    '1 tomato',
+                                    '1/2 yellow onion',
+                                    '2 jalapeños',
+                                    '1/4 bunch cilantro',
+                                    '1 lime',
+                                    'salt',
+                                    'pepper'
+                                ],
+                                instructions: [
+                                    'Mash the avocados',
+                                    'Dice the tomato, onion, and jalapeños',
+                                    'Chop the cilantro',
+                                    'Put everything in a bowl',
+                                    'Squeeze in the lime',
+                                    'Add salt and pepper to taste',
+                                    'Mix'
+                                ],
+                                likes: 30,
+                                createdAt: 1615864425952,
+                                slug: 'foobar-tofu',
+                                id: 3
+                            }
+                        ]
 
-                    setRecipes(backupData)
-                    setLoadedRecipes(true)
-                })
+                        setRecipes(backupData)
+                        setLoadedRecipes(true)
+                    })
+            }
         }
-    }, [profileUser])
+    }, [profileUser, props.user.blockedUsers, props.user.id, userBlocked])
 
     // state variable for storing the active tab
     const [activeTab, setActiveTab] = useState('small')
@@ -197,55 +208,120 @@ const ProfilePage = (props) => {
     // state variable for showing sign-in modal
     const [showModal, setShowModal] = useState(false)
 
-    return (
+    return !reqError ? (
+        loadedUser && loadedRecipes ? (
+            <div className="profilePage">
+                <ProfileHeader
+                    user={profileUser}
+                    recipeCount={userBlocked ? 0 : recipes.length}
+                />
 
-        !reqError ?
+                {slug === props.user.slug ? (
+                    <Button
+                        block
+                        size="sm"
+                        variant="outline-info"
+                        className="editProfileButton"
+                        href="/edit-profile"
+                    >
+                        Edit Profile
+                    </Button>
+                ) : (
+                    /* TODO: change follow button if user is blocked */
+                    <FollowButton
+                        profileUserId={profileUser.id}
+                        currentUser={props.user}
+                        signedIn={props.signedIn}
+                        setShowModal={setShowModal}
+                    />
+                )}
 
-            loadedUser && loadedRecipes ?
+                <div className="tabContainer">
+                    <Tab.Container defaultActiveKey="small">
+                        <Nav
+                            variant="tabs"
+                            className="justify-content-center w-100 nav-fill"
+                        >
+                            <Nav.Item>
+                                <Nav.Link
+                                    activeClassName=""
+                                    eventKey="small"
+                                    onSelect={() => setActiveTab('small')}
+                                >
+                                    {
+                                        <i>
+                                            <ViewList
+                                                className={
+                                                    activeTab === 'small'
+                                                        ? 'activeTab'
+                                                        : 'inactiveTab'
+                                                }
+                                            />
+                                        </i>
+                                    }
+                                </Nav.Link>
+                            </Nav.Item>
+                            <Nav.Item>
+                                <Nav.Link
+                                    eventKey="large"
+                                    onSelect={() => setActiveTab('large')}
+                                >
+                                    {
+                                        <i>
+                                            <ViewStacked
+                                                className={
+                                                    activeTab === 'large'
+                                                        ? 'activeTab'
+                                                        : 'inactiveTab'
+                                                }
+                                            />
+                                        </i>
+                                    }
+                                </Nav.Link>
+                            </Nav.Item>
+                        </Nav>
 
-                <div className="profilePage">
-                    <ProfileHeader user={profileUser} recipeCount={recipes.length} />
-
-                    {(slug === props.user.slug) ?
-                        <Button block size="sm" variant="outline-info" className="editProfileButton" href="/edit-profile">Edit Profile</Button>
-                        :
-                        <FollowButton profileUserId={profileUser.id} currentUser={props.user} signedIn={props.signedIn} setShowModal={setShowModal} />
-                    }
-
-                    <div className="tabContainer">
-                        <Tab.Container defaultActiveKey="small">
-                            <Nav variant="tabs" className="justify-content-center w-100 nav-fill">
-                                <Nav.Item>
-                                    <Nav.Link activeClassName="" eventKey="small" onSelect={() => setActiveTab('small')}>{<i><ViewList className={(activeTab === 'small') ? 'activeTab' : 'inactiveTab'} /></i>}</Nav.Link>
-                                </Nav.Item>
-                                <Nav.Item>
-                                    <Nav.Link eventKey="large" onSelect={() => setActiveTab('large')}>{<i><ViewStacked className={(activeTab === 'large') ? 'activeTab' : 'inactiveTab'} /></i>}</Nav.Link>
-                                </Nav.Item>
-                            </Nav>
-
-                            <Tab.Content>
-                                <Tab.Pane eventKey="small">
-                                    <div className="recipesSection">
-                                        {recipes.map((recipe, i) => <SmallRecipePreview recipe={recipe} user={props.user} key={i} />)}
-                                    </div>
-                                </Tab.Pane>
-                                <Tab.Pane eventKey="large">
-                                    <div className="recipesSection">
-                                        {recipes.map((recipe, i) => <LargeRecipePreview recipe={recipe} user={props.user} key={i} />)}
-                                    </div>
-                                </Tab.Pane>
-                            </Tab.Content>
-                        </Tab.Container>
-                    </div>
-
-                    <CreateAccountModal show={showModal} setShow={setShowModal} />
+                        <Tab.Content>
+                            {recipes.length === 0 || userBlocked ? (
+                                /* TODO replace error component with no recipes component if recipes.length is 0 or user is blocked */
+                                <ErrorComponent />
+                            ) : (
+                                <>
+                                    <Tab.Pane eventKey="small">
+                                        <div className="recipesSection">
+                                            {recipes.map((recipe, i) => (
+                                                <SmallRecipePreview
+                                                    recipe={recipe}
+                                                    user={props.user}
+                                                    key={i}
+                                                />
+                                            ))}
+                                        </div>
+                                    </Tab.Pane>
+                                    <Tab.Pane eventKey="large">
+                                        <div className="recipesSection">
+                                            {recipes.map((recipe, i) => (
+                                                <LargeRecipePreview
+                                                    recipe={recipe}
+                                                    user={props.user}
+                                                    key={i}
+                                                />
+                                            ))}
+                                        </div>
+                                    </Tab.Pane>
+                                </>
+                            )}
+                        </Tab.Content>
+                    </Tab.Container>
                 </div>
-                :
-                <></>
 
-            :
-
-            <ErrorComponent />
+                <CreateAccountModal show={showModal} setShow={setShowModal} />
+            </div>
+        ) : (
+            <></>
+        )
+    ) : (
+        <ErrorComponent />
     )
 }
 
