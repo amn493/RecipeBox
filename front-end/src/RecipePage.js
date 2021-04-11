@@ -25,18 +25,27 @@ const RecipePage = (props) => {
 
     // request current recipe (slug = slug) on initial render
     const [recipe, setRecipe] = useState()
+    const [userBlocked, setUserBlocked] = useState(false)
 
     useEffect(() => {
         // fetch the recipe that corresponds to the slug from the url
         axios(`http://localhost:4000/recipe?slug=${slug}`)
             .then((response) => {
                 setRecipe(response.data)
+                if (
+                    props.user.id in response.data.user.blockedUsers ||
+                    response.data.user.id in props.user.blockedUsers
+                ) {
+                    setUserBlocked(true)
+                } else {
+                    setRecipe(response.data)
+                }
             })
             .catch((err) => {
                 console.error(err)
                 setReqError(true)
             })
-    }, [slug])
+    }, [props.user.blockedUsers, props.user.id, slug])
 
     // request author user
     const [authorUser, setAuthorUser] = useState({})
@@ -87,7 +96,9 @@ const RecipePage = (props) => {
     const [showModal, setShowModal] = useState(false)
 
     return !reqError ? (
-        recipe && comments ? (
+        userBlocked ? (
+            <ErrorComponent error={"Couldn't load recipe"} />
+        ) : recipe && comments ? (
             // render the page if all required data has been fetched
             <div className="recipe">
                 <img
