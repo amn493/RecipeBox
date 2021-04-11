@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 // import and instantiate express
 const express = require('express') // CommonJS import style!
 
@@ -236,12 +237,28 @@ app.get('/usersbyname', (req, res, next) => {
 
 app.get('/feedrecipes', (req, res, next) => {
     // fetch a list of recipes given an array of users they are following
+    // and filter by recipes posted within the last two weeks
 
-    // let currentTime = Date.now() for future use
+    const twoWeeksAgo = Date.now()-12096e5
+    console.log("twa: " + twoWeeksAgo + "| today: " + Date.now())
+    const followingList = req.query.following
+    
+    Recipe.find({
+        // make sure recipe's creation date is within the last two weeks
+        createdAt: {$gt:twoWeeksAgo},
+
+        // make sure a recipe's user's id is one that is one being followed
+        
+        
+    })
+        .then((apiResponse) => res.json(apiResponse.data))
+        .catch((err) => next(err))
+    /*
     axios
         .get('https://my.api.mockaroo.com/recipe.json?key=f6a27260')
         .then((apiResponse) => res.json(apiResponse.data))
         .catch((err) => next(err))
+    */
 })
 
 app.get('/usersbyid', (req, res, next) => {
