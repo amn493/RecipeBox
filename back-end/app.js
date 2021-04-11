@@ -265,9 +265,8 @@ app.get('/userbyid', (req, res, next) => {
 app.get('/userbyslug', (req, res, next) => {
     // fetch user where slug === req.query.slug from database
 
-    axios
-        .get('https://my.api.mockaroo.com/user.json?key=f6a27260')
-        .then((apiResponse) => res.json(apiResponse.data[0]))
+    User.find({ slug: req.query.slug })
+        .then((user) => res.json(user))
         .catch((err) => next(err))
 })
 
