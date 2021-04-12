@@ -61,7 +61,7 @@ const ProfilePage = (props) => {
     // request user's recipes on initial render (user.id = profileUser.id)
     const [recipes, setRecipes] = useState([])
     const [loadedRecipes, setLoadedRecipes] = useState(false)
-    const [userBlocked, setUserBlocked] = useState(false)
+    const [userBlocked, setUserBlocked] = useState(true)
 
     useEffect(() => {
         if (profileUser.username) {
@@ -227,14 +227,16 @@ const ProfilePage = (props) => {
                     >
                         Edit Profile
                     </Button>
-                ) : (
-                    /* TODO: change follow button if user is blocked */
+                ) : // remove follow button if user is blocked
+                !userBlocked ? (
                     <FollowButton
                         profileUserId={profileUser.id}
                         currentUser={props.user}
                         signedIn={props.signedIn}
                         setShowModal={setShowModal}
                     />
+                ) : (
+                    <></>
                 )}
 
                 <div className="tabContainer">
