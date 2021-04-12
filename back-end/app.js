@@ -357,6 +357,15 @@ app.get(
     }
 )
 
+app.get('/usernametaken', (req, res, next) => {
+    // find if a username already exists
+    // where username === req.query.username from database
+
+    User.exists({ username: req.query.username })
+        .then((usernametaken) => res.json(usernametaken))
+        .catch((err) => next(err))
+})
+
 /* Begin POST Requests */
 
 app.post(
