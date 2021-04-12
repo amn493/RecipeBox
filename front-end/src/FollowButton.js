@@ -5,19 +5,18 @@ import "./FollowButton.css"
 
 
 const FollowButton = (props) => {
-  let state = "Follow"
-  if (props.profileUserId in props.currentUser.following) {
-    state = "Following"
-  }
-  /* text is a state variable that changes the text
+    let state = 'Follow'
+    if (props.profileUser._id in props.user.following) {
+        state = 'Following'
+    }
+    /* text is a state variable that changes the text
   on the button depending on whether the active user 
   is already following the profile they are viewing */
   let [text, setText] = useState(state)
 
   // click event handler changes text state 
   function follow() {
-
-    if (props.signedIn) {
+ if (props.signedIn) {
       setText((prevText) => {
         if (prevText === "Follow") {
           return "Following"
@@ -25,8 +24,17 @@ const FollowButton = (props) => {
           return "Follow"
         }
       })
-  
-      // TODO: update props.currentUser.following and props.profileUserId's user .following in the database
+   
+   // TODO: update props.currentUser.following and props.profileUserId's user .following in the database
+       
+   const followData = {           
+     signedInUserId: props.user._id,                
+     followedUserId: props.profileUser._id,           
+     follow:
+        props.profileUser._id in props.user.following ? false : true
+   }
+
+            axios.post('http://localhost:4000/followuser', followData)     
     }
     else {
       // show sign-in modal if a not-signed in user attempts to follow a user

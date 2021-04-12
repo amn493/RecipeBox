@@ -70,7 +70,9 @@ const ProfilePage = (props) => {
     useEffect(() => {
         if (profileUser.username) {
             // fetch user's recipes
-            axios(`http://localhost:4000/recipesbyuser?userID=${profileUser.id}`)
+            axios(
+                `http://localhost:4000/recipesbyuser?userID=${profileUser._id}`
+            )
                 .then((response) => {
                     setRecipes(response.data.sort((a, b) => b.createdAt - a.createdAt))
                     setLoadedRecipes(true)
