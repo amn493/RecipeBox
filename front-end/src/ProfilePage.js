@@ -40,6 +40,7 @@ const ProfilePage = (props) => {
     const [recipes, setRecipes] = useState()
     const [userBlocked, setUserBlocked] = useState(false)
 
+
     useEffect(() => {
         if (profileUser) {
             //if profileUser or user is blocked by the other don't fetch recipes
@@ -91,6 +92,10 @@ const ProfilePage = (props) => {
                         Edit Profile
                     </Button>
                 ) : (
+                 
+                 !userBlocked ? (
+                    // remove follow button if user is blocked
+
                     <FollowButton
                         profileUserId={profileUser._id}
                         setProfileUser={setProfileUser}
@@ -99,7 +104,10 @@ const ProfilePage = (props) => {
                         signedIn={props.signedIn}
                         setShowModal={setShowModal}
                     />
+                ) : (
+                    <></>
                 )}
+
 
                 <div className="tabContainer">
                     <Tab.Container defaultActiveKey="small">
