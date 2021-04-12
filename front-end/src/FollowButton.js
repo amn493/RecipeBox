@@ -1,64 +1,46 @@
-import React, { useState } from 'react'
+import React, { useState } from "react"
 import Button from 'react-bootstrap/Button'
-import axios from 'axios'
 
-import './FollowButton.css'
+import "./FollowButton.css"
+
 
 const FollowButton = (props) => {
-    let state = 'Follow'
-    if (props.profileUser.id in props.user.following) {
-        state = 'Following'
-    }
-    /* text is a state variable that changes the text
+  let state = "Follow"
+  if (props.profileUserId in props.currentUser.following) {
+    state = "Following"
+  }
+  /* text is a state variable that changes the text
   on the button depending on whether the active user 
   is already following the profile they are viewing */
-    let [text, setText] = useState(state)
+  let [text, setText] = useState(state)
 
-    // click event handler changes text state
-    function follow() {
-        if (props.signedIn) {
-            setText((prevText) => {
-                if (prevText === 'Follow') {
-                    return 'Following'
-                } else {
-                    return 'Follow'
-                }
-            })
+  // click event handler changes text state 
+  function follow() {
 
-            // TODO: update props.currentUser.following and props.profileUserId's user .following in the database
-            // make post request on follow button click
-
-            const followData = {
-                signedInUserFollowing: props.user.following,
-                followedUserFollowers: props.profileUser.following,
-                follow:
-                    props.profileUser.id in props.user.following ? false : true
-            }
-
-            axios.post('https://localhost:4000/followuser', followData)
+    if (props.signedIn) {
+      setText((prevText) => {
+        if (prevText === "Follow") {
+          return "Following"
         } else {
-            // show sign-in modal if a not-signed in user attempts to follow a user
-            props.setShowModal(true)
+          return "Follow"
         }
+      })
+  
+      // TODO: update props.currentUser.following and props.profileUserId's user .following in the database
     }
+    else {
+      // show sign-in modal if a not-signed in user attempts to follow a user
+      props.setShowModal(true)
+    }
+    
+  }
 
-    /* component */
-    return (
-        <Button
-            block
-            size="sm"
-            variant={text === 'Follow' ? 'info' : 'outline-info'}
-            id="followBtn"
-            className={
-                text === 'Follow'
-                    ? 'followBtnNotFollowing'
-                    : 'followBtnFollowing'
-            }
-            onClick={follow}
-        >
-            {text}
-        </Button>
-    )
-}
+/* component */
+  return (
+    <Button block size="sm" variant={(text === 'Follow') ? 'info' : 'outline-info'} id="followBtn" className={(text === 'Follow') ? 'followBtnNotFollowing' : 'followBtnFollowing'} onClick={follow}>
+      {text}
+    </Button>
+  );
+};
 
 export default FollowButton
