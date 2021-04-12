@@ -6,7 +6,7 @@ import './FollowButton.css'
 
 const FollowButton = (props) => {
     let state = 'Follow'
-    if (props.profileUser.id in props.user.following) {
+    if (props.profileUser._id in props.user.following) {
         state = 'Following'
     }
     /* text is a state variable that changes the text
@@ -29,10 +29,10 @@ const FollowButton = (props) => {
             // make post request on follow button click
 
             const followData = {
-                signedInUserId: props.user.id,
-                followedUserId: props.profileUser.id,
+                signedInUserId: props.user._id,
+                followedUserId: props.profileUser._id,
                 follow:
-                    props.profileUser.id in props.user.following ? false : true
+                    props.profileUser._id in props.user.following ? false : true
             }
 
             axios.post('http://localhost:4000/followuser', followData)

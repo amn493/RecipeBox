@@ -66,7 +66,7 @@ const ProfilePage = (props) => {
         if (profileUser.username) {
             // fetch user's recipes
             axios(
-                `http://localhost:4000/recipesbyuser?userID=${profileUser.id}`
+                `http://localhost:4000/recipesbyuser?userID=${profileUser._id}`
             )
                 .then((response) => {
                     setRecipes(
