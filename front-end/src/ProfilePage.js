@@ -77,6 +77,7 @@ const ProfilePage = (props) => {
                 <ProfileHeader
                     user={profileUser}
                     recipeCount={userBlocked ? 0 : recipes.length}
+                    userBlocked={userBlocked}
                 />
 
                 {slug === props.user.slug ? (
