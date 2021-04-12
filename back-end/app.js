@@ -265,7 +265,7 @@ app.get('/userbyid', (req, res, next) => {
 app.get('/userbyslug', (req, res, next) => {
     // fetch user where slug === req.query.slug from database
 
-    User.find({ slug: req.query.slug })
+    User.findOne({ slug: req.query.slug })
         .then((user) => res.json(user))
         .catch((err) => next(err))
 })
