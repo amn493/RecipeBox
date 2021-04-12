@@ -246,9 +246,8 @@ app.get('/feedrecipes', (req, res, next) => {
 app.get('/usersbyid', (req, res, next) => {
     // fetch users where id === req.query.id from database
 
-    axios
-        .get('https://my.api.mockaroo.com/user.json?key=f6a27260')
-        .then((apiResponse) => res.json(apiResponse.data))
+    User.find({_id: {$in : req.query.id} })
+        .then((users) => res.json(users))
         .catch((err) => next(err))
 })
 
