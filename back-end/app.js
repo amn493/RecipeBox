@@ -246,7 +246,7 @@ app.get('/feedrecipes', (req, res, next) => {
 app.get('/usersbyid', (req, res, next) => {
     // fetch users where id === req.query.id from database
 
-    User.find({ $text: { $search: req.query.id } })
+    User.find({_id: {$in : req.query.id} })
         .then((users) => res.json(users))
         .catch((err) => next(err))
 })
