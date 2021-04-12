@@ -218,9 +218,8 @@ app.use((req, res, next) => {
 app.get('/recipe', (req, res, next) => {
     // fetch recipe where slug === req.query.slug from database
 
-    axios
-        .get('https://my.api.mockaroo.com/recipe.json?key=f6a27260')
-        .then((apiResponse) => res.json(apiResponse.data[0]))
+    Recipe.findOne({ slug: req.query.slug })
+        .then((recipe) => res.json(recipe))
         .catch((err) => next(err))
 })
 
@@ -229,9 +228,8 @@ app.get('/usersbyname', (req, res, next) => {
     // or firstName === req.query.name
     // or lastName === req.query.name from database
 
-    axios
-        .get('https://my.api.mockaroo.com/user.json?key=f6a27260')
-        .then((apiResponse) => res.json(apiResponse.data))
+    User.find({ $text: { $search: req.query.name } })
+        .then((users) => res.json(users))
         .catch((err) => next(err))
 })
 
@@ -248,9 +246,8 @@ app.get('/feedrecipes', (req, res, next) => {
 app.get('/usersbyid', (req, res, next) => {
     // fetch users where id === req.query.id from database
 
-    axios
-        .get('https://my.api.mockaroo.com/user.json?key=f6a27260')
-        .then((apiResponse) => res.json(apiResponse.data))
+    User.find({_id: {$in : req.query.id} })
+        .then((users) => res.json(users))
         .catch((err) => next(err))
 })
 
@@ -266,9 +263,8 @@ app.get('/userbyid', (req, res, next) => {
 app.get('/userbyslug', (req, res, next) => {
     // fetch user where slug === req.query.slug from database
 
-    axios
-        .get('https://my.api.mockaroo.com/user.json?key=f6a27260')
-        .then((apiResponse) => res.json(apiResponse.data[0]))
+    User.findOne({ slug: req.query.slug })
+        .then((user) => res.json(user))
         .catch((err) => next(err))
 })
 
@@ -291,44 +287,64 @@ app.get('/recipesbyuser', (req, res, next) => {
 })
 
 app.get('/tags', (req, res, next) => {
-    // fetch all tags from database
+    const filter = {}
 
-    axios
-        .get('https://my.api.mockaroo.com/tag.json?key=f6a27260')
-        .then((apiResponse) => res.json(apiResponse.data.map((tag) => tag.tag)))
+    // don't include tags that the user has blocked
+    if (req.query.blockedTags) {
+        filter.tag = {
+            $nin: Array.isArray(req.query.blockedTags)
+                ? req.query.blockedTags
+                : [req.query.blockedTags]
+        }
+    }
+
+    // fetch tags from database
+    Tag.find(filter)
+        .then((tags) => {
+            res.json(tags.map((tag) => tag.tag))
+        })
         .catch((err) => next(err))
 })
 
+// eslint-disable-next-line consistent-return
 app.get('/filteredrecipes', (req, res, next) => {
-    // fetch recipes where name contains req.query.keyword and tags includes all tags in req.query.tags from database
+    const filter = {}
 
-    axios
-        .get('https://my.api.mockaroo.com/recipe.json?key=f6a27260')
-        // mock filtering to demonstrate how the filter works
-        .then((apiResponse) =>
-            res.json(
-                apiResponse.data.filter(
-                    (recipe) =>
-                        (req.query.keyword !== ''
-                            ? recipe.name
-                                  .toLowerCase()
-                                  .includes(req.query.keyword.toLowerCase())
-                            : true) &&
-                        (req.query.tags.length === 0 ||
-                        (req.query.tags.length === 1 &&
-                            req.query.tags[0] === '')
-                            ? true
-                            : req.query.tags.reduce(
-                                  (acc, filterTag) =>
-                                      acc &&
-                                      (filterTag !== ''
-                                          ? recipe.tags.includes(filterTag)
-                                          : true),
-                                  true
-                              ))
-                )
-            )
+    // filter recipe names by keyword
+    if (req.query.keyword !== '') {
+        filter.$text = { $search: req.query.keyword }
+    }
+
+    // filter recipe tags
+    if (
+        !(
+            req.query.tags.length === 0 ||
+            (req.query.tags.length === 1 && req.query.tags[0] === '')
         )
+    ) {
+        filter.$and = req.query.tags
+            .filter((tag) => tag !== '')
+            .map((tag) => ({ tags: tag }))
+    }
+
+    // filter recipes by liked if request is coming from recipe box page
+    if (req.query.liked !== undefined) {
+        // send back an empty array if user's liked is empty
+        if (req.query.liked === '') {
+            return res.json([])
+        }
+
+        // eslint-disable-next-line no-underscore-dangle
+        filter._id = {
+            $in: req.query.liked.filter((liked) => liked !== '')
+        }
+    }
+
+    // find recipes matching the filter
+    Recipe.find(filter)
+        .then((recipes) => {
+            res.json(recipes)
+        })
         .catch((err) => next(err))
 })
 
@@ -339,6 +355,15 @@ app.get(
         res.json({ user: req.user })
     }
 )
+
+app.get('/usernametaken', (req, res, next) => {
+    // find if a username already exists
+    // where username === req.query.username from database
+
+    User.exists({ username: req.query.username })
+        .then((usernametaken) => res.json(usernametaken))
+        .catch((err) => next(err))
+})
 
 /* Begin POST Requests */
 
@@ -384,18 +409,43 @@ app.post('/comment', (req, res) => {
     res.json(data)
 })
 
-app.post('/newrecipe', upload.single('recipeimage'), (req, res) => {
-    // store new recipe
+// recursive function for adding new tags to database and updating counts of existing tags
+const updateTags = (tags, i, cb, next) => {
+    if (i === tags.length) {
+        cb()
+    } else {
+        Tag.updateOne(
+            { tag: tags[i] },
+            {
+                $set: {
+                    tag: tags[i]
+                },
+                $inc: {
+                    count: 1
+                }
+            },
+            { upsert: true },
+            (err) => {
+                if (err) {
+                    next(err)
+                }
+                updateTags(tags, i + 1, cb, next)
+            }
+        )
+    }
+}
 
+app.post('/newrecipe', upload.single('recipeimage'), (req, res, next) => {
+    // new recipe
     const newRecipe = {
         user: {
-            id: +req.body.userID,
+            id: req.body.userID,
             username: req.body.username
         },
         name: req.body.name,
 
         imagePath: path.join('/uploads/', req.file.filename),
-        tags: req.body.tags.split(','),
+        tags: req.body.tags.split(',').filter((tag) => tag !== ''),
         caption: req.body.caption,
         ingredients: req.body.ingredients
             .split(',')
@@ -408,9 +458,17 @@ app.post('/newrecipe', upload.single('recipeimage'), (req, res) => {
         likes: 0,
         createdAt: Date.now()
     }
-    res.json(newRecipe)
 
-    // update/store each tag where tag.tag in req.body.tags (if tag doesn't exist count = 1, else count += 1)
+    // save new recipe to database
+    new Recipe(newRecipe)
+        .save()
+        .then((recipe) => {
+            // add new tags to database and update counts of existing tags
+            updateTags(recipe.tags, 0, res.json.bind(res, recipe), next)
+        })
+        .catch((err) => {
+            next(err)
+        })
 })
 
 app.post('/blockuser', (req, res) => {
@@ -418,12 +476,12 @@ app.post('/blockuser', (req, res) => {
     // update signed-in users's following/followers array appropriately
     // update blocked user's following/followers array appropriately
 
-    const updatedSignedInBlockedUsers = req.body.signedInblockedUsers
+    let updatedSignedInBlockedUsers = req.body.signedInblockedUsers
 
-    const updatedSignedInUserFollowing = req.body.signedInUserFollowing
-    const updatedSignedInUserFollowers = req.body.signedInUserFollowers
-    const updatedblockedUserFollowing = req.body.blockedUserFollowing
-    const updatedblockedUserFollowers = req.body.blockedUserFollowers
+    let updatedSignedInUserFollowing = req.body.signedInUserFollowing
+    let updatedSignedInUserFollowers = req.body.signedInUserFollowers
+    let updatedblockedUserFollowing = req.body.blockedUserFollowing
+    let updatedblockedUserFollowers = req.body.blockedUserFollowers
 
     if (req.body.addBlock) {
         updatedSignedInBlockedUsers.push(req.body.blockedUserID)
@@ -466,16 +524,19 @@ app.post('/blockuser', (req, res) => {
 
 app.post('/blocktag', (req, res) => {
     // update signed-in user's blockedTags array appropriately
-  
+
     const updatedSignedInBlockedTags = req.body.signedInBlockedTags
-  
+
     if (req.body.addBlock) {
         updatedSignedInBlockedTags.push(req.body.tagToBlockOrUnblock)
     } else {
-        updatedSignedInBlockedTags.splice(updatedSignedInBlockedTags.indexOf(req.body.tagToBlockOrUnblock), 1)
+        updatedSignedInBlockedTags.splice(
+            updatedSignedInBlockedTags.indexOf(req.body.tagToBlockOrUnblock),
+            1
+        )
     }
-  
-    res.json({signedInBlockedTags: updatedSignedInBlockedTags})
+
+    res.json({ signedInBlockedTags: updatedSignedInBlockedTags })
 })
 
 app.post('/likerecipe', (req, res) => {
@@ -520,20 +581,20 @@ app.post('/followuser', (req, res) => {
 })
 
 app.post('/notificationsettings', (req, res) => {
-  // recieve updated notification settings
-  const updatedNotificationSettings = {
-    email: req.body.email,
-    likes: req.body.likes,
-    comments: req.body.comments,
-    followers: req.body.followers,
-    // posts: req.body.posts,
-    id: req.body.id,
-  }
+    // recieve updated notification settings
+    const updatedNotificationSettings = {
+        email: req.body.email,
+        likes: req.body.likes,
+        comments: req.body.comments,
+        followers: req.body.followers,
+        // posts: req.body.posts,
+        id: req.body.id
+    }
 
-  // update the settings
+    // update the settings
 
-  // send response
-  res.json(updatedNotificationSettings)
+    // send response
+    res.json(updatedNotificationSettings)
 })
 
 app.post('/updateuserinfo', upload.single('profilepicture'), (req, res) => {

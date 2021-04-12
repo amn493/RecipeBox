@@ -15,11 +15,14 @@ import ErrorComponent from './ErrorComponent.js'
 
 import './ProfilePage.css'
 
+
 const ProfilePage = (props) => {
+
     const [reqError, setReqError] = useState(false)
 
     // get slug from url params
-    const { slug } = useParams()
+    const { slug } = useParams();
+
 
     // request user whose profile is being displayed on initial render
     const [profileUser, setProfileUser] = useState([])
@@ -58,6 +61,8 @@ const ProfilePage = (props) => {
             })
     }, [slug])
 
+
+
     // request user's recipes on initial render (user.id = profileUser.id)
     const [recipes, setRecipes] = useState([])
     const [loadedRecipes, setLoadedRecipes] = useState(false)
@@ -69,9 +74,7 @@ const ProfilePage = (props) => {
                 `http://localhost:4000/recipesbyuser?userID=${profileUser._id}`
             )
                 .then((response) => {
-                    setRecipes(
-                        response.data.sort((a, b) => b.createdAt - a.createdAt)
-                    )
+                    setRecipes(response.data.sort((a, b) => b.createdAt - a.createdAt))
                     setLoadedRecipes(true)
                 })
                 .catch((err) => {
@@ -89,7 +92,7 @@ const ProfilePage = (props) => {
                             name: 'Guacamole',
                             imagePath: 'https://picsum.photos/200',
                             tags: ['mexican', 'vegan'],
-                            caption: 'my secret recipe:)',
+                            caption: "my secret recipe:)",
                             ingredients: [
                                 '3 avocados',
                                 '1 tomato',
@@ -123,7 +126,7 @@ const ProfilePage = (props) => {
                             name: 'Tacos',
                             imagePath: 'https://picsum.photos/200',
                             tags: ['mexican', 'appetizer'],
-                            caption: 'my secret recipe:)',
+                            caption: "my secret recipe:)",
                             ingredients: [
                                 '3 avocados',
                                 '1 tomato',
@@ -157,7 +160,7 @@ const ProfilePage = (props) => {
                             name: 'Tofu',
                             imagePath: 'https://picsum.photos/200',
                             tags: ['vegan'],
-                            caption: 'my secret recipe:)',
+                            caption: "my secret recipe:)",
                             ingredients: [
                                 '3 avocados',
                                 '1 tomato',
@@ -196,112 +199,55 @@ const ProfilePage = (props) => {
     // state variable for showing sign-in modal
     const [showModal, setShowModal] = useState(false)
 
-    return !reqError ? (
-        loadedUser && loadedRecipes ? (
-            <div className="profilePage">
-                <ProfileHeader
-                    user={profileUser}
-                    recipeCount={recipes.length}
-                />
+    return (
 
-                {slug === props.user.slug ? (
-                    <Button
-                        block
-                        size="sm"
-                        variant="outline-info"
-                        className="editProfileButton"
-                        href="/edit-profile"
-                    >
-                        Edit Profile
-                    </Button>
-                ) : (
-                    <FollowButton
-                        profileUser={profileUser}
-                        user={props.user}
-                        signedIn={props.signedIn}
-                        setShowModal={setShowModal}
-                    />
-                )}
+        !reqError ?
 
-                <div className="tabContainer">
-                    <Tab.Container defaultActiveKey="small">
-                        <Nav
-                            variant="tabs"
-                            className="justify-content-center w-100 nav-fill"
-                        >
-                            <Nav.Item>
-                                <Nav.Link
-                                    activeClassName=""
-                                    eventKey="small"
-                                    onSelect={() => setActiveTab('small')}
-                                >
-                                    {
-                                        <i>
-                                            <ViewList
-                                                className={
-                                                    activeTab === 'small'
-                                                        ? 'activeTab'
-                                                        : 'inactiveTab'
-                                                }
-                                            />
-                                        </i>
-                                    }
-                                </Nav.Link>
-                            </Nav.Item>
-                            <Nav.Item>
-                                <Nav.Link
-                                    eventKey="large"
-                                    onSelect={() => setActiveTab('large')}
-                                >
-                                    {
-                                        <i>
-                                            <ViewStacked
-                                                className={
-                                                    activeTab === 'large'
-                                                        ? 'activeTab'
-                                                        : 'inactiveTab'
-                                                }
-                                            />
-                                        </i>
-                                    }
-                                </Nav.Link>
-                            </Nav.Item>
-                        </Nav>
+            loadedUser && loadedRecipes ?
 
-                        <Tab.Content>
-                            <Tab.Pane eventKey="small">
-                                <div className="recipesSection">
-                                    {recipes.map((recipe, i) => (
-                                        <SmallRecipePreview
-                                            recipe={recipe}
-                                            user={props.user}
-                                            key={i}
-                                        />
-                                    ))}
-                                </div>
-                            </Tab.Pane>
-                            <Tab.Pane eventKey="large">
-                                <div className="recipesSection">
-                                    {recipes.map((recipe, i) => (
-                                        <LargeRecipePreview
-                                            recipe={recipe}
-                                            user={props.user}
-                                            key={i}
-                                        />
-                                    ))}
-                                </div>
-                            </Tab.Pane>
-                        </Tab.Content>
-                    </Tab.Container>
+                <div className="profilePage">
+                    <ProfileHeader user={profileUser} recipeCount={recipes.length} />
+
+                    {(slug === props.user.slug) ?
+                        <Button block size="sm" variant="outline-info" className="editProfileButton" href="/edit-profile">Edit Profile</Button>
+                        :
+                        <FollowButton profileUserId={profileUser.id} currentUser={props.user} signedIn={props.signedIn} setShowModal={setShowModal} />
+                    }
+
+                    <div className="tabContainer">
+                        <Tab.Container defaultActiveKey="small">
+                            <Nav variant="tabs" className="justify-content-center w-100 nav-fill">
+                                <Nav.Item>
+                                    <Nav.Link activeClassName="" eventKey="small" onSelect={() => setActiveTab('small')}>{<i><ViewList className={(activeTab === 'small') ? 'activeTab' : 'inactiveTab'} /></i>}</Nav.Link>
+                                </Nav.Item>
+                                <Nav.Item>
+                                    <Nav.Link eventKey="large" onSelect={() => setActiveTab('large')}>{<i><ViewStacked className={(activeTab === 'large') ? 'activeTab' : 'inactiveTab'} /></i>}</Nav.Link>
+                                </Nav.Item>
+                            </Nav>
+
+                            <Tab.Content>
+                                <Tab.Pane eventKey="small">
+                                    <div className="recipesSection">
+                                        {recipes.map((recipe, i) => <SmallRecipePreview recipe={recipe} user={props.user} key={i} />)}
+                                    </div>
+                                </Tab.Pane>
+                                <Tab.Pane eventKey="large">
+                                    <div className="recipesSection">
+                                        {recipes.map((recipe, i) => <LargeRecipePreview recipe={recipe} user={props.user} key={i} />)}
+                                    </div>
+                                </Tab.Pane>
+                            </Tab.Content>
+                        </Tab.Container>
+                    </div>
+
+                    <CreateAccountModal show={showModal} setShow={setShowModal} />
                 </div>
+                :
+                <></>
 
-                <CreateAccountModal show={showModal} setShow={setShowModal} />
-            </div>
-        ) : (
-            <></>
-        )
-    ) : (
-        <ErrorComponent />
+            :
+
+            <ErrorComponent />
     )
 }
 
