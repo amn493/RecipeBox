@@ -35,7 +35,7 @@ const FollowButton = (props) => {
                     props.profileUser.id in props.user.following ? false : true
             }
 
-            axios.post('https://localhost:4000/followuser', followData)
+            axios.post('http://localhost:4000/followuser', followData)
         } else {
             // show sign-in modal if a not-signed in user attempts to follow a user
             props.setShowModal(true)
