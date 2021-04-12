@@ -218,7 +218,7 @@ app.use((req, res, next) => {
 app.get('/recipe', (req, res, next) => {
     // fetch recipe where slug === req.query.slug from database
 
-    Recipe.find({ slug: req.query.slug })
+    Recipe.findOne({ slug: req.query.slug })
         .then((recipe) => res.json(recipe))
         .catch((err) => next(err))
 })
