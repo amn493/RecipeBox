@@ -29,8 +29,8 @@ const FollowButton = (props) => {
             // make post request on follow button click
 
             const followData = {
-                signedInUserFollowing: props.user.following,
-                followedUserFollowers: props.profileUser.following,
+                signedInUserId: props.user.id,
+                followedUserId: props.profileUser.id,
                 follow:
                     props.profileUser.id in props.user.following ? false : true
             }
