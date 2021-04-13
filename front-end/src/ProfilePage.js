@@ -61,17 +61,18 @@ const ProfilePage = (props) => {
     // request user's recipes on initial render (user.id = profileUser.id)
     const [recipes, setRecipes] = useState([])
     const [loadedRecipes, setLoadedRecipes] = useState(false)
-    const [userBlocked, setUserBlocked] = useState(true)
+    const [userBlocked, setUserBlocked] = useState(false)
 
     useEffect(() => {
         if (profileUser.username) {
             //if profileUser or user is blocked by the other don't fetch recipes
             if (
-                props.user.id in profileUser.blockedUsers ||
-                profileUser.id in props.user.blockedUsers
+                props.user._id in profileUser.blockedUsers ||
+                profileUser._id in props.user.blockedUsers
             ) {
                 setUserBlocked(true)
             }
+
             if (!userBlocked) {
                 // fetch user's recipes
                 axios(
@@ -200,7 +201,7 @@ const ProfilePage = (props) => {
                     })
             }
         }
-    }, [profileUser, props.user.blockedUsers, props.user.id, userBlocked])
+    }, [profileUser, props.user.blockedUsers, props.user._id, userBlocked])
 
     // state variable for storing the active tab
     const [activeTab, setActiveTab] = useState('small')
@@ -209,7 +210,7 @@ const ProfilePage = (props) => {
     const [showModal, setShowModal] = useState(false)
 
     return !reqError ? (
-        loadedUser && loadedRecipes ? (
+        loadedUser && (loadedRecipes || userBlocked) ? (
             <div className="profilePage">
                 <ProfileHeader
                     user={profileUser}
