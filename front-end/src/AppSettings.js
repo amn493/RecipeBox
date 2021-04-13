@@ -83,7 +83,7 @@ const AppSettings = (props) => {
 
     //retrieve blocked users using GET handler
     useEffect(() => {
-        axios(`http://localhost:4000/users`)
+        axios(`http://localhost:4000/users?userID=${currentUser._id}`)
             .then((response) => {
                 setBlockedUsers(
                     response.data.filter((user) =>
