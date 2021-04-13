@@ -243,6 +243,14 @@ app.get('/feedrecipes', (req, res, next) => {
         .catch((err) => next(err))
 })
 
+app.get('/users', (req, res, next) => {
+    // fetch all users
+
+    User.find({})
+    .then((users) => res.json(users))
+    .catch((err) => next(err))
+})
+
 app.get('/usersbyid', (req, res, next) => {
     // fetch users where id === req.query.id from database
 
@@ -475,6 +483,7 @@ app.post('/blockuser', (req, res) => {
     // update signed-in user's blockedUsers array appropriately
     // update signed-in users's following/followers array appropriately
     // update blocked user's following/followers array appropriately
+    console.log(req.body)
 
     let updatedSignedInBlockedUsers = req.body.signedInblockedUsers
 
@@ -484,7 +493,9 @@ app.post('/blockuser', (req, res) => {
     let updatedblockedUserFollowers = req.body.blockedUserFollowers
 
     if (req.body.addBlock) {
+        console.log("!")
         updatedSignedInBlockedUsers.push(req.body.blockedUserID)
+        console.log(updatedSignedInBlockedUsers)
 
         if (updatedSignedInUserFollowing.includes(req.body.blockedUserID)) {
             updatedSignedInUserFollowing.splice(
@@ -512,7 +523,26 @@ app.post('/blockuser', (req, res) => {
             1
         )
     }
+    User.findByIdAndUpdate(req.body.signedInUserID, { blockedUsers: updatedSignedInBlockedUsers, following: updatedSignedInUserFollowing, followers: updatedSignedInUserFollowers },{new: true, useFindAndModify: false},
+        function (err, docs) {
+            if (err){
+                console.log(err)
+            }
+            else{
+                console.log("Updated signed in User: ", docs);
+            }
+    })
 
+    User.findByIdAndUpdate(req.body.blockedUserID, { followers: updatedblockedUserFollowers, following: updatedblockedUserFollowing },{useFindAndModify: false},
+        function (err, docs) {
+            if (err){
+                console.log(err)
+            }
+            else{
+                console.log("Updated blocked User: ", docs);
+            }
+    })
+    
     res.json({
         signedInBlockedUsers: updatedSignedInBlockedUsers,
         signedInUserFollowing: updatedSignedInUserFollowing,
