@@ -483,7 +483,6 @@ app.post('/blockuser', (req, res) => {
     // update signed-in user's blockedUsers array appropriately
     // update signed-in users's following/followers array appropriately
     // update blocked user's following/followers array appropriately
-    console.log(req.body)
 
     let updatedSignedInBlockedUsers = req.body.signedInblockedUsers
 
@@ -493,9 +492,7 @@ app.post('/blockuser', (req, res) => {
     let updatedblockedUserFollowers = req.body.blockedUserFollowers
 
     if (req.body.addBlock) {
-        console.log("!")
         updatedSignedInBlockedUsers.push(req.body.blockedUserID)
-        console.log(updatedSignedInBlockedUsers)
 
         if (updatedSignedInUserFollowing.includes(req.body.blockedUserID)) {
             updatedSignedInUserFollowing.splice(
