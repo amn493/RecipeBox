@@ -40,7 +40,6 @@ const ProfilePage = (props) => {
     const [recipes, setRecipes] = useState()
     const [userBlocked, setUserBlocked] = useState(false)
 
-
     useEffect(() => {
         if (profileUser) {
             //if profileUser or user is blocked by the other don't fetch recipes
@@ -50,6 +49,7 @@ const ProfilePage = (props) => {
             ) {
                 setUserBlocked(true)
             }
+
             if (!userBlocked) {
                 // fetch user's recipes
                 axios(
@@ -73,7 +73,7 @@ const ProfilePage = (props) => {
     const [showModal, setShowModal] = useState(false)
 
     return !reqError ? (
-        profileUser && recipes ? (
+        profileUser && (recipes || userBlocked) ? (
             <div className="profilePage">
                 <ProfileHeader
                     user={profileUser}
