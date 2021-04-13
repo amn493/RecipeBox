@@ -246,15 +246,15 @@ app.get('/feedrecipes', (req, res, next) => {
 app.get('/users', (req, res, next) => {
     // fetch all users
 
-    User.find({})
-    .then((users) => res.json(users))
-    .catch((err) => next(err))
+    User.find({ _id: { $ne: req.query.userID } })
+        .then((users) => res.json(users))
+        .catch((err) => next(err))
 })
 
 app.get('/usersbyid', (req, res, next) => {
     // fetch users where id === req.query.id from database
 
-    User.find({_id: {$in : req.query.id} })
+    User.find({ _id: { $in: req.query.id } })
         .then((users) => res.json(users))
         .catch((err) => next(err))
 })
@@ -479,7 +479,7 @@ app.post('/newrecipe', upload.single('recipeimage'), (req, res, next) => {
         })
 })
 
-app.post('/blockuser', (req, res) => {
+app.post('/blockuser', (req, res, next) => {
     // update signed-in user's blockedUsers array appropriately
     // update signed-in users's following/followers array appropriately
     // update blocked user's following/followers array appropriately
@@ -520,33 +520,37 @@ app.post('/blockuser', (req, res) => {
             1
         )
     }
-    User.findByIdAndUpdate(req.body.signedInUserID, { blockedUsers: updatedSignedInBlockedUsers, following: updatedSignedInUserFollowing, followers: updatedSignedInUserFollowers },{new: true, useFindAndModify: false},
-        function (err, docs) {
-            if (err){
-                console.log(err)
-            }
-            else{
-                console.log("Updated signed in User: ", docs);
-            }
-    })
+    User.findByIdAndUpdate(
+        req.body.signedInUserID,
+        {
+            blockedUsers: updatedSignedInBlockedUsers,
+            following: updatedSignedInUserFollowing,
+            followers: updatedSignedInUserFollowers
+        },
+        { new: true, useFindAndModify: false }
+    )
+        .then(() => {
+            User.findByIdAndUpdate(
+                req.body.blockedUserID,
+                {
+                    followers: updatedblockedUserFollowers,
+                    following: updatedblockedUserFollowing
+                },
+                { useFindAndModify: false }
+            )
 
-    User.findByIdAndUpdate(req.body.blockedUserID, { followers: updatedblockedUserFollowers, following: updatedblockedUserFollowing },{useFindAndModify: false},
-        function (err, docs) {
-            if (err){
-                console.log(err)
-            }
-            else{
-                console.log("Updated blocked User: ", docs);
-            }
-    })
-    
-    res.json({
-        signedInBlockedUsers: updatedSignedInBlockedUsers,
-        signedInUserFollowing: updatedSignedInUserFollowing,
-        signedInUserFollowers: updatedSignedInUserFollowers,
-        blockedUserFollowers: updatedblockedUserFollowers,
-        blockedUserFollowing: updatedblockedUserFollowing
-    })
+                .then(() => {
+                    res.json({
+                        signedInBlockedUsers: updatedSignedInBlockedUsers,
+                        signedInUserFollowing: updatedSignedInUserFollowing,
+                        signedInUserFollowers: updatedSignedInUserFollowers,
+                        blockedUserFollowers: updatedblockedUserFollowers,
+                        blockedUserFollowing: updatedblockedUserFollowing
+                    })
+                })
+                .catch((err) => next(err))
+        })
+        .catch((err) => next(err))
 })
 
 app.post('/blocktag', (req, res) => {
