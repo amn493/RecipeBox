@@ -246,7 +246,7 @@ app.get('/feedrecipes', (req, res, next) => {
 app.get('/usersbyid', (req, res, next) => {
     // fetch users where id === req.query.id from database
 
-    User.find({_id: {$in : req.query.id} })
+    User.find({ _id: { $in: req.query.id } })
         .then((users) => res.json(users))
         .catch((err) => next(err))
 })
@@ -539,18 +539,36 @@ app.post('/blocktag', (req, res) => {
     res.json({ signedInBlockedTags: updatedSignedInBlockedTags })
 })
 
-app.post('/likerecipe', (req, res) => {
-    // update signed-in user (_id === req.body.userID)'s liked array appropriately
-
-    const updatedLiked = req.body.liked
+app.post('/likerecipe', (req, res, next) => {
+    // update signed-in user's liked array appropriately
+    const update = {}
     if (req.body.like) {
-        updatedLiked.push(req.body.recipeID)
+        update.$push = { liked: req.body.recipeID }
     } else {
-        updatedLiked.splice(updatedLiked.indexOf(req.body.recipeID), 1)
+        update.$pull = { liked: req.body.recipeID }
     }
 
-    // update recipe (_id === req.body.recipeID)'s likes count
-    res.json(updatedLiked)
+    // update signed in user's liked
+    User.updateOne({ _id: req.body.userID }, update)
+        .then(() => {
+            // update recipes likes
+            Recipe.updateOne(
+                { _id: req.body.recipeID },
+                {
+                    $inc: {
+                        likes: req.body.like ? 1 : -1
+                    }
+                }
+            )
+                // send back the user's updated liked array
+                .then(() => res.send('Updated likes'))
+                .catch((err) => {
+                    next(err)
+                })
+        })
+        .catch((err) => {
+            next(err)
+        })
 })
 
 app.post('/followuser', (req, res) => {
