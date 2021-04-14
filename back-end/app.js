@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 // import and instantiate express
 const express = require('express') // CommonJS import style!
 
