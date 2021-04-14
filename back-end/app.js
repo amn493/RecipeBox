@@ -397,16 +397,19 @@ app.post('/signout', (req, res) => {
 })
 
 app.post('/comment', (req, res) => {
-    // store new comment
-
-    const data = {
+    // new comment
+    const newComment = {
         recipe: req.body.recipe,
         user: req.body.user,
         comment: req.body.comment,
         createdAt: Date.now()
     }
 
-    res.json(data)
+    // save new comment to the database
+    new Comment(newComment)
+        .save()
+        .then((comment) => res.json(comment))
+        .catch((err) => next(err))
 })
 
 // recursive function for adding new tags to database and updating counts of existing tags
