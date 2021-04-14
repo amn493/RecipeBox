@@ -580,7 +580,8 @@ app.post('/likerecipe', (req, res, next) => {
                                     likeduser.notificationSettings
                                         .emailNotifications &&
                                     likeduser.notificationSettings.likes &&
-                                    likeduser !== likinguser
+                                    // eslint-disable-next-line no-underscore-dangle
+                                    likeduser._id !== likinguser._id
                                 ) {
                                     // get email and first name of user to receive notification
                                     const emailforNotifs = likeduser.email
@@ -590,7 +591,7 @@ app.post('/likerecipe', (req, res, next) => {
                                         from: 'recipeboxupdate@gmail.com', // Sender address
                                         to: emailforNotifs, // recipient(s)
                                         subject: 'Your recipe received a like!', // Subject line
-                                        text: `Congrats, ${firstNameOfEmailRecipient}! ${usernameOfLikingUser} liked your recipe, ${recipeNameForEmail}` // body
+                                        text: `Congrats, ${firstNameOfEmailRecipient}! @${usernameOfLikingUser} liked your recipe, ${recipeNameForEmail}` // body
                                     }
                                     transport.sendMail(message).catch((err) => {
                                         next(err)
