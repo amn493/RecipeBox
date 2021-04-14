@@ -579,7 +579,8 @@ app.post('/likerecipe', (req, res, next) => {
                                 if (
                                     likeduser.notificationSettings
                                         .emailNotifications &&
-                                    likeduser.notificationSettings.likes
+                                    likeduser.notificationSettings.likes &&
+                                    likeduser !== likinguser
                                 ) {
                                     // get email and first name of user to receive notification
                                     const emailforNotifs = likeduser.email
