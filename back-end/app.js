@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 // import and instantiate express
 const express = require('express') // CommonJS import style!
 
@@ -280,9 +281,9 @@ app.get('/comments', (req, res, next) => {
 app.get('/recipesbyuser', (req, res, next) => {
     // fetch recipes where user.id === req.query.userID from database
     Recipe.find({
-        "user._id": req.query.userID
+        'user.id': req.query.userID
     })
-        .then((apiResponse) => res.json(apiResponse.data))
+        .then((recipes) => res.json(recipes))
         .catch((err) => next(err))
 })
 
@@ -476,12 +477,12 @@ app.post('/blockuser', (req, res) => {
     // update signed-in users's following/followers array appropriately
     // update blocked user's following/followers array appropriately
 
-    let updatedSignedInBlockedUsers = req.body.signedInblockedUsers
+    const updatedSignedInBlockedUsers = req.body.signedInblockedUsers
 
-    let updatedSignedInUserFollowing = req.body.signedInUserFollowing
-    let updatedSignedInUserFollowers = req.body.signedInUserFollowers
-    let updatedblockedUserFollowing = req.body.blockedUserFollowing
-    let updatedblockedUserFollowers = req.body.blockedUserFollowers
+    const updatedSignedInUserFollowing = req.body.signedInUserFollowing
+    const updatedSignedInUserFollowers = req.body.signedInUserFollowers
+    const updatedblockedUserFollowing = req.body.blockedUserFollowing
+    const updatedblockedUserFollowers = req.body.blockedUserFollowers
 
     if (req.body.addBlock) {
         updatedSignedInBlockedUsers.push(req.body.blockedUserID)
