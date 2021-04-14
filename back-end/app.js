@@ -236,10 +236,18 @@ app.get('/usersbyname', (req, res, next) => {
 app.get('/feedrecipes', (req, res, next) => {
     // fetch a list of recipes given an array of users they are following
 
-    // let currentTime = Date.now() for future use
-    axios
-        .get('https://my.api.mockaroo.com/recipe.json?key=f6a27260')
-        .then((apiResponse) => res.json(apiResponse.data))
+    const twoWeeksAgo = Date.now() - 12096e5
+    const followingList = req.query.following.map((userObj) => userObj.id)
+
+    Recipe.find({
+        // make sure recipe's creation date is within the last two weeks
+        createdAt: { $gt: twoWeeksAgo }, // Dev note: This works -- Successfully lists all recipes made within last two weeks
+
+        // make sure a recipe's user's id is one that is one being followed
+        'user.id': { $in: followingList }
+    })
+        .sort({ createdAt: -1 }) // Reverse the order of creation dates so latest recipe is on top
+        .then((recipes) => res.json(recipes))
         .catch((err) => next(err))
 })
 
