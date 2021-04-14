@@ -284,7 +284,6 @@ app.get('/comments', (req, res, next) => {
 app.get('/recipesbyuser', (req, res, next) => {
     // fetch recipes where user.id === req.query.userID from database
     Recipe.find({
-
         "user._id": req.query.userID
     })
         .then((apiResponse) => res.json(apiResponse.data))
