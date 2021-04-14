@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 // import and instantiate express
 const express = require('express') // CommonJS import style!
 
@@ -218,8 +219,9 @@ app.use((req, res, next) => {
 app.get('/recipe', (req, res, next) => {
     // fetch recipe where slug === req.query.slug from database
 
-    Recipe.findOne({ slug: req.query.slug })
-        .then((recipe) => res.json(recipe))
+    axios
+        .get('https://my.api.mockaroo.com/recipe.json?key=f6a27260')
+        .then((apiResponse) => res.json(apiResponse.data[0]))
         .catch((err) => next(err))
 })
 
@@ -246,8 +248,9 @@ app.get('/feedrecipes', (req, res, next) => {
 app.get('/usersbyid', (req, res, next) => {
     // fetch users where id === req.query.id from database
 
-    User.find({ _id: { $in: req.query.id } })
-        .then((users) => res.json(users))
+    axios
+        .get('https://my.api.mockaroo.com/user.json?key=f6a27260')
+        .then((apiResponse) => res.json(apiResponse.data))
         .catch((err) => next(err))
 })
 
@@ -263,8 +266,9 @@ app.get('/userbyid', (req, res, next) => {
 app.get('/userbyslug', (req, res, next) => {
     // fetch user where slug === req.query.slug from database
 
-    User.findOne({ slug: req.query.slug })
-        .then((user) => res.json(user))
+    axios
+        .get('https://my.api.mockaroo.com/user.json?key=f6a27260')
+        .then((apiResponse) => res.json(apiResponse.data[0]))
         .catch((err) => next(err))
 })
 
@@ -279,10 +283,11 @@ app.get('/comments', (req, res, next) => {
 
 app.get('/recipesbyuser', (req, res, next) => {
     // fetch recipes where user.id === req.query.userID from database
+    Recipe.find({
 
-    axios
-        .get('https://my.api.mockaroo.com/recipe.json?key=f6a27260')
-        .then((apiResponse) => res.json(apiResponse.data.slice(0, 18)))
+        "user._id": req.query.userID
+    })
+        .then((apiResponse) => res.json(apiResponse.data))
         .catch((err) => next(err))
 })
 
@@ -355,15 +360,6 @@ app.get(
         res.json({ user: req.user })
     }
 )
-
-app.get('/usernametaken', (req, res, next) => {
-    // find if a username already exists
-    // where username === req.query.username from database
-
-    User.exists({ username: req.query.username })
-        .then((usernametaken) => res.json(usernametaken))
-        .catch((err) => next(err))
-})
 
 /* Begin POST Requests */
 
@@ -476,12 +472,12 @@ app.post('/blockuser', (req, res) => {
     // update signed-in users's following/followers array appropriately
     // update blocked user's following/followers array appropriately
 
-    let updatedSignedInBlockedUsers = req.body.signedInblockedUsers
+    const updatedSignedInBlockedUsers = req.body.signedInblockedUsers
 
-    let updatedSignedInUserFollowing = req.body.signedInUserFollowing
-    let updatedSignedInUserFollowers = req.body.signedInUserFollowers
-    let updatedblockedUserFollowing = req.body.blockedUserFollowing
-    let updatedblockedUserFollowers = req.body.blockedUserFollowers
+    const updatedSignedInUserFollowing = req.body.signedInUserFollowing
+    const updatedSignedInUserFollowers = req.body.signedInUserFollowers
+    const updatedblockedUserFollowing = req.body.blockedUserFollowing
+    const updatedblockedUserFollowers = req.body.blockedUserFollowers
 
     if (req.body.addBlock) {
         updatedSignedInBlockedUsers.push(req.body.blockedUserID)
@@ -539,36 +535,18 @@ app.post('/blocktag', (req, res) => {
     res.json({ signedInBlockedTags: updatedSignedInBlockedTags })
 })
 
-app.post('/likerecipe', (req, res, next) => {
-    // update signed-in user's liked array appropriately
-    const update = {}
+app.post('/likerecipe', (req, res) => {
+    // update signed-in user (_id === req.body.userID)'s liked array appropriately
+
+    const updatedLiked = req.body.liked
     if (req.body.like) {
-        update.$push = { liked: req.body.recipeID }
+        updatedLiked.push(req.body.recipeID)
     } else {
-        update.$pull = { liked: req.body.recipeID }
+        updatedLiked.splice(updatedLiked.indexOf(req.body.recipeID), 1)
     }
 
-    // update signed in user's liked
-    User.updateOne({ _id: req.body.userID }, update)
-        .then(() => {
-            // update recipes likes
-            Recipe.updateOne(
-                { _id: req.body.recipeID },
-                {
-                    $inc: {
-                        likes: req.body.like ? 1 : -1
-                    }
-                }
-            )
-                // send back the user's updated liked array
-                .then(() => res.send('Updated likes'))
-                .catch((err) => {
-                    next(err)
-                })
-        })
-        .catch((err) => {
-            next(err)
-        })
+    // update recipe (_id === req.body.recipeID)'s likes count
+    res.json(updatedLiked)
 })
 
 app.post('/followuser', (req, res) => {
