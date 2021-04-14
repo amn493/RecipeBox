@@ -580,8 +580,7 @@ app.post('/likerecipe', (req, res, next) => {
                                     likeduser.notificationSettings
                                         .emailNotifications &&
                                     likeduser.notificationSettings.likes &&
-                                    // eslint-disable-next-line no-underscore-dangle
-                                    likeduser._id !== likinguser._id
+                                    likeduser.username !== likinguser.username
                                 ) {
                                     // get email and first name of user to receive notification
                                     const emailforNotifs = likeduser.email
