@@ -562,11 +562,13 @@ app.post('/likerecipe', (req, res, next) => {
         // get info for sending email notification
         Recipe.findOne({ _id: req.body.recipeID })
             .then((recipe) => {
+                // get name of recipe for given user to receive notification about
                 const recipeNameForEmail = recipe.name
                 User.findOne({
                     _id: req.body.userID
                 })
                     .then((likinguser) => {
+                        // get username of liking user
                         const usernameOfLikingUser = likinguser.username
                         User.findOne({
                             _id: recipe.user.id
@@ -579,6 +581,7 @@ app.post('/likerecipe', (req, res, next) => {
                                         .emailNotifications &&
                                     likeduser.notificationSettings.likes
                                 ) {
+                                    // get email and first name of user to receive notification
                                     const emailforNotifs = likeduser.email
                                     const firstNameOfEmailRecipient =
                                         likeduser.firstName
