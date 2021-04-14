@@ -15,8 +15,7 @@ const Feed = (props) => {
     const [recBoxRecipes, setRecBoxRecipes] = useState([])
 
     // Error message for the component
-    let errorMsg =
-        "You don't follow anyone. Check out the browse users page to find some tasty recipes!"
+    const [errMsg, setErrMsg] = useState('')
 
     /* Pull in recipes from mockaroo using the GET route handler */
     useEffect(() => {
@@ -29,6 +28,9 @@ const Feed = (props) => {
         // Check the array length and if it's zero (e.g. user doesn't follow anyone), generate a custom error component
         if (followingArray.length === 0) {
             setReqError(true)
+            setErrMsg(
+                "You don't follow anyone. Check out the browse users page to find some tasty recipes!"
+            )
         } else {
             // Otherwise, go ahead and query the database
             axios(
@@ -64,7 +66,7 @@ const Feed = (props) => {
             </div>
         </>
     ) : (
-        <ErrorComponent error={errorMsg} />
+        <ErrorComponent error={errMsg} />
     )
 }
 
