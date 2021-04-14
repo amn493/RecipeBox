@@ -598,21 +598,30 @@ app.post('/followuser', (req, res) => {
     })
 })
 
-app.post('/notificationsettings', (req, res) => {
+app.post('/notificationsettings', (req, res, next) => {
     // recieve updated notification settings
     const updatedNotificationSettings = {
-        email: req.body.email,
+        emailNotifications: req.body.emailNotifications,
         likes: req.body.likes,
         comments: req.body.comments,
-        followers: req.body.followers,
+        follows: req.body.follows
         // posts: req.body.posts,
-        id: req.body.id
     }
 
+    console.log(updatedNotificationSettings)
     // update the settings
-
-    // send response
-    res.json(updatedNotificationSettings)
+    User.findByIdAndUpdate(
+        req.body.userID,
+        {
+            notificationSettings: updatedNotificationSettings
+        },
+        { new: true, useFindAndModify: false }
+    )
+        .then(() => {
+            // send response
+            res.json(updatedNotificationSettings)
+        })
+        .catch((err) => next(err))
 })
 
 app.post('/updateuserinfo', upload.single('profilepicture'), (req, res) => {
