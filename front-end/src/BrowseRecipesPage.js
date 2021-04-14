@@ -53,13 +53,21 @@ const BrowseRecipesPage = (props) => {
                 }`
             )
                 .then((response) => {
-                    setRecipes(response.data)
+                    setRecipes(
+                        response.data.filter(
+                            (recipe) =>
+                                !recipe.tags.some((tag) =>
+                                    props.user.blockedTags.includes(tag)
+                                )
+                        )
+                    )
                 })
                 .catch((err) => {
                     console.error(err)
                     setReqError(true)
                 })
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [filterKeyword, filterTags])
 
     const [tagSelection, setTagSelection] = useState('')
