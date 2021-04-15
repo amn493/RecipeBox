@@ -89,7 +89,7 @@ const RecipePage = (props) => {
 
     useEffect(() => {
         if (loadedRecipe) {
-            axios(`http://localhost:4000/comments?recipeID=${recipe.id}`)
+            axios(`http://localhost:4000/comments?recipeID=${recipe._id}`)
                 .then((response) => {
                     setComments(
                         response.data.sort((a, b) => a.createdAt - b.createdAt)
