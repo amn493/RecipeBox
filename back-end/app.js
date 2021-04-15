@@ -347,6 +347,15 @@ app.get('/filteredrecipes', (req, res, next) => {
         .catch((err) => next(err))
 })
 
+app.get('/recommendedrecipes', (req, res, next) => {
+    // find the 10 most liked recipes
+    Recipe.find({})
+        .sort({ likes: -1 })
+        .limit(10)
+        .then((recipes) => res.json(recipes))
+        .catch((err) => next(err))
+})
+
 app.get(
     '/signedinuser',
     passport.authenticate('jwt', { session: false }),
