@@ -237,7 +237,7 @@ app.get('/feedrecipes', (req, res, next) => {
     // fetch a list of recipes given an array of users they are following
 
     const twoWeeksAgo = Date.now() - 12096e5 * req.query.datemultiplier
-    const followingList = req.query.following
+    const followingList = req.query.following.filter((id) => id !== '')
 
     Recipe.find({
         // make sure recipe's creation date is within the last two weeks
@@ -484,12 +484,12 @@ app.post('/blockuser', (req, res) => {
     // update signed-in users's following/followers array appropriately
     // update blocked user's following/followers array appropriately
 
-    let updatedSignedInBlockedUsers = req.body.signedInblockedUsers
+    const updatedSignedInBlockedUsers = req.body.signedInblockedUsers
 
-    let updatedSignedInUserFollowing = req.body.signedInUserFollowing
-    let updatedSignedInUserFollowers = req.body.signedInUserFollowers
-    let updatedblockedUserFollowing = req.body.blockedUserFollowing
-    let updatedblockedUserFollowers = req.body.blockedUserFollowers
+    const updatedSignedInUserFollowing = req.body.signedInUserFollowing
+    const updatedSignedInUserFollowers = req.body.signedInUserFollowers
+    const updatedblockedUserFollowing = req.body.blockedUserFollowing
+    const updatedblockedUserFollowers = req.body.blockedUserFollowers
 
     if (req.body.addBlock) {
         updatedSignedInBlockedUsers.push(req.body.blockedUserID)
