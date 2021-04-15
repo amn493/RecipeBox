@@ -3,6 +3,7 @@ import Button from 'react-bootstrap/Button'
 import axios from 'axios'
 import './FollowButton.css'
 
+
 const FollowButton = (props) => {
     let state = 'Follow'
     if (props.profileUserId in props.currentUser.following) {

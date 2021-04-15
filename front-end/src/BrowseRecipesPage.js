@@ -40,7 +40,7 @@ const BrowseRecipesPage = (props) => {
     const [recipes, setRecipes] = useState([])
 
     useEffect(() => {
-        if (filterKeyword !== undefined && filterTags !== undefined) {
+        if (filterKeyword !== '' || filterTags.length > 0) {
             // fetch all recipes
             axios(
                 `http://localhost:4000/filteredrecipes?keyword=${filterKeyword}${
@@ -61,6 +61,18 @@ const BrowseRecipesPage = (props) => {
                 })
         }
     }, [filterKeyword, filterTags])
+
+    // array of recommended recipes
+    const [recommendedRecipes, setRecommendedRecipes] = useState([])
+
+    useEffect(() => {
+        axios('http://localhost:4000/recommendedrecipes')
+            .then((response) => setRecommendedRecipes(response.data))
+            .catch((err) => {
+                console.error(err)
+                setReqError(true)
+            })
+    }, [])
 
     const [tagSelection, setTagSelection] = useState('')
 
@@ -104,6 +116,16 @@ const BrowseRecipesPage = (props) => {
                 ))}
             </div>
             <div className="recipesSection">
+                <p
+                    className={
+                        recipes.length === 0 &&
+                        (filterKeyword !== '' || filterTags.length > 0)
+                            ? 'noRecipesFoundMessage'
+                            : 'hidden'
+                    }
+                >
+                    No recipes found
+                </p>
                 {recipes
                     .sort((a, b) => b.likes - a.likes)
                     .map((recipe, i) => (
@@ -113,6 +135,22 @@ const BrowseRecipesPage = (props) => {
                             key={i}
                         />
                     ))}
+            </div>
+            <div
+                className={
+                    recipes.length === 0
+                        ? 'recommendedRecipesSection'
+                        : 'hidden'
+                }
+            >
+                <b className="recommendedRecipesTitle">Recommended Recipes</b>
+                {recommendedRecipes.map((recipe, i) => (
+                    <LargeRecipePreview
+                        recipe={recipe}
+                        user={props.user}
+                        key={i}
+                    />
+                ))}
             </div>
         </div>
     ) : (
