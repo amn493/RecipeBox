@@ -17,6 +17,9 @@ const Feed = (props) => {
     // Error message for the component
     const [errMsg, setErrMsg] = useState('')
 
+    // Create a multiplier for the date
+    const [dateMultiplier, setDateMultiplier] = useState(1)
+
     /* Pull in recipes from mockaroo using the GET route handler */
     useEffect(() => {
         // Get a list of feed recipes
@@ -42,7 +45,7 @@ const Feed = (props) => {
                               `following=`
                           )
                         : `following=`
-                }`
+                }&datemultiplier=${dateMultiplier}`
             )
                 .then((response) => {
                     setRecBoxRecipes(response.data)

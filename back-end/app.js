@@ -235,7 +235,6 @@ app.get('/usersbyname', (req, res, next) => {
 
 app.get('/feedrecipes', (req, res, next) => {
     // fetch a list of recipes given an array of users they are following
-
     const twoWeeksAgo = Date.now() - 12096e5 * req.query.datemultiplier
     const followingList = req.query.following.filter((id) => id !== '')
 
