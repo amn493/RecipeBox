@@ -247,6 +247,7 @@ app.get('/usersbyid', (req, res, next) => {
     // fetch users where id === req.query.id from database
 
     User.find({ _id: { $in: req.query.id } })
+        .sort({ createdAt: -1 })
         .then((users) => res.json(users))
         .catch((err) => next(err))
 })
