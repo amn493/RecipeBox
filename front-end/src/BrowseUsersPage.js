@@ -30,6 +30,18 @@ const BrowseUsersPage = (props) => {
             })
     }, [filterKeyword])
 
+    // array of recommended users
+    const [recommendedUsers, setRecommendedUsers] = useState([])
+
+    useEffect(() => {
+        axios('http://localhost:4000/recommendedusers')
+            .then((response) => setRecommendedUsers(response.data))
+            .catch((err) => {
+                console.error(err)
+                setReqError(true)
+            })
+    }, [])
+
     return !reqError ? (
         <div className="browseUsers">
             <div className="browseUserSearch">
@@ -42,7 +54,10 @@ const BrowseUsersPage = (props) => {
                 </div>
                 <div className="userPreviews">
                     {users.length === 0 && filterKeyword ? (
-                        <p className="noUsersFoundMessage">No users found</p>
+                        <p className="noUsersFoundMessage">
+                            No users found
+                            <hr />
+                        </p>
                     ) : (
                         users
                             .sort((a, b) =>
@@ -58,19 +73,21 @@ const BrowseUsersPage = (props) => {
                     )}
                 </div>
             </div>
-            <hr />
-            <div className="recommendedUsers">
+
+            <div
+                className={
+                    users.length === 0 ? 'recommendedUsersSection' : 'hidden'
+                }
+            >
                 <b className="recommendedUsersTitle">Recommended Users</b>
                 <div className="userPreviews">
-                    {/*recommendedUsers
-                        .sort((a, b) => a.firstName.localeCompare(b.firstName))
-                        .map((user, i) => (
-                            <SmallUserPreview
-                                user={user}
-                                isBlockedUserProfile={false}
-                                key={i}
-                            />
-                        ))*/}
+                    {recommendedUsers.map((user, i) => (
+                        <SmallUserPreview
+                            user={user}
+                            isBlockedUserProfile={false}
+                            key={i}
+                        />
+                    ))}
                 </div>
             </div>
         </div>

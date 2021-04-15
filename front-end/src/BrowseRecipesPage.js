@@ -125,6 +125,7 @@ const BrowseRecipesPage = (props) => {
                     }
                 >
                     No recipes found
+                    <hr />
                 </p>
                 {recipes
                     .sort((a, b) => b.likes - a.likes)
