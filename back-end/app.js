@@ -356,6 +356,15 @@ app.get('/recommendedrecipes', (req, res, next) => {
         .catch((err) => next(err))
 })
 
+app.get('/recommendedusers', (req, res, next) => {
+    // find the 10 most followed users
+    User.find({})
+        .sort({ followers: -1 })
+        .limit(10)
+        .then((users) => res.json(users))
+        .catch((err) => next(err))
+})
+
 app.get(
     '/signedinuser',
     passport.authenticate('jwt', { session: false }),
