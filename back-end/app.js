@@ -255,6 +255,7 @@ app.get('/usersbyid', (req, res, next) => {
     // fetch users where id === req.query.id from database
 
     User.find({ _id: { $in: req.query.id } })
+        .sort({ createdAt: -1 })
         .then((users) => res.json(users))
         .catch((err) => next(err))
 })
@@ -262,9 +263,8 @@ app.get('/usersbyid', (req, res, next) => {
 app.get('/userbyid', (req, res, next) => {
     // fetch user where _id === req.query.id from database
 
-    axios
-        .get('https://my.api.mockaroo.com/user.json?key=f6a27260')
-        .then((apiResponse) => res.json(apiResponse.data[0]))
+    User.findOne({ _id: req.query.id })
+        .then((user) => res.json(user))
         .catch((err) => next(err))
 })
 
@@ -279,18 +279,17 @@ app.get('/userbyslug', (req, res, next) => {
 app.get('/comments', (req, res, next) => {
     // fetch comments where recipe === req.query.recipeID from database
 
-    axios
-        .get('https://my.api.mockaroo.com/comment.json?key=f6a27260')
-        .then((apiResponse) => res.json(apiResponse.data))
+    Comment.find({ recipe: req.query.recipeID })
+        .then((comments) => res.json(comments))
         .catch((err) => next(err))
 })
 
 app.get('/recipesbyuser', (req, res, next) => {
     // fetch recipes where user.id === req.query.userID from database
-
-    axios
-        .get('https://my.api.mockaroo.com/recipe.json?key=f6a27260')
-        .then((apiResponse) => res.json(apiResponse.data.slice(0, 18)))
+    Recipe.find({
+        'user.id': req.query.userID
+    })
+        .then((recipes) => res.json(recipes))
         .catch((err) => next(err))
 })
 
@@ -353,6 +352,15 @@ app.get('/filteredrecipes', (req, res, next) => {
         .then((recipes) => {
             res.json(recipes)
         })
+        .catch((err) => next(err))
+})
+
+app.get('/recommendedrecipes', (req, res, next) => {
+    // find the 10 most liked recipes
+    Recipe.find({})
+        .sort({ likes: -1 })
+        .limit(10)
+        .then((recipes) => res.json(recipes))
         .catch((err) => next(err))
 })
 

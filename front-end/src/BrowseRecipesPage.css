@@ -9,3 +9,19 @@
 .recipeNameSearchbar {
     margin-bottom: 5px;
 }
+
+.noRecipesFoundMessage {
+    font-size: 14px;
+    font-weight: lighter;
+    text-align: center;
+}
+
+.recommendedRecipesTitle {
+    font-size: 18px;
+    display: block;
+    margin-bottom: 20px;
+}
+
+.hidden {
+    display: none;
+}
