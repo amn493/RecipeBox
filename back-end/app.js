@@ -271,9 +271,8 @@ app.get('/userbyslug', (req, res, next) => {
 app.get('/comments', (req, res, next) => {
     // fetch comments where recipe === req.query.recipeID from database
 
-    axios
-        .get('https://my.api.mockaroo.com/comment.json?key=f6a27260')
-        .then((apiResponse) => res.json(apiResponse.data))
+    Comment.find({ recipe: req.query.recipeID })
+        .then((comments) => res.json(comments))
         .catch((err) => next(err))
 })
 
