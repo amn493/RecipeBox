@@ -254,9 +254,8 @@ app.get('/usersbyid', (req, res, next) => {
 app.get('/userbyid', (req, res, next) => {
     // fetch user where _id === req.query.id from database
 
-    axios
-        .get('https://my.api.mockaroo.com/user.json?key=f6a27260')
-        .then((apiResponse) => res.json(apiResponse.data[0]))
+    User.findOne({ _id: req.query.id })
+        .then((user) => res.json(user))
         .catch((err) => next(err))
 })
 
