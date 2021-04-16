@@ -104,7 +104,7 @@ const Feed = (props) => {
                     id="loadMoreRecipesBtn"
                     onClick={loadMoreRecipes}
                 >
-                    Load More Recipes
+                    Load Older Recipes
                 </Button>
             </div>
         </>
