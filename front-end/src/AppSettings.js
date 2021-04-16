@@ -257,23 +257,13 @@ const AppSettings = (props) => {
     ) //list of current user's blocked tags
 
     const handleChangedNotifSwitch = () => {
-        const headers = {
-            'Content-Type': 'multipart/form-data'
-        }
-
-        const updatedNotificationSettings = new FormData()
-        updatedNotificationSettings.append('email', emailNotifs)
-        updatedNotificationSettings.append('likes', likesNotifs)
-        updatedNotificationSettings.append('comments', commentsNotifs)
-        updatedNotificationSettings.append('followers', followersNotifs)
-        // updatedNotificationSettings.append('posts', postsNotifs)
-        updatedNotificationSettings.append('id', currentUser._id)
-
-        axios.post(
-            'http://localhost:4000/notificationsettings',
-            updatedNotificationSettings,
-            { headers }
-        )
+        axios.post('http://localhost:4000/notificationsettings', {
+            emailNotifications: emailNotifs,
+            likes: likesNotifs,
+            comments: commentsNotifs,
+            follows: followersNotifs,
+            userID: currentUser._id
+        })
     }
 
     const handleAddBlockedTag = (tagToBlock) => {
@@ -322,6 +312,13 @@ const AppSettings = (props) => {
     )
     // const [postsNotifs, setPostsNotifs] = useState(props.user.notificationSettings.posts)
 
+    //call function to make post request to /notification settings
+    //when notification settings state variables are changed
+    useEffect(() => {
+        handleChangedNotifSwitch()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [emailNotifs, likesNotifs, commentsNotifs, followersNotifs])
+
     // sign out user when sign out button is clicked
     const signOutUser = () => {
         axios
@@ -355,7 +352,6 @@ const AppSettings = (props) => {
                                                 checked={emailNotifs}
                                                 onClick={() => {
                                                     setEmailNotifs(!emailNotifs)
-                                                    handleChangedNotifSwitch()
                                                 }}
                                                 onChange={(e) => {}}
                                             />
@@ -395,7 +391,6 @@ const AppSettings = (props) => {
                                                 disabled={!emailNotifs}
                                                 onClick={() => {
                                                     setLikesNotifs(!likesNotifs)
-                                                    handleChangedNotifSwitch()
                                                 }}
                                                 onChange={(e) => {}}
                                             />
@@ -438,7 +433,6 @@ const AppSettings = (props) => {
                                                     setCommentsNotifs(
                                                         !commentsNotifs
                                                     )
-                                                    handleChangedNotifSwitch()
                                                 }}
                                                 onChange={(e) => {}}
                                             />
@@ -480,7 +474,6 @@ const AppSettings = (props) => {
                                                     setFollowersNotifs(
                                                         !followersNotifs
                                                     )
-                                                    handleChangedNotifSwitch()
                                                 }}
                                                 onChange={(e) => {}}
                                             />
