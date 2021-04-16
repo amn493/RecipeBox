@@ -147,7 +147,9 @@ const RecipePage = (props) => {
                                 <td className="recipeDetailsTableRightCol recipeDetailsTableLikedCol recipeDetailsTopTableCell">
                                     <LikeButton
                                         recipe={recipe}
+                                        setRecipe={setRecipe}
                                         user={props.user}
+                                        setUser={props.setUser}
                                         signedIn={props.signedIn}
                                         setShowModal={setShowModal}
                                     />
@@ -231,25 +233,20 @@ const RecipePage = (props) => {
 }
 
 // Component for like button
-// Expects recipe (a recipe object) and user (a user object for the signed-in user) as props
-// Example: <LikeButton recipe={recipe} user={user} />
-
 const LikeButton = (props) => {
-    // state variables for number of likes recipe has and whether or not the signed-in user has liked the recipe
-    const [likes, setLikes] = useState(props.recipe.likes)
-    const [liked, setLiked] = useState(
-        props.user.liked.includes(props.recipeId)
-    )
-
-    const handleLiked = (isLiking) => {
+    const handleLiked = () => {
         let requestData = {
-            like: isLiking, // true false depending on whether or not the recipe was liked
-            userID: props.user._id, // user id
-            recipeID: props.recipe._id // recipe id
+            like: !props.user.liked.includes(props.recipe._id),
+            userID: props.user._id,
+            recipeID: props.recipe._id
         }
 
         axios
             .post('http://localhost:4000/likerecipe', requestData)
+            .then((response) => {
+                props.setRecipe(response.data.recipe)
+                props.setUser(response.data.user)
+            })
             .catch((err) => console.error(err))
     }
 
@@ -258,20 +255,26 @@ const LikeButton = (props) => {
             <input
                 className="likeButton"
                 type="image"
-                src={liked ? 'heartFill.png' : 'heartOutline.png'}
-                alt={liked ? 'heart fill' : 'heart outline'}
+                src={
+                    props.user.liked.includes(props.recipe._id)
+                        ? 'heartFill.png'
+                        : 'heartOutline.png'
+                }
+                alt={
+                    props.user.liked.includes(props.recipe._id)
+                        ? 'heart fill'
+                        : 'heart outline'
+                }
                 onClick={() => {
                     if (props.signedIn) {
-                        setLikes(likes + (liked ? -1 : 1))
-                        handleLiked(!liked)
-                        setLiked(!liked)
+                        handleLiked()
                     } else {
                         // show sign-in modal if a not-signed in user attempts to like the recipe
                         props.setShowModal(true)
                     }
                 }}
             />
-            {likes}
+            {props.recipe.likes}
         </div>
     )
 }

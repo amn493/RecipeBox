@@ -587,19 +587,26 @@ app.post('/likerecipe', (req, res, next) => {
     }
 
     // update signed in user's liked
-    User.updateOne({ _id: req.body.userID }, update)
-        .then(() => {
+    User.findByIdAndUpdate(req.body.userID, update, {
+        new: true,
+        useFindAndModify: false
+    })
+        .then((user) => {
             // update recipes likes
-            Recipe.updateOne(
-                { _id: req.body.recipeID },
+            Recipe.findByIdAndUpdate(
+                req.body.recipeID,
                 {
                     $inc: {
                         likes: req.body.like ? 1 : -1
                     }
+                },
+                {
+                    new: true,
+                    useFindAndModify: false
                 }
             )
-                // send back the user's updated liked array
-                .then(() => res.send('Updated likes'))
+                // send back the updated user and recipe
+                .then((recipe) => res.send({ user, recipe }))
                 .catch((err) => {
                     next(err)
                 })

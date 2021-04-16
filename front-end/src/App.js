@@ -119,7 +119,11 @@ function App() {
 
                         {/* RECIPE PAGE */}
                         <Route path="/recipe-:slug">
-                            <RecipePage user={user} signedIn={signedIn} />
+                            <RecipePage
+                                user={user}
+                                signedIn={signedIn}
+                                setUser={setUser}
+                            />
                         </Route>
 
                         {/* BROWSE USERS PAGE */}
