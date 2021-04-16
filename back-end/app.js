@@ -549,10 +549,11 @@ app.post('/blockuser', (req, res) => {
     })
 })
 
-app.post('/blocktag', (req, res) => {
+app.post('/blocktag', (req, res, next) => {
     // update signed-in user's blockedTags array appropriately
 
-    const updatedSignedInBlockedTags = req.body.signedInBlockedTags
+    // eslint-disable-next-line prefer-const
+    let updatedSignedInBlockedTags = req.body.signedInBlockedTags
 
     if (req.body.addBlock) {
         updatedSignedInBlockedTags.push(req.body.tagToBlockOrUnblock)
@@ -563,7 +564,17 @@ app.post('/blocktag', (req, res) => {
         )
     }
 
-    res.json({ signedInBlockedTags: updatedSignedInBlockedTags })
+    User.findByIdAndUpdate(
+        req.body.userID,
+        {
+            blockedTags: updatedSignedInBlockedTags
+        },
+        { new: true, useFindAndModify: false }
+    )
+        .then(() => {
+            res.json({ signedInBlockedTags: updatedSignedInBlockedTags })
+        })
+        .catch((err) => next(err))
 })
 
 app.post('/likerecipe', (req, res, next) => {
