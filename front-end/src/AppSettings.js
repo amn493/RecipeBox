@@ -183,7 +183,12 @@ const AppSettings = (props) => {
 
     useEffect(() => {
         // fetch recipe tags
-        axios('http://localhost:4000/tags')
+        axios(
+            `http://localhost:4000/tags?blockedTags=${props.user.blockedTags.reduce(
+                (acc, tag) => `&blockedTags=${tag}`,
+                ''
+            )}`
+        )
             .then((response) => {
                 setTagsToBlock(response.data)
                 setLoadedTagsToBlock(true)
@@ -244,7 +249,8 @@ const AppSettings = (props) => {
                 setTagsToBlock(backupData.map((tag) => tag.tag))
                 setLoadedTagsToBlock(true)
             })
-    }, [props.user.username])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
     const [blockedTagsList, addBlockedTagToList] = useState(
         props.user.blockedTags
@@ -276,7 +282,8 @@ const AppSettings = (props) => {
                 .post('http://localhost:4000/blocktag', {
                     addBlock: true,
                     tagToBlockOrUnblock: tagToBlock,
-                    signedInBlockedTags: blockedTagsList
+                    signedInBlockedTags: blockedTagsList,
+                    userID: currentUser._id
                 })
                 .then(() => {
                     addBlockedTagToList(blockedTagsList.concat(tagToBlock)) //change (1) list of user's blocked tags
@@ -294,9 +301,10 @@ const AppSettings = (props) => {
 
     const handleRemoveBlockedTag = (tagToUnblock) => {
         axios.post('http://localhost:4000/blocktag', {
-            addBlock: true,
+            addBlock: false,
             tagToBlockOrUnblock: tagToUnblock,
-            signedInBlockedTags: blockedTagsList
+            signedInBlockedTags: blockedTagsList,
+            userID: currentUser._id
         })
     }
 
