@@ -1,5 +1,5 @@
-// Test expected output when given val_id input
-// Test expected output when given inval_id input
+// Test expected output when given valid input
+// Test expected output when given invalid input
 
 const chai = require('chai')
 const chaiHTTP = require('chai-http')
