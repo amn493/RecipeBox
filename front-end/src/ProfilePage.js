@@ -22,170 +22,35 @@ const ProfilePage = (props) => {
     const { slug } = useParams()
 
     // request user whose profile is being displayed on initial render
-    const [profileUser, setProfileUser] = useState([])
-    const [loadedUser, setLoadedUser] = useState(false)
+    const [profileUser, setProfileUser] = useState()
 
     useEffect(() => {
         // fetch the user whose profile is being displayed (slug = slug)
         axios(`http://localhost:4000/userbyslug?slug=${slug}`)
             .then((response) => {
                 setProfileUser(response.data)
-                setLoadedUser(true)
             })
             .catch((err) => {
                 console.error(err)
                 setReqError(true)
-
-                // make some backup fake data
-                const backupData = [
-                    {
-                        username: 'anonymous',
-                        password: 'Abc123',
-                        firstName: 'Anonymous',
-                        lastName: 'User',
-                        bio: 'fun, easy recipes!',
-                        followers: [2, 3, 5, 7, 9],
-                        following: [2, 3, 4, 8, 9],
-                        liked: [1, 3, 5, 10, 33],
-                        slug: 'anonymous',
-                        imagePath: 'https://picsum.photos/200',
-                        id: 1
-                    }
-                ]
-
-                setProfileUser(backupData[0])
-                setLoadedUser(true)
             })
     }, [slug])
 
     // request user's recipes on initial render (user.id = profileUser.id)
-    const [recipes, setRecipes] = useState([])
-    const [loadedRecipes, setLoadedRecipes] = useState(false)
+    const [recipes, setRecipes] = useState()
 
     useEffect(() => {
-        if (profileUser.username) {
+        if (profileUser) {
             // fetch user's recipes
             axios(
                 `http://localhost:4000/recipesbyuser?userID=${profileUser._id}`
             )
                 .then((response) => {
-                    setRecipes(
-                        response.data.sort((a, b) => b.createdAt - a.createdAt)
-                    )
-                    setLoadedRecipes(true)
+                    setRecipes(response.data)
                 })
                 .catch((err) => {
                     console.error(err)
                     setReqError(true)
-
-                    // make some backup fake data
-                    const backupData = [
-                        {
-                            user: {
-                                id: 1,
-                                username: 'foobar',
-                                slug: 'foobar'
-                            },
-                            name: 'Guacamole',
-                            imagePath: 'https://picsum.photos/200',
-                            tags: ['mexican', 'vegan'],
-                            caption: 'my secret recipe:)',
-                            ingredients: [
-                                '3 avocados',
-                                '1 tomato',
-                                '1/2 yellow onion',
-                                '2 jalapeños',
-                                '1/4 bunch cilantro',
-                                '1 lime',
-                                'salt',
-                                'pepper'
-                            ],
-                            instructions: [
-                                'Mash the avocados',
-                                'Dice the tomato, onion, and jalapeños',
-                                'Chop the cilantro',
-                                'Put everything in a bowl',
-                                'Squeeze in the lime',
-                                'Add salt and pepper to taste',
-                                'Mix'
-                            ],
-                            likes: 36,
-                            createdAt: 1615864425952,
-                            slug: 'foobar-guacamole',
-                            id: 1
-                        },
-                        {
-                            user: {
-                                id: 1,
-                                username: 'foobar',
-                                slug: 'foobar'
-                            },
-                            name: 'Tacos',
-                            imagePath: 'https://picsum.photos/200',
-                            tags: ['mexican', 'appetizer'],
-                            caption: 'my secret recipe:)',
-                            ingredients: [
-                                '3 avocados',
-                                '1 tomato',
-                                '1/2 yellow onion',
-                                '2 jalapeños',
-                                '1/4 bunch cilantro',
-                                '1 lime',
-                                'salt',
-                                'pepper'
-                            ],
-                            instructions: [
-                                'Mash the avocados',
-                                'Dice the tomato, onion, and jalapeños',
-                                'Chop the cilantro',
-                                'Put everything in a bowl',
-                                'Squeeze in the lime',
-                                'Add salt and pepper to taste',
-                                'Mix'
-                            ],
-                            likes: 12,
-                            createdAt: 1615864425952,
-                            slug: 'foobar-tacos',
-                            id: 2
-                        },
-                        {
-                            user: {
-                                id: 1,
-                                username: 'foobar',
-                                slug: 'foobar'
-                            },
-                            name: 'Tofu',
-                            imagePath: 'https://picsum.photos/200',
-                            tags: ['vegan'],
-                            caption: 'my secret recipe:)',
-                            ingredients: [
-                                '3 avocados',
-                                '1 tomato',
-                                '1/2 yellow onion',
-                                '2 jalapeños',
-                                '1/4 bunch cilantro',
-                                '1 lime',
-                                'salt',
-                                'pepper'
-                            ],
-                            instructions: [
-                                'Mash the avocados',
-                                'Dice the tomato, onion, and jalapeños',
-                                'Chop the cilantro',
-                                'Put everything in a bowl',
-                                'Squeeze in the lime',
-                                'Add salt and pepper to taste',
-                                'Mix'
-                            ],
-                            likes: 30,
-                            createdAt: 1615864425952,
-                            slug: 'foobar-tofu',
-                            id: 3
-                        }
-                    ]
-
-                    setRecipes(backupData)
-                    setLoadedRecipes(true)
                 })
         }
     }, [profileUser])
@@ -197,7 +62,7 @@ const ProfilePage = (props) => {
     const [showModal, setShowModal] = useState(false)
 
     return !reqError ? (
-        loadedUser && loadedRecipes ? (
+        profileUser && recipes ? (
             <div className="profilePage">
                 <ProfileHeader
                     user={profileUser}
@@ -272,26 +137,40 @@ const ProfilePage = (props) => {
 
                         <Tab.Content>
                             <Tab.Pane eventKey="small">
-                                <div className="recipesSection">
-                                    {recipes.map((recipe, i) => (
-                                        <SmallRecipePreview
-                                            recipe={recipe}
-                                            user={props.user}
-                                            key={i}
-                                        />
-                                    ))}
-                                </div>
+                                {recipes.length > 0 ? (
+                                    <div className="recipesSection">
+                                        {recipes.map((recipe, i) => (
+                                            <SmallRecipePreview
+                                                recipe={recipe}
+                                                user={props.user}
+                                                key={i}
+                                                profileUser={profileUser}
+                                            />
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <p className="noRecipesMessage">
+                                        No recipes yet
+                                    </p>
+                                )}
                             </Tab.Pane>
                             <Tab.Pane eventKey="large">
-                                <div className="recipesSection">
-                                    {recipes.map((recipe, i) => (
-                                        <LargeRecipePreview
-                                            recipe={recipe}
-                                            user={props.user}
-                                            key={i}
-                                        />
-                                    ))}
-                                </div>
+                                {recipes.length > 0 ? (
+                                    <div className="recipesSection">
+                                        {recipes.map((recipe, i) => (
+                                            <LargeRecipePreview
+                                                recipe={recipe}
+                                                user={props.user}
+                                                key={i}
+                                                profileUser={profileUser}
+                                            />
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <p className="noRecipesMessage">
+                                        No recipes yet
+                                    </p>
+                                )}
                             </Tab.Pane>
                         </Tab.Content>
                     </Tab.Container>

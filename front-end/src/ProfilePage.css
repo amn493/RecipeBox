@@ -28,3 +28,10 @@
 .tabContainer {
     margin-top: 20px;
 }
+
+.noRecipesMessage {
+    margin-top: 70px;
+    font-size: 14px;
+    font-weight: lighter;
+    text-align: center;
+}
