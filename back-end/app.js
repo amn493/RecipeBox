@@ -257,7 +257,7 @@ app.get('/feedrecipes', (req, res, next) => {
         createdAt: { $gt: twoWeeksAgo },
 
         // make sure a recipe's user's id is one that is one being followed
-        'user._id': { $in: followingList }
+        user: { $in: followingList }
     })
         .sort({ createdAt: -1 }) // Reverse the order of creation dates so latest recipe is on top
         .then((recipes) => res.json(recipes))
