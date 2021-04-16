@@ -12,7 +12,6 @@ import ErrorComponent from './ErrorComponent.js'
 //current user and signedIn state variable
 const AppSettings = (props) => {
     const [reqError, setReqError] = useState(false)
-
     const [currentUser] = useState(props.user)
     const [blockedUsersOnRender] = useState(props.user.blockedUsers)
     const [loadedUsers, setLoadedUsers] = useState(false)
@@ -24,19 +23,19 @@ const AppSettings = (props) => {
         axios
             .post('http://localhost:4000/blockuser', {
                 addBlock: true,
-                signedInUserId: currentUser.id,
-                signedInblockedUsers: blockedUsers.map((user) => user.id),
+                signedInUserID: currentUser._id,
+                signedInblockedUsers: blockedUsers.map((user) => user._id),
                 signedInUserFollowing: currentUser.following,
                 signedInUserFollowers: currentUser.followers,
                 blockedUserID: usersToBlock
                     .filter((user) => user.username === userNameToBlock)
-                    .map((user) => user.id)[0],
+                    .map((user) => user._id)[0],
                 blockedUserFollowing: usersToBlock
                     .filter((user) => user.username === userNameToBlock)
-                    .map((user) => user.following),
+                    .map((user) => user.following)[0],
                 blockedUserFollowers: usersToBlock
                     .filter((user) => user.username === userNameToBlock)
-                    .map((user) => user.followers)
+                    .map((user) => user.followers)[0]
             })
             .then(() => {
                 setBlockedUsers(
@@ -55,11 +54,11 @@ const AppSettings = (props) => {
             axios
                 .post('http://localhost:4000/blockuser', {
                     addBlock: false,
-                    signedInUserId: currentUser.id,
-                    signedInblockedUsers: blockedUsers.map((user) => user.id),
+                    signedInUserID: currentUser._id,
+                    signedInblockedUsers: blockedUsers.map((user) => user._id),
                     signedInUserFollowing: currentUser.following,
                     signedInUserFollowers: currentUser.followers,
-                    blockedUserID: userToUnblock.id,
+                    blockedUserID: userToUnblock._id,
                     blockedUserFollowing: userToUnblock.following,
                     blockedUserFollowers: userToUnblock.followers
                 })
@@ -84,15 +83,19 @@ const AppSettings = (props) => {
 
     //retrieve blocked users using GET handler
     useEffect(() => {
-        axios(`http://localhost:4000/usersbyid`)
+        axios(`http://localhost:4000/users?userID=${currentUser._id}`)
             .then((response) => {
                 setBlockedUsers(
                     response.data.filter((user) =>
-                        blockedUsersOnRender.includes(user.id)
+                        blockedUsersOnRender.includes(user._id)
                     )
                 )
                 setUsersToBlock(
-                    response.data.filter((user) => !blockedUsers.includes(user))
+                    response.data.filter(
+                        (user) =>
+                            !blockedUsers.includes(user) &&
+                            user._id !== currentUser._id
+                    )
                 )
                 setLoadedUsers(true)
             })
@@ -112,7 +115,7 @@ const AppSettings = (props) => {
                         following: [2, 3, 4, 8, 9],
                         liked: [1, 3, 5, 10, 33],
                         slug: 'anonymous',
-                        id: 1,
+                        _id: 1,
                         imagePath:
                             'https://thumbs.dreamstime.com/z/heart-shape-various-vegetables-fruits-healthy-food-concept-isolated-white-background-140287808.jpg'
                     },
@@ -126,7 +129,7 @@ const AppSettings = (props) => {
                         following: [2, 3, 4, 8, 9],
                         liked: [1, 3, 5, 10, 33],
                         slug: 'foobar2',
-                        id: 2,
+                        _id: 2,
                         imagePath:
                             'https://thumbs.dreamstime.com/z/heart-shape-various-vegetables-fruits-healthy-food-concept-isolated-white-background-140287808.jpg'
                     },
@@ -140,7 +143,7 @@ const AppSettings = (props) => {
                         following: [2, 3, 4, 8, 9],
                         liked: [1, 3, 5, 10, 33],
                         slug: 'blockeduser6',
-                        id: 3,
+                        _id: 3,
                         imagePath:
                             'https://thumbs.dreamstime.com/z/heart-shape-various-vegetables-fruits-healthy-food-concept-isolated-white-background-140287808.jpg'
                     },
@@ -154,7 +157,7 @@ const AppSettings = (props) => {
                         following: [2, 3, 4, 8, 9],
                         liked: [1, 3, 5, 10, 33],
                         slug: 'usertoblock',
-                        id: 4,
+                        _id: 4,
                         imagePath:
                             'https://thumbs.dreamstime.com/z/heart-shape-various-vegetables-fruits-healthy-food-concept-isolated-white-background-140287808.jpg'
                     }
@@ -264,7 +267,7 @@ const AppSettings = (props) => {
         updatedNotificationSettings.append('comments', commentsNotifs)
         updatedNotificationSettings.append('followers', followersNotifs)
         // updatedNotificationSettings.append('posts', postsNotifs)
-        updatedNotificationSettings.append('id', currentUser.id)
+        updatedNotificationSettings.append('id', currentUser._id)
 
         axios.post(
             'http://localhost:4000/notificationsettings',
