@@ -12,7 +12,6 @@ import ErrorComponent from './ErrorComponent.js'
 //current user and signedIn state variable
 const AppSettings = (props) => {
     const [reqError, setReqError] = useState(false)
-
     const [currentUser] = useState(props.user)
     const [blockedUsersOnRender] = useState(props.user.blockedUsers)
     const [loadedUsers, setLoadedUsers] = useState(false)
@@ -24,7 +23,7 @@ const AppSettings = (props) => {
         axios
             .post('http://localhost:4000/blockuser', {
                 addBlock: true,
-                signedInUserId: currentUser._id,
+                signedInUserID: currentUser._id,
                 signedInblockedUsers: blockedUsers.map((user) => user._id),
                 signedInUserFollowing: currentUser.following,
                 signedInUserFollowers: currentUser.followers,
@@ -33,10 +32,10 @@ const AppSettings = (props) => {
                     .map((user) => user._id)[0],
                 blockedUserFollowing: usersToBlock
                     .filter((user) => user.username === userNameToBlock)
-                    .map((user) => user.following),
+                    .map((user) => user.following)[0],
                 blockedUserFollowers: usersToBlock
                     .filter((user) => user.username === userNameToBlock)
-                    .map((user) => user.followers)
+                    .map((user) => user.followers)[0]
             })
             .then(() => {
                 setBlockedUsers(
@@ -55,7 +54,7 @@ const AppSettings = (props) => {
             axios
                 .post('http://localhost:4000/blockuser', {
                     addBlock: false,
-                    signedInUserId: currentUser._id,
+                    signedInUserID: currentUser._id,
                     signedInblockedUsers: blockedUsers.map((user) => user._id),
                     signedInUserFollowing: currentUser.following,
                     signedInUserFollowers: currentUser.followers,
@@ -84,7 +83,7 @@ const AppSettings = (props) => {
 
     //retrieve blocked users using GET handler
     useEffect(() => {
-        axios(`http://localhost:4000/usersbyid`)
+        axios(`http://localhost:4000/users?userID=${currentUser._id}`)
             .then((response) => {
                 setBlockedUsers(
                     response.data.filter((user) =>
@@ -92,7 +91,11 @@ const AppSettings = (props) => {
                     )
                 )
                 setUsersToBlock(
-                    response.data.filter((user) => !blockedUsers.includes(user))
+                    response.data.filter(
+                        (user) =>
+                            !blockedUsers.includes(user) &&
+                            user._id !== currentUser._id
+                    )
                 )
                 setLoadedUsers(true)
             })
@@ -112,7 +115,7 @@ const AppSettings = (props) => {
                         following: [2, 3, 4, 8, 9],
                         liked: [1, 3, 5, 10, 33],
                         slug: 'anonymous',
-                        id: 1,
+                        _id: 1,
                         imagePath:
                             'https://thumbs.dreamstime.com/z/heart-shape-various-vegetables-fruits-healthy-food-concept-isolated-white-background-140287808.jpg'
                     },
@@ -126,7 +129,7 @@ const AppSettings = (props) => {
                         following: [2, 3, 4, 8, 9],
                         liked: [1, 3, 5, 10, 33],
                         slug: 'foobar2',
-                        id: 2,
+                        _id: 2,
                         imagePath:
                             'https://thumbs.dreamstime.com/z/heart-shape-various-vegetables-fruits-healthy-food-concept-isolated-white-background-140287808.jpg'
                     },
@@ -140,7 +143,7 @@ const AppSettings = (props) => {
                         following: [2, 3, 4, 8, 9],
                         liked: [1, 3, 5, 10, 33],
                         slug: 'blockeduser6',
-                        id: 3,
+                        _id: 3,
                         imagePath:
                             'https://thumbs.dreamstime.com/z/heart-shape-various-vegetables-fruits-healthy-food-concept-isolated-white-background-140287808.jpg'
                     },
@@ -154,7 +157,7 @@ const AppSettings = (props) => {
                         following: [2, 3, 4, 8, 9],
                         liked: [1, 3, 5, 10, 33],
                         slug: 'usertoblock',
-                        id: 4,
+                        _id: 4,
                         imagePath:
                             'https://thumbs.dreamstime.com/z/heart-shape-various-vegetables-fruits-healthy-food-concept-isolated-white-background-140287808.jpg'
                     }
@@ -180,9 +183,14 @@ const AppSettings = (props) => {
 
     useEffect(() => {
         // fetch recipe tags
-        axios('https://my.api.mockaroo.com/tag.json?key=f6a27260')
+        axios(
+            `http://localhost:4000/tags?blockedTags=${props.user.blockedTags.reduce(
+                (acc, tag) => `&blockedTags=${tag}`,
+                ''
+            )}`
+        )
             .then((response) => {
-                setTagsToBlock(response.data.slice(0, 25).map((tag) => tag.tag))
+                setTagsToBlock(response.data)
                 setLoadedTagsToBlock(true)
             })
             .catch((err) => {
@@ -241,7 +249,8 @@ const AppSettings = (props) => {
                 setTagsToBlock(backupData.map((tag) => tag.tag))
                 setLoadedTagsToBlock(true)
             })
-    }, [props.user.username])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
     const [blockedTagsList, addBlockedTagToList] = useState(
         props.user.blockedTags
@@ -263,7 +272,8 @@ const AppSettings = (props) => {
                 .post('http://localhost:4000/blocktag', {
                     addBlock: true,
                     tagToBlockOrUnblock: tagToBlock,
-                    signedInBlockedTags: blockedTagsList
+                    signedInBlockedTags: blockedTagsList,
+                    userID: currentUser._id
                 })
                 .then(() => {
                     addBlockedTagToList(blockedTagsList.concat(tagToBlock)) //change (1) list of user's blocked tags
@@ -281,9 +291,10 @@ const AppSettings = (props) => {
 
     const handleRemoveBlockedTag = (tagToUnblock) => {
         axios.post('http://localhost:4000/blocktag', {
-            addBlock: true,
+            addBlock: false,
             tagToBlockOrUnblock: tagToUnblock,
-            signedInBlockedTags: blockedTagsList
+            signedInBlockedTags: blockedTagsList,
+            userID: currentUser._id
         })
     }
 
