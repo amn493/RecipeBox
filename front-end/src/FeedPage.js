@@ -4,6 +4,7 @@ import RecipeList from './RecipeList'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import ErrorComponent from './ErrorComponent'
+import Button from 'react-bootstrap/Button'
 
 // Pulls recipes from the database for the logged-in feed and generates a recipelist for qualifying recipes
 // Qualifying recipes, e.g. latest recipes posted by those someone has followed
@@ -19,6 +20,9 @@ const Feed = (props) => {
 
     // Create a multiplier for the date
     const [dateMultiplier, setDateMultiplier] = useState(1)
+
+    // Create text to show above the load more recipes button
+    const [recLoadedText, setRecLoadedText] = useState('Showing latest recipes')
 
     /* Pull in recipes from mockaroo using the GET route handler */
     useEffect(() => {
@@ -55,8 +59,34 @@ const Feed = (props) => {
                     setReqError(true)
                     setRecBoxRecipes() // Returns empty, that way we can check in the RecipeList component if it's empty and return an error if so (e.g. "no recipes found")
                 })
+            setDateMultiplier(dateMultiplier + 1)
         }
     }, [props.user.following])
+
+    // To be called when the reload button is pressed
+    const loadMoreRecipes = () => {
+        // Increment the date multiplier
+        setDateMultiplier(dateMultiplier + 1)
+
+        // Requery the back-end for more following
+        let followingArray = props.user.following
+
+        axios(
+            `http://localhost:4000/feedrecipes?${
+                followingArray.length > 0
+                    ? followingArray.reduce(
+                          (acc, following) => acc + `&following=${following}`,
+                          `following=`
+                      )
+                    : `following=`
+            }&datemultiplier=${dateMultiplier}`
+        ).then((response) => {
+            setRecBoxRecipes(response.data)
+        })
+
+        // Set the text for some visible feedback
+        setRecLoadedText(`Showing recipes from ${dateMultiplier * 2} weeks ago`)
+    }
 
     return !reqError ? (
         <>
@@ -66,6 +96,16 @@ const Feed = (props) => {
                     recipes={recBoxRecipes}
                     user={props.user}
                 />
+                <div className="recLoadedText">{recLoadedText}</div>
+                <Button
+                    block
+                    size="sm"
+                    variant="info"
+                    id="loadMoreRecipesBtn"
+                    onClick={loadMoreRecipes}
+                >
+                    Load More Recipes
+                </Button>
             </div>
         </>
     ) : (

@@ -1,3 +1,10 @@
 .feed-entry {
     margin: 5%;
 }
+
+.recLoadedText {
+    text-align: center;
+    color: rgb(23, 162, 184);
+    font-size: 14px;
+    margin-bottom: 4px;
+}

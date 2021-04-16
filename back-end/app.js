@@ -254,10 +254,10 @@ app.get('/feedrecipes', (req, res, next) => {
 
     Recipe.find({
         // make sure recipe's creation date is within the last two weeks
-        createdAt: { $gt: twoWeeksAgo }, // Dev note: This works -- Successfully lists all recipes made within last two weeks
+        createdAt: { $gt: twoWeeksAgo },
 
         // make sure a recipe's user's id is one that is one being followed
-        'user.id': { $in: followingList }
+        'user._id': { $in: followingList }
     })
         .sort({ createdAt: -1 }) // Reverse the order of creation dates so latest recipe is on top
         .then((recipes) => res.json(recipes))
