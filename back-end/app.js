@@ -16,6 +16,20 @@ const JwtStrategy = require('passport-jwt').Strategy
 const { ExtractJwt } = require('passport-jwt')
 const JWT = require('jsonwebtoken')
 
+// nodemailer for emailing users
+const nodemailer = require('nodemailer')
+const smtpTransport = require('nodemailer-smtp-transport')
+
+const transport = nodemailer.createTransport(
+    smtpTransport({
+        service: 'Gmail',
+        auth: {
+            user: 'recipeboxupdate@gmail.com',
+            pass: process.env.RBXPASS
+        }
+    })
+)
+
 // mongoose + models
 const mongoose = require('mongoose')
 require('./db.js')
@@ -613,6 +627,56 @@ app.post('/likerecipe', (req, res, next) => {
     const update = {}
     if (req.body.like) {
         update.$push = { liked: req.body.recipeID }
+
+        // get info for sending email notification
+        Recipe.findOne({ _id: req.body.recipeID })
+            .then((recipe) => {
+                // get name of recipe for given user to receive notification about
+                const recipeNameForEmail = recipe.name
+                User.findOne({
+                    _id: req.body.userID
+                })
+                    .then((likinguser) => {
+                        // get username of liking user
+                        const usernameOfLikingUser = likinguser.username
+                        User.findOne({
+                            _id: recipe.user.id
+                        })
+                            .then((likeduser) => {
+                                // if user who created liked recipe has notifications on,
+                                // send email
+                                if (
+                                    likeduser.notificationSettings
+                                        .emailNotifications &&
+                                    likeduser.notificationSettings.likes &&
+                                    likeduser.username !== likinguser.username
+                                ) {
+                                    // get email and first name of user to receive notification
+                                    const emailforNotifs = likeduser.email
+                                    const firstNameOfEmailRecipient =
+                                        likeduser.firstName
+                                    const message = {
+                                        from: 'recipeboxupdate@gmail.com', // Sender address
+                                        to: emailforNotifs, // recipient(s)
+                                        subject: 'Your recipe received a like!', // Subject line
+                                        text: `Congrats, ${firstNameOfEmailRecipient}! @${usernameOfLikingUser} liked your recipe, ${recipeNameForEmail}` // body
+                                    }
+                                    transport.sendMail(message).catch((err) => {
+                                        next(err)
+                                    })
+                                }
+                            })
+                            .catch((err) => {
+                                next(err)
+                            })
+                    })
+                    .catch((err) => {
+                        next(err)
+                    })
+            })
+            .catch((err) => {
+                next(err)
+            })
     } else {
         update.$pull = { liked: req.body.recipeID }
     }
