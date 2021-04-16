@@ -704,31 +704,40 @@ app.post('/likerecipe', (req, res, next) => {
         })
 })
 
-app.post('/followuser', (req, res) => {
-    // update signed-in user (_id === req.body.userID)'s following array appropriately
-    // update followed user's followers array appropriately
-
-    const updatedSignedInUserFollowing = req.body.signedInUserFollowing
-    const updatedFollowedUserFollowers = req.body.followedUserFollowers
+app.post('/followuser', (req, res, next) => {
+    // update signed-in user's following array appropriately
+    // update profile user's followers array appropriately
+    const updateSignedIn = {}
+    const updateProfile = {}
 
     if (req.body.follow) {
-        updatedSignedInUserFollowing.push(req.body.followedUserID)
-        updatedFollowedUserFollowers.push(req.body.userID)
+        updateSignedIn.$push = { following: req.body.profileUserID }
+        updateProfile.$push = { followers: req.body.signedInUserID }
     } else {
-        updatedSignedInUserFollowing.splice(
-            updatedSignedInUserFollowing.indexOf(req.body.followedUserID),
-            1
-        )
-        updatedFollowedUserFollowers.splice(
-            updatedFollowedUserFollowers.indexOf(req.body.userID),
-            1
-        )
+        updateSignedIn.$pull = { following: req.body.profileUserID }
+        updateProfile.$pull = { followers: req.body.signedInUserID }
     }
 
-    res.json({
-        signedInUserFollowing: updatedSignedInUserFollowing,
-        FollowedUserFollowers: updatedFollowedUserFollowers
+    // update profile user's followers
+    User.findByIdAndUpdate(req.body.profileUserID, updateProfile, {
+        new: true,
+        useFindAndModify: false
     })
+        .then((profileUser) => {
+            // update signed-in user's following
+            User.findByIdAndUpdate(req.body.signedInUserID, updateSignedIn, {
+                new: true,
+                useFindAndModify: false
+            })
+                // send back the updated user objects
+                .then((signedInUser) => res.send({ profileUser, signedInUser }))
+                .catch((err) => {
+                    next(err)
+                })
+        })
+        .catch((err) => {
+            next(err)
+        })
 })
 
 app.post('/notificationsettings', (req, res, next) => {
