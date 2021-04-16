@@ -217,7 +217,9 @@ const ProfilePage = (props) => {
                 ) : (
                     <FollowButton
                         profileUserId={profileUser._id}
+                        setProfileUser={setProfileUser}
                         currentUser={props.user}
+                        setCurrentUser={props.setUser}
                         signedIn={props.signedIn}
                         setShowModal={setShowModal}
                     />

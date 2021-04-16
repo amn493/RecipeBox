@@ -130,7 +130,11 @@ function App() {
 
                         {/* USER PROFILE AND MY PROFILE PAGES */}
                         <Route exact path="/user-:slug">
-                            <ProfilePage user={user} signedIn={signedIn} />
+                            <ProfilePage
+                                user={user}
+                                signedIn={signedIn}
+                                setUser={setUser}
+                            />
                         </Route>
 
                         {/* FOLLOWERS PAGE */}
