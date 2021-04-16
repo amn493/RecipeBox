@@ -31,7 +31,7 @@ describe('Testing route handler for POST /updateuserinfo ', () => {
         .field('firstName', firstName)
         .field('lastName', lastName)
         .field('bio', bio)
-        .field('_id', _id)
+        .field('id', _id)
         // Change file path to be image files availible to multer
         .attach('profilepicture', fs.readFileSync('./test/image.png'), 'image.png')
         .then((response) => {
