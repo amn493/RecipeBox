@@ -488,12 +488,8 @@ const updateTags = (tags, i, cb, next) => {
 app.post('/newrecipe', upload.single('recipeimage'), (req, res, next) => {
     // new recipe
     const newRecipe = {
-        user: {
-            id: req.body.userID,
-            username: req.body.username
-        },
+        user: req.body.userID,
         name: req.body.name,
-
         imagePath: path.join('/uploads/', req.file.filename),
         tags: req.body.tags.split(',').filter((tag) => tag !== ''),
         caption: req.body.caption,
