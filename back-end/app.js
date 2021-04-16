@@ -306,10 +306,11 @@ app.get('/comments', (req, res, next) => {
 })
 
 app.get('/recipesbyuser', (req, res, next) => {
-    // fetch recipes where user.id === req.query.userID from database
+    // fetch recipes where user === req.query.userID from database
     Recipe.find({
-        'user.id': req.query.userID
+        user: req.query.userID
     })
+        .sort({ createdAt: -1 }) // Reverse the order of creation dates so latest recipe is on top
         .then((recipes) => res.json(recipes))
         .catch((err) => next(err))
 })
@@ -487,12 +488,8 @@ const updateTags = (tags, i, cb, next) => {
 app.post('/newrecipe', upload.single('recipeimage'), (req, res, next) => {
     // new recipe
     const newRecipe = {
-        user: {
-            id: req.body.userID,
-            username: req.body.username
-        },
+        user: req.body.userID,
         name: req.body.name,
-
         imagePath: path.join('/uploads/', req.file.filename),
         tags: req.body.tags.split(',').filter((tag) => tag !== ''),
         caption: req.body.caption,

@@ -41,7 +41,6 @@ const NewRecipePage = (props) => {
 
         const newRecipe = new FormData()
         newRecipe.append('userID', props.user._id)
-        newRecipe.append('username', props.user.username)
         newRecipe.append('name', nameValue)
         newRecipe.append('recipeimage', imageFile)
         newRecipe.append('tags', tags)
