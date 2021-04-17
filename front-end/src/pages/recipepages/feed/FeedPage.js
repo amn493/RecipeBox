@@ -1,9 +1,9 @@
 import './FeedPage.css'
-import RecipeList from './RecipeList'
+import RecipeList from '../components/RecipeList.js'
 
 import { useEffect, useState } from 'react'
 import axios from 'axios'
-import ErrorComponent from './ErrorComponent'
+import ErrorComponent from '../../../gencomponents/ErrorComponent.js'
 import Button from 'react-bootstrap/Button'
 
 // Pulls recipes from the database for the logged-in feed and generates a recipelist for qualifying recipes

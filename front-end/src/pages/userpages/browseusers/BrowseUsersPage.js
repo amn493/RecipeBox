@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react'
 import axios from 'axios'
 
 import './BrowseUsersPage.css'
-import KeyWordSearchBar from './KeywordSearchBar.js'
-import SmallUserPreview from './SmallUserPreview.js'
-import ErrorComponent from './ErrorComponent'
+import KeyWordSearchBar from '../../../gencomponents/searchbars/KeywordSearchBar.js'
+import SmallUserPreview from '../../recipepages/components/SmallRecipePreview'
+import ErrorComponent from '../../../gencomponents/ErrorComponent.js'
 
 // Browse Users Page
 // Does not expect any argument for props

@@ -1,5 +1,5 @@
 import Modal from 'react-bootstrap/Modal'
-import CreateAccountPage from './CreateAccountPage'
+import CreateAccountPage from '../pages/accountpages/createaccount/CreateAccountPage.js'
 
 import './CreateAccountModal.css'
 
