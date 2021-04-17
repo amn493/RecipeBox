@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 // import and instantiate express
 const express = require('express') // CommonJS import style!
 
@@ -15,6 +16,9 @@ const LocalStrategy = require('passport-local').Strategy
 const JwtStrategy = require('passport-jwt').Strategy
 const { ExtractJwt } = require('passport-jwt')
 const JWT = require('jsonwebtoken')
+
+// Express Validator for sanitizing inputs *soap emoji in spirit*
+const { body, validationResult } = require('express-validator')
 
 // nodemailer for emailing users
 const nodemailer = require('nodemailer')
@@ -414,27 +418,69 @@ app.get('/usernametaken', (req, res, next) => {
 
 /* Begin POST Requests */
 
+// Note on sanitization: The front-end validation is preeeetty good so usually we'll never get here.
+// For signin and create account, the validation would only be reached on the back-end if someone went REALLY far out of their way to change fields.
+// To "easily" test them, go into the respective front-end pages and comment out any front-end validation to let anything slide.
+
 app.post(
     '/signin',
     passport.authenticate('signin', {
         session: false
     }),
+
+    body('username')
+        .isAlphanumeric()
+        .withMessage('Username must only be alphanumeric.'),
+    body('password').escape(),
     (req, res) => {
-        res.json({
-            token: signToken(req.user)
-        })
+        const errors = validationResult(req)
+        if (!errors.isEmpty()) {
+            res.status(400).json({ errors: errors.array() })
+        } else {
+            res.json({
+                token: signToken(req.user)
+            })
+        }
     }
 )
-
+/*
+            email === '' ||
+            firstName === '' ||
+            lastName === '' ||
+            username === '' ||
+            password === '' ||
+            ReEnterPassword === '' ||
+*/
 app.post(
     '/createaccount',
     passport.authenticate('createaccount', {
         session: false
     }),
+
+    body('email').isEmail().withMessage('Email entered is not a valid email.'),
+    body('firstName')
+        .isAlpha()
+        .withMessage('First name must contain only letters.'),
+    body('lastName')
+        .isAlpha()
+        .withMessage('Last name must contain only letters.'),
+    body('username')
+        .isAlphanumeric()
+        .withMessage('Username must only be alphanumeric.'),
+    body('password').escape(),
+    body('ReEnterPassword')
+        .equals('password')
+        .withMessage('Does not match password.'),
+
     (req, res) => {
-        res.json({
-            token: signToken(req.user)
-        })
+        const errors = validationResult(req)
+        if (!errors.isEmpty()) {
+            res.status(400).json({ errors: errors.array() })
+        } else {
+            res.json({
+                token: signToken(req.user)
+            })
+        }
     }
 )
 
@@ -443,20 +489,24 @@ app.post('/signout', (req, res) => {
     res.send('Signed out user')
 })
 
-app.post('/comment', (req, res) => {
-    // new comment
-    const newComment = {
-        recipe: req.body.recipe,
-        user: req.body.user,
-        comment: req.body.comment,
-        createdAt: Date.now()
+app.post('/comment', (req, res, next) => {
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        res.status(400).json({ errors: errors.array() })
+    } else {
+        // new comment
+        const newComment = {
+            recipe: req.body.recipe,
+            user: req.body.user,
+            comment: req.body.comment,
+            createdAt: Date.now()
+        }
+        // save new comment to the database
+        new Comment(newComment)
+            .save()
+            .then((comment) => res.json(comment))
+            .catch((err) => next(err))
     }
-
-    // save new comment to the database
-    new Comment(newComment)
-        .save()
-        .then((comment) => res.json(comment))
-        .catch((err) => next(err))
 })
 
 // recursive function for adding new tags to database and updating counts of existing tags
