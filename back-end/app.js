@@ -775,32 +775,37 @@ app.post(
     upload.single('profilepicture'),
     (req, res, next) => {
         // recieve post data from updating user's basic info
-        const updatedUserInfo = {
-            username: req.body.username,
-            firstName: req.body.firstName,
-            lastName: req.body.lastName,
-            bio: req.body.bio,
-            id: req.body.id,
-            imagePath: path.join('/uploads/', req.file.filename)
+        const updatedUserInfo = {}
+        if (req.body.username) {
+            updatedUserInfo.username = req.body.username
+        }
+        if (req.body.firstName) {
+            updatedUserInfo.firstName = req.body.firstName
+        }
+        if (req.body.lastName) {
+            updatedUserInfo.lastName = req.body.lastName
+        }
+        if (req.body.bio) {
+            updatedUserInfo.bio = req.body.bio
+        }
+        if (req.file) {
+            updatedUserInfo.imagePath = path.join(
+                '/uploads/',
+                req.file.filename
+            )
         }
 
-        // update the user's user object (in database)
-        User.findByIdAndUpdate(
-            req.body.userID,
-            {
-                username: updatedUserInfo.username,
-                firstName: updatedUserInfo.firstName,
-                lastName: updatedUserInfo.lastName,
-                bio: updatedUserInfo.bio,
-                imagePath: updatedUserInfo.imagePath
-            },
-            { new: true, useFindAndModify: false }
-        )
+        User.findByIdAndUpdate(req.body.id, updatedUserInfo, {
+            new: true,
+            useFindAndModify: false
+        })
             .then(() => {
                 // send a response to the user (sending data back to test)
                 res.json(updatedUserInfo)
             })
-            .catch((err) => next(err))
+            .catch((err) => {
+                next(err)
+            })
     }
 )
 
