@@ -799,9 +799,9 @@ app.post(
             new: true,
             useFindAndModify: false
         })
-            .then(() => {
+            .then((user) => {
                 // send a response to the user (sending data back to test)
-                res.json(updatedUserInfo)
+                res.json(user)
             })
             .catch((err) => {
                 next(err)
