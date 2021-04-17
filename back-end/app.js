@@ -770,22 +770,39 @@ app.post('/notificationsettings', (req, res, next) => {
         .catch((err) => next(err))
 })
 
-app.post('/updateuserinfo', upload.single('profilepicture'), (req, res) => {
-    // recieve post data from updating user's basic info
-    const updatedUserInfo = {
-        username: req.body.username,
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        bio: req.body.bio,
-        id: req.body.id,
-        imagePath: path.join('/uploads/', req.file.filename)
+app.post(
+    '/updateuserinfo',
+    upload.single('profilepicture'),
+    (req, res, next) => {
+        // recieve post data from updating user's basic info
+        const updatedUserInfo = {
+            username: req.body.username,
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
+            bio: req.body.bio,
+            id: req.body.id,
+            imagePath: path.join('/uploads/', req.file.filename)
+        }
+
+        // update the user's user object (in database)
+        User.findByIdAndUpdate(
+            req.body.userID,
+            {
+                username: updatedUserInfo.username,
+                firstName: updatedUserInfo.firstName,
+                lastName: updatedUserInfo.lastName,
+                bio: updatedUserInfo.bio,
+                imagePath: updatedUserInfo.imagePath
+            },
+            { new: true, useFindAndModify: false }
+        )
+            .then(() => {
+                // send a response to the user (sending data back to test)
+                res.json(updatedUserInfo)
+            })
+            .catch((err) => next(err))
     }
-
-    // update the user's user object (in database)
-
-    // send a response to the user (sending data back to test)
-    res.json(updatedUserInfo)
-})
+)
 
 // export the express app we created to make it available to other modules
 module.exports = app
