@@ -57,7 +57,10 @@ const EditProfilePage = (props) => {
             .post('http://localhost:4000/updateuserinfo', updatedUserInfo, {
                 headers
             })
-            .then((response) => setSubmitted(true))
+            .then((response) => {
+                props.setUser(response.data)
+                setSubmitted(true)
+            })
     }
 
     // Display file name when uploaded [taken from NewRecipePage.js]
