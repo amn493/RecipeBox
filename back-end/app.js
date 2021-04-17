@@ -16,6 +16,20 @@ const JwtStrategy = require('passport-jwt').Strategy
 const { ExtractJwt } = require('passport-jwt')
 const JWT = require('jsonwebtoken')
 
+// nodemailer for emailing users
+const nodemailer = require('nodemailer')
+const smtpTransport = require('nodemailer-smtp-transport')
+
+const transport = nodemailer.createTransport(
+    smtpTransport({
+        service: 'Gmail',
+        auth: {
+            user: 'recipeboxupdate@gmail.com',
+            pass: process.env.RBXPASS
+        }
+    })
+)
+
 // mongoose + models
 const mongoose = require('mongoose')
 require('./db.js')
@@ -240,13 +254,21 @@ app.get('/feedrecipes', (req, res, next) => {
 
     Recipe.find({
         // make sure recipe's creation date is within the last two weeks
-        createdAt: { $gt: twoWeeksAgo }, // Dev note: This works -- Successfully lists all recipes made within last two weeks
+        createdAt: { $gt: twoWeeksAgo },
 
         // make sure a recipe's user's id is one that is one being followed
-        'user.id': { $in: followingList }
+        user: { $in: followingList }
     })
         .sort({ createdAt: -1 }) // Reverse the order of creation dates so latest recipe is on top
         .then((recipes) => res.json(recipes))
+        .catch((err) => next(err))
+})
+
+app.get('/users', (req, res, next) => {
+    // fetch all users
+
+    User.find({ _id: { $ne: req.query.userID } })
+        .then((users) => res.json(users))
         .catch((err) => next(err))
 })
 
@@ -284,10 +306,11 @@ app.get('/comments', (req, res, next) => {
 })
 
 app.get('/recipesbyuser', (req, res, next) => {
-    // fetch recipes where user.id === req.query.userID from database
+    // fetch recipes where user === req.query.userID from database
     Recipe.find({
-        'user.id': req.query.userID
+        user: req.query.userID
     })
+        .sort({ createdAt: -1 }) // Reverse the order of creation dates so latest recipe is on top
         .then((recipes) => res.json(recipes))
         .catch((err) => next(err))
 })
@@ -465,12 +488,8 @@ const updateTags = (tags, i, cb, next) => {
 app.post('/newrecipe', upload.single('recipeimage'), (req, res, next) => {
     // new recipe
     const newRecipe = {
-        user: {
-            id: req.body.userID,
-            username: req.body.username
-        },
+        user: req.body.userID,
         name: req.body.name,
-
         imagePath: path.join('/uploads/', req.file.filename),
         tags: req.body.tags.split(',').filter((tag) => tag !== ''),
         caption: req.body.caption,
@@ -498,7 +517,7 @@ app.post('/newrecipe', upload.single('recipeimage'), (req, res, next) => {
         })
 })
 
-app.post('/blockuser', (req, res) => {
+app.post('/blockuser', (req, res, next) => {
     // update signed-in user's blockedUsers array appropriately
     // update signed-in users's following/followers array appropriately
     // update blocked user's following/followers array appropriately
@@ -539,20 +558,44 @@ app.post('/blockuser', (req, res) => {
             1
         )
     }
+    User.findByIdAndUpdate(
+        req.body.signedInUserID,
+        {
+            blockedUsers: updatedSignedInBlockedUsers,
+            following: updatedSignedInUserFollowing,
+            followers: updatedSignedInUserFollowers
+        },
+        { new: true, useFindAndModify: false }
+    )
+        .then(() => {
+            User.findByIdAndUpdate(
+                req.body.blockedUserID,
+                {
+                    followers: updatedblockedUserFollowers,
+                    following: updatedblockedUserFollowing
+                },
+                { useFindAndModify: false }
+            )
 
-    res.json({
-        signedInBlockedUsers: updatedSignedInBlockedUsers,
-        signedInUserFollowing: updatedSignedInUserFollowing,
-        signedInUserFollowers: updatedSignedInUserFollowers,
-        blockedUserFollowers: updatedblockedUserFollowers,
-        blockedUserFollowing: updatedblockedUserFollowing
-    })
+                .then(() => {
+                    res.json({
+                        signedInBlockedUsers: updatedSignedInBlockedUsers,
+                        signedInUserFollowing: updatedSignedInUserFollowing,
+                        signedInUserFollowers: updatedSignedInUserFollowers,
+                        blockedUserFollowers: updatedblockedUserFollowers,
+                        blockedUserFollowing: updatedblockedUserFollowing
+                    })
+                })
+                .catch((err) => next(err))
+        })
+        .catch((err) => next(err))
 })
 
-app.post('/blocktag', (req, res) => {
+app.post('/blocktag', (req, res, next) => {
     // update signed-in user's blockedTags array appropriately
 
-    const updatedSignedInBlockedTags = req.body.signedInBlockedTags
+    // eslint-disable-next-line prefer-const
+    let updatedSignedInBlockedTags = req.body.signedInBlockedTags
 
     if (req.body.addBlock) {
         updatedSignedInBlockedTags.push(req.body.tagToBlockOrUnblock)
@@ -563,7 +606,17 @@ app.post('/blocktag', (req, res) => {
         )
     }
 
-    res.json({ signedInBlockedTags: updatedSignedInBlockedTags })
+    User.findByIdAndUpdate(
+        req.body.userID,
+        {
+            blockedTags: updatedSignedInBlockedTags
+        },
+        { new: true, useFindAndModify: false }
+    )
+        .then(() => {
+            res.json({ signedInBlockedTags: updatedSignedInBlockedTags })
+        })
+        .catch((err) => next(err))
 })
 
 app.post('/likerecipe', (req, res, next) => {
@@ -571,24 +624,81 @@ app.post('/likerecipe', (req, res, next) => {
     const update = {}
     if (req.body.like) {
         update.$push = { liked: req.body.recipeID }
+
+        // get info for sending email notification
+        Recipe.findOne({ _id: req.body.recipeID })
+            .then((recipe) => {
+                // get name of recipe for given user to receive notification about
+                const recipeNameForEmail = recipe.name
+                User.findOne({
+                    _id: req.body.userID
+                })
+                    .then((likinguser) => {
+                        // get username of liking user
+                        const usernameOfLikingUser = likinguser.username
+                        User.findOne({
+                            _id: recipe.user.id
+                        })
+                            .then((likeduser) => {
+                                // if user who created liked recipe has notifications on,
+                                // send email
+                                if (
+                                    likeduser.notificationSettings
+                                        .emailNotifications &&
+                                    likeduser.notificationSettings.likes &&
+                                    likeduser.username !== likinguser.username
+                                ) {
+                                    // get email and first name of user to receive notification
+                                    const emailforNotifs = likeduser.email
+                                    const firstNameOfEmailRecipient =
+                                        likeduser.firstName
+                                    const message = {
+                                        from: 'recipeboxupdate@gmail.com', // Sender address
+                                        to: emailforNotifs, // recipient(s)
+                                        subject: 'Your recipe received a like!', // Subject line
+                                        text: `Congrats, ${firstNameOfEmailRecipient}! @${usernameOfLikingUser} liked your recipe, ${recipeNameForEmail}` // body
+                                    }
+                                    transport.sendMail(message).catch((err) => {
+                                        next(err)
+                                    })
+                                }
+                            })
+                            .catch((err) => {
+                                next(err)
+                            })
+                    })
+                    .catch((err) => {
+                        next(err)
+                    })
+            })
+            .catch((err) => {
+                next(err)
+            })
     } else {
         update.$pull = { liked: req.body.recipeID }
     }
 
     // update signed in user's liked
-    User.updateOne({ _id: req.body.userID }, update)
-        .then(() => {
+    User.findByIdAndUpdate(req.body.userID, update, {
+        new: true,
+        useFindAndModify: false
+    })
+        .then((user) => {
             // update recipes likes
-            Recipe.updateOne(
-                { _id: req.body.recipeID },
+            Recipe.findByIdAndUpdate(
+                req.body.recipeID,
                 {
                     $inc: {
                         likes: req.body.like ? 1 : -1
                     }
+                },
+                {
+                    new: true,
+                    useFindAndModify: false
                 }
             )
-                // send back the user's updated liked array
-                .then(() => res.send('Updated likes'))
+                // send back the updated user and recipe
+                .then((recipe) => res.send({ user, recipe }))
                 .catch((err) => {
                     next(err)
                 })
@@ -598,48 +708,66 @@ app.post('/likerecipe', (req, res, next) => {
         })
 })
 
-app.post('/followuser', (req, res) => {
-    // update signed-in user (_id === req.body.userID)'s following array appropriately
-    // update followed user's followers array appropriately
-
-    const updatedSignedInUserFollowing = req.body.signedInUserFollowing
-    const updatedFollowedUserFollowers = req.body.followedUserFollowers
+app.post('/followuser', (req, res, next) => {
+    // update signed-in user's following array appropriately
+    // update profile user's followers array appropriately
+    const updateSignedIn = {}
+    const updateProfile = {}
 
     if (req.body.follow) {
-        updatedSignedInUserFollowing.push(req.body.followedUserID)
-        updatedFollowedUserFollowers.push(req.body.userID)
+        updateSignedIn.$push = { following: req.body.profileUserID }
+        updateProfile.$push = { followers: req.body.signedInUserID }
     } else {
-        updatedSignedInUserFollowing.splice(
-            updatedSignedInUserFollowing.indexOf(req.body.followedUserID),
-            1
-        )
-        updatedFollowedUserFollowers.splice(
-            updatedFollowedUserFollowers.indexOf(req.body.userID),
-            1
-        )
+        updateSignedIn.$pull = { following: req.body.profileUserID }
+        updateProfile.$pull = { followers: req.body.signedInUserID }
     }
 
-    res.json({
-        signedInUserFollowing: updatedSignedInUserFollowing,
-        FollowedUserFollowers: updatedFollowedUserFollowers
+    // update profile user's followers
+    User.findByIdAndUpdate(req.body.profileUserID, updateProfile, {
+        new: true,
+        useFindAndModify: false
     })
+        .then((profileUser) => {
+            // update signed-in user's following
+            User.findByIdAndUpdate(req.body.signedInUserID, updateSignedIn, {
+                new: true,
+                useFindAndModify: false
+            })
+                // send back the updated user objects
+                .then((signedInUser) => res.send({ profileUser, signedInUser }))
+                .catch((err) => {
+                    next(err)
+                })
+        })
+        .catch((err) => {
+            next(err)
+        })
 })
 
-app.post('/notificationsettings', (req, res) => {
+app.post('/notificationsettings', (req, res, next) => {
     // recieve updated notification settings
     const updatedNotificationSettings = {
-        email: req.body.email,
+        emailNotifications: req.body.emailNotifications,
         likes: req.body.likes,
         comments: req.body.comments,
-        followers: req.body.followers,
+        follows: req.body.follows
         // posts: req.body.posts,
-        id: req.body.id
     }
 
+    console.log(updatedNotificationSettings)
     // update the settings
-
-    // send response
-    res.json(updatedNotificationSettings)
+    User.findByIdAndUpdate(
+        req.body.userID,
+        {
+            notificationSettings: updatedNotificationSettings
+        },
+        { new: true, useFindAndModify: false }
+    )
+        .then(() => {
+            // send response
+            res.json(updatedNotificationSettings)
+        })
+        .catch((err) => next(err))
 })
 
 app.post('/updateuserinfo', upload.single('profilepicture'), (req, res) => {

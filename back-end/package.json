@@ -31,6 +31,8 @@
     "mongoose-url-slugs": "^1.0.2",
     "morgan": "^1.10.0",
     "multer": "^1.4.2",
+    "nodemailer": "^6.5.0",
+    "nodemailer-smtp-transport": "^2.7.4",
     "nyc": "^15.1.0",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",

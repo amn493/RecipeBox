@@ -9,9 +9,9 @@ import Button from 'react-bootstrap/Button'
 import Comment from './Comment.js'
 import Timestamp from './Timestamp'
 import ErrorComponent from './ErrorComponent.js'
+import CreateAccountModal from './CreateAccountModal.js'
 
 import './RecipePage.css'
-import CreateAccountModal from './CreateAccountModal.js'
 
 // Recipe Page
 // Expects no props - must be accessed via a url with a slug (/recipes-:slug)
@@ -23,111 +23,71 @@ const RecipePage = (props) => {
     // get slug from url params
     const { slug } = useParams()
 
-    // state variables for knowing when all required data has been fetched from the apis
-    const [loadedRecipe, setLoadedRecipe] = useState(false)
-    const [loadedComments, setLoadedComments] = useState(false)
-
     // request current recipe (slug = slug) on initial render
-    const [recipe, setRecipe] = useState([])
+    const [recipe, setRecipe] = useState()
 
     useEffect(() => {
         // fetch the recipe that corresponds to the slug from the url
         axios(`http://localhost:4000/recipe?slug=${slug}`)
             .then((response) => {
                 setRecipe(response.data)
-                setLoadedRecipe(true)
             })
             .catch((err) => {
                 console.error(err)
                 setReqError(true)
-
-                // make some backup fake data
-                const backupData = [
-                    {
-                        user: {
-                            id: 1,
-                            username: 'foobar',
-                            slug: 'foobar'
-                        },
-                        name: 'Guacamole',
-                        imagePath: 'https://picsum.photos/300',
-                        tags: ['mexican', 'spicy', 'dip'],
-                        caption: 'my secret recipe:)',
-                        ingredients: [
-                            '3 avocados',
-                            '1 tomato',
-                            '1/2 yellow onion',
-                            '2 jalapeños',
-                            '1/4 bunch cilantro',
-                            '1 lime',
-                            'salt',
-                            'pepper'
-                        ],
-                        instructions: [
-                            'Mash the avocados',
-                            'Dice the tomato, onion, and jalapeños',
-                            'Chop the cilantro',
-                            'Put everything in a bowl',
-                            'Squeeze in the lime',
-                            'Add salt and pepper to taste',
-                            'Mix'
-                        ],
-                        likes: 36,
-                        createdAt: 1615864425952,
-                        slug: 'foobar-guacamole',
-                        id: 2
-                    }
-                ]
-
-                setRecipe(backupData[0])
-                setLoadedRecipe(true)
             })
     }, [slug])
 
-    // request comments for current recipe (recipe = recipe.id) on initial render
-    const [comments, setComments] = useState([])
+    // request author user
+    const [authorUser, setAuthorUser] = useState({})
 
     useEffect(() => {
-        if (loadedRecipe) {
+        if (recipe) {
+            if (props.user._id === recipe.user) {
+                setAuthorUser({
+                    id: props.user._id,
+                    username: props.user.username,
+                    slug: props.user.slug
+                })
+            } else {
+                axios(`http://localhost:4000/userbyid?id=${recipe.user}`)
+                    .then((response) => {
+                        setAuthorUser({
+                            id: response.data._id,
+                            username: response.data.username,
+                            slug: response.data.slug
+                        })
+                    })
+                    .catch((err) => console.error(err))
+            }
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [recipe])
+
+    // request comments for current recipe (recipe = recipe.id) on initial render
+    const [comments, setComments] = useState()
+
+    useEffect(() => {
+        if (recipe) {
             axios(`http://localhost:4000/comments?recipeID=${recipe._id}`)
                 .then((response) => {
                     setComments(
                         response.data.sort((a, b) => a.createdAt - b.createdAt)
                     )
-                    setLoadedComments(true)
                 })
                 .catch((err) => {
                     console.error(err)
                     setReqError(true)
-
-                    // make some backup fake data
-                    const backupData = [
-                        {
-                            recipe: 2, // a reference to a Recipe object
-                            user: 5, // a reference to a User object
-                            comment: 'Love this recipe!',
-                            createdAt: 1615864460796
-                        },
-                        {
-                            recipe: 2, // a reference to a Recipe object
-                            user: 12, // a reference to a User object
-                            comment: 'This recipe is amazing',
-                            createdAt: 1615864472221
-                        }
-                    ]
-
-                    setComments(backupData)
-                    setLoadedComments(true)
                 })
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [loadedRecipe])
+    }, [recipe])
 
     // state variable for showing sign-in modal
     const [showModal, setShowModal] = useState(false)
 
     return !reqError ? (
-        loadedRecipe && loadedComments ? (
+        recipe && comments ? (
             // render the page if all required data has been fetched
             <div className="recipe">
                 <img
@@ -147,7 +107,9 @@ const RecipePage = (props) => {
                                 <td className="recipeDetailsTableRightCol recipeDetailsTableLikedCol recipeDetailsTopTableCell">
                                     <LikeButton
                                         recipe={recipe}
+                                        setRecipe={setRecipe}
                                         user={props.user}
+                                        setUser={props.setUser}
                                         signedIn={props.signedIn}
                                         setShowModal={setShowModal}
                                     />
@@ -159,9 +121,9 @@ const RecipePage = (props) => {
                                 <td>
                                     <a
                                         className="recipeUsername"
-                                        href={'/user-' + recipe.user.slug}
+                                        href={'/user-' + authorUser.slug}
                                     >
-                                        {'@' + recipe.user.username}
+                                        {'@' + authorUser.username}
                                     </a>
                                 </td>
                                 <td className="recipeDetailsTableRightCol">
@@ -231,25 +193,20 @@ const RecipePage = (props) => {
 }
 
 // Component for like button
-// Expects recipe (a recipe object) and user (a user object for the signed-in user) as props
-// Example: <LikeButton recipe={recipe} user={user} />
-
 const LikeButton = (props) => {
-    // state variables for number of likes recipe has and whether or not the signed-in user has liked the recipe
-    const [likes, setLikes] = useState(props.recipe.likes)
-    const [liked, setLiked] = useState(
-        props.user.liked.includes(props.recipeId)
-    )
-
-    const handleLiked = (isLiking) => {
+    const handleLiked = () => {
         let requestData = {
-            like: isLiking, // true false depending on whether or not the recipe was liked
-            userID: props.user._id, // user id
-            recipeID: props.recipe._id // recipe id
+            like: !props.user.liked.includes(props.recipe._id),
+            userID: props.user._id,
+            recipeID: props.recipe._id
         }
 
         axios
             .post('http://localhost:4000/likerecipe', requestData)
+            .then((response) => {
+                props.setRecipe(response.data.recipe)
+                props.setUser(response.data.user)
+            })
             .catch((err) => console.error(err))
     }
 
@@ -258,20 +215,26 @@ const LikeButton = (props) => {
             <input
                 className="likeButton"
                 type="image"
-                src={liked ? 'heartFill.png' : 'heartOutline.png'}
-                alt={liked ? 'heart fill' : 'heart outline'}
+                src={
+                    props.user.liked.includes(props.recipe._id)
+                        ? 'heartFill.png'
+                        : 'heartOutline.png'
+                }
+                alt={
+                    props.user.liked.includes(props.recipe._id)
+                        ? 'heart fill'
+                        : 'heart outline'
+                }
                 onClick={() => {
                     if (props.signedIn) {
-                        setLikes(likes + (liked ? -1 : 1))
-                        handleLiked(!liked)
-                        setLiked(!liked)
+                        handleLiked()
                     } else {
                         // show sign-in modal if a not-signed in user attempts to like the recipe
                         props.setShowModal(true)
                     }
                 }}
             />
-            {likes}
+            {props.recipe.likes}
         </div>
     )
 }
