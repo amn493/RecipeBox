@@ -23,6 +23,7 @@ const ProfilePage = (props) => {
 
     // request user whose profile is being displayed on initial render
     const [profileUser, setProfileUser] = useState()
+    const [userBlocked, setUserBlocked] = useState(false)
 
     useEffect(() => {
         // fetch the user whose profile is being displayed (slug = slug)
@@ -36,19 +37,21 @@ const ProfilePage = (props) => {
             })
     }, [slug])
 
-    // request user's recipes on initial render (user.id = profileUser.id)
-    const [recipes, setRecipes] = useState()
-    const [userBlocked, setUserBlocked] = useState(false)
-
     useEffect(() => {
         if (profileUser) {
-            //if profileUser or user is blocked by the other don't fetch recipes
             if (
-                props.user._id in profileUser.blockedUsers ||
-                profileUser._id in props.user.blockedUsers
+                profileUser.blockedUsers.includes(props.user._id) ||
+                props.user.blockedUsers.includes(profileUser._id)
             ) {
                 setUserBlocked(true)
             }
+        }
+    }, [profileUser, props.user._id, props.user.blockedUsers])
+
+    // request user's recipes on initial render (user.id = profileUser.id)
+    const [recipes, setRecipes] = useState()
+    useEffect(() => {
+        if (profileUser) {
             if (!userBlocked) {
                 // fetch user's recipes
                 axios(
@@ -63,7 +66,7 @@ const ProfilePage = (props) => {
                     })
             }
         }
-    }, [profileUser, props.user.blockedUsers, props.user._id, userBlocked])
+    }, [profileUser, userBlocked])
 
     // state variable for storing the active tab
     const [activeTab, setActiveTab] = useState('small')
@@ -151,7 +154,8 @@ const ProfilePage = (props) => {
                         </Nav>
 
                         <Tab.Content>
-                            {recipes.length === 0 || userBlocked ? (
+                            {(recipes && recipes.length === 0) ||
+                            userBlocked ? (
                                 <ErrorComponent error={'No Recipes'} />
                             ) : (
                                 <>
