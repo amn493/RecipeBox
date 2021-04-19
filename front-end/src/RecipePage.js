@@ -37,8 +37,6 @@ const RecipePage = (props) => {
                     response.data.user.id in props.user.blockedUsers
                 ) {
                     setUserBlocked(true)
-                } else {
-                    setRecipe(response.data)
                 }
             })
             .catch((err) => {
