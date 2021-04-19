@@ -3,7 +3,7 @@ import axios from 'axios'
 
 import './BrowseUsersPage.css'
 import KeyWordSearchBar from '../../../gencomponents/searchbars/KeywordSearchBar.js'
-import SmallUserPreview from '../../recipepages/components/SmallRecipePreview'
+import SmallUserPreview from '../../userpages/components/SmallUserPreview.js'
 import ErrorComponent from '../../../gencomponents/ErrorComponent.js'
 
 // Browse Users Page
