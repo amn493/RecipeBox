@@ -28,13 +28,11 @@ const FollowersPage = (props) => {
             .then((response) => {
                 setUser(response.data)
                 setLoadedUser(true)
-
                 if (
                     response.data.blockedUsers.includes(props.user._id) ||
                     props.user.blockedUsers.includes(response.data._id)
                 ) {
                     setUserBlocked(true)
-                    console.log('blocked')
                 }
             })
             .catch((err) => {

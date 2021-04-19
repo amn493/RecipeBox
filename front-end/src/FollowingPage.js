@@ -20,6 +20,7 @@ const FollowingPage = (props) => {
     // Request all followers on initial render
     const [user, setUser] = useState([])
     const [loadedUser, setLoadedUser] = useState(false)
+    const [userBlocked, setUserBlocked] = useState(false)
 
     useEffect(() => {
         // fetch the user whose profile is being displayed (slug = slug)
@@ -27,12 +28,19 @@ const FollowingPage = (props) => {
             .then((response) => {
                 setUser(response.data)
                 setLoadedUser(true)
+                if (
+                    response.data.blockedUsers.includes(props.user._id) ||
+                    props.user.blockedUsers.includes(response.data._id)
+                ) {
+                    setUserBlocked(true)
+                    console.log('blocked')
+                }
             })
             .catch((err) => {
                 console.error(err)
                 setReqError(true)
             })
-    }, [slug])
+    }, [props.user._id, props.user.blockedUsers, slug])
 
     // Request all following on initial render
     const [allFollowing, setAllFollowing] = useState([])
@@ -102,7 +110,9 @@ const FollowingPage = (props) => {
                         </i>
                     </a>
                     <h3 className="userNameFollowing">@{user.username}</h3>
-                    <h4 className="title">{user.following.length} Following</h4>
+                    <h4 className="title">
+                        {userBlocked ? 0 : user.following.length} Following
+                    </h4>
                 </div>
                 <div className="userSearchBarFollowing">
                     <KeyWordSearchBar
@@ -113,7 +123,7 @@ const FollowingPage = (props) => {
                 </div>
                 <div className="followingList">
                     <div className="followingUserPreview">
-                        {following.length === 0 ? (
+                        {userBlocked || following.length === 0 ? (
                             <p className="noFollowingFoundMessage">
                                 No users found
                             </p>
