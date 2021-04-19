@@ -7,20 +7,27 @@ import './SmallUserPreview.css'
 //To include the component without 'unblock' buttons for each user, specify isBlockedUserProfile=false
 //Otherwise, pass in isBlockedUserProfile=true
 const SmallUserPreview = (props) => {
-
-    let userSlug = "/user-" + props.user.slug
+    let userSlug = '/user-' + props.user.slug
 
     return (
         <div className="userPreview">
-
-            {/*preview links to the user profile*/ }
-            <a className="userPreviewProfileLink" href={props.isBlockedUserProfile ? undefined : userSlug}> {/*TODO(?): Disable link if component used for blocked users page?*/ }
+            {/*preview links to the user profile*/}
+            <a
+                className="userPreviewProfileLink"
+                href={props.isBlockedUserProfile ? undefined : userSlug}
+            >
+                {' '}
+                {/*TODO(?): Disable link if component used for blocked users page?*/}
                 <table className="userPreviewTable">
                     <tbody>
                         <tr>
-                            { /* user profile picture preview */ }
+                            {/* user profile picture preview */}
                             <td className="userPreviewImg">
-                                <img src={props.user.imagePath} alt="" className="smallUserProfilePic"/>
+                                <img
+                                    src={props.user.imagePath}
+                                    alt=""
+                                    className="smallUserProfilePic"
+                                />
                             </td>
                             <td>
                                 <table className="userPreviewTopTable">
@@ -30,11 +37,20 @@ const SmallUserPreview = (props) => {
                                                 <b className="userPreviewFullName">{`${props.user.firstName} ${props.user.lastName}`}</b>
                                             </td>
                                             <td className="unBlock">
-                                                {props.isBlockedUserProfile ?
-                                                        <Button variant='info' size='sm' className="unBlockUserButton" onClick={props.handleClick}>Unblock</Button>
-                                                    :
-                                                        <></>
-                                                }
+                                                {props.isBlockedUserProfile ? (
+                                                    <Button
+                                                        variant="info"
+                                                        size="sm"
+                                                        className="unBlockUserButton"
+                                                        onClick={
+                                                            props.handleClick
+                                                        }
+                                                    >
+                                                        Unblock
+                                                    </Button>
+                                                ) : (
+                                                    <></>
+                                                )}
                                             </td>
                                         </tr>
                                     </tbody>
@@ -46,7 +62,14 @@ const SmallUserPreview = (props) => {
                                                 <b className="userPreviewUsername">{`@${props.user.username}`}</b>
                                             </td>
                                             <td className="userPreviewNumericalData userPreviewBottomCell">
-                                                    {`${props.user.followers.length} followers`}
+                                                {`${
+                                                    props.user.followers.length
+                                                } ${
+                                                    props.user.followers
+                                                        .length !== 1
+                                                        ? 'followers'
+                                                        : 'follower'
+                                                }`}
                                             </td>
                                         </tr>
                                     </tbody>
@@ -58,7 +81,6 @@ const SmallUserPreview = (props) => {
             </a>
         </div>
     )
-
 }
 
 export default SmallUserPreview
