@@ -20,6 +20,7 @@ const FollowersPage = (props) => {
     // Request all followers on initial render
     const [user, setUser] = useState([])
     const [loadedUser, setLoadedUser] = useState(false)
+    const [userBlocked, setUserBlocked] = useState(false)
 
     useEffect(() => {
         // fetch the user whose profile is being displayed (slug = slug)
@@ -27,12 +28,26 @@ const FollowersPage = (props) => {
             .then((response) => {
                 setUser(response.data)
                 setLoadedUser(true)
+
+                if (
+                    response.data.blockedUsers.includes(props.user._id) ||
+                    props.user.blockedUsers.includes(response.data._id)
+                ) {
+                    setUserBlocked(true)
+                    console.log('blocked')
+                }
             })
             .catch((err) => {
                 console.error(err)
                 setReqError(true)
             })
-    }, [slug])
+    }, [
+        loadedUser._id,
+        loadedUser.blockedUsers,
+        props.user._id,
+        props.user.blockedUsers,
+        slug
+    ])
 
     // Request all followers on initial render
     const [allFollowers, setAllFollowers] = useState([])
@@ -99,8 +114,12 @@ const FollowersPage = (props) => {
                         </i>
                     </a>
                     <h3 className="userName">@{user.username}</h3>
-                    <h4 className="title">{`${user.followers.length} ${
-                        user.followers.length !== 1 ? 'Followers' : 'Follower'
+                    <h4 className="title">{`${
+                        userBlocked ? 0 : user.followers.length
+                    } ${
+                        user.followers.length !== 1 || userBlocked
+                            ? 'Followers'
+                            : 'Follower'
                     }`}</h4>
                 </div>
                 <div className="userSearchBar">
@@ -112,7 +131,7 @@ const FollowersPage = (props) => {
                 </div>
                 <div className="followersList">
                     <div className="followerUserPreview">
-                        {followers.length === 0 ? (
+                        {followers.length === 0 || userBlocked ? (
                             <p className="noFollowersFoundMessage">
                                 No users found
                             </p>
