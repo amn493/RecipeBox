@@ -49,7 +49,6 @@ const ProfilePage = (props) => {
             ) {
                 setUserBlocked(true)
             }
-
             if (!userBlocked) {
                 // fetch user's recipes
                 axios(
@@ -91,9 +90,7 @@ const ProfilePage = (props) => {
                     >
                         Edit Profile
                     </Button>
-                ) : (
-                 
-                 !userBlocked ? (
+                ) : !userBlocked ? (
                     // remove follow button if user is blocked
 
                     <FollowButton
@@ -107,7 +104,6 @@ const ProfilePage = (props) => {
                 ) : (
                     <></>
                 )}
-
 
                 <div className="tabContainer">
                     <Tab.Container defaultActiveKey="small">
@@ -156,7 +152,6 @@ const ProfilePage = (props) => {
 
                         <Tab.Content>
                             {recipes.length === 0 || userBlocked ? (
-                                /* TODO replace error component with no recipes component if recipes.length is 0 or user is blocked */
                                 <ErrorComponent error={'No Recipes'} />
                             ) : (
                                 <>
