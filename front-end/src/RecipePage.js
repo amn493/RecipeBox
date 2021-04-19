@@ -25,28 +25,22 @@ const RecipePage = (props) => {
 
     // request current recipe (slug = slug) on initial render
     const [recipe, setRecipe] = useState()
-    const [userBlocked, setUserBlocked] = useState(false)
 
     useEffect(() => {
         // fetch the recipe that corresponds to the slug from the url
         axios(`http://localhost:4000/recipe?slug=${slug}`)
             .then((response) => {
                 setRecipe(response.data)
-                if (
-                    props.user.id in response.data.user.blockedUsers ||
-                    response.data.user.id in props.user.blockedUsers
-                ) {
-                    setUserBlocked(true)
-                }
             })
             .catch((err) => {
                 console.error(err)
                 setReqError(true)
             })
-    }, [props.user.blockedUsers, props.user.id, slug])
+    }, [props.user._id, props.user.blockedUsers, slug])
 
     // request author user
     const [authorUser, setAuthorUser] = useState({})
+    const [userBlocked, setUserBlocked] = useState(false)
 
     useEffect(() => {
         if (recipe) {
@@ -62,8 +56,17 @@ const RecipePage = (props) => {
                         setAuthorUser({
                             id: response.data._id,
                             username: response.data.username,
-                            slug: response.data.slug
+                            slug: response.data.slug,
+                            blockedUsers: response.data.blockedUsers
                         })
+                        if (
+                            props.user.blockedUsers.includes(
+                                response.data._id
+                            ) ||
+                            response.data.blockedUsers.includes(props.user._id)
+                        ) {
+                            setUserBlocked(true)
+                        }
                     })
                     .catch((err) => console.error(err))
             }
