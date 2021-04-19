@@ -75,11 +75,21 @@ const BrowseRecipesPage = (props) => {
 
     useEffect(() => {
         axios('http://localhost:4000/recommendedrecipes')
-            .then((response) => setRecommendedRecipes(response.data))
+            .then((response) =>
+                setRecommendedRecipes(
+                    response.data.filter(
+                        (recipe) =>
+                            !recipe.tags.some((tag) =>
+                                props.user.blockedTags.includes(tag)
+                            )
+                    )
+                )
+            )
             .catch((err) => {
                 console.error(err)
                 setReqError(true)
             })
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const [tagSelection, setTagSelection] = useState('')

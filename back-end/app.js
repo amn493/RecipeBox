@@ -443,7 +443,7 @@ app.post('/signout', (req, res) => {
     res.send('Signed out user')
 })
 
-app.post('/comment', (req, res) => {
+app.post('/comment', (req, res, next) => {
     // new comment
     const newComment = {
         recipe: req.body.recipe,
@@ -754,7 +754,6 @@ app.post('/notificationsettings', (req, res, next) => {
         // posts: req.body.posts,
     }
 
-    console.log(updatedNotificationSettings)
     // update the settings
     User.findByIdAndUpdate(
         req.body.userID,
