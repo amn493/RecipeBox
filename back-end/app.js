@@ -788,7 +788,7 @@ app.post('/likerecipe', (req, res, next) => {
                                         <h3 style="color: #1c6475; text-align: center; display: inline;"><a style="color: #4aa0b5;" href=${recipeLinkForEmail}>${recipeNameForEmail}</a></h3>
                                         </div>
                                         <hr style="width: 15%;" />
-                                        <img style="display: block;margin-left: auto;margin-right: auto;width: 5%;" src="cid:heartFillIcon" alt="heartFill"/>
+                                        <img style="display: block;text-align:center;margin-left: auto;margin-right: auto;width: 5%;" src="cid:heartFillIcon" alt="heartFill"/>
                                         `
                                     }
                                     transport.sendMail(message).catch((err) => {
@@ -902,7 +902,7 @@ app.post('/followuser', (req, res, next) => {
                                 html: `<h2 style="color: #1c6475;text-align: center;">${firstNameOfEmailRecipient},</h2>
                                         <h3 style="color: #4AA0B5;text-align: center;">Your account has a new follower!</h3><hr style="width:50%;"><div >
                                         <h2 style="color: #4AA0B5;text-align: center;"><a href=${userProfileLinkForEmail} style="color: #4AA0B5;">@${usernameOfFollowingUser}</a></h2>
-                                        <img style="display: block;margin-left: auto;margin-right: auto;width: 40%;" src="cid:followinguserimg" alt="userprofileimg"/></div>`
+                                        <img style="display: block;text-align:center;margin-left: auto;margin-right: auto;width: 40%;" src="cid:followinguserimg" alt="userprofileimg"/></div>`
                             }
                             transport.sendMail(message).catch((err) => {
                                 next(err)
