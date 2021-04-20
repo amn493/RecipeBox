@@ -51,7 +51,12 @@ const FollowingPage = (props) => {
 
     useEffect(() => {
         // Fetch all following
-        if (user.following && blockSet && !userBlocked) {
+        if (
+            user.following &&
+            user.following.length > 0 &&
+            blockSet &&
+            !userBlocked
+        ) {
             console.log('fetch')
             axios(
                 `http://localhost:4000/usersbyid?id=${user.following.reduce(
@@ -100,7 +105,8 @@ const FollowingPage = (props) => {
     }, [filterKeyword]) // Update following when a new keyword is entered
 
     return !reqError ? (
-        loadedUser && (loadedFollowing || userBlocked) ? (
+        loadedUser &&
+        (loadedFollowing || user.following.length <= 0 || userBlocked) ? (
             <div className="following">
                 <div className="followingHeading">
                     <a

@@ -51,7 +51,12 @@ const FollowersPage = (props) => {
 
     useEffect(() => {
         // Fetch all followers (followers are an array of user objects)
-        if (user.followers && blockSet && !userBlocked) {
+        if (
+            user.followers &&
+            user.followers.length > 0 &&
+            blockSet &&
+            !userBlocked
+        ) {
             console.log('fetch')
             axios(
                 `http://localhost:4000/usersbyid?id=${user.followers.reduce(
@@ -100,7 +105,8 @@ const FollowersPage = (props) => {
     }, [filterKeyword]) // Update followers when a new keyword is entered
 
     return !reqError ? (
-        loadedUser && (loadedFollowers || userBlocked) ? (
+        loadedUser &&
+        (loadedFollowers || user.followers.length <= 0 || userBlocked) ? (
             <div className="followers">
                 <div className="followersHeading">
                     <a className="backLink text-info" href={`/user-${slug}`}>
