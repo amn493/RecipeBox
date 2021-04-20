@@ -21,6 +21,7 @@ const FollowingPage = (props) => {
     const [user, setUser] = useState([])
     const [loadedUser, setLoadedUser] = useState(false)
     const [userBlocked, setUserBlocked] = useState(false)
+    const [blockSet, setBlockSet] = useState(false)
 
     useEffect(() => {
         // fetch the user whose profile is being displayed (slug = slug)
@@ -33,7 +34,7 @@ const FollowingPage = (props) => {
                     props.user.blockedUsers.includes(response.data._id)
                 ) {
                     setUserBlocked(true)
-                    console.log('blocked')
+                    setBlockSet(true)
                 }
             })
             .catch((err) => {
@@ -50,7 +51,8 @@ const FollowingPage = (props) => {
 
     useEffect(() => {
         // Fetch all following
-        if (user.following) {
+        if (user.following && blockSet && !userBlocked) {
+            console.log('fetch')
             axios(
                 `http://localhost:4000/usersbyid?id=${user.following.reduce(
                     (acc, userFromFollowing) => acc + `&id=${userFromFollowing}`
@@ -68,7 +70,7 @@ const FollowingPage = (props) => {
                     setReqError(true)
                 })
         }
-    }, [user.following])
+    }, [user.following, blockSet, userBlocked])
 
     // For keyword search bar
     const [filterKeyword, setFilterKeyword] = useState('')
@@ -98,7 +100,7 @@ const FollowingPage = (props) => {
     }, [filterKeyword]) // Update following when a new keyword is entered
 
     return !reqError ? (
-        loadedUser && loadedFollowing ? (
+        loadedUser && (loadedFollowing || userBlocked) ? (
             <div className="following">
                 <div className="followingHeading">
                     <a

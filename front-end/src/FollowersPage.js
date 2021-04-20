@@ -21,6 +21,7 @@ const FollowersPage = (props) => {
     const [user, setUser] = useState([])
     const [loadedUser, setLoadedUser] = useState(false)
     const [userBlocked, setUserBlocked] = useState(false)
+    const [blockSet, setBlockSet] = useState(false)
 
     useEffect(() => {
         // fetch the user whose profile is being displayed (slug = slug)
@@ -33,19 +34,14 @@ const FollowersPage = (props) => {
                     props.user.blockedUsers.includes(response.data._id)
                 ) {
                     setUserBlocked(true)
+                    setBlockSet(true)
                 }
             })
             .catch((err) => {
                 console.error(err)
                 setReqError(true)
             })
-    }, [
-        loadedUser._id,
-        loadedUser.blockedUsers,
-        props.user._id,
-        props.user.blockedUsers,
-        slug
-    ])
+    }, [props.user._id, props.user.blockedUsers, slug])
 
     // Request all followers on initial render
     const [allFollowers, setAllFollowers] = useState([])
@@ -55,7 +51,8 @@ const FollowersPage = (props) => {
 
     useEffect(() => {
         // Fetch all followers (followers are an array of user objects)
-        if (user.followers) {
+        if (user.followers && blockSet && !userBlocked) {
+            console.log('fetch')
             axios(
                 `http://localhost:4000/usersbyid?id=${user.followers.reduce(
                     (acc, userFromFollowers) => acc + `&id=${userFromFollowers}`
@@ -73,7 +70,7 @@ const FollowersPage = (props) => {
                     setReqError(true)
                 })
         }
-    }, [user.followers])
+    }, [user.followers, blockSet, userBlocked])
 
     // For keyword search bar
     const [filterKeyword, setFilterKeyword] = useState('')
@@ -103,7 +100,7 @@ const FollowersPage = (props) => {
     }, [filterKeyword]) // Update followers when a new keyword is entered
 
     return !reqError ? (
-        loadedUser && loadedFollowers ? (
+        loadedUser && (loadedFollowers || userBlocked) ? (
             <div className="followers">
                 <div className="followersHeading">
                     <a className="backLink text-info" href={`/user-${slug}`}>
