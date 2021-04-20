@@ -3,19 +3,18 @@ import axios from 'axios'
 import { useParams } from 'react-router-dom'
 import { ArrowLeftCircleFill } from 'react-bootstrap-icons'
 
-import './FollowersPage.css'
-import KeyWordSearchBar from './KeywordSearchBar.js'
-import SmallUserPreview from './SmallUserPreview.js'
-import ErrorComponent from './ErrorComponent.js'
+import './FollowingPage.css'
+import KeyWordSearchBar from '../../../gencomponents/searchbars/KeywordSearchBar.js'
+import SmallUserPreview from '../../userpages/components/SmallUserPreview.js'
+import ErrorComponent from '../../../gencomponents/ErrorComponent.js'
 
-// Followers Page
+// Following Page
 // Expects a user object for props
-// Example - <FollowersPage user={user} />
-const FollowersPage = (props) => {
-
+// Example - <FollowingPage user={user} />
+const FollowingPage = (props) => {
     const [reqError, setReqError] = useState(false)
 
-    // get slug from url params
+    // Get slug from url params
     const { slug } = useParams()
 
     // Request all followers on initial render
@@ -55,25 +54,30 @@ const FollowersPage = (props) => {
             })
     }, [slug])
 
-
-    // Request all followers on initial render
-    const [allFollowers, setAllFollowers] = useState([])
-    // Array of followers to be displayed
-    const [followers, setFollowers] = useState([])
-    const [loadedFollowers, setLoadedFollowers] = useState(false)
+    // Request all following on initial render
+    const [allFollowing, setAllFollowing] = useState([])
+    // Array of following to be displayed
+    const [following, setFollowing] = useState([])
+    const [loadedFollowing, setLoadedFollowing] = useState(false)
 
     useEffect(() => {
-        // Fetch all followers (followers are an array of user objects)
-        if (user.followers) {
-            axios(`http://localhost:4000/usersbyid?id=${(user.followers).reduce((acc,userFromFollowers)=>acc+`&id=${userFromFollowers}`)}`)
-            .then((response) => {
-                setAllFollowers(response.data.slice(0, user.followers.length))
-                setFollowers(response.data.slice(0, user.followers.length))
-                setLoadedFollowers(true)
-            })
-            .catch((err) => {
-                console.error(err)
-                setReqError(true)
+        // Fetch all following
+        if (user.following) {
+            axios(
+                `http://localhost:4000/usersbyid?id=${user.following.reduce(
+                    (acc, userFromFollowing) => acc + `&id=${userFromFollowing}`
+                )}`
+            )
+                .then((response) => {
+                    setAllFollowing(
+                        response.data.slice(0, user.following.length)
+                    )
+                    setFollowing(response.data.slice(0, user.following.length))
+                    setLoadedFollowing(true)
+                })
+                .catch((err) => {
+                    console.error(err)
+                    setReqError(true)
 
                     // Backup fake data
                     const backupData = [
@@ -91,8 +95,7 @@ const FollowersPage = (props) => {
                             imagePath: 'https://picsum.photos/250',
                             blockedUsers: [8],
                             blockedTags: [],
-                            notificationSettings:
-                            {
+                            notificationSettings: {
                                 emailNotifications: false,
                                 likes: true,
                                 comments: true,
@@ -108,15 +111,32 @@ const FollowersPage = (props) => {
                             firstName: 'Foo',
                             lastName: 'Bar',
                             bio: 'I love food and love to travel',
-                            followers: [1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8],
+                            followers: [
+                                1,
+                                2,
+                                3,
+                                4,
+                                5,
+                                6,
+                                7,
+                                8,
+                                9,
+                                1,
+                                2,
+                                3,
+                                4,
+                                5,
+                                6,
+                                7,
+                                8
+                            ],
                             following: [1, 2, 3, 4, 5],
                             liked: [1, 2, 3, 4, 5],
                             slug: 'foobar_travels',
                             imagePath: 'https://picsum.photos/250',
                             blockedUsers: [2],
                             blockedTags: [],
-                            notificationSettings:
-                            {
+                            notificationSettings: {
                                 emailNotifications: true,
                                 likes: true,
                                 comments: true,
@@ -139,8 +159,7 @@ const FollowersPage = (props) => {
                             imagePath: 'https://picsum.photos/250',
                             blockedUsers: [],
                             blockedTags: [],
-                            notificationSettings:
-                            {
+                            notificationSettings: {
                                 emailNotifications: false,
                                 likes: true,
                                 comments: true,
@@ -153,8 +172,8 @@ const FollowersPage = (props) => {
                             username: 'foobar_and_family',
                             password: '12345',
                             email: 'foobar_and_family@foo.org',
-                            firstName: 'Foo',
-                            lastName: 'Bar',
+                            firstName: 'Bar',
+                            lastName: 'Family',
                             bio: 'A house of chefs',
                             followers: [1, 2, 3, 4, 5, 5, 6, 7],
                             following: [1, 2, 3, 4, 5],
@@ -163,8 +182,7 @@ const FollowersPage = (props) => {
                             imagePath: 'https://picsum.photos/250',
                             blockedUsers: [25],
                             blockedTags: [],
-                            notificationSettings:
-                            {
+                            notificationSettings: {
                                 emailNotifications: true,
                                 likes: false,
                                 comments: false,
@@ -187,8 +205,7 @@ const FollowersPage = (props) => {
                             imagePath: 'https://picsum.photos/250',
                             blockedUsers: [25],
                             blockedTags: [],
-                            notificationSettings:
-                            {
+                            notificationSettings: {
                                 emailNotifications: true,
                                 likes: false,
                                 comments: false,
@@ -211,8 +228,7 @@ const FollowersPage = (props) => {
                             imagePath: 'https://picsum.photos/250',
                             blockedUsers: [13],
                             blockedTags: [],
-                            notificationSettings:
-                            {
+                            notificationSettings: {
                                 emailNotifications: true,
                                 likes: false,
                                 comments: false,
@@ -228,15 +244,33 @@ const FollowersPage = (props) => {
                             firstName: 'Home',
                             lastName: 'Chef',
                             bio: 'All homemade',
-                            followers: [1, 2, 3, 4, 5, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8],
+                            followers: [
+                                1,
+                                2,
+                                3,
+                                4,
+                                5,
+                                5,
+                                6,
+                                7,
+                                8,
+                                9,
+                                1,
+                                2,
+                                3,
+                                4,
+                                5,
+                                6,
+                                7,
+                                8
+                            ],
                             following: [1, 2, 3],
                             liked: [1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3],
                             slug: 'home_chef',
                             imagePath: 'https://picsum.photos/250',
                             blockedUsers: [13],
                             blockedTags: [],
-                            notificationSettings:
-                            {
+                            notificationSettings: {
                                 emailNotifications: false,
                                 likes: false,
                                 comments: false,
@@ -247,68 +281,90 @@ const FollowersPage = (props) => {
                         }
                     ]
 
-                    setAllFollowers(backupData.slice(0, user.followers.length))
-                    setFollowers(backupData.slice(0, user.followers.length))
-                    setLoadedFollowers(true)
+                    setAllFollowing(backupData.slice(0, user.following.length))
+                    setFollowing(backupData.slice(0, user.following.length))
+                    setLoadedFollowing(true)
                 })
         }
-    }, [user.followers])
-
+    }, [user.following])
 
     // For keyword search bar
     const [filterKeyword, setFilterKeyword] = useState('')
-    // Filter followers based on keyword entered by the user
+    // Filter following based on keyword entered by the user
     useEffect(() => {
-        // Function to filter through all followers based on keyword search term entered
-        function searchName(follower) {
+        // Function to filter through all following users based on keyword search term entered
+        function searchName(followingUser) {
             const match = filterKeyword.toLowerCase()
             const names = match.split(' ')
             // Compares every word in search term against username, firstName, and lastName
             for (let i = 0; i < names.length; i++) {
-                if (follower.username.toLowerCase().includes(names[i]) ||
-                    follower.firstName.toLowerCase().includes(names[i]) ||
-                    follower.lastName.toLowerCase().includes(names[i])) {
-                    return true;
+                if (
+                    followingUser.username.toLowerCase().includes(names[i]) ||
+                    followingUser.firstName.toLowerCase().includes(names[i]) ||
+                    followingUser.lastName.toLowerCase().includes(names[i])
+                ) {
+                    return true
                 }
             }
-            return false;
+            return false
         }
 
-        // Set users array to only include followers whose name contains the filter keyword
-        setFollowers(allFollowers.filter(searchName))
+        // Set following array to only include user whose name contains the filter keyword
+        setFollowing(allFollowing.filter(searchName))
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [filterKeyword]) // Update followers when a new keyword is entered
+    }, [filterKeyword]) // Update following when a new keyword is entered
 
-
-    return (
-        !reqError ?
-
-            loadedUser && loadedFollowers ?
-
-                <div className='followers'>
-                    <div className='followersHeading'>
-                        <a className='backLink text-info' href={`/user-${slug}`}><i><ArrowLeftCircleFill /></i></a>
-                        <h3 className='userName'>@{user.username}</h3>
-                        <h4 className='title'>{`${user.followers.length} ${user.followers.length !== 1 ? 'Followers' : 'Follower'}`}</h4>
-                    </div>
-                    <div className='userSearchBar'>
-                        <KeyWordSearchBar isRecipe={false} filter={filterKeyword} setFilter={setFilterKeyword} />
-                    </div>
-                    <div className='followersList'>
-                        <div className='followerUserPreview'>
-                            {followers.length === 0 ? <p className="noFollowersFoundMessage">No users found</p> : followers.sort((a, b) => a.firstName.localeCompare(b.firstName)).map((follower, i) =>
-                                (<SmallUserPreview user={follower} isBlockedUserProfile={false} key={i} />))}
-                        </div>
+    return !reqError ? (
+        loadedUser && loadedFollowing ? (
+            <div className="following">
+                <div className="followingHeading">
+                    <a
+                        className="backLinkFollowing text-info"
+                        href={`/user-${slug}`}
+                    >
+                        <i>
+                            <ArrowLeftCircleFill />
+                        </i>
+                    </a>
+                    <h3 className="userNameFollowing">@{user.username}</h3>
+                    <h4 className="title">{user.following.length} Following</h4>
+                </div>
+                <div className="userSearchBarFollowing">
+                    <KeyWordSearchBar
+                        isRecipe={false}
+                        filter={filterKeyword}
+                        setFilter={setFilterKeyword}
+                    />
+                </div>
+                <div className="followingList">
+                    <div className="followingUserPreview">
+                        {following.length === 0 ? (
+                            <p className="noFollowingFoundMessage">
+                                No users found
+                            </p>
+                        ) : (
+                            following
+                                .sort((a, b) =>
+                                    a.firstName.localeCompare(b.firstName)
+                                )
+                                .map((followingUser, i) => (
+                                    <SmallUserPreview
+                                        user={followingUser}
+                                        isBlockedUserProfile={false}
+                                        key={i}
+                                    />
+                                ))
+                        )}
                     </div>
                 </div>
-                :
-                <></>
-
-            :
-
-            <ErrorComponent />
+            </div>
+        ) : (
+            <></>
+        )
+    ) : (
+        <ErrorComponent />
     )
 }
 
-export default FollowersPage
+export default FollowingPage

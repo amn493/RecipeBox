@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
-import ComboBoxSearchBar from './ComboBoxSearchBar.js'
-import TagButton from './TagButton'
+import ComboBoxSearchBar from '../../../gencomponents/searchbars/ComboBoxSearchBar.js'
+import TagButton from '../../../gencomponents/searchbars/TagButton.js'
 import Button from 'react-bootstrap/Button'
-import SmallUserPreview from './SmallUserPreview'
+import SmallUserPreview from '../../userpages/components/SmallUserPreview.js'
+import ErrorComponent from '../../../gencomponents/ErrorComponent.js'
 
 import './AppSettings.css'
-import ErrorComponent from './ErrorComponent.js'
 
 //expects:
 //current user and signedIn state variable
