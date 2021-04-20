@@ -28,10 +28,10 @@ describe('Testing route handler for POST /newrecipe ', () => {
     */
     let userID = '6070ccc13bd343389fcac3fc'
     let name = 'nameVal'
-    let tags = ['tag1', 'tag2','tag3']
+    let tags = 'tag1,tag2,tag3'
     let caption = 'captionVal'
-    let ingredients = ['ingredient1', 'ingredient2', 'ingredient3']
-    let instructions = ['intruction1', 'instruction2']
+    let ingredients = 'ingredient1,ingredient2,ingredient3'
+    let instructions = 'intruction1,instruction2'
 
     it('should return 200 OK status ', () => {
         return chai.request(app)

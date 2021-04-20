@@ -492,16 +492,15 @@ app.post('/newrecipe', upload.single('recipeimage'), (req, res, next) => {
         name: req.body.name,
         imagePath: path.join('/uploads/', req.file.filename),
         tags: req.body.tags
-            // already an array, don't need to split by ","
-            //.split(',')
+            .split(',')
             .filter((tag) => tag !== ''),
         caption: req.body.caption,
         ingredients: req.body.ingredients
-            //.split(',')
+            .split(',')
             .map((ingredient) => ingredient.trim())
             .filter((ingredient) => ingredient !== ''),
         instructions: req.body.instructions
-            //.split(',')
+            .split(',')
             .map((instruction) => instruction.trim())
             .filter((instruction) => instruction !== ''),
         likes: 0,
