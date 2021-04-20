@@ -305,7 +305,9 @@ app.get('/comments', (req, res, next) => {
     // fetch comments where recipe === req.query.recipeID from database
 
     Comment.find({ recipe: req.query.recipeID })
-        .then((comments) => res.json(comments))
+        .then((comments) => {
+            res.json(comments)
+        })
         .catch((err) => next(err))
 })
 
@@ -431,7 +433,6 @@ app.post(
     body('username')
         .isAlphanumeric()
         .withMessage('Username must only be alphanumeric.'),
-    body('password').escape(),
     (req, res) => {
         const errors = validationResult(req)
         if (!errors.isEmpty()) {
@@ -443,14 +444,7 @@ app.post(
         }
     }
 )
-/*
-            email === '' ||
-            firstName === '' ||
-            lastName === '' ||
-            username === '' ||
-            password === '' ||
-            ReEnterPassword === '' ||
-*/
+
 app.post(
     '/createaccount',
     passport.authenticate('createaccount', {
@@ -467,7 +461,6 @@ app.post(
     body('username')
         .isAlphanumeric()
         .withMessage('Username must only be alphanumeric.'),
-    body('password').escape(),
     body('ReEnterPassword')
         .equals('password')
         .withMessage('Does not match password.'),
@@ -489,25 +482,32 @@ app.post('/signout', (req, res) => {
     res.send('Signed out user')
 })
 
-app.post('/comment', (req, res, next) => {
-    const errors = validationResult(req)
-    if (!errors.isEmpty()) {
-        res.status(400).json({ errors: errors.array() })
-    } else {
-        // new comment
-        const newComment = {
-            recipe: req.body.recipe,
-            user: req.body.user,
-            comment: req.body.comment,
-            createdAt: Date.now()
+app.post(
+    '/comment',
+    // sanitize comment body -- the only thing a user has control over
+    body('comment').escape(),
+
+    (req, res, next) => {
+        // Check to make sure comment didn't have weird characters
+        const errors = validationResult(req)
+        if (!errors.isEmpty()) {
+            res.status(400).json({ errors: errors.array() })
+        } else {
+            // new comment
+            const newComment = {
+                recipe: req.body.recipe,
+                user: req.body.user,
+                comment: req.body.comment,
+                createdAt: Date.now()
+            }
+            // save new comment to the database
+            new Comment(newComment)
+                .save()
+                .then((comment) => res.json(comment))
+                .catch((err) => next(err))
         }
-        // save new comment to the database
-        new Comment(newComment)
-            .save()
-            .then((comment) => res.json(comment))
-            .catch((err) => next(err))
     }
-})
+)
 
 // recursive function for adding new tags to database and updating counts of existing tags
 const updateTags = (tags, i, cb, next) => {
@@ -535,37 +535,46 @@ const updateTags = (tags, i, cb, next) => {
     }
 }
 
-app.post('/newrecipe', upload.single('recipeimage'), (req, res, next) => {
-    // new recipe
-    const newRecipe = {
-        user: req.body.userID,
-        name: req.body.name,
-        imagePath: path.join('/uploads/', req.file.filename),
-        tags: req.body.tags.split(',').filter((tag) => tag !== ''),
-        caption: req.body.caption,
-        ingredients: req.body.ingredients
-            .split(',')
-            .map((ingredient) => ingredient.trim())
-            .filter((ingredient) => ingredient !== ''),
-        instructions: req.body.instructions
-            .split(',')
-            .map((instruction) => instruction.trim())
-            .filter((instruction) => instruction !== ''),
-        likes: 0,
-        createdAt: Date.now()
-    }
+app.post(
+    '/newrecipe',
+    upload.single('recipeimage'),
+    // sanitize recipe inputs -- text fields since that's what the user has control over
+    body('name').not().isEmpty().trim().escape(),
+    body('caption').not().isEmpty().trim().escape(),
+    body('ingredients').not().isEmpty().trim().escape(),
+    body('instructions').not().isEmpty().trim().escape(),
+    (req, res, next) => {
+        // new recipe
+        const newRecipe = {
+            user: req.body.userID,
+            name: req.body.name,
+            imagePath: path.join('/uploads/', req.file.filename),
+            tags: req.body.tags.split(',').filter((tag) => tag !== ''),
+            caption: req.body.caption,
+            ingredients: req.body.ingredients
+                .split(',')
+                .map((ingredient) => ingredient.trim())
+                .filter((ingredient) => ingredient !== ''),
+            instructions: req.body.instructions
+                .split(',')
+                .map((instruction) => instruction.trim())
+                .filter((instruction) => instruction !== ''),
+            likes: 0,
+            createdAt: Date.now()
+        }
 
-    // save new recipe to database
-    new Recipe(newRecipe)
-        .save()
-        .then((recipe) => {
-            // add new tags to database and update counts of existing tags
-            updateTags(recipe.tags, 0, res.json.bind(res, recipe), next)
-        })
-        .catch((err) => {
-            next(err)
-        })
-})
+        // save new recipe to database
+        new Recipe(newRecipe)
+            .save()
+            .then((recipe) => {
+                // add new tags to database and update counts of existing tags
+                updateTags(recipe.tags, 0, res.json.bind(res, recipe), next)
+            })
+            .catch((err) => {
+                next(err)
+            })
+    }
+)
 
 app.post('/blockuser', (req, res, next) => {
     // update signed-in user's blockedUsers array appropriately
@@ -804,7 +813,6 @@ app.post('/notificationsettings', (req, res, next) => {
         // posts: req.body.posts,
     }
 
-    console.log(updatedNotificationSettings)
     // update the settings
     User.findByIdAndUpdate(
         req.body.userID,
@@ -820,22 +828,45 @@ app.post('/notificationsettings', (req, res, next) => {
         .catch((err) => next(err))
 })
 
-app.post('/updateuserinfo', upload.single('profilepicture'), (req, res) => {
-    // recieve post data from updating user's basic info
-    const updatedUserInfo = {
-        username: req.body.username,
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        bio: req.body.bio,
-        id: req.body.id,
-        imagePath: path.join('/uploads/', req.file.filename)
+app.post(
+    '/updateuserinfo',
+    upload.single('profilepicture'),
+    body('email').isEmail().withMessage('Email entered is not a valid email.'),
+    body('firstName')
+        .isAlpha()
+        .withMessage('First name must contain only letters.'),
+    body('lastName')
+        .isAlpha()
+        .withMessage('Last name must contain only letters.'),
+    body('username')
+        .isAlphanumeric()
+        .withMessage('Username must only be alphanumeric.'),
+    body('ReEnterPassword')
+        .equals('password')
+        .withMessage('Does not match password.'),
+    body('bio').trim().escape(),
+    (req, res) => {
+        // sanitize inputs -- same as account creation more or less
+
+        // recieve post data from updating user's basic info
+        const updatedUserInfo = {
+            username: req.body.username,
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
+            bio: req.body.bio,
+            id: req.body.id,
+            imagePath: path.join('/uploads/', req.file.filename)
+        }
+
+        // update the user's user object (in database)
+
+        // TODO: Once merged with this last POST request, check for any errors
+        // we want to prevent this from going through as opposed to just saving weird things
+
+        // send a response to the user (sending data back to test)
+        res.json(updatedUserInfo)
     }
-
-    // update the user's user object (in database)
-
-    // send a response to the user (sending data back to test)
-    res.json(updatedUserInfo)
-})
+)
 
 // export the express app we created to make it available to other modules
 module.exports = app
