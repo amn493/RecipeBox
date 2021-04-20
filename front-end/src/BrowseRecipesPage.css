@@ -25,3 +25,7 @@
 .hidden {
     display: none;
 }
+
+.noRecipesFoundMessagehr{
+    width:100%;
+}

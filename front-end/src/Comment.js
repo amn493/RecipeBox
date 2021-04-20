@@ -29,19 +29,21 @@ const Comment = (props) => {
         <div className="comment">
             <p className="commentText">{props.comment.comment}</p>
             <table className="commentDetailsTable">
-                <tr>
-                    <td className="commentDetailsTableCell">
-                        <a
-                            className="commentUsername"
-                            href={'/user-' + user.slug}
-                        >
-                            {'@' + user.username}
-                        </a>
-                    </td>
-                    <td className="commentDetailsTableCell commentDetailsTableRightCol">
-                        <Timestamp createdAt={props.comment.createdAt} />
-                    </td>
-                </tr>
+                <tbody>
+                    <tr>
+                        <td className="commentDetailsTableCell">
+                            <a
+                                className="commentUsername"
+                                href={'/user-' + user.slug}
+                            >
+                                {'@' + user.username}
+                            </a>
+                        </td>
+                        <td className="commentDetailsTableCell commentDetailsTableRightCol">
+                            <Timestamp createdAt={props.comment.createdAt} />
+                        </td>
+                    </tr>
+                </tbody>
             </table>
         </div>
     )

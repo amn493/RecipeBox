@@ -41,62 +41,72 @@ const SmallRecipePreview = (props) => {
 
     return (
         <table className="smallRecipePreview">
-            <tr>
-                <td className="smallRecipePreviewImageCell">
-                    <img
-                        className="smallRecipePreviewImage"
-                        src={props.recipe.imagePath}
-                        alt="food"
-                    />
-                </td>
-                <td>
-                    <table className="smallRecipePreviewTable smallRecipePreviewTopTable">
-                        <tr>
-                            <td className="smallRecipePreviewTopTableCell">
-                                <a
-                                    className="smallRecipePreviewRecipeName"
-                                    href={'/recipe-' + props.recipe.slug}
-                                >
-                                    {props.recipe.name}
-                                </a>
-                            </td>
-                            <td className="smallRecipePreviewTableRightCol smallRecipePreviewLikedCol smallRecipePreviewTopTableCell">
-                                <div className="likedSmall">
-                                    <img
-                                        className="heartImage"
-                                        src={
-                                            liked
-                                                ? 'heartFill.png'
-                                                : 'heartOutline.png'
-                                        }
-                                        alt={
-                                            liked
-                                                ? 'heart fill'
-                                                : 'heart outline'
-                                        }
-                                    />
-                                    {props.recipe.likes}
-                                </div>
-                            </td>
-                        </tr>
-                    </table>
-                    <table className="smallRecipePreviewTable">
-                        <tr>
-                            <td>
-                                <a
-                                    className="smallRecipePreviewUsername"
-                                    href={'/user-' + authorUser.slug}
-                                >
-                                    {'@' + authorUser.username}
-                                </a>
-                            </td>
-                            <td className="smallRecipePreviewTableRightCol">
-                                <Timestamp createdAt={props.recipe.createdAt} />
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
+            <tbody>
+                <tr>
+                    <td className="smallRecipePreviewImageCell">
+                        <img
+                            className="smallRecipePreviewImage"
+                            src={props.recipe.imagePath}
+                            alt="food"
+                        />
+                    </td>
+                    <td>
+                        <table className="smallRecipePreviewTable smallRecipePreviewTopTable">
+                            <tbody>
+                                <tr>
+                                    <td className="smallRecipePreviewTopTableCell">
+                                        <a
+                                            className="smallRecipePreviewRecipeName"
+                                            href={
+                                                '/recipe-' + props.recipe.slug
+                                            }
+                                        >
+                                            {props.recipe.name}
+                                        </a>
+                                    </td>
+                                    <td className="smallRecipePreviewTableRightCol smallRecipePreviewLikedCol smallRecipePreviewTopTableCell">
+                                        <div className="likedSmall">
+                                            <img
+                                                className="heartImage"
+                                                src={
+                                                    liked
+                                                        ? 'heartFill.png'
+                                                        : 'heartOutline.png'
+                                                }
+                                                alt={
+                                                    liked
+                                                        ? 'heart fill'
+                                                        : 'heart outline'
+                                                }
+                                            />
+                                            {props.recipe.likes}
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table className="smallRecipePreviewTable">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <a
+                                            className="smallRecipePreviewUsername"
+                                            href={'/user-' + authorUser.slug}
+                                        >
+                                            {'@' + authorUser.username}
+                                        </a>
+                                    </td>
+                                    <td className="smallRecipePreviewTableRightCol">
+                                        <Timestamp
+                                            createdAt={props.recipe.createdAt}
+                                        />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
         </table>
     )
 }

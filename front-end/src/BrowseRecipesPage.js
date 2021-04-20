@@ -143,8 +143,15 @@ const BrowseRecipesPage = (props) => {
                     }
                 >
                     No recipes found
-                    <hr />
                 </p>
+                <hr
+                    className={
+                        recipes.length === 0 &&
+                        (filterKeyword !== '' || filterTags.length > 0)
+                            ? 'noRecipesFoundMessagehr'
+                            : 'hidden'
+                    }
+                />
                 {recipes
                     .sort((a, b) => b.likes - a.likes)
                     .map((recipe, i) => (

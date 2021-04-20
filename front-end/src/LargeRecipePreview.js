@@ -47,43 +47,49 @@ const LargeRecipePreview = (props) => {
                 alt="food"
             />
             <table className="largeRecipePreviewTable largeRecipePreviewTopTable">
-                <tr>
-                    <td className="largeRecipePreviewTopTableCell">
-                        <a
-                            className="largeRecipePreviewRecipeName"
-                            href={'/recipe-' + props.recipe.slug}
-                        >
-                            {props.recipe.name}
-                        </a>
-                    </td>
-                    <td className="largeRecipePreviewTableRightCol largeRecipePreviewLikedCol largeRecipePreviewTopTableCell">
-                        <div className="likedLarge">
-                            <img
-                                className="heartImage"
-                                src={
-                                    liked ? 'heartFill.png' : 'heartOutline.png'
-                                }
-                                alt={liked ? 'heart fill' : 'heart outline'}
-                            ></img>
-                            {props.recipe.likes}
-                        </div>
-                    </td>
-                </tr>
+                <tbody>
+                    <tr>
+                        <td className="largeRecipePreviewTopTableCell">
+                            <a
+                                className="largeRecipePreviewRecipeName"
+                                href={'/recipe-' + props.recipe.slug}
+                            >
+                                {props.recipe.name}
+                            </a>
+                        </td>
+                        <td className="largeRecipePreviewTableRightCol largeRecipePreviewLikedCol largeRecipePreviewTopTableCell">
+                            <div className="likedLarge">
+                                <img
+                                    className="heartImage"
+                                    src={
+                                        liked
+                                            ? 'heartFill.png'
+                                            : 'heartOutline.png'
+                                    }
+                                    alt={liked ? 'heart fill' : 'heart outline'}
+                                ></img>
+                                {props.recipe.likes}
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
             </table>
             <table className="largeRecipePreviewTable">
-                <tr>
-                    <td>
-                        <a
-                            className="largeRecipePreviewUsername"
-                            href={'/user-' + authorUser.slug}
-                        >
-                            {'@' + authorUser.username}
-                        </a>
-                    </td>
-                    <td className="largeRecipePreviewTableRightCol">
-                        <Timestamp createdAt={props.recipe.createdAt} />
-                    </td>
-                </tr>
+                <tbody>
+                    <tr>
+                        <td>
+                            <a
+                                className="largeRecipePreviewUsername"
+                                href={'/user-' + authorUser.slug}
+                            >
+                                {'@' + authorUser.username}
+                            </a>
+                        </td>
+                        <td className="largeRecipePreviewTableRightCol">
+                            <Timestamp createdAt={props.recipe.createdAt} />
+                        </td>
+                    </tr>
+                </tbody>
             </table>
 
             <p className="largeRecipePreviewCaption">{props.recipe.caption}</p>
