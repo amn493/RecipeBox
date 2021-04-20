@@ -1,8 +1,8 @@
-import Timestamp from './Timestamp'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 
 import './SmallRecipePreview.css'
+import Timestamp from '../../../gencomponents/Timestamp.js'
 
 //Component for small recipe previews
 //Expects a recipe object as props

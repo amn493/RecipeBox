@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 
-import LargeRecipePreview from './LargeRecipePreview.js'
-import KeywordSearchBar from './KeywordSearchBar.js'
-import ComboBoxSearchBar from './ComboBoxSearchBar.js'
-import TagButton from './TagButton.js'
+import LargeRecipePreview from '../components/LargeRecipePreview.js'
+import KeywordSearchBar from '../../../gencomponents/searchbars/KeywordSearchBar.js'
+import ComboBoxSearchBar from '../../../gencomponents/searchbars/ComboBoxSearchBar.js'
+import TagButton from '../../../gencomponents/searchbars/TagButton.js'
 
 import './BrowseRecipesPage.css'
-import ErrorComponent from './ErrorComponent.js'
+import ErrorComponent from '../../../gencomponents/ErrorComponent.js'
 
 const BrowseRecipesPage = (props) => {
     const [reqError, setReqError] = useState(false)
