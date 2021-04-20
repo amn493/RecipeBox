@@ -36,7 +36,7 @@ const RecipePage = (props) => {
                 console.error(err)
                 setReqError(true)
             })
-    }, [props.user._id, props.user.blockedUsers, slug])
+    }, [slug])
 
     // request author user
     const [authorUser, setAuthorUser] = useState({})
