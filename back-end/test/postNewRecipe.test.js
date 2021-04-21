@@ -1,4 +1,6 @@
-// Test expected output when given valID input
+// COMMENTED OUT TO CLEAR DATABASE
+
+/*// Test expected output when given valID input
 // Test expected output when given invalID input
 
 const chai = require('chai')
@@ -25,7 +27,7 @@ describe('Testing route handler for POST /newrecipe ', () => {
         newRecipe.append('caption', captionValue)
         newRecipe.append('ingredients', ingredientValues)
         newRecipe.append('instructions', instructionValues)
-    */
+    // add end of comment 
     let userID = '6070ccc13bd343389fcac3fc'
     let name = 'nameVal'
     let tags = 'tag1,tag2,tag3'
@@ -75,4 +77,4 @@ describe('Testing route handler for POST /newrecipe ', () => {
             expect(response.body).have.property('createdAt')
         })
     }).timeout(8000)
-})
+}) */
