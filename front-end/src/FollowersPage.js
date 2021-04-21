@@ -20,8 +20,7 @@ const FollowersPage = (props) => {
     // Request all followers on initial render
     const [user, setUser] = useState([])
     const [loadedUser, setLoadedUser] = useState(false)
-    const [userBlocked, setUserBlocked] = useState(false)
-    const [blockSet, setBlockSet] = useState(false)
+    const [userBlocked, setUserBlocked] = useState()
 
     useEffect(() => {
         // fetch the user whose profile is being displayed (slug = slug)
@@ -29,19 +28,19 @@ const FollowersPage = (props) => {
             .then((response) => {
                 setUser(response.data)
                 setLoadedUser(true)
-                if (
+                setUserBlocked(
                     response.data.blockedUsers.includes(props.user._id) ||
-                    props.user.blockedUsers.includes(response.data._id)
-                ) {
-                    setUserBlocked(true)
-                    setBlockSet(true)
-                }
+                        props.user.blockedUsers.includes(response.data._id)
+                        ? true
+                        : false
+                )
             })
             .catch((err) => {
                 console.error(err)
                 setReqError(true)
             })
-    }, [props.user._id, props.user.blockedUsers, slug])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [slug])
 
     // Request all followers on initial render
     const [allFollowers, setAllFollowers] = useState([])
@@ -54,10 +53,10 @@ const FollowersPage = (props) => {
         if (
             user.followers &&
             user.followers.length > 0 &&
-            blockSet &&
-            !userBlocked
+            userBlocked !== undefined &&
+            userBlocked !== true
         ) {
-            console.log('fetch')
+            // console.log('fetch')
             axios(
                 `http://localhost:4000/usersbyid?id=${user.followers.reduce(
                     (acc, userFromFollowers) => acc + `&id=${userFromFollowers}`
@@ -75,7 +74,7 @@ const FollowersPage = (props) => {
                     setReqError(true)
                 })
         }
-    }, [user.followers, blockSet, userBlocked])
+    }, [user.followers, userBlocked])
 
     // For keyword search bar
     const [filterKeyword, setFilterKeyword] = useState('')
