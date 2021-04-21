@@ -61,6 +61,7 @@ const Feed = (props) => {
                 })
             setDateMultiplier(dateMultiplier + 1)
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.user.following])
 
     // To be called when the reload button is pressed

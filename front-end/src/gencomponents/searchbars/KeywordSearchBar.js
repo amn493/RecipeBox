@@ -14,24 +14,18 @@ import { BookmarkHeart } from 'react-bootstrap-icons'
 //and 2 state-related variables: filter and setFilter (filter will be set to the value of the text field upon search)
 
 const KeywordSearchBar = (props) => {
-
-    let searchIcon = "" //small royalty-free recipe/user profile icons displayed next to search bar
-    let placeholder = ""
+    let searchIcon = '' //small royalty-free recipe/user profile icons displayed next to search bar
+    let placeholder = ''
 
     if (props.isRecipe === true) {
         searchIcon = 'recipeicon.png'
-        placeholder = "Search recipes by keyword"
-
-
+        placeholder = 'Search recipes by keyword'
     } else {
         searchIcon = 'usericon.png'
-        placeholder = "John Smith / @username"
+        placeholder = 'John Smith / @username'
     }
 
-
-
     const [value, setValue] = useState(props.filter)
-
 
     // update text field as user types into it
     const handleChange = (event) => {
@@ -43,16 +37,25 @@ const KeywordSearchBar = (props) => {
         props.setFilter(value)
     }
 
-
     return (
         <div className="searchBar">
             <InputGroup className="inputGroup">
                 <InputGroup.Prepend>
-                    {!props.isRecipeBox ?
-                        <InputGroup.Text id="basic-addon1"><img src={searchIcon} className="searchIcon" alt="" /></InputGroup.Text>
-                        :
-                        <InputGroup.Text id="basic-addon1"><i><BookmarkHeart /></i></InputGroup.Text>
-                    }
+                    {!props.isRecipeBox ? (
+                        <InputGroup.Text id="basic-addon1">
+                            <img
+                                src={searchIcon}
+                                className="searchIcon"
+                                alt=""
+                            />
+                        </InputGroup.Text>
+                    ) : (
+                        <InputGroup.Text id="basic-addon1">
+                            <i>
+                                <BookmarkHeart />
+                            </i>
+                        </InputGroup.Text>
+                    )}
                 </InputGroup.Prepend>
                 <FormControl
                     placeholder={placeholder}
@@ -60,11 +63,18 @@ const KeywordSearchBar = (props) => {
                     value={value}
                 />
                 <InputGroup.Append>
-                    <Button variant="info" type="submit" className="searchButton " onClick={handleSubmit}>Search</Button>
+                    <Button
+                        variant="info"
+                        type="submit"
+                        className="searchButton "
+                        onClick={handleSubmit}
+                    >
+                        Search
+                    </Button>
                 </InputGroup.Append>
             </InputGroup>
         </div>
     )
 }
 
-export default KeywordSearchBar;
+export default KeywordSearchBar

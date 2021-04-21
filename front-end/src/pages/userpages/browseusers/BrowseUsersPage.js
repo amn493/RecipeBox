@@ -54,10 +54,12 @@ const BrowseUsersPage = (props) => {
                 </div>
                 <div className="userPreviews">
                     {users.length === 0 && filterKeyword ? (
-                        <p className="noUsersFoundMessage">
-                            No users found
+                        <div>
+                            <p className="noUsersFoundMessage">
+                                No users found
+                            </p>
                             <hr />
-                        </p>
+                        </div>
                     ) : (
                         users
                             .sort((a, b) =>

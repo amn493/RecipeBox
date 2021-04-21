@@ -20,24 +20,6 @@ const Comment = (props) => {
             .catch((err) => {
                 console.error(err)
                 props.setReqError(true)
-
-                // make some backup fake data
-                const backupData = [
-                    {
-                        username: 'therealfoobar',
-                        //password: // a password hash,
-                        firstName: 'Foo',
-                        lastName: 'Bar',
-                        bio: 'follow me! :)',
-                        //followers: // an array of references to User documents,
-                        //following: // an array of references to User documents,
-                        liked: [], // an array of references to Recipe documents
-                        imagePath: 'https://picsum.photos/200',
-                        slug: 'therealfoobar'
-                    }
-                ]
-
-                setUser(backupData[0])
             })
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.comment.user])
@@ -46,19 +28,21 @@ const Comment = (props) => {
         <div className="comment">
             <p className="commentText">{props.comment.comment}</p>
             <table className="commentDetailsTable">
-                <tr>
-                    <td className="commentDetailsTableCell">
-                        <a
-                            className="commentUsername"
-                            href={'/user-' + user.slug}
-                        >
-                            {'@' + user.username}
-                        </a>
-                    </td>
-                    <td className="commentDetailsTableCell commentDetailsTableRightCol">
-                        <Timestamp createdAt={props.comment.createdAt} />
-                    </td>
-                </tr>
+                <tbody>
+                    <tr>
+                        <td className="commentDetailsTableCell">
+                            <a
+                                className="commentUsername"
+                                href={'/user-' + user.slug}
+                            >
+                                {'@' + user.username}
+                            </a>
+                        </td>
+                        <td className="commentDetailsTableCell commentDetailsTableRightCol">
+                            <Timestamp createdAt={props.comment.createdAt} />
+                        </td>
+                    </tr>
+                </tbody>
             </table>
         </div>
     )

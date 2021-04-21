@@ -11,30 +11,26 @@ const RecipeList = (props) => {
     let recipeArray = props.recipes
     let previewArray = []
 
-    recipeArray.forEach((recipeEntry) => {
-        // Define whether or not the previews are large and small (default to small)
-        if (props.size === 'large') {
-            previewArray.push(
-                <div key={recipeEntry.id} className="entrySingle">
-                    <LargeRecipePreview
-                        key={recipeEntry.id}
-                        recipe={recipeEntry}
-                        user={props.user}
-                    />
-                </div>
-            )
-        } else {
-            previewArray.push(
-                <div key={recipeEntry.id} className="entrySingle">
-                    <SmallRecipePreview
-                        key={recipeEntry.id}
-                        recipe={recipeEntry}
-                        user={props.user}
-                    />
-                </div>
-            )
-        }
-    })
+    previewArray = recipeArray.map((recipeEntry, index) =>
+        props.size === 'large' ? (
+            // Define whether or not the previews are large and small (default to small)
+            <div key={index} className="entrySingle">
+                <LargeRecipePreview
+                    key={recipeEntry.id}
+                    recipe={recipeEntry}
+                    user={props.user}
+                />
+            </div>
+        ) : (
+            <div key={index} className="entrySingle">
+                <SmallRecipePreview
+                    key={recipeEntry.id}
+                    recipe={recipeEntry}
+                    user={props.user}
+                />
+            </div>
+        )
+    )
 
     return previewArray
 }
