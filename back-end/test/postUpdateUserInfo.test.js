@@ -21,7 +21,7 @@ describe('Testing route handler for POST /updateuserinfo ', () => {
     let firstName = 'firstNameVal'
     let lastName = 'lastNameVal'
     let bio = 'bioVal'
-    let id = 1
+    let _id = "606faf0fa9841f27a9e1bcea"
 
     it('should return 200 OK status ', () => {
         return chai.request(app)
@@ -31,7 +31,7 @@ describe('Testing route handler for POST /updateuserinfo ', () => {
         .field('firstName', firstName)
         .field('lastName', lastName)
         .field('bio', bio)
-        .field('id', id)
+        .field('id', _id)
         // Change file path to be image files availible to multer
         .attach('profilepicture', fs.readFileSync('./test/image.png'), 'image.png')
         .then((response) => {
@@ -47,14 +47,14 @@ describe('Testing route handler for POST /updateuserinfo ', () => {
         .field('firstName', firstName)
         .field('lastName', lastName)
         .field('bio', bio)
-        .field('id', id)
+        .field('id', _id)
         .attach('profilepicture', fs.readFileSync('./test/image.png'), 'image.png')
         .then((response) => {
             expect(response.body).have.property('username').that.is.a('string')
             expect(response.body).have.property('firstName').that.is.a('string')
             expect(response.body).have.property('lastName').that.is.a('string')
             expect(response.body).have.property('bio').that.is.a('string')
-            expect(response.body).have.property('id').that.is.a('string')
+            expect(response.body).have.property('imagePath')
         })
     }).timeout(4000)
 })
