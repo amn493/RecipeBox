@@ -580,7 +580,9 @@ app.post('/newrecipe', upload.single('recipeimage'), (req, res, next) => {
         user: req.body.userID,
         name: req.body.name,
         imagePath: path.join('/uploads/', req.file.filename),
-        tags: req.body.tags.split(',').filter((tag) => tag !== ''),
+        tags: req.body.tags
+            .split(',')
+            .filter((tag) => tag !== ''),
         caption: req.body.caption,
         ingredients: req.body.ingredients
             .split(',')

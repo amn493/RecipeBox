@@ -98,38 +98,44 @@ const RecipePage = (props) => {
                 <div className="recipeText">
                     <div className="recipeDetails">
                         <table className="recipeDetailsTable recipeDetailsTopTable">
-                            <tr>
-                                <td className="recipeDetailsTopTableCell">
-                                    <h1 className="recipeName">
-                                        {recipe.name}
-                                    </h1>
-                                </td>
-                                <td className="recipeDetailsTableRightCol recipeDetailsTableLikedCol recipeDetailsTopTableCell">
-                                    <LikeButton
-                                        recipe={recipe}
-                                        setRecipe={setRecipe}
-                                        user={props.user}
-                                        setUser={props.setUser}
-                                        signedIn={props.signedIn}
-                                        setShowModal={setShowModal}
-                                    />
-                                </td>
-                            </tr>
+                            <tbody>
+                                <tr>
+                                    <td className="recipeDetailsTopTableCell">
+                                        <h1 className="recipeName">
+                                            {recipe.name}
+                                        </h1>
+                                    </td>
+                                    <td className="recipeDetailsTableRightCol recipeDetailsTableLikedCol recipeDetailsTopTableCell">
+                                        <LikeButton
+                                            recipe={recipe}
+                                            setRecipe={setRecipe}
+                                            user={props.user}
+                                            setUser={props.setUser}
+                                            signedIn={props.signedIn}
+                                            setShowModal={setShowModal}
+                                        />
+                                    </td>
+                                </tr>
+                            </tbody>
                         </table>
                         <table className="recipeDetailsTable">
-                            <tr>
-                                <td>
-                                    <a
-                                        className="recipeUsername"
-                                        href={'/user-' + authorUser.slug}
-                                    >
-                                        {'@' + authorUser.username}
-                                    </a>
-                                </td>
-                                <td className="recipeDetailsTableRightCol">
-                                    <Timestamp createdAt={recipe.createdAt} />
-                                </td>
-                            </tr>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <a
+                                            className="recipeUsername"
+                                            href={'/user-' + authorUser.slug}
+                                        >
+                                            {'@' + authorUser.username}
+                                        </a>
+                                    </td>
+                                    <td className="recipeDetailsTableRightCol">
+                                        <Timestamp
+                                            createdAt={recipe.createdAt}
+                                        />
+                                    </td>
+                                </tr>
+                            </tbody>
                         </table>
 
                         <p className="recipeCaption">{recipe.caption}</p>

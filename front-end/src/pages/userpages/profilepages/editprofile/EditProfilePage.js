@@ -50,7 +50,7 @@ const EditProfilePage = (props) => {
         updatedUserInfo.append('firstName', firstNameVal)
         updatedUserInfo.append('lastName', lastNameVal)
         updatedUserInfo.append('bio', bioVal)
-        updatedUserInfo.append('id', props.user.id)
+        updatedUserInfo.append('id', props.user._id)
         updatedUserInfo.append('profilepicture', imageFile)
 
         axios

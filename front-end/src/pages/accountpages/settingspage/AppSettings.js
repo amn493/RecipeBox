@@ -104,77 +104,6 @@ const AppSettings = (props) => {
             .catch((err) => {
                 console.error(err)
                 setReqError(true)
-
-                // make some backup fake data
-                const backupData = [
-                    {
-                        username: 'anonymous',
-                        password: 'Abc123',
-                        firstName: 'Anonymous',
-                        lastName: 'User',
-                        bio: 'fun, easy recipes!',
-                        followers: [2, 3, 5, 7, 9],
-                        following: [2, 3, 4, 8, 9],
-                        liked: [1, 3, 5, 10, 33],
-                        slug: 'anonymous',
-                        _id: 1,
-                        imagePath:
-                            'https://thumbs.dreamstime.com/z/heart-shape-various-vegetables-fruits-healthy-food-concept-isolated-white-background-140287808.jpg'
-                    },
-                    {
-                        username: 'foobar2',
-                        password: 'Abc123',
-                        firstName: 'foo',
-                        lastName: 'bar',
-                        bio: 'fun, easy recipes!',
-                        followers: [2, 3, 5, 7, 9],
-                        following: [2, 3, 4, 8, 9],
-                        liked: [1, 3, 5, 10, 33],
-                        slug: 'foobar2',
-                        _id: 2,
-                        imagePath:
-                            'https://thumbs.dreamstime.com/z/heart-shape-various-vegetables-fruits-healthy-food-concept-isolated-white-background-140287808.jpg'
-                    },
-                    {
-                        username: 'blockeduser6',
-                        password: 'Abc123',
-                        firstName: 'blocked',
-                        lastName: 'user',
-                        bio: 'fun, easy recipes!',
-                        followers: [2, 3, 5, 7, 9],
-                        following: [2, 3, 4, 8, 9],
-                        liked: [1, 3, 5, 10, 33],
-                        slug: 'blockeduser6',
-                        _id: 3,
-                        imagePath:
-                            'https://thumbs.dreamstime.com/z/heart-shape-various-vegetables-fruits-healthy-food-concept-isolated-white-background-140287808.jpg'
-                    },
-                    {
-                        username: 'usertoblock',
-                        password: 'Abc123',
-                        firstName: 'user',
-                        lastName: 'toblock',
-                        bio: 'fun, easy recipes!',
-                        followers: [2, 3, 5, 7, 9],
-                        following: [2, 3, 4, 8, 9],
-                        liked: [1, 3, 5, 10, 33],
-                        slug: 'usertoblock',
-                        _id: 4,
-                        imagePath:
-                            'https://thumbs.dreamstime.com/z/heart-shape-various-vegetables-fruits-healthy-food-concept-isolated-white-background-140287808.jpg'
-                    }
-                ]
-
-                setBlockedUsers(
-                    backupData.slice(0, props.user.blockedUsers.length)
-                )
-                setUsersToBlock(
-                    backupData.slice(
-                        props.user.blockedUsers.length,
-                        backupData.length
-                    )
-                )
-                setLoadedUsers(true)
             })
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
@@ -198,58 +127,6 @@ const AppSettings = (props) => {
             .catch((err) => {
                 console.error(err)
                 setReqError(true)
-
-                // make some backup fake data
-                const backupData = [
-                    {
-                        tag: '6th generation',
-                        count: 24,
-                        id: 1
-                    },
-                    {
-                        tag: 'holistic',
-                        count: 3,
-                        id: 2
-                    },
-                    {
-                        tag: 'leverage',
-                        count: 43,
-                        id: 3
-                    },
-                    {
-                        tag: 'global',
-                        count: 46,
-                        id: 4
-                    },
-                    {
-                        tag: 'tangible',
-                        count: 49,
-                        id: 5
-                    },
-                    {
-                        tag: 'composite',
-                        count: 20,
-                        id: 6
-                    },
-                    {
-                        tag: 'motivating',
-                        count: 40,
-                        id: 7
-                    },
-                    {
-                        tag: 'intermediate',
-                        count: 18,
-                        id: 8
-                    },
-                    {
-                        tag: 'circuit',
-                        count: 6,
-                        id: 9
-                    }
-                ]
-
-                setTagsToBlock(backupData.map((tag) => tag.tag))
-                setLoadedTagsToBlock(true)
             })
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])

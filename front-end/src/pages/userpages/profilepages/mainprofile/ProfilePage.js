@@ -92,14 +92,14 @@ const ProfilePage = (props) => {
                 )}
 
                 <div className="tabContainer">
-                    <Tab.Container defaultActiveKey="small">
+                    <Tab.Container defaultActiveKey="small" transition={false}>
                         <Nav
                             variant="tabs"
                             className="justify-content-center w-100 nav-fill"
                         >
                             <Nav.Item>
                                 <Nav.Link
-                                    activeClassName=""
+                                    activeclassname=""
                                     eventKey="small"
                                     onSelect={() => setActiveTab('small')}
                                 >

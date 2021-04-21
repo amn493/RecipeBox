@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import Button from 'react-bootstrap/Button'
 
 import './SmallUserPreview.css'
@@ -7,14 +8,16 @@ import './SmallUserPreview.css'
 //To include the component without 'unblock' buttons for each user, specify isBlockedUserProfile=false
 //Otherwise, pass in isBlockedUserProfile=true
 const SmallUserPreview = (props) => {
-    let userSlug = '/user-' + props.user.slug
-
     return (
         <div className="userPreview">
             {/*preview links to the user profile*/}
             <a
                 className="userPreviewProfileLink"
-                href={props.isBlockedUserProfile ? undefined : userSlug}
+                href={
+                    props.isBlockedUserProfile
+                        ? undefined
+                        : `/user-${props.user.slug}`
+                }
             >
                 {/*TODO(?): Disable link if component used for blocked users page?*/}
                 <table className="userPreviewTable">

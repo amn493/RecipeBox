@@ -77,11 +77,21 @@ const BrowseRecipesPage = (props) => {
 
     useEffect(() => {
         axios('http://localhost:4000/recommendedrecipes')
-            .then((response) => setRecommendedRecipes(response.data))
+            .then((response) =>
+                setRecommendedRecipes(
+                    response.data.filter(
+                        (recipe) =>
+                            !recipe.tags.some((tag) =>
+                                props.user.blockedTags.includes(tag)
+                            )
+                    )
+                )
+            )
             .catch((err) => {
                 console.error(err)
                 setReqError(true)
             })
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const [tagSelection, setTagSelection] = useState('')
@@ -136,8 +146,15 @@ const BrowseRecipesPage = (props) => {
                     }
                 >
                     No recipes found
-                    <hr />
                 </p>
+                <hr
+                    className={
+                        recipes.length === 0 &&
+                        (filterKeyword !== '' || filterTags.length > 0)
+                            ? 'noRecipesFoundMessagehr'
+                            : 'hidden'
+                    }
+                />
                 {recipes
                     .sort((a, b) => b.likes - a.likes)
                     .map((recipe, i) => (
