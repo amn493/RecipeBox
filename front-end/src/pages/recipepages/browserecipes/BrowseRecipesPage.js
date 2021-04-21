@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 
-import LargeRecipePreview from './LargeRecipePreview.js'
-import KeywordSearchBar from './KeywordSearchBar.js'
-import ComboBoxSearchBar from './ComboBoxSearchBar.js'
-import TagButton from './TagButton.js'
+import LargeRecipePreview from '../components/LargeRecipePreview.js'
+import KeywordSearchBar from '../../../gencomponents/searchbars/KeywordSearchBar.js'
+import ComboBoxSearchBar from '../../../gencomponents/searchbars/ComboBoxSearchBar.js'
+import TagButton from '../../../gencomponents/searchbars/TagButton.js'
 
 import './BrowseRecipesPage.css'
-import ErrorComponent from './ErrorComponent.js'
+import ErrorComponent from '../../../gencomponents/ErrorComponent.js'
 
 const BrowseRecipesPage = (props) => {
     const [reqError, setReqError] = useState(false)
@@ -75,11 +75,21 @@ const BrowseRecipesPage = (props) => {
 
     useEffect(() => {
         axios('http://localhost:4000/recommendedrecipes')
-            .then((response) => setRecommendedRecipes(response.data))
+            .then((response) =>
+                setRecommendedRecipes(
+                    response.data.filter(
+                        (recipe) =>
+                            !recipe.tags.some((tag) =>
+                                props.user.blockedTags.includes(tag)
+                            )
+                    )
+                )
+            )
             .catch((err) => {
                 console.error(err)
                 setReqError(true)
             })
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const [tagSelection, setTagSelection] = useState('')
@@ -133,8 +143,15 @@ const BrowseRecipesPage = (props) => {
                     }
                 >
                     No recipes found
-                    <hr />
                 </p>
+                <hr
+                    className={
+                        recipes.length === 0 &&
+                        (filterKeyword !== '' || filterTags.length > 0)
+                            ? 'noRecipesFoundMessagehr'
+                            : 'hidden'
+                    }
+                />
                 {recipes
                     .sort((a, b) => b.likes - a.likes)
                     .map((recipe, i) => (

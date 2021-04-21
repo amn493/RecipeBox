@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react'
 import axios from 'axios'
 
 import './BrowseUsersPage.css'
-import KeyWordSearchBar from './KeywordSearchBar.js'
-import SmallUserPreview from './SmallUserPreview.js'
-import ErrorComponent from './ErrorComponent'
+import KeyWordSearchBar from '../../../gencomponents/searchbars/KeywordSearchBar.js'
+import SmallUserPreview from '../../userpages/components/SmallUserPreview.js'
+import ErrorComponent from '../../../gencomponents/ErrorComponent.js'
 
 // Browse Users Page
 // Does not expect any argument for props
@@ -54,10 +54,12 @@ const BrowseUsersPage = (props) => {
                 </div>
                 <div className="userPreviews">
                     {users.length === 0 && filterKeyword ? (
-                        <p className="noUsersFoundMessage">
-                            No users found
+                        <div>
+                            <p className="noUsersFoundMessage">
+                                No users found
+                            </p>
                             <hr />
-                        </p>
+                        </div>
                     ) : (
                         users
                             .sort((a, b) =>

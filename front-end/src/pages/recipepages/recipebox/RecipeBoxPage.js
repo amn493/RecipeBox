@@ -1,23 +1,55 @@
-import KeywordSearchBar from './KeywordSearchBar'
 import './RecipeBoxPage.css'
-import RecipeList from './RecipeList'
+import RecipeList from '../components/RecipeList.js'
 
 import { useEffect, useState } from 'react'
 import axios from 'axios'
-import ComboBoxSearchBar from './ComboBoxSearchBar'
+import ComboBoxSearchBar from '../../../gencomponents/searchbars/ComboBoxSearchBar.js'
+import KeywordSearchBar from '../../../gencomponents/searchbars/KeywordSearchBar'
 import Dropdown from 'react-bootstrap/Dropdown'
 import Button from 'react-bootstrap/Button'
 import ButtonGroup from 'react-bootstrap/ButtonGroup'
 import { SortUp } from 'react-bootstrap-icons'
 import { SortDown } from 'react-bootstrap-icons'
-import TagButton from './TagButton.js'
-import ErrorComponent from './ErrorComponent.js'
+import TagButton from '../../../gencomponents/searchbars/TagButton.js'
+import ErrorComponent from '../../../gencomponents/ErrorComponent.js'
 
 // Pulls recipes from the database for the logged-in feed and generates a recipelist for qualifying recipes
 // Qualifying recipes, e.g. latest recipes posted by those someone has followed
 // props.user is the passed in user
 const RecipeBoxPage = (props) => {
     const [reqError, setReqError] = useState(false)
+
+    // TODO: Back-end task -- Fill rbxEntries. Also need to adjust below so the array contains both "recipe" and "likes"
+    let rbxEntries = [
+        {
+            imagePath: 'https://picsum.photos/300',
+            slug: 'foobar-guacamole',
+            name: 'Guacamole',
+            user: {
+                username: 'foobar',
+                slug: 'foobar'
+            },
+            likes: 36,
+            createdAt: 1615864425952,
+            caption: "Because who doesn't love guac?",
+            tags: ['mexican', 'spicy', 'dip'],
+            id: 2
+        },
+        {
+            imagePath: 'https://picsum.photos/300',
+            slug: 'foobar-guacamole',
+            name: 'GuacaMOLE',
+            user: {
+                username: 'foobar',
+                slug: 'foobar'
+            },
+            likes: 20,
+            createdAt: 1615264429952,
+            caption: "Because who doesn't love GUACAMOLE!?",
+            tags: ['mexican', 'spicy', 'dip'],
+            id: 3
+        }
+    ]
 
     /* Generate state variables */
     // Recipe list to show -- Is later re-assigned if/when sorts are applied
@@ -55,6 +87,7 @@ const RecipeBoxPage = (props) => {
                 // TODO: Print an error to the user, but for now mockaroo is likely
                 console.log(err)
                 setReqError(true)
+                setRecBoxRecipes(rbxEntries)
             })
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
@@ -100,6 +133,27 @@ const RecipeBoxPage = (props) => {
             .catch((err) => {
                 console.error(err)
                 setReqError(true)
+
+                // make some backup fake data
+                const backupData = [
+                    {
+                        tag: 'vegan',
+                        count: 10,
+                        id: 1
+                    },
+                    {
+                        tag: 'appetizer',
+                        count: 34,
+                        id: 2
+                    },
+                    {
+                        tag: 'mexican',
+                        count: 22,
+                        id: 3
+                    }
+                ]
+
+                setTags(backupData.map((tag) => tag.tag))
             })
     }, [])
 

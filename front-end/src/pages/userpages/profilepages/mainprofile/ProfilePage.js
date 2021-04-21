@@ -6,12 +6,12 @@ import Nav from 'react-bootstrap/Nav'
 import Button from 'react-bootstrap/Button'
 import { ViewList, ViewStacked } from 'react-bootstrap-icons'
 
-import ProfileHeader from './ProfileHeader.js'
-import FollowButton from './FollowButton.js'
-import SmallRecipePreview from './SmallRecipePreview.js'
-import LargeRecipePreview from './LargeRecipePreview.js'
-import CreateAccountModal from './CreateAccountModal.js'
-import ErrorComponent from './ErrorComponent.js'
+import ProfileHeader from './components/ProfileHeader.js'
+import FollowButton from './components/FollowButton.js'
+import SmallRecipePreview from '../../../recipepages/components/SmallRecipePreview.js'
+import LargeRecipePreview from '../../../recipepages/components/LargeRecipePreview.js'
+import CreateAccountModal from '../../../../gencomponents/CreateAccountModal.js'
+import ErrorComponent from '../../../../gencomponents/ErrorComponent.js'
 
 import './ProfilePage.css'
 
@@ -91,14 +91,14 @@ const ProfilePage = (props) => {
                 )}
 
                 <div className="tabContainer">
-                    <Tab.Container defaultActiveKey="small">
+                    <Tab.Container defaultActiveKey="small" transition={false}>
                         <Nav
                             variant="tabs"
                             className="justify-content-center w-100 nav-fill"
                         >
                             <Nav.Item>
                                 <Nav.Link
-                                    activeClassName=""
+                                    activeclassname=""
                                     eventKey="small"
                                     onSelect={() => setActiveTab('small')}
                                 >
