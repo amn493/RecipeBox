@@ -43,22 +43,30 @@ const FollowingPage = (props) => {
     useEffect(() => {
         // Fetch all following
         if (user.following) {
-            axios(
-                `http://localhost:4000/usersbyid?id=${user.following.reduce(
-                    (acc, userFromFollowing) => acc + `&id=${userFromFollowing}`
-                )}`
-            )
-                .then((response) => {
-                    setAllFollowing(
-                        response.data.slice(0, user.following.length)
-                    )
-                    setFollowing(response.data.slice(0, user.following.length))
-                    setLoadedFollowing(true)
-                })
-                .catch((err) => {
-                    console.error(err)
-                    setReqError(true)
-                })
+            if (user.following.length > 0) {
+                axios(
+                    `http://localhost:4000/usersbyid?id=${user.following.reduce(
+                        (acc, userFromFollowing) =>
+                            acc + `&id=${userFromFollowing}`,
+                        ''
+                    )}`
+                )
+                    .then((response) => {
+                        setAllFollowing(
+                            response.data.slice(0, user.following.length)
+                        )
+                        setFollowing(
+                            response.data.slice(0, user.following.length)
+                        )
+                        setLoadedFollowing(true)
+                    })
+                    .catch((err) => {
+                        console.error(err)
+                        setReqError(true)
+                    })
+            } else {
+                setLoadedFollowing(true)
+            }
         }
     }, [user.following])
 

@@ -43,22 +43,30 @@ const FollowersPage = (props) => {
     useEffect(() => {
         // Fetch all followers (followers are an array of user objects)
         if (user.followers) {
-            axios(
-                `http://localhost:4000/usersbyid?id=${user.followers.reduce(
-                    (acc, userFromFollowers) => acc + `&id=${userFromFollowers}`
-                )}`
-            )
-                .then((response) => {
-                    setAllFollowers(
-                        response.data.slice(0, user.followers.length)
-                    )
-                    setFollowers(response.data.slice(0, user.followers.length))
-                    setLoadedFollowers(true)
-                })
-                .catch((err) => {
-                    console.error(err)
-                    setReqError(true)
-                })
+            if (user.followers.length > 0) {
+                axios(
+                    `http://localhost:4000/usersbyid?id=${user.followers.reduce(
+                        (acc, userFromFollowers) =>
+                            acc + `&id=${userFromFollowers}`,
+                        ''
+                    )}`
+                )
+                    .then((response) => {
+                        setAllFollowers(
+                            response.data.slice(0, user.followers.length)
+                        )
+                        setFollowers(
+                            response.data.slice(0, user.followers.length)
+                        )
+                        setLoadedFollowers(true)
+                    })
+                    .catch((err) => {
+                        console.error(err)
+                        setReqError(true)
+                    })
+            } else {
+                setLoadedFollowers(true)
+            }
         }
     }, [user.followers])
 
