@@ -443,7 +443,7 @@ app.post('/signout', (req, res) => {
     res.send('Signed out user')
 })
 
-app.post('/comment', (req, res) => {
+app.post('/comment', (req, res, next) => {
     // new comment
     const newComment = {
         recipe: req.body.recipe,
@@ -451,6 +451,95 @@ app.post('/comment', (req, res) => {
         comment: req.body.comment,
         createdAt: Date.now()
     }
+
+    // get info for sending email notification
+    Recipe.findOne({ _id: req.body.recipe })
+        .then((recipe) => {
+            // get name of recipe for given user to receive notification about
+            const recipeNameForEmail = recipe.name
+            const recipeLinkForEmail = `http://localhost:3000/recipe-${recipe.slug}`
+            // const recipeImgPathForEmail = recipe.imagePath
+            User.findOne({
+                _id: req.body.user
+            })
+                .then((commentingUser) => {
+                    // get username of commenting user
+                    const usernameOfCommentingUser = commentingUser.username
+                    const userProfileLinkForEmail = `http://localhost:3000/user-${commentingUser.slug}`
+                    // const userProfilePicForEmail = commentingUser.imagePath
+                    User.findOne({
+                        _id: recipe.user
+                    })
+                        .then((userToReceiveNotif) => {
+                            // if user who created commented-on recipe has notifications on,
+                            // send email
+                            if (
+                                userToReceiveNotif.notificationSettings
+                                    .emailNotifications &&
+                                userToReceiveNotif.notificationSettings
+                                    .comments &&
+                                userToReceiveNotif.username !==
+                                    commentingUser.username
+                            ) {
+                                // get email and first name of user to receive notification
+                                const emailforNotifs = userToReceiveNotif.email
+                                const firstNameOfEmailRecipient =
+                                    userToReceiveNotif.firstName
+                                const message = {
+                                    from: 'recipeboxupdate@gmail.com', // Sender address
+                                    to: emailforNotifs, // recipient(s)
+                                    subject: 'Your recipe received a comment!', // Subject line
+                                    // text: `${firstNameOfEmailRecipient}, @${usernameOfCommentingUser} left a comment on your recipe, ${recipeNameForEmail}: "${req.body.comment}"` // body
+
+                                    // attachments: [
+                                    //     {
+                                    //         filename: path.basename(
+                                    //             recipeImgPathForEmail
+                                    //         ),
+                                    //         path: path.join(
+                                    //             __dirname,
+                                    //             recipeImgPathForEmail
+                                    //         ),
+                                    //         cid: 'recipeimg'
+                                    //     },
+                                    //     {
+                                    //         filename: path.basename(
+                                    //             userProfilePicForEmail
+                                    //         ),
+                                    //         path: path.join(
+                                    //             __dirname,
+                                    //             userProfilePicForEmail
+                                    //         ),
+                                    //         cid: 'userprofileimg'
+                                    //     }
+                                    // ],
+
+                                    html: `<h2 style="color: #1c6475; text-align: center;">${firstNameOfEmailRecipient},</h2>
+                                    <div style="margin: 0 auto;text-align:center;">
+                                    <h3 style="color: #4aa0b5; text-align: center; display: inline;"><a style="color: #4aa0b5;" href=${userProfileLinkForEmail}>@${usernameOfCommentingUser}</a></h3>
+                                    <h4 style="color: #2b2301; display: inline;">&nbsp;left a comment on your recipe,&nbsp;</h4>
+                                    <h3 style="color: #1c6475; text-align: center; display: inline;"><a style="color: #4aa0b5;" href=${recipeLinkForEmail}>${recipeNameForEmail}</a></h3>
+                                    </div>
+                                    <hr style="width:25%">
+                                    <h3 style="font-style: italic; color: #7d7d7d; text-align: center;">"${req.body.comment}"</h3>
+                                    `
+                                }
+                                transport.sendMail(message).catch((err) => {
+                                    next(err)
+                                })
+                            }
+                        })
+                        .catch((err) => {
+                            next(err)
+                        })
+                })
+                .catch((err) => {
+                    next(err)
+                })
+        })
+        .catch((err) => {
+            next(err)
+        })
 
     // save new comment to the database
     new Comment(newComment)
@@ -491,7 +580,9 @@ app.post('/newrecipe', upload.single('recipeimage'), (req, res, next) => {
         user: req.body.userID,
         name: req.body.name,
         imagePath: path.join('/uploads/', req.file.filename),
-        tags: req.body.tags.split(',').filter((tag) => tag !== ''),
+        tags: req.body.tags
+            .split(',')
+            .filter((tag) => tag !== ''),
         caption: req.body.caption,
         ingredients: req.body.ingredients
             .split(',')
@@ -630,14 +721,18 @@ app.post('/likerecipe', (req, res, next) => {
             .then((recipe) => {
                 // get name of recipe for given user to receive notification about
                 const recipeNameForEmail = recipe.name
+                const recipeLinkForEmail = `http://localhost:3000/recipe-${recipe.slug}`
+                // const recipeImgPathForEmail = recipe.imagePath
                 User.findOne({
                     _id: req.body.userID
                 })
                     .then((likinguser) => {
                         // get username of liking user
                         const usernameOfLikingUser = likinguser.username
+                        const userProfileLinkForEmail = `http://localhost:3000/user-${likinguser.slug}`
+                        // const userProfilePicForEmail = likinguser.imagePath
                         User.findOne({
-                            _id: recipe.user.id
+                            _id: recipe.user
                         })
                             .then((likeduser) => {
                                 // if user who created liked recipe has notifications on,
@@ -656,7 +751,47 @@ app.post('/likerecipe', (req, res, next) => {
                                         from: 'recipeboxupdate@gmail.com', // Sender address
                                         to: emailforNotifs, // recipient(s)
                                         subject: 'Your recipe received a like!', // Subject line
-                                        text: `Congrats, ${firstNameOfEmailRecipient}! @${usernameOfLikingUser} liked your recipe, ${recipeNameForEmail}` // body
+                                        // text: `Congrats, ${firstNameOfEmailRecipient}! @${usernameOfLikingUser} liked your recipe, ${recipeNameForEmail}` // body
+
+                                        attachments: [
+                                            // {
+                                            //     filename: path.basename(
+                                            //         recipeImgPathForEmail
+                                            //     ),
+                                            //     path: path.join(
+                                            //         __dirname,
+                                            //         recipeImgPathForEmail
+                                            //     ),
+                                            //     cid: 'recipeimg'
+                                            // },
+                                            // {
+                                            //     filename: path.basename(
+                                            //         userProfilePicForEmail
+                                            //     ),
+                                            //     path: path.join(
+                                            //         __dirname,
+                                            //         userProfilePicForEmail
+                                            //     ),
+                                            //     cid: 'userprofileimg'
+                                            // },
+                                            {
+                                                filename: 'heartFill.png',
+                                                path: path.join(
+                                                    __dirname,
+                                                    '../front-end/public/heartFill.png'
+                                                ),
+                                                cid: 'heartFillIcon'
+                                            }
+                                        ],
+                                        html: `<h2 style="color: #1c6475; text-align: center;">Congrats, ${firstNameOfEmailRecipient}!</h2>
+                                        <div style="margin: 0 auto;text-align:center;">
+                                        <h3 style="color: #4aa0b5; text-align: center; display: inline;"><a style="color: #4aa0b5;" href=${userProfileLinkForEmail}>@${usernameOfLikingUser}</a></h3>
+                                        <h4 style="color: #2b2301; display: inline;">&nbsp;liked your recipe,&nbsp;</h4>
+                                        <h3 style="color: #1c6475; text-align: center; display: inline;"><a style="color: #4aa0b5;" href=${recipeLinkForEmail}>${recipeNameForEmail}</a></h3>
+                                        </div>
+                                        <hr style="width: 15%;" />
+                                        <img style="display: block;text-align:center;margin-left: auto;margin-right: auto;width: 5%;" src="cid:heartFillIcon" alt="heartFill"/>
+                                        `
                                     }
                                     transport.sendMail(message).catch((err) => {
                                         next(err)
@@ -717,6 +852,75 @@ app.post('/followuser', (req, res, next) => {
     if (req.body.follow) {
         updateSignedIn.$push = { following: req.body.profileUserID }
         updateProfile.$push = { followers: req.body.signedInUserID }
+
+        // get info for sending email notification for follow
+        User.findOne({
+            _id: req.body.signedInUserID
+        })
+            .then((followingUser) => {
+                // get username of following user
+                const usernameOfFollowingUser = followingUser.username
+                const userProfileLinkForEmail = `http://localhost:3000/user-${followingUser.slug}`
+                const userImgPathForEmail =
+                    // TODO: replace starter profile pic with actual user profile pictures in email
+                    path.basename(followingUser.imagePath).substring(0, 8) ===
+                    'RBX_PFP_'
+                        ? followingUser.imagePath
+                        : 'starterProfilePictures/RBX_PFP_Blue.png'
+                User.findOne({
+                    _id: req.body.profileUserID
+                })
+                    .then((followedUser) => {
+                        // if user who is being followed has notifications on,
+                        // send email
+                        if (
+                            followedUser.notificationSettings
+                                .emailNotifications &&
+                            followedUser.notificationSettings.follows
+                        ) {
+                            // get email and first name of user to receive notification
+                            const emailforNotifs = followedUser.email
+                            const firstNameOfEmailRecipient =
+                                followedUser.firstName
+                            const message = {
+                                from: 'recipeboxupdate@gmail.com', // Sender address
+                                to: emailforNotifs, // recipient(s)
+                                subject: 'You have a new follower!', // Subject line
+                                // text: `${firstNameOfEmailRecipient}, your account has a new follower: @${usernameOfFollowingUser}` // body
+
+                                // TODO: replace starter profile pic with actual user profile pictures in email
+                                attachments: [
+                                    {
+                                        filename: path.basename(
+                                            userImgPathForEmail
+                                        ),
+                                        path: path.join(
+                                            __dirname,
+                                            `../front-end/public/${userImgPathForEmail}`
+                                        ),
+                                        cid: 'followinguserimg'
+                                    }
+                                ],
+                                html: `<h2 style="color: #1c6475;text-align: center;">${firstNameOfEmailRecipient},</h2>
+                                        <h3 style="color: #4AA0B5;text-align: center;">Your account has a new follower!</h3><hr style="width:50%;"><div >
+                                        <h2 style="color: #4AA0B5;text-align: center;"><a href=${userProfileLinkForEmail} style="color: #4AA0B5;">@${usernameOfFollowingUser}</a></h2>
+                                        <img style="display: block;text-align:center;margin-left: auto;margin-right: auto;width: 40%;" src="cid:followinguserimg" alt="userprofileimg"/></div>`
+                            }
+                            transport.sendMail(message).catch((err) => {
+                                next(err)
+                            })
+                        }
+                    })
+                    .catch((err) => {
+                        next(err)
+                    })
+            })
+            .catch((err) => {
+                next(err)
+            })
+            .catch((err) => {
+                next(err)
+            })
     } else {
         updateSignedIn.$pull = { following: req.body.profileUserID }
         updateProfile.$pull = { followers: req.body.signedInUserID }
@@ -754,7 +958,6 @@ app.post('/notificationsettings', (req, res, next) => {
         // posts: req.body.posts,
     }
 
-    console.log(updatedNotificationSettings)
     // update the settings
     User.findByIdAndUpdate(
         req.body.userID,
