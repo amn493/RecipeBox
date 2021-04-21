@@ -40,6 +40,7 @@ const RecipePage = (props) => {
 
     // request author user
     const [authorUser, setAuthorUser] = useState({})
+    const [userBlocked, setUserBlocked] = useState(false)
 
     useEffect(() => {
         if (recipe) {
@@ -55,8 +56,17 @@ const RecipePage = (props) => {
                         setAuthorUser({
                             id: response.data._id,
                             username: response.data.username,
-                            slug: response.data.slug
+                            slug: response.data.slug,
+                            blockedUsers: response.data.blockedUsers
                         })
+                        if (
+                            props.user.blockedUsers.includes(
+                                response.data._id
+                            ) ||
+                            response.data.blockedUsers.includes(props.user._id)
+                        ) {
+                            setUserBlocked(true)
+                        }
                     })
                     .catch((err) => console.error(err))
             }
@@ -87,7 +97,9 @@ const RecipePage = (props) => {
     const [showModal, setShowModal] = useState(false)
 
     return !reqError ? (
-        recipe && comments ? (
+        userBlocked ? (
+            <ErrorComponent error={"Couldn't load recipe"} />
+        ) : recipe && comments ? (
             // render the page if all required data has been fetched
             <div className="recipe">
                 <img
