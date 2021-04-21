@@ -4,9 +4,9 @@ import { useParams } from 'react-router-dom'
 import { ArrowLeftCircleFill } from 'react-bootstrap-icons'
 
 import './FollowingPage.css'
-import KeyWordSearchBar from './KeywordSearchBar.js'
-import SmallUserPreview from './SmallUserPreview.js'
-import ErrorComponent from './ErrorComponent.js'
+import KeyWordSearchBar from '../../../gencomponents/searchbars/KeywordSearchBar.js'
+import SmallUserPreview from '../../userpages/components/SmallUserPreview.js'
+import ErrorComponent from '../../../gencomponents/ErrorComponent.js'
 
 // Following Page
 // Expects a user object for props

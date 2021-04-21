@@ -7,9 +7,9 @@ import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 
 import Comment from './Comment.js'
-import Timestamp from './Timestamp'
-import ErrorComponent from './ErrorComponent.js'
-import CreateAccountModal from './CreateAccountModal.js'
+import Timestamp from '../../../gencomponents/Timestamp.js'
+import ErrorComponent from '../../../gencomponents/ErrorComponent.js'
+import CreateAccountModal from '../../../gencomponents/CreateAccountModal.js'
 
 import './RecipePage.css'
 

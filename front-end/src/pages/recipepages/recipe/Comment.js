@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 
-import Timestamp from './Timestamp'
-
 import './Comment.css'
+import Timestamp from '../../../gencomponents/Timestamp.js'
 
 // Component for comment
 // Expects comment (a comment object) as props
