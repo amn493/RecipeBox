@@ -217,8 +217,8 @@ const LikeButton = (props) => {
                 type="image"
                 src={
                     props.user.liked.includes(props.recipe._id)
-                        ? 'heartFill.png'
-                        : 'heartOutline.png'
+                        ? 'icons/heartFill.png'
+                        : 'icons/heartOutline.png'
                 }
                 alt={
                     props.user.liked.includes(props.recipe._id)

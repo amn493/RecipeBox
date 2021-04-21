@@ -43,7 +43,7 @@ const LargeRecipePreview = (props) => {
         <div className="largeRecipePreview">
             <img
                 className="largeRecipePreviewImage"
-                src={props.recipe.imagePath}
+                src={process.env.PUBLIC_URL + props.recipe.imagePath}
                 alt="food"
             />
             <table className="largeRecipePreviewTable largeRecipePreviewTopTable">
@@ -61,7 +61,10 @@ const LargeRecipePreview = (props) => {
                             <img
                                 className="heartImage"
                                 src={
-                                    liked ? 'heartFill.png' : 'heartOutline.png'
+                                    'icons/' +
+                                    (liked
+                                        ? 'heartFill.png'
+                                        : 'heartOutline.png')
                                 }
                                 alt={liked ? 'heart fill' : 'heart outline'}
                             ></img>

@@ -16,7 +16,6 @@ const SmallUserPreview = (props) => {
                 className="userPreviewProfileLink"
                 href={props.isBlockedUserProfile ? undefined : userSlug}
             >
-                {' '}
                 {/*TODO(?): Disable link if component used for blocked users page?*/}
                 <table className="userPreviewTable">
                     <tbody>
@@ -24,7 +23,7 @@ const SmallUserPreview = (props) => {
                             {/* user profile picture preview */}
                             <td className="userPreviewImg">
                                 <img
-                                    src={props.user.imagePath}
+                                    src={'../' + props.user.imagePath}
                                     alt=""
                                     className="smallUserProfilePic"
                                 />
