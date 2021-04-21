@@ -44,7 +44,11 @@ const ProfileHeader = (props) => {
                     </td>
                     <td className="profileStat">
                         <a
-                            className="profileStatLink"
+                            className={`profileStatLink ${
+                                props.userBlocked
+                                    ? 'clickDisabled'
+                                    : 'clickEnabled'
+                            }`}
                             href={`/user-${props.user.slug}/followers`}
                         >
                             <b className="profileStatNumber">
@@ -62,7 +66,11 @@ const ProfileHeader = (props) => {
                     </td>
                     <td className="profileStat">
                         <a
-                            className="profileStatLink"
+                            className={`profileStatLink ${
+                                props.userBlocked
+                                    ? 'clickDisabled'
+                                    : 'clickEnabled'
+                            }`}
                             href={`/user-${props.user.slug}/following`}
                         >
                             <b className="profileStatNumber">
