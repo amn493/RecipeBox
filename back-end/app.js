@@ -656,7 +656,7 @@ app.post('/blockuser', (req, res, next) => {
         },
         { new: true, useFindAndModify: false }
     )
-        .then(() => {
+        .then((user) => {
             User.findByIdAndUpdate(
                 req.body.blockedUserID,
                 {
@@ -667,13 +667,7 @@ app.post('/blockuser', (req, res, next) => {
             )
 
                 .then(() => {
-                    res.json({
-                        signedInBlockedUsers: updatedSignedInBlockedUsers,
-                        signedInUserFollowing: updatedSignedInUserFollowing,
-                        signedInUserFollowers: updatedSignedInUserFollowers,
-                        blockedUserFollowers: updatedblockedUserFollowers,
-                        blockedUserFollowing: updatedblockedUserFollowing
-                    })
+                    res.json(user)
                 })
                 .catch((err) => next(err))
         })
@@ -702,8 +696,8 @@ app.post('/blocktag', (req, res, next) => {
         },
         { new: true, useFindAndModify: false }
     )
-        .then(() => {
-            res.json({ signedInBlockedTags: updatedSignedInBlockedTags })
+        .then((user) => {
+            res.json(user)
         })
         .catch((err) => next(err))
 })
@@ -964,9 +958,9 @@ app.post('/notificationsettings', (req, res, next) => {
         },
         { new: true, useFindAndModify: false }
     )
-        .then(() => {
+        .then((user) => {
             // send response
-            res.json(updatedNotificationSettings)
+            res.json(user)
         })
         .catch((err) => next(err))
 })

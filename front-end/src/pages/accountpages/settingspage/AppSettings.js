@@ -37,7 +37,7 @@ const AppSettings = (props) => {
                     .filter((user) => user.username === userNameToBlock)
                     .map((user) => user.followers)[0]
             })
-            .then(() => {
+            .then((response) => {
                 setBlockedUsers(
                     blockedUsers.concat(
                         usersToBlock.filter(
@@ -45,6 +45,7 @@ const AppSettings = (props) => {
                         )
                     )
                 )
+                props.setUser(response.data)
             })
     }
 
@@ -62,7 +63,7 @@ const AppSettings = (props) => {
                     blockedUserFollowing: userToUnblock.following,
                     blockedUserFollowers: userToUnblock.followers
                 })
-                .then(() => {
+                .then((response) => {
                     let index = blockedUsers.indexOf(userToUnblock)
                     setBlockedUsers(
                         blockedUsers
@@ -77,6 +78,7 @@ const AppSettings = (props) => {
                     usersToBlock.includes(userToUnblock)
                         ? setUsersToBlock(usersToBlock)
                         : setUsersToBlock(usersToBlock.concat(props))
+                    props.setUser(response.data)
                 })
         }
     }
@@ -257,13 +259,20 @@ const AppSettings = (props) => {
     ) //list of current user's blocked tags
 
     const handleChangedNotifSwitch = () => {
-        axios.post('http://localhost:4000/notificationsettings', {
-            emailNotifications: emailNotifs,
-            likes: likesNotifs,
-            comments: commentsNotifs,
-            follows: followersNotifs,
-            userID: currentUser._id
-        })
+        axios
+            .post('http://localhost:4000/notificationsettings', {
+                emailNotifications: emailNotifs,
+                likes: likesNotifs,
+                comments: commentsNotifs,
+                follows: followersNotifs,
+                userID: currentUser._id
+            })
+            .then((response) => {
+                props.setUser(response.data)
+            })
+            .catch((err) => {
+                console.error(err)
+            })
     }
 
     const handleAddBlockedTag = (tagToBlock) => {
@@ -275,7 +284,7 @@ const AppSettings = (props) => {
                     signedInBlockedTags: blockedTagsList,
                     userID: currentUser._id
                 })
-                .then(() => {
+                .then((response) => {
                     addBlockedTagToList(blockedTagsList.concat(tagToBlock)) //change (1) list of user's blocked tags
                     let index = tagsToBlock.indexOf(tagToBlock)
                     setTagsToBlock(
@@ -285,17 +294,25 @@ const AppSettings = (props) => {
                                 tagsToBlock.slice(index + 1, tagsToBlock.length)
                             )
                     )
+                    props.setUser(response.data)
                 }) //(2) list of tags that are available to user to block
         }
     }
 
     const handleRemoveBlockedTag = (tagToUnblock) => {
-        axios.post('http://localhost:4000/blocktag', {
-            addBlock: false,
-            tagToBlockOrUnblock: tagToUnblock,
-            signedInBlockedTags: blockedTagsList,
-            userID: currentUser._id
-        })
+        axios
+            .post('http://localhost:4000/blocktag', {
+                addBlock: false,
+                tagToBlockOrUnblock: tagToUnblock,
+                signedInBlockedTags: blockedTagsList,
+                userID: currentUser._id
+            })
+            .then((response) => {
+                props.setUser(response.data)
+            })
+            .catch((err) => {
+                console.error(err)
+            })
     }
 
     const [emailNotifs, setEmailNotifs] = useState(
