@@ -69,9 +69,10 @@ const SmallRecipePreview = (props) => {
                                             <img
                                                 className="heartImage"
                                                 src={
-                                                    liked
+                                                    'icons/' +
+                                                    (liked
                                                         ? 'heartFill.png'
-                                                        : 'heartOutline.png'
+                                                        : 'heartOutline.png')
                                                 }
                                                 alt={
                                                     liked

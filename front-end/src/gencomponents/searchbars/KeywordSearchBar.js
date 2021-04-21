@@ -14,17 +14,6 @@ import { BookmarkHeart } from 'react-bootstrap-icons'
 //and 2 state-related variables: filter and setFilter (filter will be set to the value of the text field upon search)
 
 const KeywordSearchBar = (props) => {
-    let searchIcon = '' //small royalty-free recipe/user profile icons displayed next to search bar
-    let placeholder = ''
-
-    if (props.isRecipe === true) {
-        searchIcon = 'recipeicon.png'
-        placeholder = 'Search recipes by keyword'
-    } else {
-        searchIcon = 'usericon.png'
-        placeholder = 'John Smith / @username'
-    }
-
     const [value, setValue] = useState(props.filter)
 
     // update text field as user types into it
@@ -44,7 +33,11 @@ const KeywordSearchBar = (props) => {
                     {!props.isRecipeBox ? (
                         <InputGroup.Text id="basic-addon1">
                             <img
-                                src={searchIcon}
+                                src={
+                                    props.isRecipe
+                                        ? '../icons/recipeicon.png'
+                                        : '../icons/usericon.png'
+                                }
                                 className="searchIcon"
                                 alt=""
                             />
@@ -58,7 +51,11 @@ const KeywordSearchBar = (props) => {
                     )}
                 </InputGroup.Prepend>
                 <FormControl
-                    placeholder={placeholder}
+                    placeholder={
+                        props.isRecipe
+                            ? 'Search recipes by keyword'
+                            : 'Name or username'
+                    }
                     onChange={handleChange}
                     value={value}
                 />

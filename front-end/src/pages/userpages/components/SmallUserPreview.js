@@ -8,16 +8,17 @@ import './SmallUserPreview.css'
 //To include the component without 'unblock' buttons for each user, specify isBlockedUserProfile=false
 //Otherwise, pass in isBlockedUserProfile=true
 const SmallUserPreview = (props) => {
-    let userSlug = '/user-' + props.user.slug
-
     return (
         <div className="userPreview">
             {/*preview links to the user profile*/}
             <a
                 className="userPreviewProfileLink"
-                href={props.isBlockedUserProfile ? undefined : userSlug}
+                href={
+                    props.isBlockedUserProfile
+                        ? undefined
+                        : `/user-${props.user.slug}`
+                }
             >
-                {' '}
                 {/*TODO(?): Disable link if component used for blocked users page?*/}
                 <table className="userPreviewTable">
                     <tbody>
@@ -25,7 +26,7 @@ const SmallUserPreview = (props) => {
                             {/* user profile picture preview */}
                             <td className="userPreviewImg">
                                 <img
-                                    src={props.user.imagePath}
+                                    src={'../' + props.user.imagePath}
                                     alt=""
                                     className="smallUserProfilePic"
                                 />
@@ -63,7 +64,14 @@ const SmallUserPreview = (props) => {
                                                 <b className="userPreviewUsername">{`@${props.user.username}`}</b>
                                             </td>
                                             <td className="userPreviewNumericalData userPreviewBottomCell">
-                                                {`${props.user.followers.length} followers`}
+                                                {`${
+                                                    props.user.followers.length
+                                                } ${
+                                                    props.user.followers
+                                                        .length !== 1
+                                                        ? 'followers'
+                                                        : 'follower'
+                                                }`}
                                             </td>
                                         </tr>
                                     </tbody>

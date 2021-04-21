@@ -67,6 +67,7 @@ const ProfilePage = (props) => {
                 <ProfileHeader
                     user={profileUser}
                     recipeCount={recipes.length}
+                    isMyProfile={profileUser._id === props.user._id}
                 />
 
                 {slug === props.user.slug ? (

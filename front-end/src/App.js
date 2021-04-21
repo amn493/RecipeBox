@@ -193,7 +193,7 @@ function App() {
                         {/* SETTINGS PAGE*/}
                         <Route path="/settings" exact={true}>
                             {signedIn ? (
-                                <AppSettings user={user} />
+                                <AppSettings user={user} setUser={setUser} />
                             ) : (
                                 <Redirect to="/sign-in" />
                             )}

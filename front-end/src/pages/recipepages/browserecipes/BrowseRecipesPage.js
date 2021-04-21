@@ -40,7 +40,9 @@ const BrowseRecipesPage = (props) => {
     const [recipes, setRecipes] = useState([])
 
     useEffect(() => {
-        if (filterKeyword !== '' || filterTags.length > 0) {
+        if (filterKeyword === '' && filterTags.length === 0) {
+            setRecipes([])
+        } else {
             // fetch all recipes
             axios(
                 `http://localhost:4000/filteredrecipes?keyword=${filterKeyword}${
@@ -102,6 +104,7 @@ const BrowseRecipesPage = (props) => {
             // remove selected tag from tags array
             const tagIndex = tags.indexOf(tagSelection)
             setTags(tags.slice(0, tagIndex).concat(tags.slice(tagIndex + 1)))
+            setTagSelection('')
         }
 
         // eslint-disable-next-line react-hooks/exhaustive-deps

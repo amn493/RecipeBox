@@ -26,13 +26,17 @@ const ProfileHeader = (props) => {
                             <br />
                             {'@' + props.user.username}
                         </td>
-                        <td className="plusButtonCell">
-                            <a className="text-info" href="/new-recipe">
-                                <i>
-                                    <PlusSquareFill size={31} />
-                                </i>
-                            </a>
-                        </td>
+                        {props.isMyProfile ? (
+                            <td className="plusButtonCell">
+                                <a className="text-info" href="/new-recipe">
+                                    <i>
+                                        <PlusSquareFill size={31} />
+                                    </i>
+                                </a>
+                            </td>
+                        ) : (
+                            <></>
+                        )}
                     </tr>
                 </tbody>
             </table>

@@ -223,8 +223,8 @@ const LikeButton = (props) => {
                 type="image"
                 src={
                     props.user.liked.includes(props.recipe._id)
-                        ? 'heartFill.png'
-                        : 'heartOutline.png'
+                        ? 'icons/heartFill.png'
+                        : 'icons/heartOutline.png'
                 }
                 alt={
                     props.user.liked.includes(props.recipe._id)
@@ -270,9 +270,9 @@ const CommentsSection = (props) => {
 
                 axios
                     .post('http://localhost:4000/comment', newComment)
-                    .then(() => {
+                    .then((response) => {
                         //update page to include new comment
-                        setComments(comments.concat([newComment]))
+                        setComments(comments.concat([response.data]))
                         setValue('')
                     })
             }
