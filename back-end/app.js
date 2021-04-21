@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 // import and instantiate express
 const express = require('express') // CommonJS import style!
 
@@ -15,6 +16,9 @@ const LocalStrategy = require('passport-local').Strategy
 const JwtStrategy = require('passport-jwt').Strategy
 const { ExtractJwt } = require('passport-jwt')
 const JWT = require('jsonwebtoken')
+
+// Express Validator for sanitizing inputs *soap emoji in spirit*
+const { body, validationResult } = require('express-validator')
 
 // nodemailer for emailing users
 const nodemailer = require('nodemailer')
@@ -301,7 +305,9 @@ app.get('/comments', (req, res, next) => {
     // fetch comments where recipe === req.query.recipeID from database
 
     Comment.find({ recipe: req.query.recipeID })
-        .then((comments) => res.json(comments))
+        .then((comments) => {
+            res.json(comments)
+        })
         .catch((err) => next(err))
 })
 
@@ -414,15 +420,28 @@ app.get('/usernametaken', (req, res, next) => {
 
 /* Begin POST Requests */
 
+// Note on sanitization: The front-end validation is preeeetty good so usually we'll never get here.
+// For signin and create account, the validation would only be reached on the back-end if someone went REALLY far out of their way to change fields.
+// To "easily" test them, go into the respective front-end pages and comment out any front-end validation to let anything slide.
+
 app.post(
     '/signin',
     passport.authenticate('signin', {
         session: false
     }),
+
+    body('username')
+        .isAlphanumeric()
+        .withMessage('Username must only be alphanumeric.'),
     (req, res) => {
-        res.json({
-            token: signToken(req.user)
-        })
+        const errors = validationResult(req)
+        if (!errors.isEmpty()) {
+            res.status(400).json({ errors: errors.array() })
+        } else {
+            res.json({
+                token: signToken(req.user)
+            })
+        }
     }
 )
 
@@ -431,10 +450,30 @@ app.post(
     passport.authenticate('createaccount', {
         session: false
     }),
+
+    body('email').isEmail().withMessage('Email entered is not a valid email.'),
+    body('firstName')
+        .isAlpha()
+        .withMessage('First name must contain only letters.'),
+    body('lastName')
+        .isAlpha()
+        .withMessage('Last name must contain only letters.'),
+    body('username')
+        .isAlphanumeric()
+        .withMessage('Username must only be alphanumeric.'),
+    body('ReEnterPassword')
+        .equals('password')
+        .withMessage('Does not match password.'),
+
     (req, res) => {
-        res.json({
-            token: signToken(req.user)
-        })
+        const errors = validationResult(req)
+        if (!errors.isEmpty()) {
+            res.status(400).json({ errors: errors.array() })
+        } else {
+            res.json({
+                token: signToken(req.user)
+            })
+        }
     }
 )
 
@@ -443,78 +482,91 @@ app.post('/signout', (req, res) => {
     res.send('Signed out user')
 })
 
-app.post('/comment', (req, res, next) => {
-    // new comment
-    const newComment = {
-        recipe: req.body.recipe,
-        user: req.body.user,
-        comment: req.body.comment,
-        createdAt: Date.now()
-    }
+app.post(
+    '/comment',
+    // sanitize comment body -- the only thing a user has control over
+    body('comment').escape(),
 
-    // get info for sending email notification
-    Recipe.findOne({ _id: req.body.recipe })
-        .then((recipe) => {
-            // get name of recipe for given user to receive notification about
-            const recipeNameForEmail = recipe.name
-            const recipeLinkForEmail = `http://localhost:3000/recipe-${recipe.slug}`
-            // const recipeImgPathForEmail = recipe.imagePath
-            User.findOne({
-                _id: req.body.user
-            })
-                .then((commentingUser) => {
-                    // get username of commenting user
-                    const usernameOfCommentingUser = commentingUser.username
-                    const userProfileLinkForEmail = `http://localhost:3000/user-${commentingUser.slug}`
-                    // const userProfilePicForEmail = commentingUser.imagePath
+    (req, res, next) => {
+        // Check to make sure comment didn't have weird characters
+        const errors = validationResult(req)
+        if (!errors.isEmpty()) {
+            res.status(400).json({ errors: errors.array() })
+        } else {
+            // new comment
+            const newComment = {
+                recipe: req.body.recipe,
+                user: req.body.user,
+                comment: req.body.comment,
+                createdAt: Date.now()
+            }
+
+            // get info for sending email notification
+            Recipe.findOne({ _id: req.body.recipe })
+                .then((recipe) => {
+                    // get name of recipe for given user to receive notification about
+                    const recipeNameForEmail = recipe.name
+                    const recipeLinkForEmail = `http://localhost:3000/recipe-${recipe.slug}`
+                    // const recipeImgPathForEmail = recipe.imagePath
                     User.findOne({
-                        _id: recipe.user
+                        _id: req.body.user
                     })
-                        .then((userToReceiveNotif) => {
-                            // if user who created commented-on recipe has notifications on,
-                            // send email
-                            if (
-                                userToReceiveNotif.notificationSettings
-                                    .emailNotifications &&
-                                userToReceiveNotif.notificationSettings
-                                    .comments &&
-                                userToReceiveNotif.username !==
-                                    commentingUser.username
-                            ) {
-                                // get email and first name of user to receive notification
-                                const emailforNotifs = userToReceiveNotif.email
-                                const firstNameOfEmailRecipient =
-                                    userToReceiveNotif.firstName
-                                const message = {
-                                    from: 'recipeboxupdate@gmail.com', // Sender address
-                                    to: emailforNotifs, // recipient(s)
-                                    subject: 'Your recipe received a comment!', // Subject line
-                                    // text: `${firstNameOfEmailRecipient}, @${usernameOfCommentingUser} left a comment on your recipe, ${recipeNameForEmail}: "${req.body.comment}"` // body
+                        .then((commentingUser) => {
+                            // get username of commenting user
+                            const usernameOfCommentingUser =
+                                commentingUser.username
+                            const userProfileLinkForEmail = `http://localhost:3000/user-${commentingUser.slug}`
+                            // const userProfilePicForEmail = commentingUser.imagePath
+                            User.findOne({
+                                _id: recipe.user
+                            })
+                                .then((userToReceiveNotif) => {
+                                    // if user who created commented-on recipe has notifications on,
+                                    // send email
+                                    if (
+                                        userToReceiveNotif.notificationSettings
+                                            .emailNotifications &&
+                                        userToReceiveNotif.notificationSettings
+                                            .comments &&
+                                        userToReceiveNotif.username !==
+                                            commentingUser.username
+                                    ) {
+                                        // get email and first name of user to receive notification
+                                        const emailforNotifs =
+                                            userToReceiveNotif.email
+                                        const firstNameOfEmailRecipient =
+                                            userToReceiveNotif.firstName
+                                        const message = {
+                                            from: 'recipeboxupdate@gmail.com', // Sender address
+                                            to: emailforNotifs, // recipient(s)
+                                            subject:
+                                                'Your recipe received a comment!', // Subject line
+                                            // text: `${firstNameOfEmailRecipient}, @${usernameOfCommentingUser} left a comment on your recipe, ${recipeNameForEmail}: "${req.body.comment}"` // body
 
-                                    // attachments: [
-                                    //     {
-                                    //         filename: path.basename(
-                                    //             recipeImgPathForEmail
-                                    //         ),
-                                    //         path: path.join(
-                                    //             __dirname,
-                                    //             recipeImgPathForEmail
-                                    //         ),
-                                    //         cid: 'recipeimg'
-                                    //     },
-                                    //     {
-                                    //         filename: path.basename(
-                                    //             userProfilePicForEmail
-                                    //         ),
-                                    //         path: path.join(
-                                    //             __dirname,
-                                    //             userProfilePicForEmail
-                                    //         ),
-                                    //         cid: 'userprofileimg'
-                                    //     }
-                                    // ],
+                                            // attachments: [
+                                            //     {
+                                            //         filename: path.basename(
+                                            //             recipeImgPathForEmail
+                                            //         ),
+                                            //         path: path.join(
+                                            //             __dirname,
+                                            //             recipeImgPathForEmail
+                                            //         ),
+                                            //         cid: 'recipeimg'
+                                            //     },
+                                            //     {
+                                            //         filename: path.basename(
+                                            //             userProfilePicForEmail
+                                            //         ),
+                                            //         path: path.join(
+                                            //             __dirname,
+                                            //             userProfilePicForEmail
+                                            //         ),
+                                            //         cid: 'userprofileimg'
+                                            //     }
+                                            // ],
 
-                                    html: `<h2 style="color: #1c6475; text-align: center;">${firstNameOfEmailRecipient},</h2>
+                                            html: `<h2 style="color: #1c6475; text-align: center;">${firstNameOfEmailRecipient},</h2>
                                     <div style="margin: 0 auto;text-align:center;">
                                     <h3 style="color: #4aa0b5; text-align: center; display: inline;"><a style="color: #4aa0b5;" href=${userProfileLinkForEmail}>@${usernameOfCommentingUser}</a></h3>
                                     <h4 style="color: #2b2301; display: inline;">&nbsp;left a comment on your recipe,&nbsp;</h4>
@@ -523,11 +575,17 @@ app.post('/comment', (req, res, next) => {
                                     <hr style="width:25%">
                                     <h3 style="font-style: italic; color: #7d7d7d; text-align: center;">"${req.body.comment}"</h3>
                                     `
-                                }
-                                transport.sendMail(message).catch((err) => {
+                                        }
+                                        transport
+                                            .sendMail(message)
+                                            .catch((err) => {
+                                                next(err)
+                                            })
+                                    }
+                                })
+                                .catch((err) => {
                                     next(err)
                                 })
-                            }
                         })
                         .catch((err) => {
                             next(err)
@@ -536,17 +594,15 @@ app.post('/comment', (req, res, next) => {
                 .catch((err) => {
                     next(err)
                 })
-        })
-        .catch((err) => {
-            next(err)
-        })
 
-    // save new comment to the database
-    new Comment(newComment)
-        .save()
-        .then((comment) => res.json(comment))
-        .catch((err) => next(err))
-})
+            // save new comment to the database
+            new Comment(newComment)
+                .save()
+                .then((comment) => res.json(comment))
+                .catch((err) => next(err))
+        }
+    }
+)
 
 // recursive function for adding new tags to database and updating counts of existing tags
 const updateTags = (tags, i, cb, next) => {
@@ -574,39 +630,46 @@ const updateTags = (tags, i, cb, next) => {
     }
 }
 
-app.post('/newrecipe', upload.single('recipeimage'), (req, res, next) => {
-    // new recipe
-    const newRecipe = {
-        user: req.body.userID,
-        name: req.body.name,
-        imagePath: path.join('/uploads/', req.file.filename),
-        tags: req.body.tags
-            .split(',')
-            .filter((tag) => tag !== ''),
-        caption: req.body.caption,
-        ingredients: req.body.ingredients
-            .split(',')
-            .map((ingredient) => ingredient.trim())
-            .filter((ingredient) => ingredient !== ''),
-        instructions: req.body.instructions
-            .split(',')
-            .map((instruction) => instruction.trim())
-            .filter((instruction) => instruction !== ''),
-        likes: 0,
-        createdAt: Date.now()
-    }
+app.post(
+    '/newrecipe',
+    upload.single('recipeimage'),
+    // sanitize recipe inputs -- text fields since that's what the user has control over
+    body('name').not().isEmpty().trim().escape(),
+    body('caption').not().isEmpty().trim().escape(),
+    body('ingredients').not().isEmpty().trim().escape(),
+    body('instructions').not().isEmpty().trim().escape(),
+    (req, res, next) => {
+        // new recipe
+        const newRecipe = {
+            user: req.body.userID,
+            name: req.body.name,
+            imagePath: path.join('/uploads/', req.file.filename),
+            tags: req.body.tags.split(',').filter((tag) => tag !== ''),
+            caption: req.body.caption,
+            ingredients: req.body.ingredients
+                .split(',')
+                .map((ingredient) => ingredient.trim())
+                .filter((ingredient) => ingredient !== ''),
+            instructions: req.body.instructions
+                .split(',')
+                .map((instruction) => instruction.trim())
+                .filter((instruction) => instruction !== ''),
+            likes: 0,
+            createdAt: Date.now()
+        }
 
-    // save new recipe to database
-    new Recipe(newRecipe)
-        .save()
-        .then((recipe) => {
-            // add new tags to database and update counts of existing tags
-            updateTags(recipe.tags, 0, res.json.bind(res, recipe), next)
-        })
-        .catch((err) => {
-            next(err)
-        })
-})
+        // save new recipe to database
+        new Recipe(newRecipe)
+            .save()
+            .then((recipe) => {
+                // add new tags to database and update counts of existing tags
+                updateTags(recipe.tags, 0, res.json.bind(res, recipe), next)
+            })
+            .catch((err) => {
+                next(err)
+            })
+    }
+)
 
 app.post('/blockuser', (req, res, next) => {
     // update signed-in user's blockedUsers array appropriately
@@ -973,22 +1036,45 @@ app.post('/notificationsettings', (req, res, next) => {
         .catch((err) => next(err))
 })
 
-app.post('/updateuserinfo', upload.single('profilepicture'), (req, res) => {
-    // recieve post data from updating user's basic info
-    const updatedUserInfo = {
-        username: req.body.username,
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        bio: req.body.bio,
-        id: req.body.id,
-        imagePath: path.join('/uploads/', req.file.filename)
+app.post(
+    '/updateuserinfo',
+    upload.single('profilepicture'),
+    body('email').isEmail().withMessage('Email entered is not a valid email.'),
+    body('firstName')
+        .isAlpha()
+        .withMessage('First name must contain only letters.'),
+    body('lastName')
+        .isAlpha()
+        .withMessage('Last name must contain only letters.'),
+    body('username')
+        .isAlphanumeric()
+        .withMessage('Username must only be alphanumeric.'),
+    body('ReEnterPassword')
+        .equals('password')
+        .withMessage('Does not match password.'),
+    body('bio').trim().escape(),
+    (req, res) => {
+        // sanitize inputs -- same as account creation more or less
+
+        // recieve post data from updating user's basic info
+        const updatedUserInfo = {
+            username: req.body.username,
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
+            bio: req.body.bio,
+            id: req.body.id,
+            imagePath: path.join('/uploads/', req.file.filename)
+        }
+
+        // update the user's user object (in database)
+
+        // TODO: Once merged with this last POST request, check for any errors
+        // we want to prevent this from going through as opposed to just saving weird things
+
+        // send a response to the user (sending data back to test)
+        res.json(updatedUserInfo)
     }
-
-    // update the user's user object (in database)
-
-    // send a response to the user (sending data back to test)
-    res.json(updatedUserInfo)
-})
+)
 
 // export the express app we created to make it available to other modules
 module.exports = app
