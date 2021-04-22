@@ -3,5 +3,6 @@ node_js:
   - node
 before_script:
   - cd back-end
+  - npm i nyc
 script:
   - npm test
