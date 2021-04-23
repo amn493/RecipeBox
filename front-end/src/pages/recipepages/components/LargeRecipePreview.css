@@ -17,7 +17,10 @@
     color: black;
 }
 
-.largeRecipePreviewRecipeName:hover, .largeRecipePreviewRecipeName:active,.largeRecipePreviewUsername:hover, .largeRecipePreviewUsername:active {
+.largeRecipePreviewRecipeName:hover,
+.largeRecipePreviewRecipeName:active,
+.largeRecipePreviewUsername:hover,
+.largeRecipePreviewUsername:active {
     color: black;
     opacity: 60%;
     text-decoration: none;
@@ -45,8 +48,10 @@
     margin-right: 5px;
     font-weight: bold;
     font-size: 14px;
+    display: inline-block;
 }
-.largeRecipePreviewTag:hover, .largeRecipePreviewTag:active {
+.largeRecipePreviewTag:hover,
+.largeRecipePreviewTag:active {
     text-decoration: none;
 }
 
@@ -67,7 +72,7 @@
 }
 
 .largeRecipePreviewTableRightCol {
-   text-align: right;
+    text-align: right;
 }
 
 .largeRecipePreviewTopTableCell {
