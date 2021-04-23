@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react'
+import React from 'react'
 import axios from 'axios'
 import { useParams } from 'react-router-dom'
 import InputGroup from 'react-bootstrap/InputGroup'
 import FormControl from 'react-bootstrap/FormControl'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
+import Dropdown from 'react-bootstrap/Dropdown'
 
 import Comment from './Comment.js'
 import Timestamp from '../../../gencomponents/Timestamp.js'
@@ -12,6 +14,7 @@ import ErrorComponent from '../../../gencomponents/ErrorComponent.js'
 import CreateAccountModal from '../../../gencomponents/CreateAccountModal.js'
 
 import './RecipePage.css'
+import { ThreeDots } from 'react-bootstrap-icons'
 
 // Recipe Page
 // Expects no props - must be accessed via a url with a slug (/recipes-:slug)
@@ -96,12 +99,45 @@ const RecipePage = (props) => {
     // state variable for showing sign-in modal
     const [showModal, setShowModal] = useState(false)
 
+    const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
+        // eslint-disable-next-line jsx-a11y/anchor-is-valid
+        <a
+            href=""
+            ref={ref}
+            onClick={(e) => {
+                e.preventDefault()
+                onClick(e)
+            }}
+        >
+            {children}
+        </a>
+    ))
+
     return !reqError ? (
         userBlocked ? (
             <ErrorComponent error={"Couldn't load recipe"} />
         ) : recipe && comments ? (
             // render the page if all required data has been fetched
             <div className="recipe">
+                {recipe.user === props.user._id ? (
+                    <Dropdown className="dotsDropdown">
+                        <Dropdown.Toggle as={CustomToggle} id="dropdown-basic">
+                            <i className="text-dark">
+                                <ThreeDots size={20} />
+                            </i>
+                        </Dropdown.Toggle>
+
+                        <Dropdown.Menu className="dotsDropdownMenu">
+                            <Dropdown.Item
+                                onClick={() => '' /* show confirm modal */}
+                            >
+                                Delete Recipe
+                            </Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
+                ) : (
+                    <></>
+                )}
                 <img
                     className="recipeImage"
                     src={recipe.imagePath}
