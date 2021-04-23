@@ -7,10 +7,16 @@
 
 .errorComponentString {
     color: gray;
-    margin:30px;
+    margin: 30px;
+}
+.errorComponentLink:link,
+.errorComponentLink:active,
+.errorComponentLink:visited,
+.errorComponentLink:hover {
+    color: rgb(23, 162, 184);
 }
 
 .errorComponentIcon {
     font-size: 100px;
-    color:rgb(23, 162, 184)
+    color: rgb(23, 162, 184);
 }
