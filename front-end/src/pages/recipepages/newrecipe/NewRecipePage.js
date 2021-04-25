@@ -38,7 +38,6 @@ const NewRecipePage = (props) => {
 
     // make post request on form submission
     const handleSubmit = (event) => {
-        console.log(imageFile)
         event.preventDefault()
 
         const headers = {
