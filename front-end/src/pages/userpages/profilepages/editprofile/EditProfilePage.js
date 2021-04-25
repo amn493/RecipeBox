@@ -9,6 +9,8 @@ import { At } from 'react-bootstrap-icons'
 import axios from 'axios'
 import { Redirect } from 'react-router-dom'
 
+import ImageCropModal from '../../../../gencomponents/ImageCropModal.js'
+
 // TODO: Validate inputs
 
 const EditProfilePage = (props) => {
@@ -25,6 +27,11 @@ const EditProfilePage = (props) => {
     const [submitted, setSubmitted] = useState(false)
 
     const [userLoaded, setUserLoaded] = useState(false)
+
+    // state variable for showing image crop modal
+    const [showModal, setShowModal] = useState(false)
+    // state variable for setting user profile picture <img> src to send to cropperjs in modal
+    const [userImgSrc, setUserImgSrc] = useState('')
 
     // wait for user to be fetched from server to load page
     useEffect(() => {
@@ -68,6 +75,30 @@ const EditProfilePage = (props) => {
     // Upload image file
     const fileUploaded = (event) => {
         setImageFile(event.target.files[0])
+
+        const userImgForCropperJS = document.getElementById(
+            'userimgforcropperjs'
+        )
+        const file = event.target.files[0]
+
+        const reader = new FileReader()
+
+        reader.addEventListener(
+            'load',
+            function () {
+                // convert image file to base64 string for cropperJS <img> src
+                setUserImgSrc(reader.result)
+                setShowModal(true)
+            },
+            false
+        )
+
+        if (file) {
+            reader.readAsDataURL(file)
+            userImgForCropperJS.style.display = 'none'
+        } else {
+            setShowModal(false)
+        }
     }
 
     // Ensure username field is not blank
@@ -168,6 +199,16 @@ const EditProfilePage = (props) => {
                                 }
                             />
                             <br />
+
+                            {/*to send to cropper modal*/}
+                            <img id="userimgforcropperjs" alt="" />
+
+                            <ImageCropModal
+                                setImgForUpload={setImageFile}
+                                imgsrc={userImgSrc}
+                                show={showModal}
+                                setShow={setShowModal}
+                            />
 
                             {emptyNameError.value}
                             <Button
