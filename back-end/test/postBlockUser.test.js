@@ -1,11 +1,22 @@
-const chai = require("chai")
-const chaiHTTP = require("chai-http")
-const expect = chai.expect
-const faker = require('faker');
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable consistent-return */
+const chai = require('chai')
+
+const chaiHTTP = require('chai-http')
+require('dotenv').config({ silent: true }) // load environmental variables from a hidden file named .env
+
+const mongoose = require('mongoose')
+require('../db.js')
+const JWT = require('jsonwebtoken')
+
+const User = mongoose.model('User')
+
+const { expect } = chai
+// const faker = require('faker')
 
 chai.use(chaiHTTP)
 
-const app = require("../app.js")
+const app = require('../app.js')
 
 // const [signedinUser, setSignedInUser] = useState([])
 // let signedInUserId = faker.datatype.number({max:50})
@@ -26,91 +37,164 @@ const app = require("../app.js")
 //         setUserToBlock(response.data)
 //     })
 
+describe('Testing POST to /blockusers API', () => {
+    it('should return 200 OK status', () => {
+        // dummy users
+        User.findOne(
+            { _id: mongoose.Types.ObjectId('6078f5faaa84a40750ad4518') },
+            (user) => {
+                if (user) {
+                    const addBlock = true
+                    const signedInUserId = user._id
+                    const signedInBlockedUsers = user.blockedUsers
+                    const signedInUserFollowing = user.following
+                    const signedInUserFollowers = user.followers
+                    User.findOne(
+                        {
+                            _id: mongoose.Types.ObjectId(
+                                '606faf0fa9841f27a9e1bcea'
+                            )
+                        },
+                        (blockedUser) => {
+                            if (blockedUser) {
+                                const blockedUserID = blockedUser._id
+                                const blockedUserFollowing =
+                                    blockedUser._following
+                                const blockedUserFollowers =
+                                    blockedUser._followers
 
-describe("Testing POST to /blockusers API", () => { 
-    it("should return 200 OK status", () => { 
+                                return chai
+                                    .request(app)
+                                    .post('/blockuser')
+                                    .send({
+                                        addBlock: addBlock,
+                                        signedInUserId: signedInUserId,
+                                        signedInBlockedUsers: signedInBlockedUsers,
+                                        signedInUserFollowing: signedInUserFollowing,
+                                        signedInUserFollowers: signedInUserFollowers,
+                                        blockedUserID: blockedUserID,
+                                        blockedUserFollowing: blockedUserFollowing,
+                                        blockedUserFollowers: blockedUserFollowers
+                                    })
+                                    .then((response) => {
+                                        expect(response.status).to.equal(200)
+                                    })
+                            }
+                        }
+                    )
+                }
+            }
+        )
+    })
 
-        //dummy data
-        let addBlock = true;
-        let signedInUserId = 23
-        let signedInBlockedUsers = [1, 5, 24, 12, 17, 16, 39]
-        let signedInUserFollowing = [4, 5, 24, 100, 8, 9, 12, 44]
-        let signedInUserFollowers = [4, 5, 12, 22, 8, 20, 11, 46]
-        let blockedUserID = 8
-        let blockedUserFollowing = [45, 12, 15, 9, 23, 44, 1]
-        let blockedUserFollowers = [12, 45, 3, 33, 2, 28, 18]
-        
-       return chai.request(app)
-        .post('/blockuser')
-        .send({addBlock: addBlock, 
-            signedInUserId: signedInUserId, 
-            signedInBlockedUsers: signedInBlockedUsers,
-            signedInUserFollowing: signedInUserFollowing,
-            signedInUserFollowers: signedInUserFollowers,
-            blockedUserID: blockedUserID,
-            blockedUserFollowing: blockedUserFollowing,
-            blockedUserFollowers: blockedUserFollowers}).then((response) => { 
-                expect(response.status).to.equal(200)
-            })
-    }).timeout(4000)
+    it('should return an object with correct field names', () => {
+        // dummy users
+        User.findOne(
+            { _id: mongoose.Types.ObjectId('6078f5faaa84a40750ad4518') },
+            (user) => {
+                if (user) {
+                    const addBlock = true
+                    const signedInUserId = user._id
+                    const signedInBlockedUsers = user.blockedUsers
+                    const signedInUserFollowing = user.following
+                    const signedInUserFollowers = user.followers
+                    User.findOne(
+                        {
+                            _id: mongoose.Types.ObjectId(
+                                '606faf0fa9841f27a9e1bcea'
+                            )
+                        },
+                        (blockedUser) => {
+                            if (blockedUser) {
+                                const blockedUserID = blockedUser._id
+                                const blockedUserFollowing =
+                                    blockedUser._following
+                                const blockedUserFollowers =
+                                    blockedUser._followers
 
-    it("should return an object with correct field names", () => { 
+                                return chai
+                                    .request(app)
+                                    .post('/blockuser')
+                                    .send({
+                                        addBlock: addBlock,
+                                        signedInUserId: signedInUserId,
+                                        signedInBlockedUsers: signedInBlockedUsers,
+                                        signedInUserFollowing: signedInUserFollowing,
+                                        signedInUserFollowers: signedInUserFollowers,
+                                        blockedUserID: blockedUserID,
+                                        blockedUserFollowing: blockedUserFollowing,
+                                        blockedUserFollowers: blockedUserFollowers
+                                    })
+                                    .then((response) => {
+                                        expect(response.body).to.have.property(
+                                            'blockedUsers'
+                                        )
+                                        expect(response.body).to.have.property(
+                                            'following'
+                                        )
+                                        expect(response.body).to.have.property(
+                                            'followers'
+                                        )
+                                    })
+                            }
+                        }
+                    )
+                }
+            }
+        )
+    })
 
-        //dummy data
-        let addBlock = true;
-        let signedInUserId = 23
-        let signedInBlockedUsers = [1, 5, 24, 12, 17, 16, 39]
-        let signedInUserFollowing = [4, 5, 24, 100, 8, 9, 12, 44]
-        let signedInUserFollowers = [4, 5, 12, 22, 8, 20, 11, 46]
-        let blockedUserID = 8
-        let blockedUserFollowing = [45, 12, 15, 9, 23, 44, 1]
-        let blockedUserFollowers = [12, 45, 3, 33, 2, 28, 18]
-    
-        return chai.request(app)
-         .post('/blockuser')
-         .send({addBlock: addBlock, 
-            signedInUserId: signedInUserId, 
-            signedInBlockedUsers: signedInBlockedUsers,
-            signedInUserFollowing: signedInUserFollowing,
-            signedInUserFollowers: signedInUserFollowers,
-            blockedUserID: blockedUserID,
-            blockedUserFollowing: blockedUserFollowing,
-            blockedUserFollowers: blockedUserFollowers}).then((response) => { 
-                expect(response.body).to.have.property('signedInBlockedUsers')
-                expect(response.body).to.have.property('signedInUserFollowing')
-                expect(response.body).to.have.property('signedInUserFollowers')
-                expect(response.body).to.have.property('blockedUserFollowers')
-                expect(response.body).to.have.property('blockedUserFollowing')
-             })
-     }).timeout(8000)
+    it('should return an object with correct field data', () => {
+        // dummy users
+        User.findOne(
+            { _id: mongoose.Types.ObjectId('6078f5faaa84a40750ad4518') },
+            (user) => {
+                if (user) {
+                    const addBlock = true
+                    const signedInUserId = user._id
+                    const signedInBlockedUsers = user.blockedUsers
+                    const signedInUserFollowing = user.following
+                    const signedInUserFollowers = user.followers
+                    User.findOne(
+                        {
+                            _id: mongoose.Types.ObjectId(
+                                '606faf0fa9841f27a9e1bcea'
+                            )
+                        },
+                        (blockedUser) => {
+                            if (blockedUser) {
+                                const blockedUserID = blockedUser._id
+                                const blockedUserFollowing =
+                                    blockedUser._following
+                                const blockedUserFollowers =
+                                    blockedUser._followers
 
-     it("should return an object with correct field data", () => { 
-
-        //dummy data
-        let addBlock = true;
-        let signedInUserId = 23
-        let signedInBlockedUsers = [1, 5, 24, 12, 17, 16, 39]
-        let signedInUserFollowing = [4, 5, 24, 100, 8, 9, 12, 44]
-        let signedInUserFollowers = [4, 5, 12, 22, 8, 20, 11, 46]
-        let blockedUserID = 8
-        let blockedUserFollowing = [45, 12, 15, 9, 23, 44, 1]
-        let blockedUserFollowers = [12, 45, 3, 33, 2, 28, 18]
-    
-        return chai.request(app)
-         .post('/blockuser')
-         .send({addBlock: addBlock, 
-            signedInUserId: signedInUserId, 
-            signedInBlockedUsers: signedInBlockedUsers,
-            signedInUserFollowing: signedInUserFollowing,
-            signedInUserFollowers: signedInUserFollowers,
-            blockedUserID: blockedUserID,
-            blockedUserFollowing: blockedUserFollowing,
-            blockedUserFollowers: blockedUserFollowers}).then((response) => { 
-                expect(response.body.signedInBlockedUsers).to.include(blockedUserID)
-                expect(response.body.signedInUserFollowing).to.not.include(blockedUserID)
-                expect(response.body.signedInUserFollowers).to.not.include(blockedUserID)
-                expect(response.body.blockedUserFollowers).to.not.include(signedInUserId)
-                expect(response.body.blockedUserFollowers).to.not.include(signedInUserId)
-             })
-     }).timeout(8000)
+                                return chai
+                                    .request(app)
+                                    .post('/blockuser')
+                                    .send({
+                                        addBlock: addBlock,
+                                        signedInUserId: signedInUserId,
+                                        signedInBlockedUsers: signedInBlockedUsers,
+                                        signedInUserFollowing: signedInUserFollowing,
+                                        signedInUserFollowers: signedInUserFollowers,
+                                        blockedUserID: blockedUserID,
+                                        blockedUserFollowing: blockedUserFollowing,
+                                        blockedUserFollowers: blockedUserFollowers
+                                    })
+                                    .then((response) => {
+                                        expect(
+                                            response.body.following
+                                        ).to.not.include(signedInUserId)
+                                        expect(
+                                            response.body.followers
+                                        ).to.not.include(signedInUserId)
+                                    })
+                            }
+                        }
+                    )
+                }
+            }
+        )
+    })
 })
