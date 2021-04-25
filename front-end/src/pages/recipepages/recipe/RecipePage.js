@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import React from 'react'
 import axios from 'axios'
-import { useParams } from 'react-router-dom'
+import { Redirect, useParams } from 'react-router-dom'
 import InputGroup from 'react-bootstrap/InputGroup'
 import FormControl from 'react-bootstrap/FormControl'
 import Form from 'react-bootstrap/Form'
@@ -22,6 +22,7 @@ import { ThreeDots } from 'react-bootstrap-icons'
 
 const RecipePage = (props) => {
     const [reqError, setReqError] = useState(false)
+    const [deletedRecipe, setDeletedRecipe] = useState(false)
 
     // get slug from url params
     const { slug } = useParams()
@@ -113,130 +114,156 @@ const RecipePage = (props) => {
         </a>
     ))
 
+    const handleDelete = () => {
+        if (window.confirm('Are you sure you want to delete this recipe?')) {
+            // delete recipe
+            axios
+                .post('http://localhost:4000/deleterecipe', { id: recipe._id })
+                .then(() => {
+                    //redirect to my profile
+                    setDeletedRecipe(true)
+                })
+                .catch((err) => {
+                    console.error(err)
+                    setReqError(true)
+                })
+        }
+    }
+
     return !reqError ? (
         userBlocked ? (
             <ErrorComponent error={"Couldn't load recipe"} />
         ) : recipe && comments ? (
-            // render the page if all required data has been fetched
-            <div className="recipe">
-                {recipe.user === props.user._id ? (
-                    <Dropdown className="dotsDropdown">
-                        <Dropdown.Toggle as={CustomToggle} id="dropdown-basic">
-                            <i className="text-dark">
-                                <ThreeDots size={20} />
-                            </i>
-                        </Dropdown.Toggle>
-
-                        <Dropdown.Menu className="dotsDropdownMenu">
-                            <Dropdown.Item
-                                onClick={() => '' /* show confirm modal */}
+            !deletedRecipe ? (
+                // render the page if all required data has been fetched
+                <div className="recipe">
+                    {recipe.user === props.user._id ? (
+                        <Dropdown className="dotsDropdown">
+                            <Dropdown.Toggle
+                                as={CustomToggle}
+                                id="dropdown-basic"
                             >
-                                Delete Recipe
-                            </Dropdown.Item>
-                        </Dropdown.Menu>
-                    </Dropdown>
-                ) : (
-                    <></>
-                )}
-                <img
-                    className="recipeImage"
-                    src={recipe.imagePath}
-                    alt="food"
-                />
-                <div className="recipeText">
-                    <div className="recipeDetails">
-                        <table className="recipeDetailsTable recipeDetailsTopTable">
-                            <tbody>
-                                <tr>
-                                    <td className="recipeDetailsTopTableCell">
-                                        <h1 className="recipeName">
-                                            {recipe.name}
-                                        </h1>
-                                    </td>
-                                    <td className="recipeDetailsTableRightCol recipeDetailsTableLikedCol recipeDetailsTopTableCell">
-                                        <LikeButton
-                                            recipe={recipe}
-                                            setRecipe={setRecipe}
-                                            user={props.user}
-                                            setUser={props.setUser}
-                                            signedIn={props.signedIn}
-                                            setShowModal={setShowModal}
-                                        />
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <table className="recipeDetailsTable">
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <a
-                                            className="recipeUsername"
-                                            href={'/user-' + authorUser.slug}
-                                        >
-                                            {'@' + authorUser.username}
-                                        </a>
-                                    </td>
-                                    <td className="recipeDetailsTableRightCol">
-                                        <Timestamp
-                                            createdAt={recipe.createdAt}
-                                        />
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                                <i className="text-dark">
+                                    <ThreeDots size={20} />
+                                </i>
+                            </Dropdown.Toggle>
 
-                        <p className="recipeCaption">{recipe.caption}</p>
-                        {recipe.tags.map((tag, i) => (
-                            <a
-                                className="recipeTag  text-info"
-                                href={`/browse-recipes?tag=${tag}`}
-                                key={i}
-                            >
-                                {'#' + tag}
-                            </a>
-                        ))}
-                    </div>
+                            <Dropdown.Menu className="dotsDropdownMenu">
+                                <Dropdown.Item onClick={handleDelete}>
+                                    Delete Recipe
+                                </Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
+                    ) : (
+                        <></>
+                    )}
+                    <img
+                        className="recipeImage"
+                        src={recipe.imagePath}
+                        alt="food"
+                    />
+                    <div className="recipeText">
+                        <div className="recipeDetails">
+                            <table className="recipeDetailsTable recipeDetailsTopTable">
+                                <tbody>
+                                    <tr>
+                                        <td className="recipeDetailsTopTableCell">
+                                            <h1 className="recipeName">
+                                                {recipe.name}
+                                            </h1>
+                                        </td>
+                                        <td className="recipeDetailsTableRightCol recipeDetailsTableLikedCol recipeDetailsTopTableCell">
+                                            <LikeButton
+                                                recipe={recipe}
+                                                setRecipe={setRecipe}
+                                                user={props.user}
+                                                setUser={props.setUser}
+                                                signedIn={props.signedIn}
+                                                setShowModal={setShowModal}
+                                            />
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <table className="recipeDetailsTable">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <a
+                                                className="recipeUsername"
+                                                href={
+                                                    '/user-' + authorUser.slug
+                                                }
+                                            >
+                                                {'@' + authorUser.username}
+                                            </a>
+                                        </td>
+                                        <td className="recipeDetailsTableRightCol">
+                                            <Timestamp
+                                                createdAt={recipe.createdAt}
+                                            />
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
 
-                    <div className="recipeSubsection">
-                        <h2 className="recipeSubheading">Ingredients</h2>
-                        <ul className="ingredients">
-                            {recipe.ingredients.map((ingredient, i) => (
-                                <li className="liIngredient" key={i}>
-                                    <div className="ingredient">
-                                        {ingredient}
-                                    </div>
-                                </li>
+                            <p className="recipeCaption">{recipe.caption}</p>
+                            {recipe.tags.map((tag, i) => (
+                                <a
+                                    className="recipeTag  text-info"
+                                    href={`/browse-recipes?tag=${tag}`}
+                                    key={i}
+                                >
+                                    {'#' + tag}
+                                </a>
                             ))}
-                        </ul>
-                    </div>
-                    <br />
-                    <div className="recipeSubsection">
-                        <h2 className="recipeSubheading">Instructions</h2>
-                        <ol className="instructions">
-                            {recipe.instructions.map((instruction, i) => (
-                                <li className="liInstruction" key={i}>
-                                    <div className="instruction">
-                                        {instruction}
-                                    </div>
-                                </li>
-                            ))}
-                        </ol>
-                    </div>
-                    <br />
+                        </div>
 
-                    <CommentsSection
-                        comments={comments}
-                        userId={props.user._id}
-                        recipeId={recipe._id}
-                        signedIn={props.signedIn}
-                        setShowModal={setShowModal}
-                        setReqError={setReqError}
+                        <div className="recipeSubsection">
+                            <h2 className="recipeSubheading">Ingredients</h2>
+                            <ul className="ingredients">
+                                {recipe.ingredients.map((ingredient, i) => (
+                                    <li className="liIngredient" key={i}>
+                                        <div className="ingredient">
+                                            {ingredient}
+                                        </div>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                        <br />
+                        <div className="recipeSubsection">
+                            <h2 className="recipeSubheading">Instructions</h2>
+                            <ol className="instructions">
+                                {recipe.instructions.map((instruction, i) => (
+                                    <li className="liInstruction" key={i}>
+                                        <div className="instruction">
+                                            {instruction}
+                                        </div>
+                                    </li>
+                                ))}
+                            </ol>
+                        </div>
+                        <br />
+
+                        <CommentsSection
+                            comments={comments}
+                            userId={props.user._id}
+                            recipeId={recipe._id}
+                            signedIn={props.signedIn}
+                            setShowModal={setShowModal}
+                            setReqError={setReqError}
+                        />
+                    </div>
+
+                    <CreateAccountModal
+                        show={showModal}
+                        setShow={setShowModal}
                     />
                 </div>
-
-                <CreateAccountModal show={showModal} setShow={setShowModal} />
-            </div>
+            ) : (
+                <Redirect to={`/user-${props.user.slug}`} />
+            )
         ) : (
             // not all data has been fetched yet
             <></>

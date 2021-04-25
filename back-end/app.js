@@ -7,7 +7,7 @@ const app = express() // instantiate an Express object
 const morgan = require('morgan') // middleware for nice logging of incoming HTTP requests
 const multer = require('multer') // middleware to handle HTTP POST requests with file uploads
 const path = require('path')
-const axios = require('axios') // middleware for making requests to APIs
+const fs = require('fs')
 require('dotenv').config({ silent: true }) // load environmental variables from a hidden file named .env
 
 // passport
@@ -1069,6 +1069,67 @@ app.post(
         res.json(updatedUserInfo)
     }
 )
+
+app.post('/deleterecipe', (req, res, next) => {
+    // delete recipe document
+    Recipe.findByIdAndDelete(req.body.id)
+        .then((recipe) => {
+            // remove recipe from all users' liked
+            User.updateMany(
+                { liked: req.body.id },
+                { $pull: { liked: req.body.id } }
+            )
+                .then(() => {
+                    // delete all comments belonging to the recipe
+                    Comment.deleteMany({ recipe: req.body.id })
+                        .then(() => {
+                            // decrement all tags used on recipe
+                            Tag.updateMany(
+                                { tag: { $in: recipe.tags } },
+                                { $inc: { count: -1 } }
+                            )
+                                .then(() => {
+                                    // delete all tags that now have a count of 0
+                                    Tag.deleteMany({ count: { $lt: 1 } })
+                                        .then(() => {
+                                            // delete the recipe image
+                                            // TODO: change to multiple images when carousel + multiple uploads is implemented
+                                            fs.unlink(
+                                                path.join(
+                                                    __dirname,
+                                                    `../front-end/public${recipe.imagePath}`
+                                                ),
+                                                (err) => {
+                                                    if (err) {
+                                                        next(err)
+                                                    } else {
+                                                        res.send(
+                                                            'deleted recipe'
+                                                        )
+                                                    }
+                                                }
+                                            )
+                                        })
+                                        .catch((err) => {
+                                            next(err)
+                                        })
+                                })
+                                .catch((err) => {
+                                    next(err)
+                                })
+                        })
+                        .catch((err) => {
+                            next(err)
+                        })
+                })
+                .catch((err) => {
+                    next(err)
+                })
+        })
+        .catch((err) => {
+            next(err)
+        })
+})
 
 // export the express app we created to make it available to other modules
 module.exports = app
