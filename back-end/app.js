@@ -461,14 +461,12 @@ app.post(
     body('username')
         .isAlphanumeric()
         .withMessage('Username must only be alphanumeric.'),
-    body('ReEnterPassword')
-        .equals('password')
-        .withMessage('Does not match password.'),
 
     (req, res) => {
         const errors = validationResult(req)
         if (!errors.isEmpty()) {
             res.status(400).json({ errors: errors.array() })
+            console.log(errors.array())
         } else {
             res.json({
                 token: signToken(req.user)

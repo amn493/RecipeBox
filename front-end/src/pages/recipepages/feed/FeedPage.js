@@ -37,7 +37,7 @@ const Feed = (props) => {
             if (followingArray.length === 0) {
                 setReqError(true)
                 setErrMsg(
-                    "You don't follow anyone. Check out the browse users page to find some tasty recipes!"
+                    "You don't follow anyone. Check out the browse users page to find some tasty recipes! "
                 )
             } else {
                 // Otherwise, go ahead and query the database

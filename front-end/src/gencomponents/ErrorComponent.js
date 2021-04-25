@@ -15,8 +15,8 @@ const ErrorComponent = (props) => {
 
             <p className="errorComponentString">
                 {errorString}
-                <a className="errorComponentLink" href="/feed">
-                    Return to feed page
+                <a className="errorComponentLink" href="/">
+                    Return to start page
                 </a>
                 .
             </p>
