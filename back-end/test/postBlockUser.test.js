@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable consistent-return */
 const chai = require('chai')
@@ -7,6 +8,7 @@ require('dotenv').config({ silent: true }) // load environmental variables from 
 
 const mongoose = require('mongoose')
 require('../db.js')
+// eslint-disable-next-line no-unused-vars
 const JWT = require('jsonwebtoken')
 
 const User = mongoose.model('User')
@@ -17,25 +19,6 @@ const { expect } = chai
 chai.use(chaiHTTP)
 
 const app = require('../app.js')
-
-// const [signedinUser, setSignedInUser] = useState([])
-// let signedInUserId = faker.datatype.number({max:50})
-// useEffect(() => {
-//     axios(`http://localhost:4000/userbyid?id=${signedInUserId}`)
-//     .then((response) => {
-//         setSignedInUser(response.data)
-//     })
-
-// const [userToBlock, setUserToBlock] = useState([])
-// let blockedUserId = faker.datatype.number({max:50})
-// if (blockedUserId===signedInUserId){
-//     blockedUserId=blockedUserId+1
-// }
-// useEffect(() => {
-//     axios(`http://localhost:4000/userbyid?id=${blockedUserId}`)
-//     .then((response) => {
-//         setUserToBlock(response.data)
-//     })
 
 describe('Testing POST to /blockusers API', () => {
     const addBlock = true
@@ -95,11 +78,12 @@ describe('Testing POST to /blockusers API', () => {
                 blockedUserFollowers: blockedUserFollowers
             })
         })
+        // eslint-disable-next-line no-console
         console.log('\x1b[2m', '...unblocked test user...')
     })
 
-    it('should return 200 OK status', () => {
-        return chai
+    it('should return 200 OK status', () =>
+        chai
             .request(app)
             .post('/blockuser')
             .send({
@@ -114,11 +98,10 @@ describe('Testing POST to /blockusers API', () => {
             })
             .then((response) => {
                 expect(response.status).to.equal(200)
-            })
-    })
+            }))
 
-    it('should return an object with correct field names', () => {
-        return chai
+    it('should return an object with correct field names', () =>
+        chai
             .request(app)
             .post('/blockuser')
             .send({
@@ -135,11 +118,10 @@ describe('Testing POST to /blockusers API', () => {
                 expect(response.body).to.have.property('blockedUsers')
                 expect(response.body).to.have.property('following')
                 expect(response.body).to.have.property('followers')
-            })
-    })
+            }))
 
-    it('should return an object with correct field data', () => {
-        return chai
+    it('should return an object with correct field data', () =>
+        chai
             .request(app)
             .post('/blockuser')
             .send({
@@ -158,6 +140,5 @@ describe('Testing POST to /blockusers API', () => {
                 expect(response.body.blockedUsers).to.include(
                     blockedUserID.toString()
                 )
-            })
-    })
+            }))
 })
