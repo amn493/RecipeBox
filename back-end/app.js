@@ -677,7 +677,7 @@ app.post('/blockuser', (req, res, next) => {
     // update blocked user's following/followers array appropriately
 
     // eslint-disable-next-line prefer-const
-    let updatedSignedInBlockedUsers = req.body.signedInblockedUsers
+    let updatedSignedInBlockedUsers = req.body.signedInBlockedUsers
     // eslint-disable-next-line prefer-const
     let updatedSignedInUserFollowing = req.body.signedInUserFollowing
     // eslint-disable-next-line prefer-const
@@ -734,7 +734,6 @@ app.post('/blockuser', (req, res, next) => {
                 },
                 { useFindAndModify: false }
             )
-
                 .then(() => {
                     res.json(user)
                 })
