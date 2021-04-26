@@ -461,9 +461,6 @@ app.post(
     body('username')
         .isAlphanumeric()
         .withMessage('Username must only be alphanumeric.'),
-    body('ReEnterPassword')
-        .equals('password')
-        .withMessage('Does not match password.'),
 
     (req, res) => {
         const errors = validationResult(req)
@@ -1046,9 +1043,6 @@ app.post(
     body('username')
         .isAlphanumeric()
         .withMessage('Username must only be alphanumeric.'),
-    body('ReEnterPassword')
-        .equals('password')
-        .withMessage('Does not match password.'),
     body('bio').trim().escape(),
     (req, res) => {
         // sanitize inputs -- same as account creation more or less
