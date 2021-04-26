@@ -185,10 +185,13 @@ describe('Testing POST to /blockusers API', () => {
                                     .then((response) => {
                                         expect(
                                             response.body.following
-                                        ).to.not.include(signedInUserId)
+                                        ).to.not.include(blockedUserID)
                                         expect(
                                             response.body.followers
-                                        ).to.not.include(signedInUserId)
+                                        ).to.not.include(blockedUserID)
+                                        expect(
+                                            response.body.blockedUsers
+                                        ).to.include(blockedUserID)
                                     })
                             }
                         }

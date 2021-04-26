@@ -676,12 +676,16 @@ app.post('/blockuser', (req, res, next) => {
     // update signed-in users's following/followers array appropriately
     // update blocked user's following/followers array appropriately
 
-    const updatedSignedInBlockedUsers = req.body.signedInblockedUsers
-
-    const updatedSignedInUserFollowing = req.body.signedInUserFollowing
-    const updatedSignedInUserFollowers = req.body.signedInUserFollowers
-    const updatedblockedUserFollowing = req.body.blockedUserFollowing
-    const updatedblockedUserFollowers = req.body.blockedUserFollowers
+    // eslint-disable-next-line prefer-const
+    let updatedSignedInBlockedUsers = req.body.signedInblockedUsers
+    // eslint-disable-next-line prefer-const
+    let updatedSignedInUserFollowing = req.body.signedInUserFollowing
+    // eslint-disable-next-line prefer-const
+    let updatedSignedInUserFollowers = req.body.signedInUserFollowers
+    // eslint-disable-next-line prefer-const
+    let updatedblockedUserFollowing = req.body.blockedUserFollowing
+    // eslint-disable-next-line prefer-const
+    let updatedblockedUserFollowers = req.body.blockedUserFollowers
 
     if (req.body.addBlock) {
         updatedSignedInBlockedUsers.push(req.body.blockedUserID)
