@@ -1,47 +1,36 @@
-// COMMENTED OUT TO CLEAR DATABASE
-
-/*// Test expected output when given valID input
-// Test expected output when given invalID input
-
 const chai = require('chai')
 const chaiHTTP = require('chai-http')
-const expect = chai.expect
+const { response } = require('../app.js')
 
-// For chai to run tests on an unused port
+const { expect } = chai
+
+// Chai will run the test on a port not being used. Avoids using active server for tests.
 chai.use(chaiHTTP)
 
+// Import our app.js where the route handlers are
 const app = require('../app.js')
 const fs = require('fs')
 
-// If Mockaroo is down, change route to "res.send('Text')" and 
-// comment out the axios to make sure the test runs.
+// So that the unit test run independent of data in the database
+// 1. POST /newrecipe
+// 2. GET /recipe
+// 3. POST /deleterecipe
 
-
-// Group of tests
 describe('Testing route handler for POST /newrecipe ', () => {
-    /*
-        newRecipe.append('userID', props.user._id)
-        newRecipe.append('name', nameValue)
-        newRecipe.append('recipeimage', imageFile)
-        newRecipe.append('tags', tags)
-        newRecipe.append('caption', captionValue)
-        newRecipe.append('ingredients', ingredientValues)
-        newRecipe.append('instructions', instructionValues)
-    // add end of comment 
-    let userID = '6070ccc13bd343389fcac3fc'
-    let name = 'nameVal'
-    let tags = 'tag1,tag2,tag3'
-    let caption = 'captionVal'
-    let ingredients = 'ingredient1,ingredient2,ingredient3'
-    let instructions = 'intruction1,instruction2'
+    // Using ash's userId
+    let userID = '60822725cc7a916181964c79'
+    let name = 'oatmeal'
+    let tags = 'breakfast,oats,vegan'
+    let caption = 'The best morning oatmeal!'
+    let ingredients = 'rolled oats,banana,blueberries,chia seeds'
+    let instructions = 'boil oats in water,add toppings,enjoy!'
 
-    it('should return 200 OK status ', () => {
+    it('should return 200 OK status for POST /newrecipe', () => {
         return chai.request(app)
         .post('/newrecipe')
         .set('content-type', 'multipart/form-data')
         .field('userID', userID)
         .field('name', name)
-        // Change file path to be image files availible to multer
         .attach('recipeimage', fs.readFileSync('./test/image.png'), 'image.png')
         .field('tags', tags)
         .field('caption', caption)
@@ -52,7 +41,18 @@ describe('Testing route handler for POST /newrecipe ', () => {
         })
     }).timeout(8000)
 
-    it('should return a recipe object with the right field names and types ', () => {
+    // Get id object for /deleterecipe
+    let id
+    chai.request(app).get('/recipe?slug=oatmeal').then((response) => {
+        id = response.body._id
+    })
+    
+    // Delete the recipe
+    chai.request(app)
+        .post('/deleterecipe')
+        .send({id})
+
+    it('POST /newrecipe should return a recipe object with the right field names and types ', () => {
         return chai.request(app)
         .post('/newrecipe')
         .set('content-type', 'multipart/form-data')
@@ -77,4 +77,14 @@ describe('Testing route handler for POST /newrecipe ', () => {
             expect(response.body).have.property('createdAt')
         })
     }).timeout(8000)
-}) */
+
+    // Get id object for /deleterecipe
+    chai.request(app).get('/recipe?slug=oatmeal').then((response) => {
+        id = response.body._id
+    })
+    
+    // Delete the recipe
+    chai.request(app)
+        .post('/deleterecipe')
+        .send({id})
+})
