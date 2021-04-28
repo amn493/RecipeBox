@@ -22,6 +22,7 @@ const app = require('../app.js')
 
 // If Mockaroo is down, change whatever is in your route to "res.send('Text')" and comment out the axios call to make sure the test runs.
 describe('Testing GET for /comments API', () => {
+    // arbitrary recipe for 2nd test
     let recipeID = ''
     before(async () => {
         // dummy users
