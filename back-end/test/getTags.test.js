@@ -1,44 +1,66 @@
+/* eslint-disable no-undef */
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable consistent-return */
 const chai = require('chai')
+
 const chaiHTTP = require('chai-http')
+require('dotenv').config({ silent: true }) // load environmental variables from a hidden file named .env
+
+require('../db.js')
+// eslint-disable-next-line no-unused-vars
+const JWT = require('jsonwebtoken')
 
 const { expect } = chai
 
-// Chai will run the test on a port not being used. Avoids using active server for tests.
 chai.use(chaiHTTP)
 
-// Import our app.js where the route handlers are
 const app = require('../app.js')
 
-// If Mockaroo is down, change whatever is in your route to "res.send('Text')" and comment out the axios call to make sure the test runs.
 describe('Testing route handler for GET /tags ', () => {
-  // Title of the call in the test
-  it('should return 200 OK status', () =>
-    // Describe what the test is looking for
-    chai
-      .request(app)
-      .get('/tags')
-      .then((response) => {
-        // Have chai request app.js and then call the url to that route handler
-        expect(response.status).to.equal(200)
-      }))
+    // Title of the call in the test
+    it('should return 200 OK status', () =>
+        // Describe what the test is looking for
+        chai
+            .request(app)
+            .get('/tags')
+            .then((response) => {
+                // Have chai request app.js and then call the url to that route handler
+                expect(response.status).to.equal(200)
+            }))
 
-  it('should return all tags', () =>
-    // Describe what the test is looking for
-    chai
-      .request(app)
-      .get('/tags')
-      .then((response) => {
-        // Have chai request app.js and then call the url to that route handler
-        expect(response.body.length).to.equal(50)
-      }))
+    it('should return all tags', () =>
+        // Describe what the test is looking for
+        chai
+            .request(app)
+            .get('/tags')
+            .then((response) => {
+                // Have chai request app.js and then call the url to that route handler
+                expect(response.body.length).to.be.greaterThan(0)
+            }))
 
-  it('should only return tag fields', () =>
-    // Describe what the test is looking for
-    chai
-      .request(app)
-      .get('/tags')
-      .then((response) => {
-        // Have chai request app.js and then call the url to that route handler
-        expect(typeof response.body[0]).to.equal('string')
-      }))
+    it('should not return any tags from a blockedTags array passed through query string', () =>
+        // Describe what the test is looking for
+        chai
+            .request(app)
+            .get(
+                `/tags?blockedTags=${['keto', 'glutenfree'].reduce(
+                    (acc, tag) => `${acc}&blockedTags=${tag}`,
+                    ''
+                )}`
+            )
+            .then((response) => {
+                // Have chai request app.js and then call the url to that route handler
+                expect(response.body).not.include('keto')
+                expect(response.body).not.include('glutenfree')
+            }))
+
+    it('should only return tag fields', () =>
+        // Describe what the test is looking for
+        chai
+            .request(app)
+            .get('/tags')
+            .then((response) => {
+                // Have chai request app.js and then call the url to that route handler
+                response.body.forEach((item) => expect(item).to.be.a('string'))
+            }))
 })

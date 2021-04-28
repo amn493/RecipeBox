@@ -24,7 +24,7 @@ const BrowseRecipesPage = (props) => {
             `http://${
                 process.env.REACT_APP_ORIGIN
             }:4000/tags?blockedTags=${props.user.blockedTags.reduce(
-                (acc, tag) => `&blockedTags=${tag}`,
+                (acc, tag) => acc + `&blockedTags=${tag}`,
                 ''
             )}`
         )
