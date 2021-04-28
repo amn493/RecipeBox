@@ -19,6 +19,8 @@ const JWT = require('jsonwebtoken')
 
 // Express Validator for sanitizing inputs *soap emoji in spirit*
 const { body, validationResult } = require('express-validator')
+// HTML Entities for encoding and decoding (escaping/unescaping)
+const he = require('he')
 
 // nodemailer for emailing users
 const nodemailer = require('nodemailer')
@@ -237,7 +239,22 @@ app.get('/recipe', (req, res, next) => {
     // fetch recipe where slug === req.query.slug from database
 
     Recipe.findOne({ slug: req.query.slug })
-        .then((recipe) => res.json(recipe))
+        .then((recipe) => {
+            // Unescape recipe fields
+            // eslint-disable-next-line no-param-reassign
+            recipe.name = he.decode(recipe.name)
+            // eslint-disable-next-line no-param-reassign
+            recipe.caption = he.decode(recipe.caption)
+            recipe.ingredients.forEach((ingredient, index) => {
+                // eslint-disable-next-line no-param-reassign
+                recipe.ingredients[index] = he.decode(ingredient)
+            })
+            recipe.instructions.forEach((instruction, index) => {
+                // eslint-disable-next-line no-param-reassign
+                recipe.instructions[index] = he.decode(instruction)
+            })
+            res.json(recipe)
+        })
         .catch((err) => next(err))
 })
 
@@ -297,7 +314,12 @@ app.get('/userbyslug', (req, res, next) => {
     // fetch user where slug === req.query.slug from database
 
     User.findOne({ slug: req.query.slug })
-        .then((user) => res.json(user))
+        .then((user) => {
+            // Unescape fields of the user (name and handle should be alphanumeric already)
+            // eslint-disable-next-line no-param-reassign
+            user.bio = he.decode(user.bio)
+            res.json(user)
+        })
         .catch((err) => next(err))
 })
 
@@ -306,6 +328,11 @@ app.get('/comments', (req, res, next) => {
 
     Comment.find({ recipe: req.query.recipeID })
         .then((comments) => {
+            comments.forEach((commentBody) => {
+                // eslint-disable-next-line no-param-reassign
+                commentBody.comment = he.decode(commentBody.comment)
+            })
+
             res.json(comments)
         })
         .catch((err) => next(err))
@@ -317,7 +344,17 @@ app.get('/recipesbyuser', (req, res, next) => {
         user: req.query.userID
     })
         .sort({ createdAt: -1 }) // Reverse the order of creation dates so latest recipe is on top
-        .then((recipes) => res.json(recipes))
+        .then((recipes) => {
+            // Unescape recipe names
+            recipes.forEach((recipe) => {
+                // eslint-disable-next-line no-param-reassign
+                recipe.name = he.decode(recipe.name)
+                // eslint-disable-next-line no-param-reassign
+                recipe.caption = he.decode(recipe.caption)
+            })
+
+            res.json(recipes)
+        })
         .catch((err) => next(err))
 })
 
@@ -378,6 +415,13 @@ app.get('/filteredrecipes', (req, res, next) => {
     // find recipes matching the filter
     Recipe.find(filter)
         .then((recipes) => {
+            recipes.forEach((recipe) => {
+                // eslint-disable-next-line no-param-reassign
+                recipe.name = he.decode(recipe.name)
+                // eslint-disable-next-line no-param-reassign
+                recipe.caption = he.decode(recipe.caption)
+            })
+
             res.json(recipes)
         })
         .catch((err) => next(err))
@@ -388,7 +432,16 @@ app.get('/recommendedrecipes', (req, res, next) => {
     Recipe.find({})
         .sort({ likes: -1 })
         .limit(10)
-        .then((recipes) => res.json(recipes))
+        .then((recipes) => {
+            recipes.forEach((recipe) => {
+                // eslint-disable-next-line no-param-reassign
+                recipe.name = he.decode(recipe.name)
+                // eslint-disable-next-line no-param-reassign
+                recipe.caption = he.decode(recipe.caption)
+            })
+
+            res.json(recipes)
+        })
         .catch((err) => next(err))
 })
 
