@@ -67,11 +67,11 @@ const EditProfilePage = (props) => {
             .then((response) => setSubmitted(true))
     }
 
-    // Display file name when uploaded [taken from NewRecipePage.js]
-    useEffect(() => {
-        bsCustomFileInput.init()
-    }, [])
-
+    // function to allow user to re-upload/re-crop a photo
+    // that they just cleared/uploaded
+    const clearUpload = (event) => {
+        event.target.value = ''
+    }
     // Upload image file
     const fileUploaded = (event) => {
         setImageFile(event.target.files[0])
@@ -144,6 +144,7 @@ const EditProfilePage = (props) => {
                                     className="uploadPhotoButton"
                                     label="Change Photo"
                                     onChange={fileUploaded}
+                                    onClick={clearUpload}
                                     custom
                                 />
                             </div>
@@ -204,6 +205,7 @@ const EditProfilePage = (props) => {
                             <img id="userimgforcropperjs" alt="" />
 
                             <ImageCropModal
+                                bsCustomFileInput={bsCustomFileInput}
                                 setImgForUpload={setImageFile}
                                 imgsrc={userImgSrc}
                                 show={showModal}

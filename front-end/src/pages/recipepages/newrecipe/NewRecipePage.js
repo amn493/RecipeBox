@@ -74,11 +74,6 @@ const NewRecipePage = (props) => {
         setTags(tags.slice(0, i).concat(tags.slice(i + 1)))
     }
 
-    // display file name on upload
-    useEffect(() => {
-        bsCustomFileInput.init()
-    }, [])
-
     // check for empty fields
     useEffect(() => {
         setEmptyField(
@@ -93,6 +88,12 @@ const NewRecipePage = (props) => {
         nameValue,
         uploadedImage
     ])
+
+    // function to allow user to re-upload/re-crop a photo
+    // that they just cleared/uploaded
+    const clearUpload = (event) => {
+        event.target.value = ''
+    }
 
     const fileUploaded = (event) => {
         setUploadedImage(event.target.value !== '')
@@ -219,6 +220,7 @@ const NewRecipePage = (props) => {
                         id="custom-file"
                         label="Upload recipe image"
                         onChange={fileUploaded}
+                        onClick={clearUpload}
                         custom
                     />
                 </Form.Group>
@@ -238,7 +240,9 @@ const NewRecipePage = (props) => {
                 <img id="img" alt="" />
 
                 <ImageCropModal
+                    bsCustomFileInput={bsCustomFileInput}
                     setImgForUpload={setImageFile}
+                    setUploadedImage={setUploadedImage}
                     imgsrc={recipeImgSrc}
                     show={showModal}
                     setShow={setShowModal}
