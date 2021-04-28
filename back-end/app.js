@@ -19,6 +19,8 @@ const JWT = require('jsonwebtoken')
 
 // Express Validator for sanitizing inputs *soap emoji in spirit*
 const { body, validationResult } = require('express-validator')
+// HTML Entities for encoding and decoding (escaping/unescaping)
+const he = require('he')
 
 // nodemailer for emailing users
 const nodemailer = require('nodemailer')
@@ -306,6 +308,11 @@ app.get('/comments', (req, res, next) => {
 
     Comment.find({ recipe: req.query.recipeID })
         .then((comments) => {
+            comments.forEach((commentBody) => {
+                // eslint-disable-next-line no-param-reassign
+                commentBody.comment = he.decode(commentBody.comment)
+            })
+            // end of test stuff
             res.json(comments)
         })
         .catch((err) => next(err))
