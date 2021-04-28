@@ -49,7 +49,13 @@ const NewRecipePage = (props) => {
         newRecipe.append('instructions', instructionValues)
 
         axios
-            .post('http://localhost:4000/newrecipe', newRecipe, { headers })
+            .post(
+                `http://${process.env.REACT_APP_ORIGIN}:4000/newrecipe`,
+                newRecipe,
+                {
+                    headers
+                }
+            )
             .then((response) => setSubmitted(true))
     }
 

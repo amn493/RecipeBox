@@ -26,7 +26,9 @@ const ProfilePage = (props) => {
 
     useEffect(() => {
         // fetch the user whose profile is being displayed (slug = slug)
-        axios(`http://localhost:4000/userbyslug?slug=${slug}`)
+        axios(
+            `http://${process.env.REACT_APP_ORIGIN}:4000/userbyslug?slug=${slug}`
+        )
             .then((response) => {
                 setProfileUser(response.data)
             })
@@ -43,7 +45,7 @@ const ProfilePage = (props) => {
         if (profileUser) {
             // fetch user's recipes
             axios(
-                `http://localhost:4000/recipesbyuser?userID=${profileUser._id}`
+                `http://${process.env.REACT_APP_ORIGIN}:4000/recipesbyuser?userID=${profileUser._id}`
             )
                 .then((response) => {
                     setRecipes(response.data)

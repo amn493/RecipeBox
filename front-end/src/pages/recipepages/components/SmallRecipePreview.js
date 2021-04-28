@@ -26,7 +26,9 @@ const SmallRecipePreview = (props) => {
                 slug: props.user.slug
             })
         } else {
-            axios(`http://localhost:4000/userbyid?id=${props.recipe.user}`)
+            axios(
+                `http://${process.env.REACT_APP_ORIGIN}:4000/userbyid?id=${props.recipe.user}`
+            )
                 .then((response) => {
                     setAuthorUser({
                         id: response.data._id,

@@ -54,9 +54,13 @@ const EditProfilePage = (props) => {
         updatedUserInfo.append('profilepicture', imageFile)
 
         axios
-            .post('http://localhost:4000/updateuserinfo', updatedUserInfo, {
-                headers
-            })
+            .post(
+                `http://${process.env.REACT_APP_ORIGIN}:4000/updateuserinfo`,
+                updatedUserInfo,
+                {
+                    headers
+                }
+            )
             .then((response) => setSubmitted(true))
     }
 

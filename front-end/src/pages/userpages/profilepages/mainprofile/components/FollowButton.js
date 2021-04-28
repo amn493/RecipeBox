@@ -15,7 +15,10 @@ const FollowButton = (props) => {
                 )
             }
             axios
-                .post('http://localhost:4000/followuser', followData)
+                .post(
+                    `http://${process.env.REACT_APP_ORIGIN}:4000/followuser`,
+                    followData
+                )
                 .then((response) => {
                     // update signed-in user and profile user
                     props.setCurrentUser(response.data.signedInUser)
