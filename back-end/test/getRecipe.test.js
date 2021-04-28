@@ -20,7 +20,7 @@ const fs = require('fs')
 
 
 describe('Testing route handler for GET /recipe ', () => {
-    /*// Using ash's userId
+    // Using ash's userId
     let userID = '60822725cc7a916181964c79'
     let name = 'oatmeal'
     let tags = 'breakfast,oats,vegan'
@@ -42,7 +42,7 @@ describe('Testing route handler for GET /recipe ', () => {
         .then((response) => {
             expect(response.status).to.equal(200)
         })
-    }).timeout(8000)*/
+    }).timeout(8000)
 
     it('should return 200 OK status for GET /recipe', () => {
         return chai.request(app).get('/recipe?slug=oatmeal').then((response) => {
@@ -51,7 +51,7 @@ describe('Testing route handler for GET /recipe ', () => {
     })
 
     // To send in /deleterecipe
-    let recipeId 
+    let id
     it('should return a recipe object with the correct fields', () => {
         return chai.request(app).get('/recipe?slug=oatmeal').then((response) => {
             expect(response.body).to.have.property('_id')
@@ -65,7 +65,7 @@ describe('Testing route handler for GET /recipe ', () => {
             expect(response.body).to.have.property('caption')
             expect(response.body).to.have.property('likes')
             expect(response.body).to.have.property('createdAt')
-            recipeId = response.body._id
+            id = response.body._id
         })
     }).timeout(8000)
 
@@ -80,7 +80,7 @@ describe('Testing route handler for GET /recipe ', () => {
     it('should return 200 OK status for /deleterecipe', () => {
         return chai.request(app)
         .post('/deleterecipe')
-        .send(recipeId)
+        .send({id})
         .then((response) => {
             expect(response.status).to.equal(200)
         })
