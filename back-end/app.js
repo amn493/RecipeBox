@@ -7,7 +7,7 @@ const app = express() // instantiate an Express object
 const morgan = require('morgan') // middleware for nice logging of incoming HTTP requests
 const multer = require('multer') // middleware to handle HTTP POST requests with file uploads
 const path = require('path')
-const axios = require('axios') // middleware for making requests to APIs
+const fs = require('fs')
 require('dotenv').config({ silent: true }) // load environmental variables from a hidden file named .env
 
 // passport
@@ -461,9 +461,6 @@ app.post(
     body('username')
         .isAlphanumeric()
         .withMessage('Username must only be alphanumeric.'),
-    body('ReEnterPassword')
-        .equals('password')
-        .withMessage('Does not match password.'),
 
     (req, res) => {
         const errors = validationResult(req)
@@ -676,12 +673,16 @@ app.post('/blockuser', (req, res, next) => {
     // update signed-in users's following/followers array appropriately
     // update blocked user's following/followers array appropriately
 
-    const updatedSignedInBlockedUsers = req.body.signedInblockedUsers
-
-    const updatedSignedInUserFollowing = req.body.signedInUserFollowing
-    const updatedSignedInUserFollowers = req.body.signedInUserFollowers
-    const updatedblockedUserFollowing = req.body.blockedUserFollowing
-    const updatedblockedUserFollowers = req.body.blockedUserFollowers
+    // eslint-disable-next-line prefer-const
+    let updatedSignedInBlockedUsers = req.body.signedInBlockedUsers
+    // eslint-disable-next-line prefer-const
+    let updatedSignedInUserFollowing = req.body.signedInUserFollowing
+    // eslint-disable-next-line prefer-const
+    let updatedSignedInUserFollowers = req.body.signedInUserFollowers
+    // eslint-disable-next-line prefer-const
+    let updatedblockedUserFollowing = req.body.blockedUserFollowing
+    // eslint-disable-next-line prefer-const
+    let updatedblockedUserFollowers = req.body.blockedUserFollowers
 
     if (req.body.addBlock) {
         updatedSignedInBlockedUsers.push(req.body.blockedUserID)
@@ -730,7 +731,6 @@ app.post('/blockuser', (req, res, next) => {
                 },
                 { useFindAndModify: false }
             )
-
                 .then(() => {
                     res.json(user)
                 })
@@ -1043,9 +1043,6 @@ app.post(
     body('username')
         .isAlphanumeric()
         .withMessage('Username must only be alphanumeric.'),
-    body('ReEnterPassword')
-        .equals('password')
-        .withMessage('Does not match password.'),
     body('bio').trim().escape(),
     (req, res) => {
         // sanitize inputs -- same as account creation more or less
@@ -1069,6 +1066,67 @@ app.post(
         res.json(updatedUserInfo)
     }
 )
+
+app.post('/deleterecipe', (req, res, next) => {
+    // delete recipe document
+    Recipe.findByIdAndDelete(req.body.id)
+        .then((recipe) => {
+            // remove recipe from all users' liked
+            User.updateMany(
+                { liked: req.body.id },
+                { $pull: { liked: req.body.id } }
+            )
+                .then(() => {
+                    // delete all comments belonging to the recipe
+                    Comment.deleteMany({ recipe: req.body.id })
+                        .then(() => {
+                            // decrement all tags used on recipe
+                            Tag.updateMany(
+                                { tag: { $in: recipe.tags } },
+                                { $inc: { count: -1 } }
+                            )
+                                .then(() => {
+                                    // delete all tags that now have a count of 0
+                                    Tag.deleteMany({ count: { $lt: 1 } })
+                                        .then(() => {
+                                            // delete the recipe image
+                                            // TODO: change to multiple images when carousel + multiple uploads is implemented
+                                            fs.unlink(
+                                                path.join(
+                                                    __dirname,
+                                                    `../front-end/public${recipe.imagePath}`
+                                                ),
+                                                (err) => {
+                                                    if (err) {
+                                                        next(err)
+                                                    } else {
+                                                        res.send(
+                                                            'deleted recipe'
+                                                        )
+                                                    }
+                                                }
+                                            )
+                                        })
+                                        .catch((err) => {
+                                            next(err)
+                                        })
+                                })
+                                .catch((err) => {
+                                    next(err)
+                                })
+                        })
+                        .catch((err) => {
+                            next(err)
+                        })
+                })
+                .catch((err) => {
+                    next(err)
+                })
+        })
+        .catch((err) => {
+            next(err)
+        })
+})
 
 // export the express app we created to make it available to other modules
 module.exports = app
