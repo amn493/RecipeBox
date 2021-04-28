@@ -215,9 +215,10 @@ const AppSettings = (props) => {
 
     // sign out user when sign out button is clicked
     const signOutUser = () => {
-        axios
-            .post('http://localhost:4000/signout')
-            .then(() => localStorage.removeItem('token'))
+        axios.post('http://localhost:4000/signout').then(() => {
+            localStorage.removeItem('token')
+            window.location = '/sign-in'
+        })
     }
 
     return !reqError ? (
@@ -505,19 +506,17 @@ const AppSettings = (props) => {
 
                 {/* signout button*/}
                 <div className="signOutButton">
-                    <a href="/sign-in">
-                        <br />
-                        <br />
-                        <Button
-                            className="submitButton"
-                            type="submit"
-                            variant="outline-info"
-                            onClick={signOutUser}
-                        >
-                            Sign Out
-                        </Button>
-                        {/* TODO: handle credentials stuff*/}
-                    </a>
+                    <br />
+                    <br />
+                    <Button
+                        className="submitButton"
+                        type="submit"
+                        variant="outline-info"
+                        onClick={signOutUser}
+                    >
+                        Sign Out
+                    </Button>
+                    {/* TODO: handle credentials stuff*/}
                 </div>
             </div>
         ) : (
