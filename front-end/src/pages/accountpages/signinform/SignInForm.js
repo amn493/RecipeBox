@@ -30,7 +30,7 @@ const SignInForm = (props) => {
         setError(false)
         setErrorMessage('')
         axios
-            .post('http://localhost:4000/signin', {
+            .post(`http://${process.env.REACT_APP_ORIGIN}:4000/signin`, {
                 username: username,
                 password: password
             })

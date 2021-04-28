@@ -32,7 +32,7 @@ const RecipePage = (props) => {
 
     useEffect(() => {
         // fetch the recipe that corresponds to the slug from the url
-        axios(`http://localhost:4000/recipe?slug=${slug}`)
+        axios(`http://${process.env.REACT_APP_ORIGIN}:4000/recipe?slug=${slug}`)
             .then((response) => {
                 setRecipe(response.data)
             })
@@ -55,7 +55,9 @@ const RecipePage = (props) => {
                     slug: props.user.slug
                 })
             } else {
-                axios(`http://localhost:4000/userbyid?id=${recipe.user}`)
+                axios(
+                    `http://${process.env.REACT_APP_ORIGIN}:4000/userbyid?id=${recipe.user}`
+                )
                     .then((response) => {
                         setAuthorUser({
                             id: response.data._id,
@@ -83,7 +85,9 @@ const RecipePage = (props) => {
 
     useEffect(() => {
         if (recipe) {
-            axios(`http://localhost:4000/comments?recipeID=${recipe._id}`)
+            axios(
+                `http://${process.env.REACT_APP_ORIGIN}:4000/comments?recipeID=${recipe._id}`
+            )
                 .then((response) => {
                     setComments(
                         response.data.sort((a, b) => a.createdAt - b.createdAt)
@@ -118,7 +122,12 @@ const RecipePage = (props) => {
         if (window.confirm('Are you sure you want to delete this recipe?')) {
             // delete recipe
             axios
-                .post('http://localhost:4000/deleterecipe', { id: recipe._id })
+                .post(
+                    `http://${process.env.REACT_APP_ORIGIN}:4000/deleterecipe`,
+                    {
+                        id: recipe._id
+                    }
+                )
                 .then(() => {
                     //redirect to my profile
                     setDeletedRecipe(true)
@@ -283,7 +292,10 @@ const LikeButton = (props) => {
         }
 
         axios
-            .post('http://localhost:4000/likerecipe', requestData)
+            .post(
+                `http://${process.env.REACT_APP_ORIGIN}:4000/likerecipe`,
+                requestData
+            )
             .then((response) => {
                 props.setRecipe(response.data.recipe)
                 props.setUser(response.data.user)
@@ -344,7 +356,10 @@ const CommentsSection = (props) => {
                 }
 
                 axios
-                    .post('http://localhost:4000/comment', newComment)
+                    .post(
+                        `http://${process.env.REACT_APP_ORIGIN}:4000/comment`,
+                        newComment
+                    )
                     .then((response) => {
                         //update page to include new comment
                         setComments(comments.concat([response.data]))

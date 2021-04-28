@@ -32,7 +32,7 @@ function App() {
 
     // authenticate user
     useEffect(() => {
-        axios('http://localhost:4000/signedinuser', {
+        axios(`http://${process.env.REACT_APP_ORIGIN}:4000/signedinuser`, {
             headers: {
                 Authorization: 'Bearer ' + localStorage.getItem('token')
             }
