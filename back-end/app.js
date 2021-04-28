@@ -409,10 +409,11 @@ app.get('/filteredrecipes', (req, res, next) => {
             return res.json([])
         }
 
-        // eslint-disable-next-line no-underscore-dangle
-        filter._id = {
-            $in: req.query.liked.filter((liked) => liked !== '')
-        }
+        // ignore recipes authored by signed-in user
+        filter.$and = [
+            { _id: { $in: req.query.liked.filter((liked) => liked !== '') } },
+            { user: { $ne: req.query.userid } }
+        ]
     }
 
     // find recipes matching the filter
