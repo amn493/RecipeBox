@@ -13,7 +13,9 @@ const Comment = (props) => {
     const [user, setUser] = useState([])
 
     useEffect(() => {
-        axios(`http://localhost:4000/userbyid?id=${props.comment.user}`)
+        axios(
+            `http://${process.env.REACT_APP_ORIGIN}:4000/userbyid?id=${props.comment.user}`
+        )
             .then((response) => {
                 setUser(response.data)
             })

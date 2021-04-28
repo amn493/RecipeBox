@@ -9,6 +9,8 @@ import { At } from 'react-bootstrap-icons'
 import axios from 'axios'
 import { Redirect } from 'react-router-dom'
 
+import ImageCropModal from '../../../../gencomponents/ImageCropModal.js'
+
 // TODO: Validate inputs
 
 const EditProfilePage = (props) => {
@@ -25,6 +27,11 @@ const EditProfilePage = (props) => {
     const [submitted, setSubmitted] = useState(false)
 
     const [userLoaded, setUserLoaded] = useState(false)
+
+    // state variable for showing image crop modal
+    const [showModal, setShowModal] = useState(false)
+    // state variable for setting user profile picture <img> src to send to cropperjs in modal
+    const [userImgSrc, setUserImgSrc] = useState('')
 
     // wait for user to be fetched from server to load page
     useEffect(() => {
@@ -54,20 +61,48 @@ const EditProfilePage = (props) => {
         updatedUserInfo.append('profilepicture', imageFile)
 
         axios
-            .post('http://localhost:4000/updateuserinfo', updatedUserInfo, {
-                headers
-            })
+            .post(
+                `http://${process.env.REACT_APP_ORIGIN}:4000/updateuserinfo`,
+                updatedUserInfo,
+                {
+                    headers
+                }
+            )
             .then((response) => setSubmitted(true))
     }
 
-    // Display file name when uploaded [taken from NewRecipePage.js]
-    useEffect(() => {
-        bsCustomFileInput.init()
-    }, [])
-
+    // function to allow user to re-upload/re-crop a photo
+    // that they just cleared/uploaded
+    const clearUpload = (event) => {
+        event.target.value = ''
+    }
     // Upload image file
     const fileUploaded = (event) => {
         setImageFile(event.target.files[0])
+
+        const userImgForCropperJS = document.getElementById(
+            'userimgforcropperjs'
+        )
+        const file = event.target.files[0]
+
+        const reader = new FileReader()
+
+        reader.addEventListener(
+            'load',
+            function () {
+                // convert image file to base64 string for cropperJS <img> src
+                setUserImgSrc(reader.result)
+                setShowModal(true)
+            },
+            false
+        )
+
+        if (file) {
+            reader.readAsDataURL(file)
+            userImgForCropperJS.style.display = 'none'
+        } else {
+            setShowModal(false)
+        }
     }
 
     // Ensure username field is not blank
@@ -113,6 +148,7 @@ const EditProfilePage = (props) => {
                                     className="uploadPhotoButton"
                                     label="Change Photo"
                                     onChange={fileUploaded}
+                                    onClick={clearUpload}
                                     custom
                                 />
                             </div>
@@ -168,6 +204,17 @@ const EditProfilePage = (props) => {
                                 }
                             />
                             <br />
+
+                            {/*to send to cropper modal*/}
+                            <img id="userimgforcropperjs" alt="" />
+
+                            <ImageCropModal
+                                bsCustomFileInput={bsCustomFileInput}
+                                setImgForUpload={setImageFile}
+                                imgsrc={userImgSrc}
+                                show={showModal}
+                                setShow={setShowModal}
+                            />
 
                             {emptyNameError.value}
                             <Button

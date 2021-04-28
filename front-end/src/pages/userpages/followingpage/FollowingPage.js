@@ -23,7 +23,9 @@ const FollowingPage = (props) => {
 
     useEffect(() => {
         // fetch the user whose profile is being displayed (slug = slug)
-        axios(`http://localhost:4000/userbyslug?slug=${slug}`)
+        axios(
+            `http://${process.env.REACT_APP_ORIGIN}:4000/userbyslug?slug=${slug}`
+        )
             .then((response) => {
                 setUser(response.data)
                 setLoadedUser(true)
@@ -45,7 +47,9 @@ const FollowingPage = (props) => {
         if (user.following) {
             if (user.following.length > 0) {
                 axios(
-                    `http://localhost:4000/usersbyid?id=${user.following.reduce(
+                    `http://${
+                        process.env.REACT_APP_ORIGIN
+                    }:4000/usersbyid?id=${user.following.reduce(
                         (acc, userFromFollowing) =>
                             acc + `&id=${userFromFollowing}`,
                         ''
