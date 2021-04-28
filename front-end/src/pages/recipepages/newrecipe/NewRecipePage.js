@@ -43,10 +43,10 @@ const NewRecipePage = (props) => {
         newRecipe.append('userID', props.user._id)
         newRecipe.append('name', nameValue)
         newRecipe.append('recipeimage', imageFile)
-        newRecipe.append('tags', tags)
+        newRecipe.append('tags', JSON.stringify(tags))
         newRecipe.append('caption', captionValue)
-        newRecipe.append('ingredients', ingredientValues)
-        newRecipe.append('instructions', instructionValues)
+        newRecipe.append('ingredients', JSON.stringify(ingredientValues))
+        newRecipe.append('instructions', JSON.stringify(instructionValues))
 
         axios
             .post(

@@ -690,24 +690,22 @@ app.post(
     // sanitize recipe inputs -- text fields since that's what the user has control over
     body('name').not().isEmpty().trim().escape(),
     body('caption').not().isEmpty().trim().escape(),
-    body('ingredients').not().isEmpty().trim().escape(),
-    body('instructions').not().isEmpty().trim().escape(),
     (req, res, next) => {
         // new recipe
         const newRecipe = {
             user: req.body.userID,
             name: req.body.name,
             imagePath: path.join('/uploads/', req.file.filename),
-            tags: req.body.tags.split(',').filter((tag) => tag !== ''),
+            tags: JSON.parse(req.body.tags).filter((tag) => tag !== ''),
             caption: req.body.caption,
-            ingredients: req.body.ingredients
-                .split(',')
+            ingredients: JSON.parse(req.body.ingredients)
                 .map((ingredient) => ingredient.trim())
-                .filter((ingredient) => ingredient !== ''),
-            instructions: req.body.instructions
-                .split(',')
+                .filter((ingredient) => ingredient !== '')
+                .map((ingredient) => he.encode(ingredient)),
+            instructions: JSON.parse(req.body.instructions)
                 .map((instruction) => instruction.trim())
-                .filter((instruction) => instruction !== ''),
+                .filter((instruction) => instruction !== '')
+                .map((instruction) => he.encode(instruction)),
             likes: 0,
             createdAt: Date.now()
         }
