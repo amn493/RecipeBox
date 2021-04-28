@@ -22,7 +22,7 @@ const BrowseRecipesPage = (props) => {
         // fetch all tags
         axios(
             `http://localhost:4000/tags?blockedTags=${props.user.blockedTags.reduce(
-                (acc, tag) => `&blockedTags=${tag}`,
+                (acc, tag) => acc + `&blockedTags=${tag}`,
                 ''
             )}`
         )
