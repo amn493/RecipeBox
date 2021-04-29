@@ -26,7 +26,7 @@ describe('Testing route handler for GET /filteredrecipes ', () => {
     // with empty filter
     let recipeCount = 0
     before(async () => {
-        // dummy users
+        // count of all recipes in Recipe collection
         await Recipe.countDocuments({}).then((count) => {
             recipeCount = count
         })
