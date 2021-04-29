@@ -248,14 +248,14 @@ app.get('/recipe', (req, res, next) => {
             recipe.name = he.decode(recipe.name)
             // eslint-disable-next-line no-param-reassign
             recipe.caption = he.decode(recipe.caption)
-            recipe.ingredients.forEach((ingredient, index) => {
-                // eslint-disable-next-line no-param-reassign
-                recipe.ingredients[index] = he.decode(ingredient)
-            })
-            recipe.instructions.forEach((instruction, index) => {
-                // eslint-disable-next-line no-param-reassign
-                recipe.instructions[index] = he.decode(instruction)
-            })
+            // eslint-disable-next-line no-param-reassign
+            recipe.ingredients = recipe.ingredients.map((ingredient) =>
+                he.decode(ingredient)
+            )
+            // eslint-disable-next-line no-param-reassign
+            recipe.instructions = recipe.instructions.map((instruction) =>
+                he.decode(instruction)
+            )
             res.json(recipe)
         })
         .catch((err) => next(err))
