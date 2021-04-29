@@ -61,8 +61,16 @@ const NewRecipePage = (props) => {
 
     // add tag button pressed
     const addTag = () => {
-        const newTag = tagValue.trim()
-        if (tagValue.trim() !== '' && !tags.includes(newTag)) {
+        // remove everything aside from letters and make the tag lowercase
+        const newTag = Array.from(tagValue)
+            .filter(
+                (char) =>
+                    (char.charCodeAt(0) >= 65 && char.charCodeAt(0) <= 90) ||
+                    (char.charCodeAt(0) >= 97 && char.charCodeAt(0) <= 122)
+            )
+            .join('')
+            .toLowerCase()
+        if (newTag !== '' && !tags.includes(newTag)) {
             // add tag to tags array and clear tag field
             setTags(tags.concat([newTag]))
         }
