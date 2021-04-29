@@ -148,6 +148,7 @@ const ProfilePage = (props) => {
                                                 user={props.user}
                                                 key={i}
                                                 profileUser={profileUser}
+                                                pinned={recipe.pinned}
                                             />
                                         ))}
                                     </div>
@@ -166,6 +167,7 @@ const ProfilePage = (props) => {
                                                 user={props.user}
                                                 key={i}
                                                 profileUser={profileUser}
+                                                pinned={recipe.pinned}
                                             />
                                         ))}
                                     </div>

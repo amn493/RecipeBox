@@ -355,7 +355,8 @@ app.get('/recipesbyuser', (req, res, next) => {
                 // eslint-disable-next-line no-param-reassign
                 recipe.caption = he.decode(recipe.caption)
             })
-
+            // move pinned recipes to the top
+            recipes.sort((a, b) => +b.pinned - +a.pinned)
             res.json(recipes)
         })
         .catch((err) => next(err))
@@ -707,6 +708,7 @@ app.post(
                 .split(',')
                 .map((instruction) => instruction.trim())
                 .filter((instruction) => instruction !== ''),
+            pinned: false,
             likes: 0,
             createdAt: Date.now()
         }
@@ -1178,6 +1180,20 @@ app.post('/deleterecipe', (req, res, next) => {
                 .catch((err) => {
                     next(err)
                 })
+        })
+        .catch((err) => {
+            next(err)
+        })
+})
+
+app.post('/pinrecipe', (req, res, next) => {
+    Recipe.findByIdAndUpdate(
+        req.body.id,
+        { $set: { pinned: req.body.pin } },
+        { new: true, useFindAndModify: false }
+    )
+        .then((recipe) => {
+            res.json(recipe)
         })
         .catch((err) => {
             next(err)

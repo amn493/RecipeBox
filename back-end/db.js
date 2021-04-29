@@ -37,6 +37,7 @@ const Recipe = new mongoose.Schema({
     caption: { type: String },
     ingredients: [String],
     instructions: [String],
+    pinned: { type: Boolean, required: true },
     likes: { type: Number, required: true },
     createdAt: { type: Date, required: true }
 })

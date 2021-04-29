@@ -1,5 +1,8 @@
 .largeRecipePreview {
     margin-bottom: 40px;
+}
+
+.largeRecipePreviewCard {
     width: 100%;
     margin-left: auto;
     margin-right: auto;
@@ -82,4 +85,17 @@
 
 .largeRecipePreviewTopTableCell {
     vertical-align: baseline;
+}
+
+.pinnedRecipeLarge {
+    background-color: rgba(23, 163, 184, 0.1);
+    border-radius: 10px;
+    padding: 10px;
+    margin-top: -10px;
+}
+
+.pinLarge {
+    color: rgb(23, 163, 184);
+    text-align: right;
+    margin-top: -10px;
 }
