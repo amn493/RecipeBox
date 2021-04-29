@@ -25,7 +25,9 @@ describe('Testing GET for /feedrecipes API', () => {
     let following = []
     before(async () => {
         // dummy user
-        await User.findOne({ username: 'jsusstestaccount' }).then((user) => {
+        await User.findOne({
+            following: { $exists: true, $type: 'array', $ne: [] }
+        }).then((user) => {
             if (user) {
                 following = user.following
             }
