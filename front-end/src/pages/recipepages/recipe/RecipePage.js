@@ -7,14 +7,15 @@ import FormControl from 'react-bootstrap/FormControl'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import Dropdown from 'react-bootstrap/Dropdown'
+import { ThreeDots } from 'react-bootstrap-icons'
 
 import Comment from './Comment.js'
 import Timestamp from '../../../gencomponents/Timestamp.js'
 import ErrorComponent from '../../../gencomponents/ErrorComponent.js'
 import CreateAccountModal from '../../../gencomponents/CreateAccountModal.js'
+import Number from '../../../gencomponents/Number.js'
 
 import './RecipePage.css'
-import { ThreeDots } from 'react-bootstrap-icons'
 
 // Recipe Page
 // Expects no props - must be accessed via a url with a slug (/recipes-:slug)
@@ -327,7 +328,7 @@ const LikeButton = (props) => {
                     }
                 }}
             />
-            {props.recipe.likes}
+            <Number className="numLikes" number={props.recipe.likes} />
         </div>
     )
 }
