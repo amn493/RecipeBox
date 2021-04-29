@@ -48,10 +48,10 @@ const NewRecipePage = (props) => {
         newRecipe.append('userID', props.user._id)
         newRecipe.append('name', nameValue)
         newRecipe.append('recipeimage', imageFile)
-        newRecipe.append('tags', tags)
+        newRecipe.append('tags', JSON.stringify(tags))
         newRecipe.append('caption', captionValue)
-        newRecipe.append('ingredients', ingredientValues)
-        newRecipe.append('instructions', instructionValues)
+        newRecipe.append('ingredients', JSON.stringify(ingredientValues))
+        newRecipe.append('instructions', JSON.stringify(instructionValues))
 
         axios
             .post(
@@ -66,8 +66,16 @@ const NewRecipePage = (props) => {
 
     // add tag button pressed
     const addTag = () => {
-        const newTag = tagValue.trim()
-        if (tagValue.trim() !== '' && !tags.includes(newTag)) {
+        // remove everything aside from letters and make the tag lowercase
+        const newTag = Array.from(tagValue)
+            .filter(
+                (char) =>
+                    (char.charCodeAt(0) >= 65 && char.charCodeAt(0) <= 90) ||
+                    (char.charCodeAt(0) >= 97 && char.charCodeAt(0) <= 122)
+            )
+            .join('')
+            .toLowerCase()
+        if (newTag !== '' && !tags.includes(newTag)) {
             // add tag to tags array and clear tag field
             setTags(tags.concat([newTag]))
         }

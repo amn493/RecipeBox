@@ -252,14 +252,14 @@ app.get('/recipe', (req, res, next) => {
             recipe.name = he.decode(recipe.name)
             // eslint-disable-next-line no-param-reassign
             recipe.caption = he.decode(recipe.caption)
-            recipe.ingredients.forEach((ingredient, index) => {
-                // eslint-disable-next-line no-param-reassign
-                recipe.ingredients[index] = he.decode(ingredient)
-            })
-            recipe.instructions.forEach((instruction, index) => {
-                // eslint-disable-next-line no-param-reassign
-                recipe.instructions[index] = he.decode(instruction)
-            })
+            // eslint-disable-next-line no-param-reassign
+            recipe.ingredients = recipe.ingredients.map((ingredient) =>
+                he.decode(ingredient)
+            )
+            // eslint-disable-next-line no-param-reassign
+            recipe.instructions = recipe.instructions.map((instruction) =>
+                he.decode(instruction)
+            )
             res.json(recipe)
         })
         .catch((err) => next(err))
@@ -413,10 +413,11 @@ app.get('/filteredrecipes', (req, res, next) => {
             return res.json([])
         }
 
-        // eslint-disable-next-line no-underscore-dangle
-        filter._id = {
-            $in: req.query.liked.filter((liked) => liked !== '')
-        }
+        // ignore recipes authored by signed-in user
+        filter.$and = [
+            { _id: { $in: req.query.liked.filter((liked) => liked !== '') } },
+            { user: { $ne: req.query.userid } }
+        ]
     }
 
     // find recipes matching the filter
@@ -693,24 +694,22 @@ app.post(
     // sanitize recipe inputs -- text fields since that's what the user has control over
     body('name').not().isEmpty().trim().escape(),
     body('caption').not().isEmpty().trim().escape(),
-    body('ingredients').not().isEmpty().trim().escape(),
-    body('instructions').not().isEmpty().trim().escape(),
     (req, res, next) => {
         // new recipe
         const newRecipe = {
             user: req.body.userID,
             name: req.body.name,
             imagePath: path.join('/uploads/', req.file.filename),
-            tags: req.body.tags.split(',').filter((tag) => tag !== ''),
+            tags: JSON.parse(req.body.tags).filter((tag) => tag !== ''),
             caption: req.body.caption,
-            ingredients: req.body.ingredients
-                .split(',')
+            ingredients: JSON.parse(req.body.ingredients)
                 .map((ingredient) => ingredient.trim())
-                .filter((ingredient) => ingredient !== ''),
-            instructions: req.body.instructions
-                .split(',')
+                .filter((ingredient) => ingredient !== '')
+                .map((ingredient) => he.encode(ingredient)),
+            instructions: JSON.parse(req.body.instructions)
                 .map((instruction) => instruction.trim())
-                .filter((instruction) => instruction !== ''),
+                .filter((instruction) => instruction !== '')
+                .map((instruction) => he.encode(instruction)),
             likes: 0,
             createdAt: Date.now()
         }
