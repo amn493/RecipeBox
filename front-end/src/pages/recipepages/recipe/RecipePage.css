@@ -15,6 +15,11 @@
     width: 20px;
     height: 20px;
     margin-right: 5px;
+    display: inline-block;
+}
+
+.numLikes {
+    display: inline-block;
 }
 
 .likeButtonDiv {
@@ -101,7 +106,7 @@
 }
 
 .recipeDetailsTableLikedCol {
-    width: 46px;
+    white-space: nowrap;
 }
 
 .recipeDetailsTable {

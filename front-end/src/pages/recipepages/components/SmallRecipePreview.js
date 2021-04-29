@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 
-import './SmallRecipePreview.css'
 import Timestamp from '../../../gencomponents/Timestamp.js'
+import Number from '../../../gencomponents/Number.js'
+
+import './SmallRecipePreview.css'
 
 //Component for small recipe previews
 //Expects a recipe object as props
@@ -82,7 +84,10 @@ const SmallRecipePreview = (props) => {
                                                         : 'heart outline'
                                                 }
                                             />
-                                            {props.recipe.likes}
+                                            <Number
+                                                className="numLikes"
+                                                number={props.recipe.likes}
+                                            />
                                         </div>
                                     </td>
                                 </tr>

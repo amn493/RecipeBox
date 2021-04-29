@@ -1,6 +1,6 @@
 .smallRecipePreview {
     margin-bottom: 15px;
-    width: 90%;
+    width: 100%;
     margin-left: auto;
     margin-right: auto;
 }
@@ -16,7 +16,10 @@
     color: black;
 }
 
-.smallRecipePreviewRecipeName:hover, .smallRecipePreviewRecipeName:active,.smallRecipePreviewUsername:hover, .smallRecipePreviewUsername:active {
+.smallRecipePreviewRecipeName:hover,
+.smallRecipePreviewRecipeName:active,
+.smallRecipePreviewUsername:hover,
+.smallRecipePreviewUsername:active {
     color: black;
     opacity: 60%;
     text-decoration: none;
@@ -32,6 +35,11 @@
     width: 20px;
     height: 20px;
     margin-right: 5px;
+    display: inline-block;
+}
+
+.numLikes {
+    display: inline-block;
 }
 
 .likedSmall {
@@ -39,7 +47,7 @@
 }
 
 .smallRecipePreviewLikedCol {
-    width: 46px;
+    white-space: nowrap;
 }
 
 .smallRecipePreviewTable {
@@ -51,7 +59,7 @@
 }
 
 .smallRecipePreviewTableRightCol {
-   text-align: right;
+    text-align: right;
 }
 
 .smallRecipePreviewImageCell {

@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 
-import './LargeRecipePreview.css'
 import Timestamp from '../../../gencomponents/Timestamp.js'
+import Number from '../../../gencomponents/Number.js'
+
+import './LargeRecipePreview.css'
 
 //Component for large recipe previews
 //Expects recipe (a recipe object) and user (a user object for the currently signed-in user) as props
@@ -71,7 +73,10 @@ const LargeRecipePreview = (props) => {
                                     }
                                     alt={liked ? 'heart fill' : 'heart outline'}
                                 ></img>
-                                {props.recipe.likes}
+                                <Number
+                                    className="numLikes"
+                                    number={props.recipe.likes}
+                                />
                             </div>
                         </td>
                     </tr>
