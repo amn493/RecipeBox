@@ -3,10 +3,11 @@ import axios from 'axios'
 import { useParams } from 'react-router-dom'
 import { ArrowLeftCircleFill } from 'react-bootstrap-icons'
 
+import KeyWordSearchBar from '../../../gencomponents/searchbars/KeywordSearchBar.js'
+import SmallUserPreview from '../../userpages/components/SmallUserPreview.js'
+import ErrorComponent from '../../../gencomponents/ErrorComponent.js'
+
 import './FollowersPage.css'
-import KeyWordSearchBar from './KeywordSearchBar.js'
-import SmallUserPreview from './SmallUserPreview.js'
-import ErrorComponent from './ErrorComponent.js'
 
 // Followers Page
 // Expects a user object for props
@@ -20,11 +21,14 @@ const FollowersPage = (props) => {
     // Request all followers on initial render
     const [user, setUser] = useState([])
     const [loadedUser, setLoadedUser] = useState(false)
+
     const [userBlocked, setUserBlocked] = useState()
 
     useEffect(() => {
         // fetch the user whose profile is being displayed (slug = slug)
-        axios(`http://localhost:4000/userbyslug?slug=${slug}`)
+        axios(
+            `http://${process.env.REACT_APP_ORIGIN}:4000/userbyslug?slug=${slug}`
+        )
             .then((response) => {
                 setUser(response.data)
                 setLoadedUser(true)
@@ -50,31 +54,36 @@ const FollowersPage = (props) => {
 
     useEffect(() => {
         // Fetch all followers (followers are an array of user objects)
-        if (
-            user.followers &&
-            user.followers.length > 0 &&
-            userBlocked !== undefined &&
-            userBlocked !== true
-        ) {
-            // console.log('fetch')
-            axios(
-                `http://localhost:4000/usersbyid?id=${user.followers.reduce(
-                    (acc, userFromFollowers) => acc + `&id=${userFromFollowers}`
-                )}`
-            )
-                .then((response) => {
-                    setAllFollowers(
-                        response.data.slice(0, user.followers.length)
-                    )
-                    setFollowers(response.data.slice(0, user.followers.length))
-                    setLoadedFollowers(true)
-                })
-                .catch((err) => {
-                    console.error(err)
-                    setReqError(true)
-                })
+        if (user.followers) {
+            if (user.followers.length > 0 && userBlocked === false) {
+                axios(
+                    `http://${
+                        process.env.REACT_APP_ORIGIN
+                    }:4000/usersbyid?id=${user.followers.reduce(
+                        (acc, userFromFollowers) =>
+                            acc + `&id=${userFromFollowers}`,
+                        ''
+                    )}`
+                )
+                    .then((response) => {
+                        setAllFollowers(
+                            response.data.slice(0, user.followers.length)
+                        )
+                        setFollowers(
+                            response.data.slice(0, user.followers.length)
+                        )
+                        setLoadedFollowers(true)
+                    })
+                    .catch((err) => {
+                        console.error(err)
+                        setReqError(true)
+                    })
+            } else {
+                setLoadedFollowers(true)
+            }
         }
-    }, [user.followers, userBlocked])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [user.followers])
 
     // For keyword search bar
     const [filterKeyword, setFilterKeyword] = useState('')
@@ -104,8 +113,7 @@ const FollowersPage = (props) => {
     }, [filterKeyword]) // Update followers when a new keyword is entered
 
     return !reqError ? (
-        loadedUser &&
-        (loadedFollowers || user.followers.length <= 0 || userBlocked) ? (
+        loadedUser && loadedFollowers ? (
             <div className="followers">
                 <div className="followersHeading">
                     <a className="backLink text-info" href={`/user-${slug}`}>

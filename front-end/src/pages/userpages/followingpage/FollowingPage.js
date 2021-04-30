@@ -3,10 +3,11 @@ import axios from 'axios'
 import { useParams } from 'react-router-dom'
 import { ArrowLeftCircleFill } from 'react-bootstrap-icons'
 
+import KeyWordSearchBar from '../../../gencomponents/searchbars/KeywordSearchBar.js'
+import SmallUserPreview from '../../userpages/components/SmallUserPreview.js'
+import ErrorComponent from '../../../gencomponents/ErrorComponent.js'
+
 import './FollowingPage.css'
-import KeyWordSearchBar from './KeywordSearchBar.js'
-import SmallUserPreview from './SmallUserPreview.js'
-import ErrorComponent from './ErrorComponent.js'
 
 // Following Page
 // Expects a user object for props
@@ -20,11 +21,14 @@ const FollowingPage = (props) => {
     // Request all followers on initial render
     const [user, setUser] = useState([])
     const [loadedUser, setLoadedUser] = useState(false)
+
     const [userBlocked, setUserBlocked] = useState()
 
     useEffect(() => {
         // fetch the user whose profile is being displayed (slug = slug)
-        axios(`http://localhost:4000/userbyslug?slug=${slug}`)
+        axios(
+            `http://${process.env.REACT_APP_ORIGIN}:4000/userbyslug?slug=${slug}`
+        )
             .then((response) => {
                 setUser(response.data)
                 setLoadedUser(true)
@@ -50,31 +54,36 @@ const FollowingPage = (props) => {
 
     useEffect(() => {
         // Fetch all following
-        if (
-            user.following &&
-            user.following.length > 0 &&
-            userBlocked !== undefined &&
-            userBlocked !== true
-        ) {
-            // console.log('fetch')
-            axios(
-                `http://localhost:4000/usersbyid?id=${user.following.reduce(
-                    (acc, userFromFollowing) => acc + `&id=${userFromFollowing}`
-                )}`
-            )
-                .then((response) => {
-                    setAllFollowing(
-                        response.data.slice(0, user.following.length)
-                    )
-                    setFollowing(response.data.slice(0, user.following.length))
-                    setLoadedFollowing(true)
-                })
-                .catch((err) => {
-                    console.error(err)
-                    setReqError(true)
-                })
+        if (user.following) {
+            if (user.following.length > 0 && userBlocked === false) {
+                axios(
+                    `http://${
+                        process.env.REACT_APP_ORIGIN
+                    }:4000/usersbyid?id=${user.following.reduce(
+                        (acc, userFromFollowing) =>
+                            acc + `&id=${userFromFollowing}`,
+                        ''
+                    )}`
+                )
+                    .then((response) => {
+                        setAllFollowing(
+                            response.data.slice(0, user.following.length)
+                        )
+                        setFollowing(
+                            response.data.slice(0, user.following.length)
+                        )
+                        setLoadedFollowing(true)
+                    })
+                    .catch((err) => {
+                        console.error(err)
+                        setReqError(true)
+                    })
+            } else {
+                setLoadedFollowing(true)
+            }
         }
-    }, [user.following, userBlocked])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [user.following])
 
     // For keyword search bar
     const [filterKeyword, setFilterKeyword] = useState('')
@@ -104,8 +113,7 @@ const FollowingPage = (props) => {
     }, [filterKeyword]) // Update following when a new keyword is entered
 
     return !reqError ? (
-        loadedUser &&
-        (loadedFollowing || user.following.length <= 0 || userBlocked) ? (
+        loadedUser && loadedFollowing ? (
             <div className="following">
                 <div className="followingHeading">
                     <a
@@ -130,7 +138,7 @@ const FollowingPage = (props) => {
                 </div>
                 <div className="followingList">
                     <div className="followingUserPreview">
-                        {userBlocked || following.length === 0 ? (
+                        {following.length === 0 || userBlocked ? (
                             <p className="noFollowingFoundMessage">
                                 No users found
                             </p>

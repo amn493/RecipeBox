@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 // import and instantiate express
 const express = require('express') // CommonJS import style!
 
@@ -6,7 +7,7 @@ const app = express() // instantiate an Express object
 const morgan = require('morgan') // middleware for nice logging of incoming HTTP requests
 const multer = require('multer') // middleware to handle HTTP POST requests with file uploads
 const path = require('path')
-const axios = require('axios') // middleware for making requests to APIs
+const fs = require('fs')
 require('dotenv').config({ silent: true }) // load environmental variables from a hidden file named .env
 
 // passport
@@ -15,6 +16,11 @@ const LocalStrategy = require('passport-local').Strategy
 const JwtStrategy = require('passport-jwt').Strategy
 const { ExtractJwt } = require('passport-jwt')
 const JWT = require('jsonwebtoken')
+
+// Express Validator for sanitizing inputs *soap emoji in spirit*
+const { body, validationResult } = require('express-validator')
+// HTML Entities for encoding and decoding (escaping/unescaping)
+const he = require('he')
 
 // nodemailer for emailing users
 const nodemailer = require('nodemailer')
@@ -50,7 +56,14 @@ app.use(express.static(path.join(__dirname, '../front-end/public')))
 // CORS
 
 app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', 'http://localhost:3000')
+    const allowedOrigins = [
+        `http://${process.env.ORIGIN}`,
+        `http://${process.env.ORIGIN}:3000`
+    ]
+    const { origin } = req.headers
+    if (allowedOrigins.includes(origin)) {
+        res.header('Access-Control-Allow-Origin', origin)
+    }
     res.header(
         'Access-Control-Allow-Headers',
         'Origin, X-Requested-With, Content-Type, Accept, Authorization'
@@ -233,7 +246,22 @@ app.get('/recipe', (req, res, next) => {
     // fetch recipe where slug === req.query.slug from database
 
     Recipe.findOne({ slug: req.query.slug })
-        .then((recipe) => res.json(recipe))
+        .then((recipe) => {
+            // Unescape recipe fields
+            // eslint-disable-next-line no-param-reassign
+            recipe.name = he.decode(recipe.name)
+            // eslint-disable-next-line no-param-reassign
+            recipe.caption = he.decode(recipe.caption)
+            // eslint-disable-next-line no-param-reassign
+            recipe.ingredients = recipe.ingredients.map((ingredient) =>
+                he.decode(ingredient)
+            )
+            // eslint-disable-next-line no-param-reassign
+            recipe.instructions = recipe.instructions.map((instruction) =>
+                he.decode(instruction)
+            )
+            res.json(recipe)
+        })
         .catch((err) => next(err))
 })
 
@@ -275,7 +303,7 @@ app.get('/users', (req, res, next) => {
 app.get('/usersbyid', (req, res, next) => {
     // fetch users where id === req.query.id from database
 
-    User.find({ _id: { $in: req.query.id } })
+    User.find({ _id: { $in: req.query.id.filter((id) => id !== '') } })
         .sort({ createdAt: -1 })
         .then((users) => res.json(users))
         .catch((err) => next(err))
@@ -293,7 +321,12 @@ app.get('/userbyslug', (req, res, next) => {
     // fetch user where slug === req.query.slug from database
 
     User.findOne({ slug: req.query.slug })
-        .then((user) => res.json(user))
+        .then((user) => {
+            // Unescape fields of the user (name and handle should be alphanumeric already)
+            // eslint-disable-next-line no-param-reassign
+            user.bio = he.decode(user.bio)
+            res.json(user)
+        })
         .catch((err) => next(err))
 })
 
@@ -301,7 +334,14 @@ app.get('/comments', (req, res, next) => {
     // fetch comments where recipe === req.query.recipeID from database
 
     Comment.find({ recipe: req.query.recipeID })
-        .then((comments) => res.json(comments))
+        .then((comments) => {
+            comments.forEach((commentBody) => {
+                // eslint-disable-next-line no-param-reassign
+                commentBody.comment = he.decode(commentBody.comment)
+            })
+
+            res.json(comments)
+        })
         .catch((err) => next(err))
 })
 
@@ -311,7 +351,17 @@ app.get('/recipesbyuser', (req, res, next) => {
         user: req.query.userID
     })
         .sort({ createdAt: -1 }) // Reverse the order of creation dates so latest recipe is on top
-        .then((recipes) => res.json(recipes))
+        .then((recipes) => {
+            // Unescape recipe names
+            recipes.forEach((recipe) => {
+                // eslint-disable-next-line no-param-reassign
+                recipe.name = he.decode(recipe.name)
+                // eslint-disable-next-line no-param-reassign
+                recipe.caption = he.decode(recipe.caption)
+            })
+
+            res.json(recipes)
+        })
         .catch((err) => next(err))
 })
 
@@ -363,15 +413,23 @@ app.get('/filteredrecipes', (req, res, next) => {
             return res.json([])
         }
 
-        // eslint-disable-next-line no-underscore-dangle
-        filter._id = {
-            $in: req.query.liked.filter((liked) => liked !== '')
-        }
+        // ignore recipes authored by signed-in user
+        filter.$and = [
+            { _id: { $in: req.query.liked.filter((liked) => liked !== '') } },
+            { user: { $ne: req.query.userid } }
+        ]
     }
 
     // find recipes matching the filter
     Recipe.find(filter)
         .then((recipes) => {
+            recipes.forEach((recipe) => {
+                // eslint-disable-next-line no-param-reassign
+                recipe.name = he.decode(recipe.name)
+                // eslint-disable-next-line no-param-reassign
+                recipe.caption = he.decode(recipe.caption)
+            })
+
             res.json(recipes)
         })
         .catch((err) => next(err))
@@ -382,7 +440,16 @@ app.get('/recommendedrecipes', (req, res, next) => {
     Recipe.find({})
         .sort({ likes: -1 })
         .limit(10)
-        .then((recipes) => res.json(recipes))
+        .then((recipes) => {
+            recipes.forEach((recipe) => {
+                // eslint-disable-next-line no-param-reassign
+                recipe.name = he.decode(recipe.name)
+                // eslint-disable-next-line no-param-reassign
+                recipe.caption = he.decode(recipe.caption)
+            })
+
+            res.json(recipes)
+        })
         .catch((err) => next(err))
 })
 
@@ -414,15 +481,28 @@ app.get('/usernametaken', (req, res, next) => {
 
 /* Begin POST Requests */
 
+// Note on sanitization: The front-end validation is preeeetty good so usually we'll never get here.
+// For signin and create account, the validation would only be reached on the back-end if someone went REALLY far out of their way to change fields.
+// To "easily" test them, go into the respective front-end pages and comment out any front-end validation to let anything slide.
+
 app.post(
     '/signin',
     passport.authenticate('signin', {
         session: false
     }),
+
+    body('username')
+        .isAlphanumeric()
+        .withMessage('Username must only be alphanumeric.'),
     (req, res) => {
-        res.json({
-            token: signToken(req.user)
-        })
+        const errors = validationResult(req)
+        if (!errors.isEmpty()) {
+            res.status(400).json({ errors: errors.array() })
+        } else {
+            res.json({
+                token: signToken(req.user)
+            })
+        }
     }
 )
 
@@ -431,10 +511,27 @@ app.post(
     passport.authenticate('createaccount', {
         session: false
     }),
+
+    body('email').isEmail().withMessage('Email entered is not a valid email.'),
+    body('firstName')
+        .isAlpha()
+        .withMessage('First name must contain only letters.'),
+    body('lastName')
+        .isAlpha()
+        .withMessage('Last name must contain only letters.'),
+    body('username')
+        .isAlphanumeric()
+        .withMessage('Username must only be alphanumeric.'),
+
     (req, res) => {
-        res.json({
-            token: signToken(req.user)
-        })
+        const errors = validationResult(req)
+        if (!errors.isEmpty()) {
+            res.status(400).json({ errors: errors.array() })
+        } else {
+            res.json({
+                token: signToken(req.user)
+            })
+        }
     }
 )
 
@@ -443,21 +540,127 @@ app.post('/signout', (req, res) => {
     res.send('Signed out user')
 })
 
-app.post('/comment', (req, res) => {
-    // new comment
-    const newComment = {
-        recipe: req.body.recipe,
-        user: req.body.user,
-        comment: req.body.comment,
-        createdAt: Date.now()
-    }
+app.post(
+    '/comment',
+    // sanitize comment body -- the only thing a user has control over
+    body('comment').escape(),
 
-    // save new comment to the database
-    new Comment(newComment)
-        .save()
-        .then((comment) => res.json(comment))
-        .catch((err) => next(err))
-})
+    (req, res, next) => {
+        // Check to make sure comment didn't have weird characters
+        const errors = validationResult(req)
+        if (!errors.isEmpty()) {
+            res.status(400).json({ errors: errors.array() })
+        } else {
+            // new comment
+            const newComment = {
+                recipe: req.body.recipe,
+                user: req.body.user,
+                comment: req.body.comment,
+                createdAt: Date.now()
+            }
+
+            // get info for sending email notification
+            Recipe.findOne({ _id: req.body.recipe })
+                .then((recipe) => {
+                    // get name of recipe for given user to receive notification about
+                    const recipeNameForEmail = recipe.name
+                    const recipeLinkForEmail = `http://${process.env.ORIGIN}:3000/recipe-${recipe.slug}`
+                    // const recipeImgPathForEmail = recipe.imagePath
+                    User.findOne({
+                        _id: req.body.user
+                    })
+                        .then((commentingUser) => {
+                            // get username of commenting user
+                            const usernameOfCommentingUser =
+                                commentingUser.username
+                            const userProfileLinkForEmail = `http://${process.env.ORIGIN}:3000/user-${commentingUser.slug}`
+                            // const userProfilePicForEmail = commentingUser.imagePath
+                            User.findOne({
+                                _id: recipe.user
+                            })
+                                .then((userToReceiveNotif) => {
+                                    // if user who created commented-on recipe has notifications on,
+                                    // send email
+                                    if (
+                                        userToReceiveNotif.notificationSettings
+                                            .emailNotifications &&
+                                        userToReceiveNotif.notificationSettings
+                                            .comments &&
+                                        userToReceiveNotif.username !==
+                                            commentingUser.username
+                                    ) {
+                                        // get email and first name of user to receive notification
+                                        const emailforNotifs =
+                                            userToReceiveNotif.email
+                                        const firstNameOfEmailRecipient =
+                                            userToReceiveNotif.firstName
+                                        const message = {
+                                            from: 'recipeboxupdate@gmail.com', // Sender address
+                                            to: emailforNotifs, // recipient(s)
+                                            subject:
+                                                'Your recipe received a comment!', // Subject line
+                                            // text: `${firstNameOfEmailRecipient}, @${usernameOfCommentingUser} left a comment on your recipe, ${recipeNameForEmail}: "${req.body.comment}"` // body
+
+                                            // attachments: [
+                                            //     {
+                                            //         filename: path.basename(
+                                            //             recipeImgPathForEmail
+                                            //         ),
+                                            //         path: path.join(
+                                            //             __dirname,
+                                            //             recipeImgPathForEmail
+                                            //         ),
+                                            //         cid: 'recipeimg'
+                                            //     },
+                                            //     {
+                                            //         filename: path.basename(
+                                            //             userProfilePicForEmail
+                                            //         ),
+                                            //         path: path.join(
+                                            //             __dirname,
+                                            //             userProfilePicForEmail
+                                            //         ),
+                                            //         cid: 'userprofileimg'
+                                            //     }
+                                            // ],
+
+                                            html: `<h2 style="color: #1c6475; text-align: center;">${firstNameOfEmailRecipient},</h2>
+                                    <div style="margin: 0 auto;text-align:center;">
+                                    <h3 style="color: #4aa0b5; text-align: center; display: inline;"><a style="color: #4aa0b5;" href=${userProfileLinkForEmail}>@${usernameOfCommentingUser}</a></h3>
+                                    <h4 style="color: #2b2301; display: inline;">&nbsp;left a comment on your recipe,&nbsp;</h4>
+                                    <h3 style="color: #1c6475; text-align: center; display: inline;"><a style="color: #4aa0b5;" href=${recipeLinkForEmail}>${recipeNameForEmail}</a></h3>
+                                    </div>
+                                    <hr style="width:25%">
+                                    <h3 style="font-style: italic; color: #7d7d7d; text-align: center;">"${req.body.comment}"</h3>
+                                    `
+                                        }
+                                        transport
+                                            .sendMail(message)
+                                            .catch((err) => {
+                                                next(err)
+                                            })
+                                    }
+                                })
+                                .catch((err) => {
+                                    next(err)
+                                })
+                        })
+                        .catch((err) => {
+                            next(err)
+                        })
+                })
+                .catch((err) => {
+                    next(err)
+                })
+
+            // save new comment to the database
+            new Comment(newComment)
+                .save()
+                .then((comment) => res.json(comment))
+                .catch((err) => next(err))
+        }
+    }
+)
 
 // recursive function for adding new tags to database and updating counts of existing tags
 const updateTags = (tags, i, cb, next) => {
@@ -485,49 +688,60 @@ const updateTags = (tags, i, cb, next) => {
     }
 }
 
-app.post('/newrecipe', upload.single('recipeimage'), (req, res, next) => {
-    // new recipe
-    const newRecipe = {
-        user: req.body.userID,
-        name: req.body.name,
-        imagePath: path.join('/uploads/', req.file.filename),
-        tags: req.body.tags.split(',').filter((tag) => tag !== ''),
-        caption: req.body.caption,
-        ingredients: req.body.ingredients
-            .split(',')
-            .map((ingredient) => ingredient.trim())
-            .filter((ingredient) => ingredient !== ''),
-        instructions: req.body.instructions
-            .split(',')
-            .map((instruction) => instruction.trim())
-            .filter((instruction) => instruction !== ''),
-        likes: 0,
-        createdAt: Date.now()
-    }
+app.post(
+    '/newrecipe',
+    upload.single('recipeimage'),
+    // sanitize recipe inputs -- text fields since that's what the user has control over
+    body('name').not().isEmpty().trim().escape(),
+    body('caption').not().isEmpty().trim().escape(),
+    (req, res, next) => {
+        // new recipe
+        const newRecipe = {
+            user: req.body.userID,
+            name: req.body.name,
+            imagePath: path.join('/uploads/', req.file.filename),
+            tags: JSON.parse(req.body.tags).filter((tag) => tag !== ''),
+            caption: req.body.caption,
+            ingredients: JSON.parse(req.body.ingredients)
+                .map((ingredient) => ingredient.trim())
+                .filter((ingredient) => ingredient !== '')
+                .map((ingredient) => he.encode(ingredient)),
+            instructions: JSON.parse(req.body.instructions)
+                .map((instruction) => instruction.trim())
+                .filter((instruction) => instruction !== '')
+                .map((instruction) => he.encode(instruction)),
+            likes: 0,
+            createdAt: Date.now()
+        }
 
-    // save new recipe to database
-    new Recipe(newRecipe)
-        .save()
-        .then((recipe) => {
-            // add new tags to database and update counts of existing tags
-            updateTags(recipe.tags, 0, res.json.bind(res, recipe), next)
-        })
-        .catch((err) => {
-            next(err)
-        })
-})
+        // save new recipe to database
+        new Recipe(newRecipe)
+            .save()
+            .then((recipe) => {
+                // add new tags to database and update counts of existing tags
+                updateTags(recipe.tags, 0, res.json.bind(res, recipe), next)
+            })
+            .catch((err) => {
+                next(err)
+            })
+    }
+)
 
 app.post('/blockuser', (req, res, next) => {
     // update signed-in user's blockedUsers array appropriately
     // update signed-in users's following/followers array appropriately
     // update blocked user's following/followers array appropriately
 
-    const updatedSignedInBlockedUsers = req.body.signedInblockedUsers
-
-    const updatedSignedInUserFollowing = req.body.signedInUserFollowing
-    const updatedSignedInUserFollowers = req.body.signedInUserFollowers
-    const updatedblockedUserFollowing = req.body.blockedUserFollowing
-    const updatedblockedUserFollowers = req.body.blockedUserFollowers
+    // eslint-disable-next-line prefer-const
+    let updatedSignedInBlockedUsers = req.body.signedInBlockedUsers
+    // eslint-disable-next-line prefer-const
+    let updatedSignedInUserFollowing = req.body.signedInUserFollowing
+    // eslint-disable-next-line prefer-const
+    let updatedSignedInUserFollowers = req.body.signedInUserFollowers
+    // eslint-disable-next-line prefer-const
+    let updatedblockedUserFollowing = req.body.blockedUserFollowing
+    // eslint-disable-next-line prefer-const
+    let updatedblockedUserFollowers = req.body.blockedUserFollowers
 
     if (req.body.addBlock) {
         updatedSignedInBlockedUsers.push(req.body.blockedUserID)
@@ -567,7 +781,7 @@ app.post('/blockuser', (req, res, next) => {
         },
         { new: true, useFindAndModify: false }
     )
-        .then(() => {
+        .then((user) => {
             User.findByIdAndUpdate(
                 req.body.blockedUserID,
                 {
@@ -576,15 +790,8 @@ app.post('/blockuser', (req, res, next) => {
                 },
                 { useFindAndModify: false }
             )
-
                 .then(() => {
-                    res.json({
-                        signedInBlockedUsers: updatedSignedInBlockedUsers,
-                        signedInUserFollowing: updatedSignedInUserFollowing,
-                        signedInUserFollowers: updatedSignedInUserFollowers,
-                        blockedUserFollowers: updatedblockedUserFollowers,
-                        blockedUserFollowing: updatedblockedUserFollowing
-                    })
+                    res.json(user)
                 })
                 .catch((err) => next(err))
         })
@@ -613,8 +820,8 @@ app.post('/blocktag', (req, res, next) => {
         },
         { new: true, useFindAndModify: false }
     )
-        .then(() => {
-            res.json({ signedInBlockedTags: updatedSignedInBlockedTags })
+        .then((user) => {
+            res.json(user)
         })
         .catch((err) => next(err))
 })
@@ -630,14 +837,18 @@ app.post('/likerecipe', (req, res, next) => {
             .then((recipe) => {
                 // get name of recipe for given user to receive notification about
                 const recipeNameForEmail = recipe.name
+                const recipeLinkForEmail = `http://${process.env.ORIGIN}:3000/recipe-${recipe.slug}`
+                // const recipeImgPathForEmail = recipe.imagePath
                 User.findOne({
                     _id: req.body.userID
                 })
                     .then((likinguser) => {
                         // get username of liking user
                         const usernameOfLikingUser = likinguser.username
+                        const userProfileLinkForEmail = `http://${process.env.ORIGIN}:3000/user-${likinguser.slug}`
+                        // const userProfilePicForEmail = likinguser.imagePath
                         User.findOne({
-                            _id: recipe.user.id
+                            _id: recipe.user
                         })
                             .then((likeduser) => {
                                 // if user who created liked recipe has notifications on,
@@ -656,7 +867,47 @@ app.post('/likerecipe', (req, res, next) => {
                                         from: 'recipeboxupdate@gmail.com', // Sender address
                                         to: emailforNotifs, // recipient(s)
                                         subject: 'Your recipe received a like!', // Subject line
-                                        text: `Congrats, ${firstNameOfEmailRecipient}! @${usernameOfLikingUser} liked your recipe, ${recipeNameForEmail}` // body
+                                        // text: `Congrats, ${firstNameOfEmailRecipient}! @${usernameOfLikingUser} liked your recipe, ${recipeNameForEmail}` // body
+
+                                        attachments: [
+                                            // {
+                                            //     filename: path.basename(
+                                            //         recipeImgPathForEmail
+                                            //     ),
+                                            //     path: path.join(
+                                            //         __dirname,
+                                            //         recipeImgPathForEmail
+                                            //     ),
+                                            //     cid: 'recipeimg'
+                                            // },
+                                            // {
+                                            //     filename: path.basename(
+                                            //         userProfilePicForEmail
+                                            //     ),
+                                            //     path: path.join(
+                                            //         __dirname,
+                                            //         userProfilePicForEmail
+                                            //     ),
+                                            //     cid: 'userprofileimg'
+                                            // },
+                                            {
+                                                filename: 'heartFill.png',
+                                                path: path.join(
+                                                    __dirname,
+                                                    '../front-end/public/heartFill.png'
+                                                ),
+                                                cid: 'heartFillIcon'
+                                            }
+                                        ],
+                                        html: `<h2 style="color: #1c6475; text-align: center;">Congrats, ${firstNameOfEmailRecipient}!</h2>
+                                        <div style="margin: 0 auto;text-align:center;">
+                                        <h3 style="color: #4aa0b5; text-align: center; display: inline;"><a style="color: #4aa0b5;" href=${userProfileLinkForEmail}>@${usernameOfLikingUser}</a></h3>
+                                        <h4 style="color: #2b2301; display: inline;">&nbsp;liked your recipe,&nbsp;</h4>
+                                        <h3 style="color: #1c6475; text-align: center; display: inline;"><a style="color: #4aa0b5;" href=${recipeLinkForEmail}>${recipeNameForEmail}</a></h3>
+                                        </div>
+                                        <hr style="width: 15%;" />
+                                        <img style="display: block;text-align:center;margin-left: auto;margin-right: auto;width: 5%;" src="cid:heartFillIcon" alt="heartFill"/>
+                                        `
                                     }
                                     transport.sendMail(message).catch((err) => {
                                         next(err)
@@ -717,6 +968,75 @@ app.post('/followuser', (req, res, next) => {
     if (req.body.follow) {
         updateSignedIn.$push = { following: req.body.profileUserID }
         updateProfile.$push = { followers: req.body.signedInUserID }
+
+        // get info for sending email notification for follow
+        User.findOne({
+            _id: req.body.signedInUserID
+        })
+            .then((followingUser) => {
+                // get username of following user
+                const usernameOfFollowingUser = followingUser.username
+                const userProfileLinkForEmail = `http://${process.env.ORIGIN}:3000/user-${followingUser.slug}`
+                const userImgPathForEmail =
+                    // TODO: replace starter profile pic with actual user profile pictures in email
+                    path.basename(followingUser.imagePath).substring(0, 8) ===
+                    'RBX_PFP_'
+                        ? followingUser.imagePath
+                        : 'starterProfilePictures/RBX_PFP_Blue.png'
+                User.findOne({
+                    _id: req.body.profileUserID
+                })
+                    .then((followedUser) => {
+                        // if user who is being followed has notifications on,
+                        // send email
+                        if (
+                            followedUser.notificationSettings
+                                .emailNotifications &&
+                            followedUser.notificationSettings.follows
+                        ) {
+                            // get email and first name of user to receive notification
+                            const emailforNotifs = followedUser.email
+                            const firstNameOfEmailRecipient =
+                                followedUser.firstName
+                            const message = {
+                                from: 'recipeboxupdate@gmail.com', // Sender address
+                                to: emailforNotifs, // recipient(s)
+                                subject: 'You have a new follower!', // Subject line
+                                // text: `${firstNameOfEmailRecipient}, your account has a new follower: @${usernameOfFollowingUser}` // body
+
+                                // TODO: replace starter profile pic with actual user profile pictures in email
+                                attachments: [
+                                    {
+                                        filename: path.basename(
+                                            userImgPathForEmail
+                                        ),
+                                        path: path.join(
+                                            __dirname,
+                                            `../front-end/public/${userImgPathForEmail}`
+                                        ),
+                                        cid: 'followinguserimg'
+                                    }
+                                ],
+                                html: `<h2 style="color: #1c6475;text-align: center;">${firstNameOfEmailRecipient},</h2>
+                                        <h3 style="color: #4AA0B5;text-align: center;">Your account has a new follower!</h3><hr style="width:50%;"><div >
+                                        <h2 style="color: #4AA0B5;text-align: center;"><a href=${userProfileLinkForEmail} style="color: #4AA0B5;">@${usernameOfFollowingUser}</a></h2>
+                                        <img style="display: block;text-align:center;margin-left: auto;margin-right: auto;width: 40%;" src="cid:followinguserimg" alt="userprofileimg"/></div>`
+                            }
+                            transport.sendMail(message).catch((err) => {
+                                next(err)
+                            })
+                        }
+                    })
+                    .catch((err) => {
+                        next(err)
+                    })
+            })
+            .catch((err) => {
+                next(err)
+            })
+            .catch((err) => {
+                next(err)
+            })
     } else {
         updateSignedIn.$pull = { following: req.body.profileUserID }
         updateProfile.$pull = { followers: req.body.signedInUserID }
@@ -754,7 +1074,6 @@ app.post('/notificationsettings', (req, res, next) => {
         // posts: req.body.posts,
     }
 
-    console.log(updatedNotificationSettings)
     // update the settings
     User.findByIdAndUpdate(
         req.body.userID,
@@ -763,28 +1082,109 @@ app.post('/notificationsettings', (req, res, next) => {
         },
         { new: true, useFindAndModify: false }
     )
-        .then(() => {
+        .then((user) => {
             // send response
-            res.json(updatedNotificationSettings)
+            res.json(user)
         })
         .catch((err) => next(err))
 })
 
-app.post('/updateuserinfo', upload.single('profilepicture'), (req, res) => {
-    // recieve post data from updating user's basic info
-    const updatedUserInfo = {
-        username: req.body.username,
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        bio: req.body.bio,
-        id: req.body.id,
-        imagePath: path.join('/uploads/', req.file.filename)
+app.post(
+    '/updateuserinfo',
+    upload.single('profilepicture'),
+    body('email').isEmail().withMessage('Email entered is not a valid email.'),
+    body('firstName')
+        .isAlpha()
+        .withMessage('First name must contain only letters.'),
+    body('lastName')
+        .isAlpha()
+        .withMessage('Last name must contain only letters.'),
+    body('username')
+        .isAlphanumeric()
+        .withMessage('Username must only be alphanumeric.'),
+    body('bio').trim().escape(),
+    (req, res) => {
+        // sanitize inputs -- same as account creation more or less
+
+        // recieve post data from updating user's basic info
+        const updatedUserInfo = {
+            username: req.body.username,
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
+            bio: req.body.bio,
+            id: req.body.id,
+            imagePath: path.join('/uploads/', req.file.filename)
+        }
+
+        // update the user's user object (in database)
+
+        // TODO: Once merged with this last POST request, check for any errors
+        // we want to prevent this from going through as opposed to just saving weird things
+
+        // send a response to the user (sending data back to test)
+        res.json(updatedUserInfo)
     }
+)
 
-    // update the user's user object (in database)
-
-    // send a response to the user (sending data back to test)
-    res.json(updatedUserInfo)
+app.post('/deleterecipe', (req, res, next) => {
+    // delete recipe document
+    Recipe.findByIdAndDelete(req.body.id)
+        .then((recipe) => {
+            // remove recipe from all users' liked
+            User.updateMany(
+                { liked: req.body.id },
+                { $pull: { liked: req.body.id } }
+            )
+                .then(() => {
+                    // delete all comments belonging to the recipe
+                    Comment.deleteMany({ recipe: req.body.id })
+                        .then(() => {
+                            // decrement all tags used on recipe
+                            Tag.updateMany(
+                                { tag: { $in: recipe.tags } },
+                                { $inc: { count: -1 } }
+                            )
+                                .then(() => {
+                                    // delete all tags that now have a count of 0
+                                    Tag.deleteMany({ count: { $lt: 1 } })
+                                        .then(() => {
+                                            // delete the recipe image
+                                            // TODO: change to multiple images when carousel + multiple uploads is implemented
+                                            fs.unlink(
+                                                path.join(
+                                                    __dirname,
+                                                    `../front-end/public${recipe.imagePath}`
+                                                ),
+                                                (err) => {
+                                                    if (err) {
+                                                        next(err)
+                                                    } else {
+                                                        res.send(
+                                                            'deleted recipe'
+                                                        )
+                                                    }
+                                                }
+                                            )
+                                        })
+                                        .catch((err) => {
+                                            next(err)
+                                        })
+                                })
+                                .catch((err) => {
+                                    next(err)
+                                })
+                        })
+                        .catch((err) => {
+                            next(err)
+                        })
+                })
+                .catch((err) => {
+                    next(err)
+                })
+        })
+        .catch((err) => {
+            next(err)
+        })
 })
 
 // export the express app we created to make it available to other modules

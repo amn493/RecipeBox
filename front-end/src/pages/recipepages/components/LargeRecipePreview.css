@@ -1,0 +1,85 @@
+.largeRecipePreview {
+    margin-bottom: 40px;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.largeRecipePreviewImage {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.largeRecipePreviewRecipeName {
+    font-size: 22px;
+    font-weight: bold;
+    color: black;
+}
+
+.largeRecipePreviewRecipeName:hover,
+.largeRecipePreviewRecipeName:active,
+.largeRecipePreviewUsername:hover,
+.largeRecipePreviewUsername:active {
+    color: black;
+    opacity: 60%;
+    text-decoration: none;
+}
+
+.largeRecipePreviewUsername {
+    font-weight: bold;
+    color: black;
+    font-size: 14px;
+}
+
+.heartImage {
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
+    display: inline-block;
+}
+
+.largeRecipePreviewCaption {
+    font-size: 14px;
+    margin-top: 10px;
+    margin-bottom: 3px;
+}
+
+.largeRecipePreviewTag {
+    margin-right: 5px;
+    font-weight: bold;
+    font-size: 14px;
+    display: inline-block;
+}
+.largeRecipePreviewTag:hover,
+.largeRecipePreviewTag:active {
+    text-decoration: none;
+}
+
+.likedLarge {
+    display: inline-block;
+}
+
+.numLikes {
+    display: inline-block;
+}
+
+.largeRecipePreviewLikedCol {
+    white-space: nowrap;
+}
+
+.largeRecipePreviewTable {
+    width: 100%;
+}
+
+.largeRecipePreviewTopTable {
+    margin-bottom: -8px;
+}
+
+.largeRecipePreviewTableRightCol {
+    text-align: right;
+}
+
+.largeRecipePreviewTopTableCell {
+    vertical-align: baseline;
+}

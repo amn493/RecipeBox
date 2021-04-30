@@ -4,7 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "nyc mocha"
+    "test": "nyc mocha --exit"
   },
   "repository": {
     "type": "git",
@@ -24,7 +24,10 @@
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "express-validator": "^6.10.0",
     "faker": "^5.5.2",
+    "fs": "^0.0.1-security",
+    "he": "^1.2.0",
     "jsonwebtoken": "^8.5.1",
     "mocha": "^8.3.2",
     "mongoose": "^5.12.3",
