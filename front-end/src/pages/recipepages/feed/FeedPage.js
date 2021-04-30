@@ -102,7 +102,6 @@ const Feed = (props) => {
                 <div className="recLoadedText">{recLoadedText}</div>
                 <Button
                     block
-                    size="sm"
                     variant="info"
                     id="loadMoreRecipesBtn"
                     onClick={loadMoreRecipes}
