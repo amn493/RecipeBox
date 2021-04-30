@@ -20,6 +20,11 @@ const { expect } = chai
 
 chai.use(chaiHTTP)
 
+// snowballFactory for stemming words in the same way that mongoDB does
+const snowballFactory = require('snowball-stemmers')
+
+const stemmer = snowballFactory.newStemmer('english')
+
 const app = require('../app.js')
 
 // If Mockaroo is down, change whatever is in your route to "res.send('Text')" and comment out the axios call to make sure the test runs.
@@ -49,7 +54,7 @@ describe('Testing route handler for GET /filteredrecipes ', () => {
         // a given keyword
         await Recipe.findOne({}).then((recipe) => {
             // eslint-disable-next-line prefer-destructuring
-            filterkeyword = recipe.name.split(' ')[0]
+            filterkeyword = stemmer.stem(recipe.name.split(' ')[0])
         })
 
         // for testing whether route returns a user's liked recipes
@@ -71,7 +76,7 @@ describe('Testing route handler for GET /filteredrecipes ', () => {
             ]
         }).then((recipe) => {
             // eslint-disable-next-line prefer-destructuring
-            newfilterkeyword = recipe.name.split(' ')[0]
+            newfilterkeyword = stemmer.stem(recipe.name.split(' ')[0])
             filtertags = recipe.tags
         })
     })
@@ -138,9 +143,12 @@ describe('Testing route handler for GET /filteredrecipes ', () => {
             .get(`/filteredrecipes?keyword=${filterkeyword}&tags=`)
             .then((response) => {
                 response.body.forEach((recipe) =>
-                    expect(recipe.name.toLowerCase().split(' ')).to.include(
-                        filterkeyword.toLowerCase()
-                    )
+                    expect(
+                        recipe.name
+                            .toLowerCase()
+                            .split(' ')
+                            .map((word) => stemmer.stem(word))
+                    ).to.include(filterkeyword.toLowerCase())
                 )
             }))
 
@@ -175,9 +183,12 @@ describe('Testing route handler for GET /filteredrecipes ', () => {
                     )
                 )
                 response.body.forEach((recipe) =>
-                    expect(recipe.name.toLowerCase().split(' ')).to.include(
-                        newfilterkeyword.toLowerCase()
-                    )
+                    expect(
+                        recipe.name
+                            .toLowerCase()
+                            .split(' ')
+                            .map((word) => stemmer.stem(word))
+                    ).to.include(newfilterkeyword.toLowerCase())
                 )
             }))
     it('given a liked array of some user in the database, it should return each recipe whose id is in the liked array', () =>
