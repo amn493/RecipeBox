@@ -1,4 +1,6 @@
 import { PlusSquareFill } from 'react-bootstrap-icons'
+
+import Number from '../../../../../gencomponents/Number.js'
 import './ProfileHeader.css'
 
 //Component for profile headers (my profile and other user profile)
@@ -8,83 +10,103 @@ const ProfileHeader = (props) => {
     return (
         <div className="profileHeader">
             <table className="profileTopTable">
-                <tr>
-                    <td className="profilePictureCell">
-                        <img
-                            className="profilePicture"
-                            src={props.user.imagePath}
-                            alt="user profile"
-                        />
-                    </td>
-                    <td className="userFullNameAndUserHandle">
-                        <b className="userFirstAndLastName">
-                            {props.user.firstName + ' ' + props.user.lastName}
-                        </b>
-                        <br />
-                        {'@' + props.user.username}
-                    </td>
-                    <td className="plusButtonCell">
-                        <a className="text-info" href="/new-recipe">
-                            <i>
-                                <PlusSquareFill size={31} />
-                            </i>
-                        </a>
-                    </td>
-                </tr>
+                <tbody>
+                    <tr>
+                        <td className="profilePictureCell">
+                            <img
+                                className="profilePicture"
+                                src={props.user.imagePath}
+                                alt="user profile"
+                            />
+                        </td>
+                        <td className="userFullNameAndUserHandle">
+                            <b className="userFirstAndLastName">
+                                {props.user.firstName +
+                                    ' ' +
+                                    props.user.lastName}
+                            </b>
+                            <br />
+                            {'@' + props.user.username}
+                        </td>
+                        {props.isMyProfile ? (
+                            <td className="plusButtonCell">
+                                <a className="text-info" href="/new-recipe">
+                                    <i>
+                                        <PlusSquareFill size={31} />
+                                    </i>
+                                </a>
+                            </td>
+                        ) : (
+                            <></>
+                        )}
+                    </tr>
+                </tbody>
             </table>
 
             <table className="profileStatsSection">
-                <tr>
-                    <td className="profileStat">
-                        <b className="profileStatNumber">{props.recipeCount}</b>
-                        <br />
-                        <small className="profileStatText">
-                            {props.recipeCount !== 1 ? 'Recipes' : 'Recipe'}
-                        </small>
-                    </td>
-                    <td className="profileStat">
-                        <a
-                            className={`profileStatLink ${
-                                props.userBlocked
-                                    ? 'clickDisabled'
-                                    : 'clickEnabled'
-                            }`}
-                            href={`/user-${props.user.slug}/followers`}
-                        >
+                <tbody>
+                    <tr>
+                        <td className="profileStat">
                             <b className="profileStatNumber">
-                                {props.userBlocked
-                                    ? 0
-                                    : props.user.followers.length}
+                                <Number number={props.recipeCount} />
                             </b>
                             <br />
                             <small className="profileStatText">
-                                {props.user.followers.length !== 1
-                                    ? 'Followers'
-                                    : 'Follower'}
+                                {props.recipeCount !== 1 ? 'Recipes' : 'Recipe'}
                             </small>
-                        </a>
-                    </td>
-                    <td className="profileStat">
-                        <a
-                            className={`profileStatLink ${
-                                props.userBlocked
-                                    ? 'clickDisabled'
-                                    : 'clickEnabled'
-                            }`}
-                            href={`/user-${props.user.slug}/following`}
-                        >
-                            <b className="profileStatNumber">
-                                {props.userBlocked
-                                    ? 0
-                                    : props.user.following.length}
-                            </b>
-                            <br />
-                            <small className="profileStatText">
-                                {'Following'}
-                            </small>
-                        </a>
-                    </td>
-                </tr>
+                        </td>
+                        <td className="profileStat">
+                            <a
+                                className={`profileStatLink ${
+                                    props.userBlocked
+                                        ? 'clickDisabled'
+                                        : 'clickEnabled'
+                                }`}
+                                href={`/user-${props.user.slug}/followers`}
+                            >
+                                <b className="profileStatNumber">
+                                    <Number
+                                        number={
+                                            props.userBlocked
+                                                ? 0
+                                                : props.user.followers.length
+                                        }
+                                    />
+                                </b>
+                                <br />
+                                <small className="profileStatText">
+                                    {props.user.followers.length !== 1
+                                        ? 'Followers'
+                                        : 'Follower'}
+                                </small>
+                            </a>
+                        </td>
+                        <td className="profileStat">
+                            <a
+                                className={`profileStatLink ${
+                                    props.userBlocked
+                                        ? 'clickDisabled'
+                                        : 'clickEnabled'
+                                }`}
+                                href={`/user-${props.user.slug}/following`}
+                            >
+                                <b className="profileStatNumber">
+                                    <Number
+                                        number={
+                                            props.userBlocked
+                                                ? 0
+                                                : props.user.following.length
+                                        }
+                                    />
+                                </b>
+                                <br />
+                                <small className="profileStatText">
+                                    {'Following'}
+                                </small>
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
             </table>
 
             <p className="userBio">{props.user.bio}</p>

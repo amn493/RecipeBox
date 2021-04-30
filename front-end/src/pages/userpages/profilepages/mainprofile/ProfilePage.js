@@ -6,12 +6,12 @@ import Nav from 'react-bootstrap/Nav'
 import Button from 'react-bootstrap/Button'
 import { ViewList, ViewStacked } from 'react-bootstrap-icons'
 
-import ProfileHeader from './ProfileHeader.js'
-import FollowButton from './FollowButton.js'
-import SmallRecipePreview from './SmallRecipePreview.js'
-import LargeRecipePreview from './LargeRecipePreview.js'
-import CreateAccountModal from './CreateAccountModal.js'
-import ErrorComponent from './ErrorComponent.js'
+import ProfileHeader from './components/ProfileHeader.js'
+import FollowButton from './components/FollowButton.js'
+import SmallRecipePreview from '../../../recipepages/components/SmallRecipePreview.js'
+import LargeRecipePreview from '../../../recipepages/components/LargeRecipePreview.js'
+import CreateAccountModal from '../../../../gencomponents/CreateAccountModal.js'
+import ErrorComponent from '../../../../gencomponents/ErrorComponent.js'
 
 import './ProfilePage.css'
 
@@ -27,7 +27,9 @@ const ProfilePage = (props) => {
 
     useEffect(() => {
         // fetch the user whose profile is being displayed (slug = slug)
-        axios(`http://localhost:4000/userbyslug?slug=${slug}`)
+        axios(
+            `http://${process.env.REACT_APP_ORIGIN}:4000/userbyslug?slug=${slug}`
+        )
             .then((response) => {
                 setProfileUser(response.data)
             })
@@ -55,7 +57,7 @@ const ProfilePage = (props) => {
             if (!userBlocked) {
                 // fetch user's recipes
                 axios(
-                    `http://localhost:4000/recipesbyuser?userID=${profileUser._id}`
+                    `http://${process.env.REACT_APP_ORIGIN}:4000/recipesbyuser?userID=${profileUser._id}`
                 )
                     .then((response) => {
                         setRecipes(response.data)
@@ -81,6 +83,7 @@ const ProfilePage = (props) => {
                     user={profileUser}
                     recipeCount={userBlocked ? 0 : recipes.length}
                     userBlocked={userBlocked}
+                    isMyProfile={profileUser._id === props.user._id}
                 />
 
                 {slug === props.user.slug ? (
@@ -109,14 +112,14 @@ const ProfilePage = (props) => {
                 )}
 
                 <div className="tabContainer">
-                    <Tab.Container defaultActiveKey="small">
+                    <Tab.Container defaultActiveKey="small" transition={false}>
                         <Nav
                             variant="tabs"
                             className="justify-content-center w-100 nav-fill"
                         >
                             <Nav.Item>
                                 <Nav.Link
-                                    activeClassName=""
+                                    activeclassname=""
                                     eventKey="small"
                                     onSelect={() => setActiveTab('small')}
                                 >
