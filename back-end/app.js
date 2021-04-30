@@ -751,6 +751,8 @@ app.post('/blockuser', (req, res, next) => {
                 updatedSignedInUserFollowing.indexOf(req.body.blockedUserID),
                 1
             )
+        }
+        if (updatedblockedUserFollowers.includes(req.body.signedInUserID)) {
             updatedblockedUserFollowers.splice(
                 updatedblockedUserFollowers.indexOf(req.body.signedInUserID),
                 1
@@ -761,6 +763,8 @@ app.post('/blockuser', (req, res, next) => {
                 updatedSignedInUserFollowers.indexOf(req.body.blockedUserID),
                 1
             )
+        }
+        if (updatedblockedUserFollowing.includes(req.body.signedInUserID)) {
             updatedblockedUserFollowing.splice(
                 updatedblockedUserFollowing.indexOf(req.body.signedInUserID),
                 1
@@ -771,6 +775,30 @@ app.post('/blockuser', (req, res, next) => {
             updatedSignedInBlockedUsers.indexOf(req.body.blockedUserID),
             1
         )
+        if (updatedSignedInUserFollowing.includes(req.body.blockedUserID)) {
+            updatedSignedInUserFollowing.splice(
+                updatedSignedInUserFollowing.indexOf(req.body.blockedUserID),
+                1
+            )
+        }
+        if (updatedblockedUserFollowers.includes(req.body.signedInUserID)) {
+            updatedblockedUserFollowers.splice(
+                updatedblockedUserFollowers.indexOf(req.body.signedInUserID),
+                1
+            )
+        }
+        if (updatedSignedInUserFollowers.includes(req.body.blockedUserID)) {
+            updatedSignedInUserFollowers.splice(
+                updatedSignedInUserFollowers.indexOf(req.body.blockedUserID),
+                1
+            )
+        }
+        if (updatedblockedUserFollowing.includes(req.body.signedInUserID)) {
+            updatedblockedUserFollowing.splice(
+                updatedblockedUserFollowing.indexOf(req.body.signedInUserID),
+                1
+            )
+        }
     }
     User.findByIdAndUpdate(
         req.body.signedInUserID,
@@ -788,7 +816,7 @@ app.post('/blockuser', (req, res, next) => {
                     followers: updatedblockedUserFollowers,
                     following: updatedblockedUserFollowing
                 },
-                { useFindAndModify: false }
+                { new: true, useFindAndModify: false }
             )
                 .then(() => {
                     res.json(user)
