@@ -479,6 +479,13 @@ app.get('/usernametaken', (req, res, next) => {
         .catch((err) => next(err))
 })
 
+app.get('/likedby', (req, res, next) => {
+    // req.query.re
+    User.find({ liked: req.query.id })
+        .then((users) => res.json(users))
+        .catch((err) => next(err))
+})
+
 /* Begin POST Requests */
 
 // Note on sanitization: The front-end validation is preeeetty good so usually we'll never get here.
