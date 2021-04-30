@@ -159,7 +159,9 @@ const ProfilePage = (props) => {
                         <Tab.Content>
                             {(recipes && recipes.length === 0) ||
                             userBlocked ? (
-                                <ErrorComponent error={'No Recipes'} />
+                                <p className="noRecipesMessage">
+                                    No recipes yet
+                                </p>
                             ) : (
                                 <>
                                     <Tab.Pane eventKey="small">
