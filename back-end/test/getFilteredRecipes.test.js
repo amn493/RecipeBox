@@ -13,6 +13,8 @@ require('../db.js')
 const JWT = require('jsonwebtoken')
 
 const Recipe = mongoose.model('Recipe')
+const Tag = mongoose.model('Tag')
+const User = mongoose.model('User')
 
 const { expect } = chai
 
@@ -22,44 +24,79 @@ const app = require('../app.js')
 
 // If Mockaroo is down, change whatever is in your route to "res.send('Text')" and comment out the axios call to make sure the test runs.
 describe('Testing route handler for GET /filteredrecipes ', () => {
-    // for testing whether all recipe documents are returned
-    // with empty filter
     let recipeCount = 0
+    let likedArray = []
+    let filtertag = ''
+    let filterkeyword = ''
+    let filtertags = []
+    let newfilterkeyword = ''
     before(async () => {
-        // count of all recipes in Recipe collection
+        // for testing whether all recipe documents are returned
+        // with empty filter
         await Recipe.countDocuments({}).then((count) => {
             recipeCount = count
         })
+
+        // for testing whether route returns recipes containing
+        // a given tag that is existent in the database
+        await Tag.findOne({
+            count: { $gt: 1 }
+        }).then((tag) => {
+            filtertag = tag.tag
+        })
+
+        // for testing whether route returns recipes containing
+        // a given keyword
+        await Recipe.findOne({}).then((recipe) => {
+            // eslint-disable-next-line prefer-destructuring
+            filterkeyword = recipe.name.split(' ')[0]
+        })
+
+        // for testing whether route returns a user's liked recipes
+        // with when passed a liked array
+        await User.findOne({
+            liked: { $exists: true, $type: 'array', $ne: [] }
+        }).then((user) => {
+            if (user) {
+                likedArray = user.liked
+            }
+        })
+
+        // for testing combination of tags and keyword
+        await Recipe.findOne({
+            $nor: [
+                { tags: { $exists: false } },
+                { tags: { $size: 0 } },
+                { tags: { $size: 1 } }
+            ]
+        }).then((recipe) => {
+            // eslint-disable-next-line prefer-destructuring
+            newfilterkeyword = recipe.name.split(' ')[0]
+            filtertags = recipe.tags
+        })
     })
 
-    // Title of the call in the test
     it('should return 200 OK status', () =>
-        // Describe what the test is looking for
         chai
             .request(app)
             .get('/filteredrecipes?keyword=&tags=')
             .then((response) => {
-                // Have chai request app.js and then call the url to that route handler
                 expect(response.status).to.equal(200)
             }))
 
     it('should return all recipes when filter is empty', () =>
-        // Describe what the test is looking for
         chai
             .request(app)
             .get('/filteredrecipes?keyword=&tags=')
             .then((response) => {
-                // Have chai request app.js and then call the url to that route handler
                 expect(response.body.length).to.equal(recipeCount)
             }))
 
     it('elements of the response array should be recipe objects', () =>
-        // Describe what the test is looking for
         chai
             .request(app)
             .get('/filteredrecipes?keyword=&tags=')
             .then((response) => {
-                // Have chai request app.js and then call the url to that route handler
                 expect(response.body[0])
                     .to.have.property('user')
                     .that.is.a('string')
@@ -93,5 +130,68 @@ describe('Testing route handler for GET /filteredrecipes ', () => {
                 expect(response.body[0])
                     .to.have.property('_id')
                     .that.is.a('string')
+            }))
+
+    it('should only return recipes whose names contain a given keyword given such recipe(s) exist in database', () =>
+        chai
+            .request(app)
+            .get(`/filteredrecipes?keyword=${filterkeyword}&tags=`)
+            .then((response) => {
+                response.body.forEach((recipe) =>
+                    expect(recipe.name.toLowerCase().split(' ')).to.include(
+                        filterkeyword.toLowerCase()
+                    )
+                )
+            }))
+
+    it('should only return recipes that contain a given tag given such recipe(s) exist in database', () =>
+        chai
+            .request(app)
+            .get(
+                `/filteredrecipes?keyword=${[filtertag].reduce(
+                    (acc, tag) => `${acc}&tags=${tag}`,
+                    `&tags=`
+                )}`
+            )
+            .then((response) => {
+                response.body.forEach((recipe) =>
+                    expect(recipe.tags).to.include(filtertag)
+                )
+            }))
+
+    it('should only return recipes whose name contains given keyword, and whose tags array contains multiple given tags,', () =>
+        chai
+            .request(app)
+            .get(
+                `/filteredrecipes?keyword=${newfilterkeyword}${filtertags.reduce(
+                    (acc, tag) => `${acc}&tags=${tag}`,
+                    `&tags=`
+                )}`
+            )
+            .then((response) => {
+                filtertags.forEach((tag) =>
+                    response.body.forEach((recipe) =>
+                        expect(recipe.tags).to.include(tag)
+                    )
+                )
+                response.body.forEach((recipe) =>
+                    expect(recipe.name.toLowerCase().split(' ')).to.include(
+                        newfilterkeyword.toLowerCase()
+                    )
+                )
+            }))
+    it('given a liked array of some user in the database, it should return each recipe whose id is in the liked array', () =>
+        chai
+            .request(app)
+            .get(
+                `/filteredrecipes?keyword=&tags=${likedArray.reduce(
+                    (acc, liked) => `${acc}&liked=${liked}`,
+                    `&liked=`
+                )}`
+            )
+            .then((response) => {
+                response.body.forEach((recipe) =>
+                    expect(likedArray).to.include(recipe._id)
+                )
             }))
 })
