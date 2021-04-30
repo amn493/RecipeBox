@@ -2,6 +2,9 @@ import { React, useState, useEffect } from 'react'
 import { Route, Switch, Redirect, useLocation } from 'react-router-dom'
 import axios from 'axios'
 
+import 'bootstrap/dist/css/bootstrap.min.css'
+import './App.css'
+
 import RecipePage from './pages/recipepages/recipe/RecipePage.js'
 import FeedPage from './pages/recipepages/feed/FeedPage.js'
 import RecipeBoxPage from './pages/recipepages/recipebox/RecipeBoxPage.js'
@@ -15,9 +18,6 @@ import CreateAccountPage from './pages/accountpages/createaccount/CreateAccountP
 import BrowseUsersPage from './pages/userpages/browseusers/BrowseUsersPage.js'
 import EditProfilePage from './pages/userpages/profilepages/editprofile/EditProfilePage.js'
 import UserListPage from './pages/userpages/userlistpage/UserListPage'
-
-import 'bootstrap/dist/css/bootstrap.min.css'
-import './App.css'
 
 function App() {
     const [signedIn, setSignedIn] = useState(false)
