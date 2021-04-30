@@ -66,12 +66,8 @@ const FollowersPage = (props) => {
                     )}`
                 )
                     .then((response) => {
-                        setAllFollowers(
-                            response.data.slice(0, user.followers.length)
-                        )
-                        setFollowers(
-                            response.data.slice(0, user.followers.length)
-                        )
+                        setAllFollowers(response.data)
+                        setFollowers(response.data)
                         setLoadedFollowers(true)
                     })
                     .catch((err) => {
@@ -82,8 +78,7 @@ const FollowersPage = (props) => {
                 setLoadedFollowers(true)
             }
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [user.followers])
+    }, [user.followers, userBlocked])
 
     // For keyword search bar
     const [filterKeyword, setFilterKeyword] = useState('')
@@ -139,7 +134,7 @@ const FollowersPage = (props) => {
                 </div>
                 <div className="followersList">
                     <div className="followerUserPreview">
-                        {followers.length === 0 || userBlocked ? (
+                        {followers.length === 0 ? (
                             <p className="noFollowersFoundMessage">
                                 No users found
                             </p>
