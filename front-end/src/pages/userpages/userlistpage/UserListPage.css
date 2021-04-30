@@ -1,12 +1,10 @@
-/* Styling for followers page */
-
-.userName {
+.name {
     font-weight: bold;
     font-size: 18px;
     text-align: center;
 }
 
-.title {
+.numUsers {
     font-size: 15px;
     text-align: center;
     margin-top: -4px;
@@ -23,7 +21,7 @@
     margin-bottom: 30px;
 }
 
-.noFollowersFoundMessage {
+.noUsersFoundMessage {
     font-size: 14px;
     font-weight: lighter;
     text-align: center;

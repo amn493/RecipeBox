@@ -78,11 +78,11 @@
     background-color: rgba(23, 163, 184, 0.1);
     border-radius: 10px;
     padding: 10px;
-    margin-top: -12px;
+    margin-top: -10px;
 }
 
 .pinSmall {
     color: rgb(23, 163, 184);
     text-align: right;
-    margin-top: -8px;
+    margin-top: -10px;
 }

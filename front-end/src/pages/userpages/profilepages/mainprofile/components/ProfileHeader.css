@@ -1,4 +1,4 @@
-.profileStatsSection{
+.profileStatsSection {
     text-align: center;
     margin: auto;
 }
@@ -46,4 +46,10 @@
     text-align: right;
     vertical-align: top;
     width: 34px;
+}
+.clickDisabled {
+    pointer-events: none;
+}
+.clickEnabled {
+    pointer-events: auto;
 }

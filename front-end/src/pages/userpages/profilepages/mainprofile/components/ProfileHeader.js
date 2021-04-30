@@ -57,12 +57,20 @@ const ProfileHeader = (props) => {
                         </td>
                         <td className="profileStat">
                             <a
-                                className="profileStatLink"
+                                className={`profileStatLink ${
+                                    props.userBlocked
+                                        ? 'clickDisabled'
+                                        : 'clickEnabled'
+                                }`}
                                 href={`/user-${props.user.slug}/followers`}
                             >
                                 <b className="profileStatNumber">
                                     <Number
-                                        number={props.user.followers.length}
+                                        number={
+                                            props.userBlocked
+                                                ? 0
+                                                : props.user.followers.length
+                                        }
                                     />
                                 </b>
                                 <br />
@@ -75,12 +83,20 @@ const ProfileHeader = (props) => {
                         </td>
                         <td className="profileStat">
                             <a
-                                className="profileStatLink"
+                                className={`profileStatLink ${
+                                    props.userBlocked
+                                        ? 'clickDisabled'
+                                        : 'clickEnabled'
+                                }`}
                                 href={`/user-${props.user.slug}/following`}
                             >
                                 <b className="profileStatNumber">
                                     <Number
-                                        number={props.user.following.length}
+                                        number={
+                                            props.userBlocked
+                                                ? 0
+                                                : props.user.following.length
+                                        }
                                     />
                                 </b>
                                 <br />
