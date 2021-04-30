@@ -54,7 +54,7 @@ const ProfilePage = (props) => {
     const [recipes, setRecipes] = useState()
     useEffect(() => {
         if (profileUser) {
-            if (!userBlocked) {
+            if (userBlocked === false) {
                 // fetch user's recipes
                 axios(
                     `http://${process.env.REACT_APP_ORIGIN}:4000/recipesbyuser?userID=${profileUser._id}`
@@ -66,6 +66,8 @@ const ProfilePage = (props) => {
                         console.error(err)
                         setReqError(true)
                     })
+            } else {
+                setRecipes([])
             }
         }
     }, [profileUser, userBlocked])
@@ -77,7 +79,7 @@ const ProfilePage = (props) => {
     const [showModal, setShowModal] = useState(false)
 
     return !reqError ? (
-        profileUser && (recipes || userBlocked) ? (
+        profileUser && recipes && userBlocked !== undefined ? (
             <div className="profilePage">
                 <ProfileHeader
                     user={profileUser}
@@ -157,39 +159,44 @@ const ProfilePage = (props) => {
                         </Nav>
 
                         <Tab.Content>
-                            {(recipes && recipes.length === 0) ||
-                            userBlocked ? (
-                                <p className="noRecipesMessage">
-                                    No recipes yet
-                                </p>
-                            ) : (
-                                <>
-                                    <Tab.Pane eventKey="small">
-                                        <div className="recipesSection">
-                                            {recipes.map((recipe, i) => (
-                                                <SmallRecipePreview
-                                                    recipe={recipe}
-                                                    user={props.user}
-                                                    key={i}
-                                                    profileUser={profileUser}
-                                                />
-                                            ))}
-                                        </div>
-                                    </Tab.Pane>
-                                    <Tab.Pane eventKey="large">
-                                        <div className="recipesSection">
-                                            {recipes.map((recipe, i) => (
-                                                <LargeRecipePreview
-                                                    recipe={recipe}
-                                                    user={props.user}
-                                                    key={i}
-                                                    profileUser={profileUser}
-                                                />
-                                            ))}
-                                        </div>
-                                    </Tab.Pane>
-                                </>
-                            )}
+                            <Tab.Pane eventKey="small">
+                                {recipes.length > 0 && !userBlocked ? (
+                                    <div className="recipesSection">
+                                        {recipes.map((recipe, i) => (
+                                            <SmallRecipePreview
+                                                recipe={recipe}
+                                                user={props.user}
+                                                key={i}
+                                                profileUser={profileUser}
+                                                pinned={recipe.pinned}
+                                            />
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <p className="noRecipesMessage">
+                                        No recipes yet
+                                    </p>
+                                )}
+                            </Tab.Pane>
+                            <Tab.Pane eventKey="large">
+                                {recipes.length > 0 && !userBlocked ? (
+                                    <div className="recipesSection">
+                                        {recipes.map((recipe, i) => (
+                                            <LargeRecipePreview
+                                                recipe={recipe}
+                                                user={props.user}
+                                                key={i}
+                                                profileUser={profileUser}
+                                                pinned={recipe.pinned}
+                                            />
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <p className="noRecipesMessage">
+                                        No recipes yet
+                                    </p>
+                                )}
+                            </Tab.Pane>
                         </Tab.Content>
                     </Tab.Container>
                 </div>
