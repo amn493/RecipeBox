@@ -3,10 +3,11 @@ import axios from 'axios'
 import { useParams } from 'react-router-dom'
 import { ArrowLeftCircleFill } from 'react-bootstrap-icons'
 
-import './FollowingPage.css'
 import KeyWordSearchBar from '../../../gencomponents/searchbars/KeywordSearchBar.js'
 import SmallUserPreview from '../../userpages/components/SmallUserPreview.js'
 import ErrorComponent from '../../../gencomponents/ErrorComponent.js'
+
+import './FollowingPage.css'
 
 // Following Page
 // Expects a user object for props
@@ -21,6 +22,8 @@ const FollowingPage = (props) => {
     const [user, setUser] = useState([])
     const [loadedUser, setLoadedUser] = useState(false)
 
+    const [userBlocked, setUserBlocked] = useState()
+
     useEffect(() => {
         // fetch the user whose profile is being displayed (slug = slug)
         axios(
@@ -29,11 +32,18 @@ const FollowingPage = (props) => {
             .then((response) => {
                 setUser(response.data)
                 setLoadedUser(true)
+                setUserBlocked(
+                    response.data.blockedUsers.includes(props.user._id) ||
+                        props.user.blockedUsers.includes(response.data._id)
+                        ? true
+                        : false
+                )
             })
             .catch((err) => {
                 console.error(err)
                 setReqError(true)
             })
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [slug])
 
     // Request all following on initial render
@@ -45,7 +55,7 @@ const FollowingPage = (props) => {
     useEffect(() => {
         // Fetch all following
         if (user.following) {
-            if (user.following.length > 0) {
+            if (user.following.length > 0 && userBlocked === false) {
                 axios(
                     `http://${
                         process.env.REACT_APP_ORIGIN
@@ -56,12 +66,8 @@ const FollowingPage = (props) => {
                     )}`
                 )
                     .then((response) => {
-                        setAllFollowing(
-                            response.data.slice(0, user.following.length)
-                        )
-                        setFollowing(
-                            response.data.slice(0, user.following.length)
-                        )
+                        setAllFollowing(response.data)
+                        setFollowing(response.data)
                         setLoadedFollowing(true)
                     })
                     .catch((err) => {
@@ -72,7 +78,7 @@ const FollowingPage = (props) => {
                 setLoadedFollowing(true)
             }
         }
-    }, [user.following])
+    }, [user.following, userBlocked])
 
     // For keyword search bar
     const [filterKeyword, setFilterKeyword] = useState('')
@@ -114,7 +120,9 @@ const FollowingPage = (props) => {
                         </i>
                     </a>
                     <h3 className="userNameFollowing">@{user.username}</h3>
-                    <h4 className="title">{user.following.length} Following</h4>
+                    <h4 className="title">
+                        {userBlocked ? 0 : user.following.length} Following
+                    </h4>
                 </div>
                 <div className="userSearchBarFollowing">
                     <KeyWordSearchBar
