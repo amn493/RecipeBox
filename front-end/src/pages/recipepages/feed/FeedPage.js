@@ -94,23 +94,21 @@ const Feed = (props) => {
     return props.user.username ? (
         !reqError ? (
             <>
-                <div className="container">
-                    <RecipeList
-                        size="large"
-                        recipes={recBoxRecipes}
-                        user={props.user}
-                    />
-                    <div className="recLoadedText">{recLoadedText}</div>
-                    <Button
-                        block
-                        size="sm"
-                        variant="info"
-                        id="loadMoreRecipesBtn"
-                        onClick={loadMoreRecipes}
-                    >
-                        Load Older Recipes
-                    </Button>
-                </div>
+                <RecipeList
+                    size="large"
+                    recipes={recBoxRecipes}
+                    user={props.user}
+                />
+                <div className="recLoadedText">{recLoadedText}</div>
+                <Button
+                    block
+                    size="sm"
+                    variant="info"
+                    id="loadMoreRecipesBtn"
+                    onClick={loadMoreRecipes}
+                >
+                    Load Older Recipes
+                </Button>
             </>
         ) : (
             <ErrorComponent error={errMsg} />
