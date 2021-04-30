@@ -75,8 +75,8 @@ const SmallUserPreview = (props) => {
                                                 {` ${
                                                     props.user.followers
                                                         .length !== 1
-                                                        ? 'followers'
-                                                        : 'follower'
+                                                        ? 'Followers'
+                                                        : 'Follower'
                                                 }
                                                 `}
                                             </td>
