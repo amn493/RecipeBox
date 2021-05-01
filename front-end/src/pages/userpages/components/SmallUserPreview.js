@@ -33,7 +33,7 @@ const SmallUserPreview = (props) => {
                                     className="smallUserProfilePic"
                                 />
                             </td>
-                            <td>
+                            <td className="userPreviewTextCell">
                                 <table className="userPreviewTopTable">
                                     <tbody>
                                         <tr>
