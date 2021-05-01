@@ -1,0 +1,37 @@
+.rbxNavStyles {
+    background-color: rgb(23, 162, 184);
+    margin-top: 0px;
+}
+
+.rbx-navdropdown {
+    font-size: 30px;
+}
+
+.recipeboxNavDropdown {
+    display: inline;
+}
+
+.rbxSpaceAdjustment {
+    padding: 5px 10px 5px 10px;
+    font-weight: 600;
+    color: rgb(238, 238, 238);
+}
+
+.rbxSpaceAdjustment:hover {
+    color: rgb(23, 162, 184);
+}
+
+.rbxSpaceAdjustment:active {
+    color: rgb(23, 162, 184);
+    background-color: rgb(238, 238, 238);
+}
+
+.rbxLogo {
+    font-weight: 800;
+    font-size: 22px;
+    color: rgb(238, 238, 238);
+}
+
+.navCollapseElement {
+    color: rgb(238, 238, 238);
+}
