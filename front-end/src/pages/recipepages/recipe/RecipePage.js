@@ -175,7 +175,10 @@ const RecipePage = (props) => {
                                 </i>
                             </Dropdown.Toggle>
 
-                            <Dropdown.Menu className="dotsDropdownMenu">
+                            <Dropdown.Menu
+                                className="dotsDropdownMenu"
+                                align="right"
+                            >
                                 <Dropdown.Item onClick={handlePin}>
                                     {recipe.pinned ? 'Unpin' : 'Pin'} Recipe
                                 </Dropdown.Item>
