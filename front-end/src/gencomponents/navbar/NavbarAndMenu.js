@@ -68,10 +68,7 @@ const NavbarAndMenu = (props) => {
                         expanded={menuExpanded}
                     >
                         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-                        <Navbar.Brand
-                            className="rbxLogo {rbxLogoPadding}"
-                            href="/"
-                        >
+                        <Navbar.Brand className="rbxLogo mr-auto" href="/">
                             RecipeBox
                         </Navbar.Brand>
                         <Navbar.Collapse
@@ -80,90 +77,99 @@ const NavbarAndMenu = (props) => {
                         >
                             {props.signedIn ? (
                                 // signed-in menu
-                                <Nav className="mr-auto">
-                                    <NavDropdown.Divider />
+                                <>
+                                    <Nav className="mr-auto">
+                                        <NavDropdown.Divider />
 
-                                    <NavDropdown.Item
-                                        className="rbxSpaceAdjustment"
-                                        href="/new-recipe"
-                                    >
-                                        New Recipe
-                                    </NavDropdown.Item>
-                                    <NavDropdown.Item
-                                        className="rbxSpaceAdjustment"
-                                        href="/feed"
-                                    >
-                                        Feed
-                                    </NavDropdown.Item>
-                                    <NavDropdown.Item
-                                        className="rbxSpaceAdjustment"
-                                        href="/my-recipe-box"
-                                    >
-                                        My Recipe Box
-                                    </NavDropdown.Item>
-                                    <NavDropdown.Item
-                                        className="rbxSpaceAdjustment"
-                                        href={'/user-' + props.user.slug}
-                                    >
-                                        My Profile
-                                    </NavDropdown.Item>
-                                    <NavDropdown.Item
-                                        className="rbxSpaceAdjustment"
-                                        href="/browse-recipes"
-                                    >
-                                        Browse Recipes
-                                    </NavDropdown.Item>
-                                    <NavDropdown.Item
-                                        className="rbxSpaceAdjustment"
-                                        href="/browse-users"
-                                    >
-                                        Browse Users
-                                    </NavDropdown.Item>
-                                    <NavDropdown.Item
-                                        className="rbxSpaceAdjustment"
-                                        href="/settings"
-                                    >
-                                        Settings
-                                    </NavDropdown.Item>
-                                    <NavDropdown.Divider />
-                                    <NavDropdown.Item
-                                        className="rbxSpaceAdjustment"
-                                        href="/sign-in"
-                                        onClick={signOutUser}
-                                    >
-                                        Sign Out
-                                    </NavDropdown.Item>
-                                </Nav>
+                                        <NavDropdown.Item
+                                            className="rbxSpaceAdjustment"
+                                            href="/new-recipe"
+                                        >
+                                            New Recipe
+                                        </NavDropdown.Item>
+                                        <NavDropdown.Item
+                                            className="rbxSpaceAdjustment"
+                                            href="/feed"
+                                        >
+                                            Feed
+                                        </NavDropdown.Item>
+                                        <NavDropdown.Item
+                                            className="rbxSpaceAdjustment"
+                                            href="/my-recipe-box"
+                                        >
+                                            My Recipe Box
+                                        </NavDropdown.Item>
+                                        <NavDropdown.Item
+                                            className="rbxSpaceAdjustment"
+                                            href={'/user-' + props.user.slug}
+                                        >
+                                            My Profile
+                                        </NavDropdown.Item>
+                                        <NavDropdown.Item
+                                            className="rbxSpaceAdjustment"
+                                            href="/browse-recipes"
+                                        >
+                                            Browse Recipes
+                                        </NavDropdown.Item>
+                                        <NavDropdown.Item
+                                            className="rbxSpaceAdjustment"
+                                            href="/browse-users"
+                                        >
+                                            Browse Users
+                                        </NavDropdown.Item>
+                                        <NavDropdown.Item
+                                            className="rbxSpaceAdjustment"
+                                            href="/settings"
+                                        >
+                                            Settings
+                                        </NavDropdown.Item>
+
+                                        <NavDropdown.Divider />
+                                    </Nav>
+                                    <Nav className="ml-auto">
+                                        <NavDropdown.Item
+                                            className="rbxSpaceAdjustment"
+                                            href="/sign-in"
+                                            onClick={signOutUser}
+                                        >
+                                            Sign Out
+                                        </NavDropdown.Item>
+                                    </Nav>
+                                </>
                             ) : (
                                 // not signed-in menu
-                                <Nav className="mr-auto">
-                                    <NavDropdown.Divider />
-                                    <NavDropdown.Item
-                                        className="rbxSpaceAdjustment"
-                                        href="/sign-in"
-                                    >
-                                        Sign-In
-                                    </NavDropdown.Item>
-                                    <NavDropdown.Item
-                                        className="rbxSpaceAdjustment"
-                                        href="/create-account"
-                                    >
-                                        Create Account
-                                    </NavDropdown.Item>
-                                    <NavDropdown.Divider />
-                                    <NavDropdown.Item
-                                        className="rbxSpaceAdjustment"
-                                        href="/browse-recipes"
-                                    >
-                                        Browse Recipes
-                                    </NavDropdown.Item>
-                                    <NavDropdown.Item
-                                        className="rbxSpaceAdjustment"
-                                        href="/browse-users"
-                                    >
-                                        Browse Users
-                                    </NavDropdown.Item>
-                                </Nav>
+                                <>
+                                    <Nav className="mr-auto">
+                                        <NavDropdown.Divider />
+                                        <NavDropdown.Item
+                                            className="rbxSpaceAdjustment"
+                                            href="/browse-recipes"
+                                        >
+                                            Browse Recipes
+                                        </NavDropdown.Item>
+                                        <NavDropdown.Item
+                                            className="rbxSpaceAdjustment"
+                                            href="/browse-users"
+                                        >
+                                            Browse Users
+                                        </NavDropdown.Item>
+                                    </Nav>
+                                    <Nav className="ml-auto">
+                                        <NavDropdown.Divider />
+                                        <NavDropdown.Item
+                                            className="rbxSpaceAdjustment"
+                                            href="/sign-in"
+                                        >
+                                            Sign-In
+                                        </NavDropdown.Item>
+                                        <NavDropdown.Item
+                                            className="rbxSpaceAdjustment"
+                                            href="/create-account"
+                                        >
+                                            Create Account
+                                        </NavDropdown.Item>
+                                    </Nav>
+                                </>
                             )}
                         </Navbar.Collapse>
                     </Navbar>
