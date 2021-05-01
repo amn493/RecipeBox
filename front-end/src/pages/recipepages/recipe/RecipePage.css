@@ -20,6 +20,7 @@
 
 .numLikes {
     display: inline-block;
+    padding-right: 5px;
 }
 
 .likeButtonDiv {
@@ -33,14 +34,17 @@
     color: black;
 }
 
-.recipeUsername {
+.recipeUsername,
+.numLikes {
     font-weight: bold;
     color: black;
     font-size: 14px;
 }
 
 .recipeUsername:hover,
-.recipeUsername:active {
+.recipeUsername:active,
+.numLikes:hover,
+.numLikes:active {
     color: black;
     opacity: 60%;
     text-decoration: none;
