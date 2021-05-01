@@ -1,4 +1,5 @@
 import axios from 'axios'
+import React, { useCallback, useEffect, useState } from 'react'
 import NavDropdown from 'react-bootstrap/NavDropdown'
 import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
@@ -13,11 +14,59 @@ const NavbarAndMenu = (props) => {
             .then(() => localStorage.removeItem('token'))
     }
 
+    // ref for component
+    const [ref] = useState(React.createRef())
+
+    // handle click when menu is expanded
+    const handleDocumentClick = useCallback(
+        (e) =>
+            ((e, ref) => {
+                // close menu when click is outside of menu
+                if (e.target !== ref && !ref.contains(e.target)) {
+                    setMenuExpanded(false)
+                }
+            })(e, ref.current),
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        []
+    )
+
+    // state var for whether or not menu is expanded
+    const [menuExpanded, setMenuExpanded] = useState(false)
+
+    // toggle expanded on click of hamburger button
+    const handleToggle = (expanded) => {
+        setMenuExpanded(expanded)
+    }
+
+    // add/remove click event listener when expanded is toggled
+    useEffect(() => {
+        if (menuExpanded) {
+            document.addEventListener('click', handleDocumentClick, true)
+        } else {
+            document.removeEventListener('click', handleDocumentClick, true)
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [menuExpanded])
+
+    // remove click event listener when component unmounts
+    useEffect(() => {
+        return () => {
+            document.removeEventListener('click', handleDocumentClick, true)
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+
     return (
-        <nav className="fixed-top navbar-expand-lg rbxNavStyles">
+        <nav className="fixed-top navbar-expand-lg rbxNavStyles" ref={ref}>
             <div className="container-fluid">
                 <div className="recipeboxNavDropdown">
-                    <Navbar collapseOnSelect expand="lg" variant="dark">
+                    <Navbar
+                        collapseOnSelect
+                        expand="lg"
+                        variant="dark"
+                        onToggle={handleToggle}
+                        expanded={menuExpanded}
+                    >
                         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                         <Navbar.Brand
                             className="rbxLogo {rbxLogoPadding}"
