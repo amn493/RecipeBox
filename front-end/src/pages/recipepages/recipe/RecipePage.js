@@ -177,18 +177,6 @@ const RecipePage = (props) => {
                             <table className="recipeDetailsTable recipeDetailsTopTable">
                                 <tbody>
                                     <tr>
-                                        {/* <td>
-                                            <LikeButton
-                                                recipe={recipe}
-                                                setRecipe={setRecipe}
-                                                user={props.user}
-                                                setUser={props.setUser}
-                                                signedIn={props.signedIn}
-                                                setShowModal={setShowModal}
-                                            />
-                                        </td> */}
-                                    </tr>
-                                    <tr>
                                         <td className="recipeDetailsTopTableCell">
                                             <h1 className="recipeName">
                                                 {recipe.name}
@@ -233,7 +221,9 @@ const RecipePage = (props) => {
                                                 className="numLikes"
                                             >
                                                 <Number number={recipe.likes} />{' '}
-                                                likes
+                                                {recipe.likes === 1
+                                                    ? `like`
+                                                    : `likes`}
                                             </a>
                                         </td>
                                     </tr>
@@ -329,10 +319,6 @@ const LikeButton = (props) => {
 
     return (
         <div className="likeButtonDiv">
-            {/* <a href={`${window.location.href}/likes`} className="numLikes">
-                liked by <Number number={props.recipe.likes} /> users
-            </a> */}
-
             <input
                 className="likeButton"
                 type="image"
