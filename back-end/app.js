@@ -480,7 +480,6 @@ app.get('/usernametaken', (req, res, next) => {
 })
 
 app.get('/likedby', (req, res, next) => {
-    // req.query.re
     User.find({ liked: req.query.id })
         .then((users) => res.json(users))
         .catch((err) => next(err))
