@@ -80,13 +80,25 @@ const UserListPage = (props) => {
 
     useEffect(() => {
         if (dataFromSlug && pageType && userBlocked !== undefined) {
+            let url
             if (pageType === 'likes') {
-                // Fetch all likes
-                axios(
-                    `http://${process.env.REACT_APP_ORIGIN}:4000/likedby?id=${dataFromSlug._id}`
-                )
+                url = `http://${process.env.REACT_APP_ORIGIN}:4000/likedby?id=${dataFromSlug._id}`
+            } else {
+                url = `http://${
+                    process.env.REACT_APP_ORIGIN
+                }:4000/usersbyid?id=${dataFromSlug[pageType].reduce(
+                    (acc, userid) => acc + `&id=${userid}`,
+                    ''
+                )}`
+            }
+
+            if (
+                (dataFromSlug.likes > 0 || dataFromSlug[pageType].length > 0) &&
+                userBlocked === false &&
+                url !== undefined
+            ) {
+                axios(url)
                     .then((response) => {
-                        //response returns all users that liked recipe
                         setAllUsers(response.data)
                         setUsers(response.data)
                     })
@@ -95,30 +107,7 @@ const UserListPage = (props) => {
                         setReqError(true)
                     })
             } else {
-                // Fetch all followers / following
-                if (
-                    dataFromSlug[pageType].length > 0 &&
-                    userBlocked === false
-                ) {
-                    axios(
-                        `http://${
-                            process.env.REACT_APP_ORIGIN
-                        }:4000/usersbyid?id=${dataFromSlug[pageType].reduce(
-                            (acc, userid) => acc + `&id=${userid}`,
-                            ''
-                        )}`
-                    )
-                        .then((response) => {
-                            setAllUsers(response.data)
-                            setUsers(response.data)
-                        })
-                        .catch((err) => {
-                            console.error(err)
-                            setReqError(true)
-                        })
-                } else {
-                    setAllUsers([])
-                }
+                setAllUsers([])
             }
         }
     }, [pageType, dataFromSlug, userBlocked])
