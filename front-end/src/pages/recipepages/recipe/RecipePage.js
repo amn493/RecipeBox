@@ -157,10 +157,8 @@ const RecipePage = (props) => {
             })
     }
 
-    return !reqError ? (
-        userBlocked ? (
-            <ErrorComponent error={"Couldn't load recipe"} />
-        ) : recipe && comments ? (
+    return !reqError && !userBlocked ? (
+        recipe && comments ? (
             !deletedRecipe ? (
                 // render the page if all required data has been fetched
                 <div className="recipe">

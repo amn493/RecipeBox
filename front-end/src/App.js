@@ -17,7 +17,8 @@ import AppSettings from './pages/accountpages/settingspage/AppSettings.js'
 import CreateAccountPage from './pages/accountpages/createaccount/CreateAccountPage.js'
 import BrowseUsersPage from './pages/userpages/browseusers/BrowseUsersPage.js'
 import EditProfilePage from './pages/userpages/profilepages/editprofile/EditProfilePage.js'
-import UserListPage from './pages/userpages/userlistpage/UserListPage'
+import UserListPage from './pages/userpages/userlistpage/UserListPage.js'
+import ErrorComponent from './gencomponents/ErrorComponent.js'
 
 function App() {
     const [signedIn, setSignedIn] = useState(false)
@@ -89,7 +90,7 @@ function App() {
                         </Route>
 
                         {/* SIGN IN PAGE */}
-                        <Route path="/sign-in">
+                        <Route exact path="/sign-in">
                             {signedIn ? (
                                 <Redirect to={'user-' + user.slug} />
                             ) : (
@@ -98,7 +99,7 @@ function App() {
                         </Route>
 
                         {/* CREATE ACCOUNT PAGE */}
-                        <Route path="/create-account">
+                        <Route exact path="/create-account">
                             {signedIn ? (
                                 <Redirect to={'user-' + user.slug} />
                             ) : (
@@ -110,7 +111,7 @@ function App() {
                         </Route>
 
                         {/* BROWSE RECIPES PAGE */}
-                        <Route path="/browse-recipes">
+                        <Route exact path="/browse-recipes">
                             <BrowseRecipesPage user={user} />
                         </Route>
 
@@ -129,7 +130,7 @@ function App() {
                         </Route>
 
                         {/* BROWSE USERS PAGE */}
-                        <Route path="/browse-users">
+                        <Route exact path="/browse-users">
                             {/*({ user, signedIn } = getUser())*/}
                             <BrowseUsersPage />
                         </Route>
@@ -154,7 +155,7 @@ function App() {
                         </Route>
 
                         {/* EDIT PROFILE PAGE */}
-                        <Route path="/edit-profile">
+                        <Route exact path="/edit-profile">
                             {signedIn ? (
                                 <EditProfilePage
                                     user={user}
@@ -167,7 +168,7 @@ function App() {
                         </Route>
 
                         {/* FEED PAGE */}
-                        <Route path="/feed">
+                        <Route exact path="/feed">
                             {signedIn ? (
                                 <FeedPage user={user} />
                             ) : (
@@ -176,7 +177,7 @@ function App() {
                         </Route>
 
                         {/* NEW RECIPE PAGE */}
-                        <Route path="/new-recipe">
+                        <Route exact path="/new-recipe">
                             {signedIn ? (
                                 <NewRecipePage user={user} />
                             ) : (
@@ -185,7 +186,7 @@ function App() {
                         </Route>
 
                         {/* MY RECIPE BOX PAGE */}
-                        <Route path="/my-recipe-box">
+                        <Route exact path="/my-recipe-box">
                             {signedIn ? (
                                 <RecipeBoxPage user={user} />
                             ) : (
@@ -194,12 +195,17 @@ function App() {
                         </Route>
 
                         {/* SETTINGS PAGE*/}
-                        <Route path="/settings" exact={true}>
+                        <Route exact path="/settings">
                             {signedIn ? (
                                 <AppSettings user={user} setUser={setUser} />
                             ) : (
                                 <Redirect to="/sign-in" />
                             )}
+                        </Route>
+
+                        {/* page doesn't exist */}
+                        <Route path="*">
+                            <ErrorComponent />
                         </Route>
                     </Switch>
                 </main>
