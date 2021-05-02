@@ -38,7 +38,6 @@ const EditProfilePage = (props) => {
             setUserNameVal(props.user.username)
             setBioVal(props.user.bio)
             setProfilePic(props.user.imagePath)
-
             setUserLoaded(true)
         }
     }, [props.user])
@@ -222,6 +221,7 @@ const EditProfilePage = (props) => {
                                 className="submitButton"
                                 variant="info"
                                 type="submit"
+                                disabled={isUsernameEmpty || isFirstNameEmpty}
                             >
                                 Save Changes
                             </Button>
