@@ -39,7 +39,6 @@ const ProfileHeader = (props) => {
                 blockedUserFollowers: props.profileUser.followers
             })
             .then(() => {
-                console.log('!')
                 window.location.reload()
             })
     }
