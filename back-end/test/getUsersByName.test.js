@@ -43,7 +43,7 @@ describe('Testing route handler for GET /usersbyname ', () => {
             })
     }).timeout(3000)
 
-    it('should return a valid user objects', () => {
+    it('should return a valid user object', () => {
         return chai
             .request(app)
             .get(`/usersbyname?name=${userNames[0]}`)
