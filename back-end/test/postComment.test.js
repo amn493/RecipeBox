@@ -6,6 +6,7 @@ const expect = chai.expect
 
 // Chai will run the test on a port not being used. Avoids using active server for tests.
 chai.use(chaiHTTP)
+require('dotenv').config({ silent: true })
 
 // Import our app.js where the route handlers are
 const app = require('../app.js')

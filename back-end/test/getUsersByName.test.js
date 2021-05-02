@@ -8,6 +8,7 @@ const expect = chai.expect
 
 // For chai to run tests on an unused port
 chai.use(chaiHTTP)
+require('dotenv').config({ silent: true })
 
 const mongoose = require('mongoose')
 require('../db.js')

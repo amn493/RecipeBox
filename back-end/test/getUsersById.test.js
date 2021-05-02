@@ -4,6 +4,7 @@ const chaiHTTP = require('chai-http')
 const expect = chai.expect
 
 chai.use(chaiHTTP)
+require('dotenv').config({ silent: true })
 
 const mongoose = require('mongoose')
 require('../db.js')
