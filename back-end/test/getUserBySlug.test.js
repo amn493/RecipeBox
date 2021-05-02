@@ -20,9 +20,11 @@ const app = require('../app.js')
 describe('Testing route handler for GET /userbyslug ', () => {
     // Pull in a "random" user
     let userSlug = ''
+    let userObj = {}
     before(async () => {
         await User.findOne({}).then((user) => {
             userSlug = user.slug
+            userObj = user
         })
     })
     it('should return 200 OK status ', () => {
@@ -64,6 +66,17 @@ describe('Testing route handler for GET /userbyslug ', () => {
                 expect(response.body)
                     .to.have.property('followers')
                     .that.is.an('array')
+            })
+    }).timeout(8000)
+
+    it('should return the same user object that was found', () => {
+        return chai
+            .request(app)
+            .get(`/userbyslug?slug=${userSlug}`)
+            .then((response) => {
+                expect(JSON.stringify(response.body)).to.equal(
+                    JSON.stringify(userObj)
+                )
             })
     }).timeout(8000)
 })

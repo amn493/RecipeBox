@@ -18,9 +18,11 @@ const app = require('../app.js')
 describe('Testing GET for /userbyid API', () => {
     // Pull in a "random" user
     let userID = ''
+    let userObj = {}
     before(async () => {
         await User.findOne({}).then((user) => {
             userID = user._id
+            userObj = user
         })
     })
     it('should return 200 OK status', () =>
@@ -44,4 +46,15 @@ describe('Testing GET for /userbyid API', () => {
                 expect(response.body.slug).to.be.a('string')
                 expect(response.body.followers).to.be.an('array')
             }))
+
+    it('should return the same user object that was found', () => {
+        return chai
+            .request(app)
+            .get(`/userbyid?id=${userID}`)
+            .then((response) => {
+                expect(JSON.stringify(response.body)).to.equal(
+                    JSON.stringify(userObj)
+                )
+            })
+    }).timeout(8000)
 })
