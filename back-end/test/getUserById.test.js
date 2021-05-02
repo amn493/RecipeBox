@@ -5,6 +5,7 @@ const { expect } = chai
 
 // Chai will run the test on a port not being used. Avoids using active server for tests.
 chai.use(chaiHTTP)
+require('dotenv').config({ silent: true })
 
 const mongoose = require('mongoose')
 require('../db.js')
