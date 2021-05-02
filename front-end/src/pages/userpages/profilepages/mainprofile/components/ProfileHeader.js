@@ -1,4 +1,6 @@
 import { PlusSquareFill } from 'react-bootstrap-icons'
+
+import Number from '../../../../../gencomponents/Number.js'
 import './ProfileHeader.css'
 
 //Component for profile headers (my profile and other user profile)
@@ -46,7 +48,7 @@ const ProfileHeader = (props) => {
                     <tr>
                         <td className="profileStat">
                             <b className="profileStatNumber">
-                                {props.recipeCount}
+                                <Number number={props.recipeCount} />
                             </b>
                             <br />
                             <small className="profileStatText">
@@ -55,11 +57,21 @@ const ProfileHeader = (props) => {
                         </td>
                         <td className="profileStat">
                             <a
-                                className="profileStatLink"
+                                className={`profileStatLink ${
+                                    props.userBlocked
+                                        ? 'clickDisabled'
+                                        : 'clickEnabled'
+                                }`}
                                 href={`/user-${props.user.slug}/followers`}
                             >
                                 <b className="profileStatNumber">
-                                    {props.user.followers.length}
+                                    <Number
+                                        number={
+                                            props.userBlocked
+                                                ? 0
+                                                : props.user.followers.length
+                                        }
+                                    />
                                 </b>
                                 <br />
                                 <small className="profileStatText">
@@ -71,11 +83,21 @@ const ProfileHeader = (props) => {
                         </td>
                         <td className="profileStat">
                             <a
-                                className="profileStatLink"
+                                className={`profileStatLink ${
+                                    props.userBlocked
+                                        ? 'clickDisabled'
+                                        : 'clickEnabled'
+                                }`}
                                 href={`/user-${props.user.slug}/following`}
                             >
                                 <b className="profileStatNumber">
-                                    {props.user.following.length}
+                                    <Number
+                                        number={
+                                            props.userBlocked
+                                                ? 0
+                                                : props.user.following.length
+                                        }
+                                    />
                                 </b>
                                 <br />
                                 <small className="profileStatText">

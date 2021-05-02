@@ -1,6 +1,8 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import Button from 'react-bootstrap/Button'
 
+import Number from '../../../gencomponents/Number.js'
+
 import './SmallUserPreview.css'
 
 //This component is used in both the blocked users page and browse users page
@@ -64,14 +66,19 @@ const SmallUserPreview = (props) => {
                                                 <b className="userPreviewUsername">{`@${props.user.username}`}</b>
                                             </td>
                                             <td className="userPreviewNumericalData userPreviewBottomCell">
-                                                {`${
-                                                    props.user.followers.length
-                                                } ${
+                                                <Number
+                                                    number={
+                                                        props.user.followers
+                                                            .length
+                                                    }
+                                                />
+                                                {` ${
                                                     props.user.followers
                                                         .length !== 1
-                                                        ? 'followers'
-                                                        : 'follower'
-                                                }`}
+                                                        ? 'Followers'
+                                                        : 'Follower'
+                                                }
+                                                `}
                                             </td>
                                         </tr>
                                     </tbody>

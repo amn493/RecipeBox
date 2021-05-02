@@ -20,7 +20,7 @@ chai.use(chaiHTTP)
 
 const app = require('../app.js')
 
-describe('Testing POST to /blockusers API', () => {
+describe('Testing POST to /blockuser API', () => {
     const addBlock = true
     let signedInUserID = ''
     let signedInBlockedUsers = ''

@@ -42,7 +42,7 @@ const Feed = (props) => {
             } else {
                 // Otherwise, go ahead and query the database
                 axios(
-                    `http://localhost:4000/feedrecipes?${
+                    `http://${process.env.REACT_APP_ORIGIN}:4000/feedrecipes?${
                         followingArray.length > 0
                             ? followingArray.reduce(
                                   (acc, following) =>
@@ -75,7 +75,7 @@ const Feed = (props) => {
         let followingArray = props.user.following
 
         axios(
-            `http://localhost:4000/feedrecipes?${
+            `http://${process.env.REACT_APP_ORIGIN}:4000/feedrecipes?${
                 followingArray.length > 0
                     ? followingArray.reduce(
                           (acc, following) => acc + `&following=${following}`,
@@ -94,23 +94,20 @@ const Feed = (props) => {
     return props.user.username ? (
         !reqError ? (
             <>
-                <div className="container">
-                    <RecipeList
-                        size="large"
-                        recipes={recBoxRecipes}
-                        user={props.user}
-                    />
-                    <div className="recLoadedText">{recLoadedText}</div>
-                    <Button
-                        block
-                        size="sm"
-                        variant="info"
-                        id="loadMoreRecipesBtn"
-                        onClick={loadMoreRecipes}
-                    >
-                        Load Older Recipes
-                    </Button>
-                </div>
+                <RecipeList
+                    size="large"
+                    recipes={recBoxRecipes}
+                    user={props.user}
+                />
+                <div className="recLoadedText">{recLoadedText}</div>
+                <Button
+                    block
+                    variant="info"
+                    id="loadMoreRecipesBtn"
+                    onClick={loadMoreRecipes}
+                >
+                    Load Older Recipes
+                </Button>
             </>
         ) : (
             <ErrorComponent error={errMsg} />

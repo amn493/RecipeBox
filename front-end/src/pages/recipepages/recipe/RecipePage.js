@@ -7,14 +7,15 @@ import FormControl from 'react-bootstrap/FormControl'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import Dropdown from 'react-bootstrap/Dropdown'
+import { ThreeDots } from 'react-bootstrap-icons'
 
 import Comment from './Comment.js'
 import Timestamp from '../../../gencomponents/Timestamp.js'
 import ErrorComponent from '../../../gencomponents/ErrorComponent.js'
 import CreateAccountModal from '../../../gencomponents/CreateAccountModal.js'
+import Number from '../../../gencomponents/Number.js'
 
 import './RecipePage.css'
-import { ThreeDots } from 'react-bootstrap-icons'
 
 // Recipe Page
 // Expects no props - must be accessed via a url with a slug (/recipes-:slug)
@@ -32,7 +33,7 @@ const RecipePage = (props) => {
 
     useEffect(() => {
         // fetch the recipe that corresponds to the slug from the url
-        axios(`http://localhost:4000/recipe?slug=${slug}`)
+        axios(`http://${process.env.REACT_APP_ORIGIN}:4000/recipe?slug=${slug}`)
             .then((response) => {
                 setRecipe(response.data)
             })
@@ -55,7 +56,9 @@ const RecipePage = (props) => {
                     slug: props.user.slug
                 })
             } else {
-                axios(`http://localhost:4000/userbyid?id=${recipe.user}`)
+                axios(
+                    `http://${process.env.REACT_APP_ORIGIN}:4000/userbyid?id=${recipe.user}`
+                )
                     .then((response) => {
                         setAuthorUser({
                             id: response.data._id,
@@ -83,7 +86,9 @@ const RecipePage = (props) => {
 
     useEffect(() => {
         if (recipe) {
-            axios(`http://localhost:4000/comments?recipeID=${recipe._id}`)
+            axios(
+                `http://${process.env.REACT_APP_ORIGIN}:4000/comments?recipeID=${recipe._id}`
+            )
                 .then((response) => {
                     setComments(
                         response.data.sort((a, b) => a.createdAt - b.createdAt)
@@ -114,11 +119,17 @@ const RecipePage = (props) => {
         </a>
     ))
 
+    // delete button clicked
     const handleDelete = () => {
         if (window.confirm('Are you sure you want to delete this recipe?')) {
             // delete recipe
             axios
-                .post('http://localhost:4000/deleterecipe', { id: recipe._id })
+                .post(
+                    `http://${process.env.REACT_APP_ORIGIN}:4000/deleterecipe`,
+                    {
+                        id: recipe._id
+                    }
+                )
                 .then(() => {
                     //redirect to my profile
                     setDeletedRecipe(true)
@@ -128,6 +139,22 @@ const RecipePage = (props) => {
                     setReqError(true)
                 })
         }
+    }
+
+    // pin/unpin button clicked
+    const handlePin = () => {
+        axios
+            .post(`http://${process.env.REACT_APP_ORIGIN}:4000/pinrecipe`, {
+                id: recipe._id,
+                pin: !recipe.pinned
+            })
+            .then((response) => {
+                setRecipe(response.data)
+            })
+            .catch((err) => {
+                console.error(err)
+                setReqError(true)
+            })
     }
 
     return !reqError ? (
@@ -149,6 +176,9 @@ const RecipePage = (props) => {
                             </Dropdown.Toggle>
 
                             <Dropdown.Menu className="dotsDropdownMenu">
+                                <Dropdown.Item onClick={handlePin}>
+                                    {recipe.pinned ? 'Unpin' : 'Pin'} Recipe
+                                </Dropdown.Item>
                                 <Dropdown.Item onClick={handleDelete}>
                                     Delete Recipe
                                 </Dropdown.Item>
@@ -202,6 +232,19 @@ const RecipePage = (props) => {
                                             <Timestamp
                                                 createdAt={recipe.createdAt}
                                             />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <a
+                                                href={`${window.location.href}/likes`}
+                                                className="numLikes"
+                                            >
+                                                <Number number={recipe.likes} />{' '}
+                                                {recipe.likes === 1
+                                                    ? `like`
+                                                    : `likes`}
+                                            </a>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -283,7 +326,10 @@ const LikeButton = (props) => {
         }
 
         axios
-            .post('http://localhost:4000/likerecipe', requestData)
+            .post(
+                `http://${process.env.REACT_APP_ORIGIN}:4000/likerecipe`,
+                requestData
+            )
             .then((response) => {
                 props.setRecipe(response.data.recipe)
                 props.setUser(response.data.user)
@@ -315,7 +361,6 @@ const LikeButton = (props) => {
                     }
                 }}
             />
-            {props.recipe.likes}
         </div>
     )
 }
@@ -344,7 +389,10 @@ const CommentsSection = (props) => {
                 }
 
                 axios
-                    .post('http://localhost:4000/comment', newComment)
+                    .post(
+                        `http://${process.env.REACT_APP_ORIGIN}:4000/comment`,
+                        newComment
+                    )
                     .then((response) => {
                         //update page to include new comment
                         setComments(comments.concat([response.data]))

@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
+import { PinAngleFill } from 'react-bootstrap-icons'
+
+import Timestamp from '../../../gencomponents/Timestamp.js'
+import Number from '../../../gencomponents/Number.js'
 
 import './SmallRecipePreview.css'
-import Timestamp from '../../../gencomponents/Timestamp.js'
 
 //Component for small recipe previews
 //Expects a recipe object as props
@@ -26,7 +29,9 @@ const SmallRecipePreview = (props) => {
                 slug: props.user.slug
             })
         } else {
-            axios(`http://localhost:4000/userbyid?id=${props.recipe.user}`)
+            axios(
+                `http://${process.env.REACT_APP_ORIGIN}:4000/userbyid?id=${props.recipe.user}`
+            )
                 .then((response) => {
                     setAuthorUser({
                         id: response.data._id,
@@ -40,75 +45,99 @@ const SmallRecipePreview = (props) => {
     }, [props.recipe])
 
     return (
-        <table className="smallRecipePreview">
-            <tbody>
-                <tr>
-                    <td className="smallRecipePreviewImageCell">
-                        <img
-                            className="smallRecipePreviewImage"
-                            src={props.recipe.imagePath}
-                            alt="food"
-                        />
-                    </td>
-                    <td>
-                        <table className="smallRecipePreviewTable smallRecipePreviewTopTable">
-                            <tbody>
-                                <tr>
-                                    <td className="smallRecipePreviewTopTableCell">
-                                        <a
-                                            className="smallRecipePreviewRecipeName"
-                                            href={
-                                                '/recipe-' + props.recipe.slug
-                                            }
-                                        >
-                                            {props.recipe.name}
-                                        </a>
-                                    </td>
-                                    <td className="smallRecipePreviewTableRightCol smallRecipePreviewLikedCol smallRecipePreviewTopTableCell">
-                                        <div className="likedSmall">
-                                            <img
-                                                className="heartImage"
-                                                src={
-                                                    'icons/' +
-                                                    (liked
-                                                        ? 'heartFill.png'
-                                                        : 'heartOutline.png')
-                                                }
-                                                alt={
-                                                    liked
-                                                        ? 'heart fill'
-                                                        : 'heart outline'
-                                                }
-                                            />
-                                            {props.recipe.likes}
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <table className="smallRecipePreviewTable">
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <a
-                                            className="smallRecipePreviewUsername"
-                                            href={'/user-' + authorUser.slug}
-                                        >
-                                            {'@' + authorUser.username}
-                                        </a>
-                                    </td>
-                                    <td className="smallRecipePreviewTableRightCol">
-                                        <Timestamp
-                                            createdAt={props.recipe.createdAt}
-                                        />
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        <div className="smallRecipePreview">
+            {props.pinned ? (
+                <div className="pinSmall">
+                    <i>
+                        <PinAngleFill />
+                    </i>
+                </div>
+            ) : (
+                <></>
+            )}
+            <div className={props.pinned ? 'pinnedRecipeSmall' : ''}>
+                <table className="smallRecipePreviewOuterTable">
+                    <tbody>
+                        <tr>
+                            <td className="smallRecipePreviewImageCell">
+                                <img
+                                    className="smallRecipePreviewImage"
+                                    src={props.recipe.imagePath}
+                                    alt="food"
+                                />
+                            </td>
+                            <td>
+                                <table className="smallRecipePreviewTable smallRecipePreviewTopTable">
+                                    <tbody>
+                                        <tr>
+                                            <td className="smallRecipePreviewTopTableCell">
+                                                <a
+                                                    className="smallRecipePreviewRecipeName"
+                                                    href={
+                                                        '/recipe-' +
+                                                        props.recipe.slug
+                                                    }
+                                                >
+                                                    {props.recipe.name}
+                                                </a>
+                                            </td>
+                                            <td className="smallRecipePreviewTableRightCol smallRecipePreviewLikedCol smallRecipePreviewTopTableCell">
+                                                <div className="likedSmall">
+                                                    <img
+                                                        className="heartImage"
+                                                        src={
+                                                            'icons/' +
+                                                            (liked
+                                                                ? 'heartFill.png'
+                                                                : 'heartOutline.png')
+                                                        }
+                                                        alt={
+                                                            liked
+                                                                ? 'heart fill'
+                                                                : 'heart outline'
+                                                        }
+                                                    />
+                                                    <Number
+                                                        className="numLikes"
+                                                        number={
+                                                            props.recipe.likes
+                                                        }
+                                                    />
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <table className="smallRecipePreviewTable">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <a
+                                                    className="smallRecipePreviewUsername"
+                                                    href={
+                                                        '/user-' +
+                                                        authorUser.slug
+                                                    }
+                                                >
+                                                    {'@' + authorUser.username}
+                                                </a>
+                                            </td>
+                                            <td className="smallRecipePreviewTableRightCol">
+                                                <Timestamp
+                                                    createdAt={
+                                                        props.recipe.createdAt
+                                                    }
+                                                />
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     )
 }
 

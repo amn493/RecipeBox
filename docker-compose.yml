@@ -1,0 +1,12 @@
+version: '2'
+services:
+  front-end:
+    build: ./front-end
+    ports:
+      - '80:80'
+    depends_on:
+      - back-end
+  back-end:
+    build: ./back-end
+    ports:
+      - '4000:4000'
