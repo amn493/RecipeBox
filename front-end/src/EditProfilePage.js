@@ -107,26 +107,27 @@ const EditProfilePage = (props) => {
     }
 
     // Ensure username field is not blank
-    const [isAnyNameEmpty, setIsAnyNameEmpty] = useState(false)
-    const [emptyNameError, setEmptyNameError] = useState({ value: '' })
+    const [isUsernameEmpty, setIsUsernameEmpty] = useState(false)
+    const [emptyUsernameMessage, setEmptyUsernameMessage] = useState('')
+    const [isFirstNameEmpty, setIsFirstNameEmpty] = useState(false)
+    const [emptyFirstNameMessage, setEmptyFirstNameMessage] = useState('')
 
     useEffect(() => {
-        setIsAnyNameEmpty(!userNameVal || !firstNameVal)
+        if (userLoaded) {
+            setIsUsernameEmpty(!userNameVal)
+            setIsFirstNameEmpty(!firstNameVal)
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [firstNameVal, userNameVal])
 
     useEffect(() => {
-        if (isAnyNameEmpty)
-            setEmptyNameError({
-                value: (
-                    <>
-                        <div className="errorCode">
-                            Username and first name required!
-                        </div>
-                    </>
-                )
-            })
-        else setEmptyNameError({ value: '' })
-    }, [isAnyNameEmpty])
+        if (isUsernameEmpty === true)
+            setEmptyUsernameMessage('Username required')
+        if (isFirstNameEmpty === true)
+            setEmptyFirstNameMessage('First name required')
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isUsernameEmpty, isFirstNameEmpty])
 
     return !submitted ? (
         userLoaded ? (
@@ -159,10 +160,14 @@ const EditProfilePage = (props) => {
                             <Form.Control
                                 type="text"
                                 value={firstNameVal}
-                                onChange={(event) =>
+                                onChange={(event) => {
                                     setFirstNameVal(event.target.value)
-                                }
+                                    setEmptyFirstNameMessage('')
+                                }}
                             />
+                            <Form.Text id="errorMessage" muted>
+                                {emptyFirstNameMessage}
+                            </Form.Text>
 
                             <br />
                             <Form.Label>Last Name</Form.Label>
@@ -190,11 +195,13 @@ const EditProfilePage = (props) => {
                                     onChange={(event) => {
                                         setUserNameVal(event.target.value)
                                         setUsernameTakenMessage('')
+                                        setEmptyUsernameMessage('')
                                     }}
                                 />
                             </InputGroup>
                             <Form.Text id="errorMessage" muted>
                                 {usernameTakenMessage}
+                                {emptyUsernameMessage}
                             </Form.Text>
                             <br />
 
@@ -209,12 +216,10 @@ const EditProfilePage = (props) => {
                             />
                             <br />
 
-                            {emptyNameError.value}
                             <Button
                                 className="submitButton"
                                 variant="info"
                                 type="submit"
-                                disabled={isAnyNameEmpty}
                             >
                                 Save Changes
                             </Button>
