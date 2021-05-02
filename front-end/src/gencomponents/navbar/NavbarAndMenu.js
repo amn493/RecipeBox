@@ -78,7 +78,7 @@ const NavbarAndMenu = (props) => {
                             {props.signedIn ? (
                                 // signed-in menu
                                 <>
-                                    <Nav className="mr-auto">
+                                    <Nav className="mr-auto ml-3">
                                         <NavDropdown.Divider />
 
                                         <NavDropdown.Item
@@ -139,7 +139,7 @@ const NavbarAndMenu = (props) => {
                             ) : (
                                 // not signed-in menu
                                 <>
-                                    <Nav className="mr-auto">
+                                    <Nav className="mr-auto ml-3">
                                         <NavDropdown.Divider />
                                         <NavDropdown.Item
                                             className="rbxSpaceAdjustment"
