@@ -62,14 +62,14 @@ describe('Testing route handler for GET /usersbyname ', () => {
             })
     })
 
-    it('should return user object as called', () => {
+    it('should return user object that was called', () => {
         // they're reverse order because I pushed the array earlier vs appending
         return chai
             .request(app)
             .get(`/usersbyname?name=${userNames[0]}`)
             .then((response) => {
                 //user 1
-                expect(response.body[0].username).to.equal(userObjs[2].username)
+                expect(response.body[0].username).to.equal(userObjs[0].username)
             })
     })
 })
