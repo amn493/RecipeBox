@@ -38,7 +38,7 @@ describe('Testing GET for /usersbyid API', () => {
             })
     })
 
-    it('should return 3 user objects', () => {
+    it('should return 3 valid user objects', () => {
         return chai
             .request(app)
             .get(
