@@ -8,7 +8,7 @@ import './App.css'
 import RecipePage from './pages/recipepages/recipe/RecipePage.js'
 import FeedPage from './pages/recipepages/feed/FeedPage.js'
 import RecipeBoxPage from './pages/recipepages/recipebox/RecipeBoxPage.js'
-import Navbar from './gencomponents/navbar/Navbar.js'
+import NavbarAndMenu from './gencomponents/navbar/NavbarAndMenu.js'
 import BrowseRecipesPage from './pages/recipepages/browserecipes/BrowseRecipesPage.js'
 import ProfilePage from './pages/userpages/profilepages/mainprofile/ProfilePage.js'
 import NewRecipePage from './pages/recipepages/newrecipe/NewRecipePage.js'
@@ -75,7 +75,7 @@ function App() {
 
     return userSet ? (
         <>
-            <Navbar signedIn={signedIn} user={user} />
+            <NavbarAndMenu signedIn={signedIn} user={user} />
             <div className="App container" id="outer-container">
                 <main id="page-wrap">
                     <Switch>
