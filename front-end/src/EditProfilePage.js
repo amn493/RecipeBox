@@ -45,9 +45,10 @@ const EditProfilePage = (props) => {
     // Make post request on form submission
     const handleSubmit = (event) => {
         event.preventDefault()
-        axios(`http://localhost:4000/usernametaken?username=${userNameVal}`)
+        axios(
+            `http://${process.env.REACT_APP_ORIGIN}:4000/usernametaken?username=${userNameVal}`
+        )
             .then((response) => {
-                console.log(response.data)
                 if (!response.data || userNameVal === props.user.username) {
                     const headers = {
                         'Content-Type': 'multipart/form-data'
@@ -77,7 +78,7 @@ const EditProfilePage = (props) => {
 
                     axios
                         .post(
-                            'http://localhost:4000/updateuserinfo',
+                            `http://${process.env.REACT_APP_ORIGIN}:4000/updateuserinfo`,
                             updatedUserInfo,
                             {
                                 headers
