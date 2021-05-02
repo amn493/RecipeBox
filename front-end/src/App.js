@@ -1,26 +1,23 @@
 import { React, useState, useEffect } from 'react'
-
 import { Route, Switch, Redirect, useLocation } from 'react-router-dom'
-
-import './App.css'
-import 'bootstrap/dist/css/bootstrap.min.css'
-
-// Import pages
-import RecipePage from './RecipePage.js'
-import FeedPage from './FeedPage.js'
-import RecipeBoxPage from './RecipeBoxPage.js'
-import Navbar from './Navbar.js'
-import BrowseRecipesPage from './BrowseRecipesPage.js'
-import ProfilePage from './ProfilePage.js'
-import NewRecipePage from './NewRecipePage.js'
-import SignInForm from './SignInForm.js'
-import AppSettings from './AppSettings.js'
-import CreateAccountPage from './CreateAccountPage.js'
-import FollowersPage from './FollowersPage.js'
-import FollowingPage from './FollowingPage.js'
-import BrowseUsersPage from './BrowseUsersPage.js'
-import EditProfilePage from './EditProfilePage.js'
 import axios from 'axios'
+
+import 'bootstrap/dist/css/bootstrap.min.css'
+import './App.css'
+
+import RecipePage from './pages/recipepages/recipe/RecipePage.js'
+import FeedPage from './pages/recipepages/feed/FeedPage.js'
+import RecipeBoxPage from './pages/recipepages/recipebox/RecipeBoxPage.js'
+import Navbar from './gencomponents/navbar/Navbar.js'
+import BrowseRecipesPage from './pages/recipepages/browserecipes/BrowseRecipesPage.js'
+import ProfilePage from './pages/userpages/profilepages/mainprofile/ProfilePage.js'
+import NewRecipePage from './pages/recipepages/newrecipe/NewRecipePage.js'
+import SignInForm from './pages/accountpages/signinform/SignInForm.js'
+import AppSettings from './pages/accountpages/settingspage/AppSettings.js'
+import CreateAccountPage from './pages/accountpages/createaccount/CreateAccountPage.js'
+import BrowseUsersPage from './pages/userpages/browseusers/BrowseUsersPage.js'
+import EditProfilePage from './pages/userpages/profilepages/editprofile/EditProfilePage.js'
+import UserListPage from './pages/userpages/userlistpage/UserListPage'
 
 function App() {
     const [signedIn, setSignedIn] = useState(false)
@@ -32,7 +29,7 @@ function App() {
 
     // authenticate user
     useEffect(() => {
-        axios('http://localhost:4000/signedinuser', {
+        axios(`http://${process.env.REACT_APP_ORIGIN}:4000/signedinuser`, {
             headers: {
                 Authorization: 'Bearer ' + localStorage.getItem('token')
             }
@@ -143,12 +140,12 @@ function App() {
 
                         {/* FOLLOWERS PAGE */}
                         <Route exact path="/user-:slug/followers">
-                            <FollowersPage user={user} />
+                            <UserListPage user={user} />
                         </Route>
 
                         {/* FOLLOWING PAGE */}
                         <Route exact path="/user-:slug/following">
-                            <FollowingPage user={user} />
+                            <UserListPage user={user} />
                         </Route>
 
                         {/* EDIT PROFILE PAGE */}
@@ -194,7 +191,7 @@ function App() {
                         {/* SETTINGS PAGE*/}
                         <Route path="/settings" exact={true}>
                             {signedIn ? (
-                                <AppSettings user={user} />
+                                <AppSettings user={user} setUser={setUser} />
                             ) : (
                                 <Redirect to="/sign-in" />
                             )}
