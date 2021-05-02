@@ -801,21 +801,26 @@ app.post(
             useFindAndModify: false
         })
             .then((user) => {
-                // send a response to the user (sending data back to test)
-                res.json(user)
-            })
-            .then(() => {
-                if (req.file) {
+                if (
+                    req.file &&
+                    req.body.oldImage.split('/')[0] !== 'starterProfilePictures'
+                ) {
                     fs.unlink(
-                        path.join(`../front-end/public/${req.body.oldImage}`),
+                        path.join(
+                            __dirname,
+                            `../front-end/public/${req.body.oldImage}`
+                        ),
                         (err) => {
                             if (err) {
                                 next(err)
                             } else {
-                                // idk
+                                // send a response to the user (sending data back to test)
+                                res.json(user)
                             }
                         }
                     )
+                } else {
+                    res.json(user)
                 }
             })
             .catch((err) => {
