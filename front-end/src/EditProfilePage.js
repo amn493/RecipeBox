@@ -8,6 +8,7 @@ import InputGroup from 'react-bootstrap/InputGroup'
 import { At } from 'react-bootstrap-icons'
 import axios from 'axios'
 import { Redirect } from 'react-router-dom'
+import FormGroup from 'react-bootstrap/esm/FormGroup'
 
 // TODO: Validate inputs
 
@@ -17,6 +18,8 @@ const EditProfilePage = (props) => {
     const [lastNameVal, setLastNameVal] = useState('')
     const [userNameVal, setUserNameVal] = useState('')
     const [bioVal, setBioVal] = useState('')
+
+    const [usernameTakenMessage, setUsernameTakenMessage] = useState('')
 
     // State variable for image upload
     const [imageFile, setImageFile] = useState()
@@ -40,27 +43,53 @@ const EditProfilePage = (props) => {
     // Make post request on form submission
     const handleSubmit = (event) => {
         event.preventDefault()
-
-        const headers = {
-            'Content-Type': 'multipart/form-data'
-        }
-
-        const updatedUserInfo = new FormData()
-        updatedUserInfo.append('username', userNameVal)
-        updatedUserInfo.append('firstName', firstNameVal)
-        updatedUserInfo.append('lastName', lastNameVal)
-        updatedUserInfo.append('bio', bioVal)
-        updatedUserInfo.append('id', props.user._id)
-        updatedUserInfo.append('profilepicture', imageFile)
-
-        axios
-            .post('http://localhost:4000/updateuserinfo', updatedUserInfo, {
-                headers
-            })
+        axios(`http://localhost:4000/usernametaken?username=${userNameVal}`)
             .then((response) => {
-                props.setUser(response.data)
-                setSubmitted(true)
+                console.log(response.data)
+                if (!response.data || userNameVal === props.user.username) {
+                    const headers = {
+                        'Content-Type': 'multipart/form-data'
+                    }
+
+                    const updatedUserInfo = new FormData()
+                    updatedUserInfo.append(
+                        'username',
+                        userNameVal !== props.user.username ? userNameVal : ''
+                    )
+                    updatedUserInfo.append(
+                        'firstName',
+                        firstNameVal !== props.user.firstName
+                            ? firstNameVal
+                            : ''
+                    )
+                    updatedUserInfo.append(
+                        'lastName',
+                        lastNameVal !== props.user.lastName ? lastNameVal : ''
+                    )
+                    updatedUserInfo.append(
+                        'bio',
+                        bioVal !== props.user.bio ? bioVal : ''
+                    )
+                    updatedUserInfo.append('id', props.user._id)
+                    updatedUserInfo.append('profilepicture', imageFile)
+
+                    axios
+                        .post(
+                            'http://localhost:4000/updateuserinfo',
+                            updatedUserInfo,
+                            {
+                                headers
+                            }
+                        )
+                        .then((response) => {
+                            props.setUser(response.data)
+                            setSubmitted(true)
+                        })
+                } else {
+                    setUsernameTakenMessage('Username is already taken')
+                }
             })
+            .catch((err) => console.error(err))
     }
 
     // Display file name when uploaded [taken from NewRecipePage.js]
@@ -154,11 +183,15 @@ const EditProfilePage = (props) => {
                                 <Form.Control
                                     type="text"
                                     value={userNameVal}
-                                    onChange={(event) =>
+                                    onChange={(event) => {
                                         setUserNameVal(event.target.value)
-                                    }
+                                        setUsernameTakenMessage('')
+                                    }}
                                 />
                             </InputGroup>
+                            <Form.Text id="errorMessage" muted>
+                                {usernameTakenMessage}
+                            </Form.Text>
                             <br />
 
                             <Form.Label>Bio</Form.Label>
