@@ -234,6 +234,19 @@ const RecipePage = (props) => {
                                             />
                                         </td>
                                     </tr>
+                                    <tr>
+                                        <td>
+                                            <a
+                                                href={`${window.location.href}/likes`}
+                                                className="numLikes"
+                                            >
+                                                <Number number={recipe.likes} />{' '}
+                                                {recipe.likes === 1
+                                                    ? `like`
+                                                    : `likes`}
+                                            </a>
+                                        </td>
+                                    </tr>
                                 </tbody>
                             </table>
 
@@ -348,7 +361,6 @@ const LikeButton = (props) => {
                     }
                 }}
             />
-            <Number className="numLikes" number={props.recipe.likes} />
         </div>
     )
 }

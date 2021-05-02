@@ -115,12 +115,17 @@ function App() {
                         </Route>
 
                         {/* RECIPE PAGE */}
-                        <Route path="/recipe-:slug">
+                        <Route exact path="/recipe-:slug">
                             <RecipePage
                                 user={user}
                                 signedIn={signedIn}
                                 setUser={setUser}
                             />
+                        </Route>
+
+                        {/* LIKES PAGE */}
+                        <Route exact path="/recipe-:slug/likes">
+                            <UserListPage user={user} />
                         </Route>
 
                         {/* BROWSE USERS PAGE */}
