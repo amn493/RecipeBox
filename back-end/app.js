@@ -359,7 +359,8 @@ app.get('/recipesbyuser', (req, res, next) => {
                 // eslint-disable-next-line no-param-reassign
                 recipe.caption = he.decode(recipe.caption)
             })
-
+            // move pinned recipes to the top
+            recipes.sort((a, b) => +b.pinned - +a.pinned)
             res.json(recipes)
         })
         .catch((err) => next(err))
@@ -476,6 +477,12 @@ app.get('/usernametaken', (req, res, next) => {
 
     User.exists({ username: req.query.username })
         .then((usernametaken) => res.json(usernametaken))
+        .catch((err) => next(err))
+})
+
+app.get('/likedby', (req, res, next) => {
+    User.find({ liked: req.query.id })
+        .then((users) => res.json(users))
         .catch((err) => next(err))
 })
 
@@ -710,6 +717,7 @@ app.post(
                 .map((instruction) => instruction.trim())
                 .filter((instruction) => instruction !== '')
                 .map((instruction) => he.encode(instruction)),
+            pinned: false,
             likes: 0,
             createdAt: Date.now()
         }
@@ -751,6 +759,8 @@ app.post('/blockuser', (req, res, next) => {
                 updatedSignedInUserFollowing.indexOf(req.body.blockedUserID),
                 1
             )
+        }
+        if (updatedblockedUserFollowers.includes(req.body.signedInUserID)) {
             updatedblockedUserFollowers.splice(
                 updatedblockedUserFollowers.indexOf(req.body.signedInUserID),
                 1
@@ -761,6 +771,8 @@ app.post('/blockuser', (req, res, next) => {
                 updatedSignedInUserFollowers.indexOf(req.body.blockedUserID),
                 1
             )
+        }
+        if (updatedblockedUserFollowing.includes(req.body.signedInUserID)) {
             updatedblockedUserFollowing.splice(
                 updatedblockedUserFollowing.indexOf(req.body.signedInUserID),
                 1
@@ -771,6 +783,30 @@ app.post('/blockuser', (req, res, next) => {
             updatedSignedInBlockedUsers.indexOf(req.body.blockedUserID),
             1
         )
+        if (updatedSignedInUserFollowing.includes(req.body.blockedUserID)) {
+            updatedSignedInUserFollowing.splice(
+                updatedSignedInUserFollowing.indexOf(req.body.blockedUserID),
+                1
+            )
+        }
+        if (updatedblockedUserFollowers.includes(req.body.signedInUserID)) {
+            updatedblockedUserFollowers.splice(
+                updatedblockedUserFollowers.indexOf(req.body.signedInUserID),
+                1
+            )
+        }
+        if (updatedSignedInUserFollowers.includes(req.body.blockedUserID)) {
+            updatedSignedInUserFollowers.splice(
+                updatedSignedInUserFollowers.indexOf(req.body.blockedUserID),
+                1
+            )
+        }
+        if (updatedblockedUserFollowing.includes(req.body.signedInUserID)) {
+            updatedblockedUserFollowing.splice(
+                updatedblockedUserFollowing.indexOf(req.body.signedInUserID),
+                1
+            )
+        }
     }
     User.findByIdAndUpdate(
         req.body.signedInUserID,
@@ -788,7 +824,7 @@ app.post('/blockuser', (req, res, next) => {
                     followers: updatedblockedUserFollowers,
                     following: updatedblockedUserFollowing
                 },
-                { useFindAndModify: false }
+                { new: true, useFindAndModify: false }
             )
                 .then(() => {
                     res.json(user)
@@ -1092,6 +1128,7 @@ app.post('/notificationsettings', (req, res, next) => {
 app.post(
     '/updateuserinfo',
     upload.single('profilepicture'),
+
     body('email').isEmail().withMessage('Email entered is not a valid email.'),
     body('firstName')
         .isAlpha()
@@ -1103,26 +1140,60 @@ app.post(
         .isAlphanumeric()
         .withMessage('Username must only be alphanumeric.'),
     body('bio').trim().escape(),
-    (req, res) => {
+    (req, res, next) => {
         // sanitize inputs -- same as account creation more or less
 
         // recieve post data from updating user's basic info
-        const updatedUserInfo = {
-            username: req.body.username,
-            firstName: req.body.firstName,
-            lastName: req.body.lastName,
-            bio: req.body.bio,
-            id: req.body.id,
-            imagePath: path.join('/uploads/', req.file.filename)
+        const updatedUserInfo = {}
+        if (req.body.username) {
+            updatedUserInfo.username = req.body.username
+        }
+        if (req.body.firstName) {
+            updatedUserInfo.firstName = req.body.firstName
+        }
+        if (req.body.lastName) {
+            updatedUserInfo.lastName = req.body.lastName
+        }
+        if (req.body.bio) {
+            updatedUserInfo.bio = req.body.bio
+        }
+        if (req.file) {
+            updatedUserInfo.imagePath = path.join(
+                '/uploads/',
+                req.file.filename
+            )
         }
 
-        // update the user's user object (in database)
-
-        // TODO: Once merged with this last POST request, check for any errors
-        // we want to prevent this from going through as opposed to just saving weird things
-
-        // send a response to the user (sending data back to test)
-        res.json(updatedUserInfo)
+        User.findByIdAndUpdate(req.body.id, updatedUserInfo, {
+            new: true,
+            useFindAndModify: false
+        })
+            .then((user) => {
+                if (
+                    req.file &&
+                    req.body.oldImage.split('/')[0] !== 'starterProfilePictures'
+                ) {
+                    fs.unlink(
+                        path.join(
+                            __dirname,
+                            `../front-end/public/${req.body.oldImage}`
+                        ),
+                        (err) => {
+                            if (err) {
+                                next(err)
+                            } else {
+                                // send a response to the user (sending data back to test)
+                                res.json(user)
+                            }
+                        }
+                    )
+                } else {
+                    res.json(user)
+                }
+            })
+            .catch((err) => {
+                next(err)
+            })
     }
 )
 
@@ -1181,6 +1252,20 @@ app.post('/deleterecipe', (req, res, next) => {
                 .catch((err) => {
                     next(err)
                 })
+        })
+        .catch((err) => {
+            next(err)
+        })
+})
+
+app.post('/pinrecipe', (req, res, next) => {
+    Recipe.findByIdAndUpdate(
+        req.body.id,
+        { $set: { pinned: req.body.pin } },
+        { new: true, useFindAndModify: false }
+    )
+        .then((recipe) => {
+            res.json(recipe)
         })
         .catch((err) => {
             next(err)

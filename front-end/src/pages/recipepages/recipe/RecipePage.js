@@ -119,6 +119,7 @@ const RecipePage = (props) => {
         </a>
     ))
 
+    // delete button clicked
     const handleDelete = () => {
         if (window.confirm('Are you sure you want to delete this recipe?')) {
             // delete recipe
@@ -140,6 +141,22 @@ const RecipePage = (props) => {
         }
     }
 
+    // pin/unpin button clicked
+    const handlePin = () => {
+        axios
+            .post(`http://${process.env.REACT_APP_ORIGIN}:4000/pinrecipe`, {
+                id: recipe._id,
+                pin: !recipe.pinned
+            })
+            .then((response) => {
+                setRecipe(response.data)
+            })
+            .catch((err) => {
+                console.error(err)
+                setReqError(true)
+            })
+    }
+
     return !reqError ? (
         userBlocked ? (
             <ErrorComponent error={"Couldn't load recipe"} />
@@ -159,6 +176,9 @@ const RecipePage = (props) => {
                             </Dropdown.Toggle>
 
                             <Dropdown.Menu className="dotsDropdownMenu">
+                                <Dropdown.Item onClick={handlePin}>
+                                    {recipe.pinned ? 'Unpin' : 'Pin'} Recipe
+                                </Dropdown.Item>
                                 <Dropdown.Item onClick={handleDelete}>
                                     Delete Recipe
                                 </Dropdown.Item>
@@ -212,6 +232,19 @@ const RecipePage = (props) => {
                                             <Timestamp
                                                 createdAt={recipe.createdAt}
                                             />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <a
+                                                href={`${window.location.href}/likes`}
+                                                className="numLikes"
+                                            >
+                                                <Number number={recipe.likes} />{' '}
+                                                {recipe.likes === 1
+                                                    ? `like`
+                                                    : `likes`}
+                                            </a>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -328,7 +361,6 @@ const LikeButton = (props) => {
                     }
                 }}
             />
-            <Number className="numLikes" number={props.recipe.likes} />
         </div>
     )
 }

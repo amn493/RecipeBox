@@ -1,5 +1,8 @@
 .smallRecipePreview {
     margin-bottom: 15px;
+}
+
+.smallRecipePreviewOuterTable {
     width: 100%;
     margin-left: auto;
     margin-right: auto;
@@ -69,4 +72,17 @@
 
 .smallRecipePreviewTopTableCell {
     vertical-align: baseline;
+}
+
+.pinnedRecipeSmall {
+    background-color: rgba(23, 163, 184, 0.1);
+    border-radius: 10px;
+    padding: 10px;
+    margin-top: -10px;
+}
+
+.pinSmall {
+    color: rgb(23, 163, 184);
+    text-align: right;
+    margin-top: -10px;
 }

@@ -19,6 +19,9 @@ const EditProfilePage = (props) => {
     const [lastNameVal, setLastNameVal] = useState('')
     const [userNameVal, setUserNameVal] = useState('')
     const [bioVal, setBioVal] = useState('')
+    const [profilePic, setProfilePic] = useState('')
+
+    const [usernameTakenMessage, setUsernameTakenMessage] = useState('')
 
     // State variable for image upload
     const [imageFile, setImageFile] = useState()
@@ -40,6 +43,7 @@ const EditProfilePage = (props) => {
             setLastNameVal(props.user.lastName)
             setUserNameVal(props.user.username)
             setBioVal(props.user.bio)
+            setProfilePic(props.user.imagePath)
             setUserLoaded(true)
         }
     }, [props.user])
@@ -47,28 +51,55 @@ const EditProfilePage = (props) => {
     // Make post request on form submission
     const handleSubmit = (event) => {
         event.preventDefault()
+        axios(
+            `http://${process.env.REACT_APP_ORIGIN}:4000/usernametaken?username=${userNameVal}`
+        )
+            .then((response) => {
+                if (!response.data || userNameVal === props.user.username) {
+                    const headers = {
+                        'Content-Type': 'multipart/form-data'
+                    }
 
-        const headers = {
-            'Content-Type': 'multipart/form-data'
-        }
+                    const updatedUserInfo = new FormData()
+                    updatedUserInfo.append(
+                        'username',
+                        userNameVal !== props.user.username ? userNameVal : ''
+                    )
+                    updatedUserInfo.append(
+                        'firstName',
+                        firstNameVal !== props.user.firstName
+                            ? firstNameVal
+                            : ''
+                    )
+                    updatedUserInfo.append(
+                        'lastName',
+                        lastNameVal !== props.user.lastName ? lastNameVal : ''
+                    )
+                    updatedUserInfo.append(
+                        'bio',
+                        bioVal !== props.user.bio ? bioVal : ''
+                    )
+                    updatedUserInfo.append('id', props.user._id)
+                    updatedUserInfo.append('profilepicture', imageFile)
+                    updatedUserInfo.append('oldImage', props.user.imagePath)
 
-        const updatedUserInfo = new FormData()
-        updatedUserInfo.append('username', userNameVal)
-        updatedUserInfo.append('firstName', firstNameVal)
-        updatedUserInfo.append('lastName', lastNameVal)
-        updatedUserInfo.append('bio', bioVal)
-        updatedUserInfo.append('id', props.user._id)
-        updatedUserInfo.append('profilepicture', imageFile)
-
-        axios
-            .post(
-                `http://${process.env.REACT_APP_ORIGIN}:4000/updateuserinfo`,
-                updatedUserInfo,
-                {
-                    headers
+                    axios
+                        .post(
+                            `http://${process.env.REACT_APP_ORIGIN}:4000/updateuserinfo`,
+                            updatedUserInfo,
+                            {
+                                headers
+                            }
+                        )
+                        .then((response) => {
+                            props.setUser(response.data)
+                            setSubmitted(true)
+                        })
+                } else {
+                    setUsernameTakenMessage('Username is already taken')
                 }
-            )
-            .then((response) => setSubmitted(true))
+            })
+            .catch((err) => console.error(err))
     }
 
     // function to allow user to re-upload/re-crop a photo
@@ -78,8 +109,6 @@ const EditProfilePage = (props) => {
     }
     // Upload image file
     const fileUploaded = (event) => {
-        setImageFile(event.target.files[0])
-
         const userImgForCropperJS = document.getElementById(
             'userimgforcropperjs'
         )
@@ -105,27 +134,35 @@ const EditProfilePage = (props) => {
         }
     }
 
+    useEffect(() => {
+        if (imageFile) {
+            // show new cropped profile pic once selected
+            setProfilePic(URL.createObjectURL(imageFile))
+        }
+    }, [imageFile])
+
     // Ensure username field is not blank
-    const [isAnyNameEmpty, setIsAnyNameEmpty] = useState(false)
-    const [emptyNameError, setEmptyNameError] = useState({ value: '' })
+    const [isUsernameEmpty, setIsUsernameEmpty] = useState(false)
+    const [emptyUsernameMessage, setEmptyUsernameMessage] = useState('')
+    const [isFirstNameEmpty, setIsFirstNameEmpty] = useState(false)
+    const [emptyFirstNameMessage, setEmptyFirstNameMessage] = useState('')
 
     useEffect(() => {
-        setIsAnyNameEmpty(!userNameVal || !firstNameVal)
+        if (userLoaded) {
+            setIsUsernameEmpty(!userNameVal)
+            setIsFirstNameEmpty(!firstNameVal)
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [firstNameVal, userNameVal])
 
     useEffect(() => {
-        if (isAnyNameEmpty)
-            setEmptyNameError({
-                value: (
-                    <>
-                        <div className="errorCode">
-                            Username and first name required!
-                        </div>
-                    </>
-                )
-            })
-        else setEmptyNameError({ value: '' })
-    }, [isAnyNameEmpty])
+        if (isUsernameEmpty === true)
+            setEmptyUsernameMessage('Username required')
+        if (isFirstNameEmpty === true)
+            setEmptyFirstNameMessage('First name required')
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isUsernameEmpty, isFirstNameEmpty])
 
     return !submitted ? (
         userLoaded ? (
@@ -139,7 +176,7 @@ const EditProfilePage = (props) => {
                             <div className="centerPhoto">
                                 <img
                                     className="profilePic"
-                                    src={props.user.imagePath}
+                                    src={profilePic}
                                     alt="Current Profile Avatar"
                                 ></img>
                                 <br />
@@ -159,10 +196,14 @@ const EditProfilePage = (props) => {
                             <Form.Control
                                 type="text"
                                 value={firstNameVal}
-                                onChange={(event) =>
+                                onChange={(event) => {
                                     setFirstNameVal(event.target.value)
-                                }
+                                    setEmptyFirstNameMessage('')
+                                }}
                             />
+                            <Form.Text id="errorMessage" muted>
+                                {emptyFirstNameMessage}
+                            </Form.Text>
 
                             <br />
                             <Form.Label>Last Name</Form.Label>
@@ -187,11 +228,17 @@ const EditProfilePage = (props) => {
                                 <Form.Control
                                     type="text"
                                     value={userNameVal}
-                                    onChange={(event) =>
+                                    onChange={(event) => {
                                         setUserNameVal(event.target.value)
-                                    }
+                                        setUsernameTakenMessage('')
+                                        setEmptyUsernameMessage('')
+                                    }}
                                 />
                             </InputGroup>
+                            <Form.Text id="errorMessage" muted>
+                                {usernameTakenMessage}
+                                {emptyUsernameMessage}
+                            </Form.Text>
                             <br />
 
                             <Form.Label>Bio</Form.Label>
@@ -216,12 +263,11 @@ const EditProfilePage = (props) => {
                                 setShow={setShowModal}
                             />
 
-                            {emptyNameError.value}
                             <Button
                                 className="submitButton"
                                 variant="info"
                                 type="submit"
-                                disabled={isAnyNameEmpty}
+                                disabled={isUsernameEmpty || isFirstNameEmpty}
                             >
                                 Save Changes
                             </Button>

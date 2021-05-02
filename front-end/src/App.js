@@ -1,11 +1,10 @@
 import { React, useState, useEffect } from 'react'
-
 import { Route, Switch, Redirect, useLocation } from 'react-router-dom'
+import axios from 'axios'
 
-import './App.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
+import './App.css'
 
-// Import pages
 import RecipePage from './pages/recipepages/recipe/RecipePage.js'
 import FeedPage from './pages/recipepages/feed/FeedPage.js'
 import RecipeBoxPage from './pages/recipepages/recipebox/RecipeBoxPage.js'
@@ -16,11 +15,9 @@ import NewRecipePage from './pages/recipepages/newrecipe/NewRecipePage.js'
 import SignInForm from './pages/accountpages/signinform/SignInForm.js'
 import AppSettings from './pages/accountpages/settingspage/AppSettings.js'
 import CreateAccountPage from './pages/accountpages/createaccount/CreateAccountPage.js'
-import FollowersPage from './pages/userpages/followerspage/FollowersPage.js'
-import FollowingPage from './pages/userpages/followingpage/FollowingPage.js'
 import BrowseUsersPage from './pages/userpages/browseusers/BrowseUsersPage.js'
 import EditProfilePage from './pages/userpages/profilepages/editprofile/EditProfilePage.js'
-import axios from 'axios'
+import UserListPage from './pages/userpages/userlistpage/UserListPage'
 
 function App() {
     const [signedIn, setSignedIn] = useState(false)
@@ -118,12 +115,17 @@ function App() {
                         </Route>
 
                         {/* RECIPE PAGE */}
-                        <Route path="/recipe-:slug">
+                        <Route exact path="/recipe-:slug">
                             <RecipePage
                                 user={user}
                                 signedIn={signedIn}
                                 setUser={setUser}
                             />
+                        </Route>
+
+                        {/* LIKES PAGE */}
+                        <Route exact path="/recipe-:slug/likes">
+                            <UserListPage user={user} />
                         </Route>
 
                         {/* BROWSE USERS PAGE */}
@@ -143,12 +145,12 @@ function App() {
 
                         {/* FOLLOWERS PAGE */}
                         <Route exact path="/user-:slug/followers">
-                            <FollowersPage user={user} />
+                            <UserListPage user={user} />
                         </Route>
 
                         {/* FOLLOWING PAGE */}
                         <Route exact path="/user-:slug/following">
-                            <FollowingPage user={user} />
+                            <UserListPage user={user} />
                         </Route>
 
                         {/* EDIT PROFILE PAGE */}
@@ -157,6 +159,7 @@ function App() {
                                 <EditProfilePage
                                     user={user}
                                     signedIn={signedIn}
+                                    setUser={setUser}
                                 />
                             ) : (
                                 <Redirect to="/sign-in" />

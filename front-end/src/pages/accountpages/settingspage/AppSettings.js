@@ -24,7 +24,7 @@ const AppSettings = (props) => {
             .post(`http://${process.env.REACT_APP_ORIGIN}:4000/blockuser`, {
                 addBlock: true,
                 signedInUserID: currentUser._id,
-                signedInblockedUsers: blockedUsers.map((user) => user._id),
+                signedInBlockedUsers: blockedUsers.map((user) => user._id),
                 signedInUserFollowing: currentUser.following,
                 signedInUserFollowers: currentUser.followers,
                 blockedUserID: usersToBlock
@@ -56,7 +56,7 @@ const AppSettings = (props) => {
                 .post(`http://${process.env.REACT_APP_ORIGIN}:4000/blockuser`, {
                     addBlock: false,
                     signedInUserID: currentUser._id,
-                    signedInblockedUsers: blockedUsers.map((user) => user._id),
+                    signedInBlockedUsers: blockedUsers.map((user) => user._id),
                     signedInUserFollowing: currentUser.following,
                     signedInUserFollowers: currentUser.followers,
                     blockedUserID: userToUnblock._id,
