@@ -6,6 +6,7 @@ const app = express() // instantiate an Express object
 const morgan = require('morgan') // middleware for nice logging of incoming HTTP requests
 const multer = require('multer') // middleware to handle HTTP POST requests with file uploads
 const path = require('path')
+const fs = require('fs')
 const axios = require('axios') // middleware for making requests to APIs
 require('dotenv').config({ silent: true }) // load environmental variables from a hidden file named .env
 
@@ -802,6 +803,20 @@ app.post(
             .then((user) => {
                 // send a response to the user (sending data back to test)
                 res.json(user)
+            })
+            .then(() => {
+                if (req.file) {
+                    fs.unlink(
+                        path.join(`../front-end/public/${req.body.oldImage}`),
+                        (err) => {
+                            if (err) {
+                                next(err)
+                            } else {
+                                // idk
+                            }
+                        }
+                    )
+                }
             })
             .catch((err) => {
                 next(err)

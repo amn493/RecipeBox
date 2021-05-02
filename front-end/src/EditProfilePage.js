@@ -38,6 +38,7 @@ const EditProfilePage = (props) => {
             setUserNameVal(props.user.username)
             setBioVal(props.user.bio)
             setProfilePic(props.user.imagePath)
+
             setUserLoaded(true)
         }
     }, [props.user])
@@ -75,6 +76,7 @@ const EditProfilePage = (props) => {
                     )
                     updatedUserInfo.append('id', props.user._id)
                     updatedUserInfo.append('profilepicture', imageFile)
+                    updatedUserInfo.append('oldImage', props.user.imagePath)
 
                     axios
                         .post(
