@@ -45,7 +45,7 @@ const AppSettings = (props) => {
                         )
                     )
                 )
-                props.setUser(response.data)
+                props.setUser(response.data.currentUser)
             })
     }
 
@@ -78,7 +78,7 @@ const AppSettings = (props) => {
                     usersToBlock.includes(userToUnblock)
                         ? setUsersToBlock(usersToBlock)
                         : setUsersToBlock(usersToBlock.concat(props))
-                    props.setUser(response.data)
+                    props.setUser(response.data.currentUser)
                 })
         }
     }
@@ -224,7 +224,10 @@ const AppSettings = (props) => {
     const signOutUser = () => {
         axios
             .post(`http://${process.env.REACT_APP_ORIGIN}:4000/signout`)
-            .then(() => localStorage.removeItem('token'))
+            .then(() => {
+                localStorage.removeItem('token')
+                window.location = '/sign-in'
+            })
     }
 
     return !reqError ? (

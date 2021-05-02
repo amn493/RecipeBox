@@ -86,7 +86,10 @@ const ProfilePage = (props) => {
         profileUser && recipes && userBlocked !== undefined ? (
             <div className="profilePage">
                 <ProfileHeader
-                    user={profileUser}
+                    currentUser={props.user}
+                    profileUser={profileUser}
+                    setProfileUser={setProfileUser}
+                    setCurrentUser={props.setUser}
                     recipeCount={userBlocked ? 0 : recipes.length}
                     userBlocked={userBlocked}
                     isMyProfile={profileUser._id === props.user._id}
@@ -105,10 +108,23 @@ const ProfilePage = (props) => {
                     // remove follow button if user is blocked
 
                     <FollowButton
-                        profileUserId={profileUser._id}
+                        isBlockedUser={false}
+                        profileUser={profileUser}
                         setProfileUser={setProfileUser}
                         currentUser={props.user}
                         setCurrentUser={props.setUser}
+                        setUserBlocked={setUserBlocked}
+                        signedIn={props.signedIn}
+                        setShowModal={setShowModal}
+                    />
+                ) : !profileUser.blockedUsers.includes(props.user._id) ? (
+                    <FollowButton
+                        isBlockedUser={true}
+                        profileUser={profileUser}
+                        setProfileUser={setProfileUser}
+                        currentUser={props.user}
+                        setCurrentUser={props.setUser}
+                        setUserBlocked={setUserBlocked}
                         signedIn={props.signedIn}
                         setShowModal={setShowModal}
                     />

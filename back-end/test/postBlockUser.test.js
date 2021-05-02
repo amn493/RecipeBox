@@ -100,7 +100,7 @@ describe('Testing POST to /blockuser API', () => {
                 expect(response.status).to.equal(200)
             }))
 
-    it('should return an object with correct field names', () =>
+    it('should return the blocking/unblocking user with correct field names', () =>
         chai
             .request(app)
             .post('/blockuser')
@@ -115,12 +115,14 @@ describe('Testing POST to /blockuser API', () => {
                 blockedUserFollowers: blockedUserFollowers
             })
             .then((response) => {
-                expect(response.body).to.have.property('blockedUsers')
-                expect(response.body).to.have.property('following')
-                expect(response.body).to.have.property('followers')
+                expect(response.body.currentUser).to.have.property(
+                    'blockedUsers'
+                )
+                expect(response.body.currentUser).to.have.property('following')
+                expect(response.body.currentUser).to.have.property('followers')
             }))
 
-    it('should return an object with correct field data', () =>
+    it('should return the blocking/unblocking user with correct field data', () =>
         chai
             .request(app)
             .post('/blockuser')
@@ -135,10 +137,57 @@ describe('Testing POST to /blockuser API', () => {
                 blockedUserFollowers: blockedUserFollowers
             })
             .then((response) => {
-                expect(response.body.following).to.not.include(blockedUserID)
-                expect(response.body.followers).to.not.include(blockedUserID)
-                expect(response.body.blockedUsers).to.include(
+                expect(response.body.currentUser.following).to.not.include(
+                    blockedUserID
+                )
+                expect(response.body.currentUser.followers).to.not.include(
+                    blockedUserID
+                )
+                expect(response.body.currentUser.blockedUsers).to.include(
                     blockedUserID.toString()
+                )
+            }))
+
+    it('should return the blocked/unblocked user with correct field names', () =>
+        chai
+            .request(app)
+            .post('/blockuser')
+            .send({
+                addBlock: addBlock,
+                signedInUserID: signedInUserID,
+                signedInBlockedUsers: signedInBlockedUsers,
+                signedInUserFollowing: signedInUserFollowing,
+                signedInUserFollowers: signedInUserFollowers,
+                blockedUserID: blockedUserID,
+                blockedUserFollowing: blockedUserFollowing,
+                blockedUserFollowers: blockedUserFollowers
+            })
+            .then((response) => {
+                expect(response.body.otherUser).to.have.property('blockedUsers')
+                expect(response.body.otherUser).to.have.property('following')
+                expect(response.body.otherUser).to.have.property('followers')
+            }))
+
+    it('should return the blocked/unblocked user with correct field data', () =>
+        chai
+            .request(app)
+            .post('/blockuser')
+            .send({
+                addBlock: addBlock,
+                signedInUserID: signedInUserID,
+                signedInBlockedUsers: signedInBlockedUsers,
+                signedInUserFollowing: signedInUserFollowing,
+                signedInUserFollowers: signedInUserFollowers,
+                blockedUserID: blockedUserID,
+                blockedUserFollowing: blockedUserFollowing,
+                blockedUserFollowers: blockedUserFollowers
+            })
+            .then((response) => {
+                expect(response.body.otherUser.following).to.not.include(
+                    signedInUserID
+                )
+                expect(response.body.otherUser.followers).to.not.include(
+                    signedInUserID
                 )
             }))
 })

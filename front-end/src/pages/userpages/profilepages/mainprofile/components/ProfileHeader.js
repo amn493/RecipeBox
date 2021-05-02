@@ -1,12 +1,49 @@
-import { PlusSquareFill } from 'react-bootstrap-icons'
+import React from 'react'
+import axios from 'axios'
 
+import { PlusSquareFill } from 'react-bootstrap-icons'
+import Dropdown from 'react-bootstrap/Dropdown'
+import { ThreeDots } from 'react-bootstrap-icons'
 import Number from '../../../../../gencomponents/Number.js'
 import './ProfileHeader.css'
 
 //Component for profile headers (my profile and other user profile)
 //Expects user (a user object) and recipeCount (the number of recipes the user has posted) as props
 
+const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
+    // eslint-disable-next-line jsx-a11y/anchor-is-valid
+    <a
+        href=""
+        ref={ref}
+        onClick={(e) => {
+            e.preventDefault()
+            onClick(e)
+        }}
+    >
+        {children}
+    </a>
+))
+
 const ProfileHeader = (props) => {
+    // block user button clicked
+    const handleBlock = () => {
+        axios
+            .post(`http://${process.env.REACT_APP_ORIGIN}:4000/blockuser`, {
+                addBlock: true,
+                signedInUserID: props.currentUser._id,
+                signedInBlockedUsers: props.currentUser.blockedUsers,
+                signedInUserFollowing: props.currentUser.following,
+                signedInUserFollowers: props.currentUser.followers,
+                blockedUserID: props.profileUser._id,
+                blockedUserFollowing: props.profileUser.following,
+                blockedUserFollowers: props.profileUser.followers
+            })
+            .then((response) => {
+                props.setCurrentUser(response.data.currentUser)
+                props.setProfileUser(response.data.otherUser)
+            })
+    }
+
     return (
         <div className="profileHeader">
             <table className="profileTopTable">
@@ -15,18 +52,18 @@ const ProfileHeader = (props) => {
                         <td className="profilePictureCell">
                             <img
                                 className="profilePicture"
-                                src={props.user.imagePath}
+                                src={props.profileUser.imagePath}
                                 alt="user profile"
                             />
                         </td>
                         <td className="userFullNameAndUserHandle">
                             <b className="userFirstAndLastName">
-                                {props.user.firstName +
+                                {props.profileUser.firstName +
                                     ' ' +
-                                    props.user.lastName}
+                                    props.profileUser.lastName}
                             </b>
                             <br />
-                            {'@' + props.user.username}
+                            {'@' + props.profileUser.username}
                         </td>
                         {props.isMyProfile ? (
                             <td className="plusButtonCell">
@@ -36,6 +73,26 @@ const ProfileHeader = (props) => {
                                     </i>
                                 </a>
                             </td>
+                        ) : !props.userBlocked ? (
+                            <Dropdown className="dotsDropdown">
+                                <Dropdown.Toggle
+                                    as={CustomToggle}
+                                    id="dropdown-basic"
+                                >
+                                    <i className="text-dark">
+                                        <ThreeDots size={20} />
+                                    </i>
+                                </Dropdown.Toggle>
+
+                                <Dropdown.Menu
+                                    className="dotsDropdownMenu"
+                                    align="right"
+                                >
+                                    <Dropdown.Item onClick={handleBlock}>
+                                        Block User
+                                    </Dropdown.Item>
+                                </Dropdown.Menu>
+                            </Dropdown>
                         ) : (
                             <></>
                         )}
@@ -62,20 +119,21 @@ const ProfileHeader = (props) => {
                                         ? 'clickDisabled'
                                         : 'clickEnabled'
                                 }`}
-                                href={`/user-${props.user.slug}/followers`}
+                                href={`/user-${props.profileUser.slug}/followers`}
                             >
                                 <b className="profileStatNumber">
                                     <Number
                                         number={
                                             props.userBlocked
                                                 ? 0
-                                                : props.user.followers.length
+                                                : props.profileUser.followers
+                                                      .length
                                         }
                                     />
                                 </b>
                                 <br />
                                 <small className="profileStatText">
-                                    {props.user.followers.length !== 1
+                                    {props.profileUser.followers.length !== 1
                                         ? 'Followers'
                                         : 'Follower'}
                                 </small>
@@ -88,14 +146,15 @@ const ProfileHeader = (props) => {
                                         ? 'clickDisabled'
                                         : 'clickEnabled'
                                 }`}
-                                href={`/user-${props.user.slug}/following`}
+                                href={`/user-${props.profileUser.slug}/following`}
                             >
                                 <b className="profileStatNumber">
                                     <Number
                                         number={
                                             props.userBlocked
                                                 ? 0
-                                                : props.user.following.length
+                                                : props.profileUser.following
+                                                      .length
                                         }
                                     />
                                 </b>
@@ -109,7 +168,7 @@ const ProfileHeader = (props) => {
                 </tbody>
             </table>
 
-            <p className="userBio">{props.user.bio}</p>
+            <p className="userBio">{props.profileUser.bio}</p>
         </div>
     )
 }
