@@ -9,10 +9,12 @@ import axios from 'axios'
 const HamburgerSignedIn = (props) => {
     // sign out user when sign out button is clicked
     const signOutUser = () => {
-        axios.post('http://localhost:4000/signout').then(() => {
-            localStorage.removeItem('token')
-            window.location = '/sign-in'
-        })
+        axios
+            .post(`http://${process.env.REACT_APP_ORIGIN}:4000/signout`)
+            .then(() => {
+                localStorage.removeItem('token')
+                window.location = '/sign-in'
+            })
     }
 
     return (

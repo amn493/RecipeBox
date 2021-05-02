@@ -117,7 +117,7 @@ const ProfilePage = (props) => {
                         signedIn={props.signedIn}
                         setShowModal={setShowModal}
                     />
-                ) : (
+                ) : !profileUser.blockedUsers.includes(props.user._id) ? (
                     <FollowButton
                         isBlockedUser={true}
                         profileUser={profileUser}
@@ -128,6 +128,8 @@ const ProfilePage = (props) => {
                         signedIn={props.signedIn}
                         setShowModal={setShowModal}
                     />
+                ) : (
+                    <></>
                 )}
                 {isMobile ? (
                     <div className="tabContainer">

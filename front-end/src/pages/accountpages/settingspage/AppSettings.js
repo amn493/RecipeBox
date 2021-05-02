@@ -224,7 +224,10 @@ const AppSettings = (props) => {
     const signOutUser = () => {
         axios
             .post(`http://${process.env.REACT_APP_ORIGIN}:4000/signout`)
-            .then(() => localStorage.removeItem('token'))
+            .then(() => {
+                localStorage.removeItem('token')
+                window.location = '/sign-in'
+            })
     }
 
     return !reqError ? (
