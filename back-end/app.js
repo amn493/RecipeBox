@@ -480,6 +480,12 @@ app.get('/usernametaken', (req, res, next) => {
         .catch((err) => next(err))
 })
 
+app.get('/likedby', (req, res, next) => {
+    User.find({ liked: req.query.id })
+        .then((users) => res.json(users))
+        .catch((err) => next(err))
+})
+
 /* Begin POST Requests */
 
 // Note on sanitization: The front-end validation is preeeetty good so usually we'll never get here.
@@ -1122,6 +1128,7 @@ app.post('/notificationsettings', (req, res, next) => {
 app.post(
     '/updateuserinfo',
     upload.single('profilepicture'),
+
     body('email').isEmail().withMessage('Email entered is not a valid email.'),
     body('firstName')
         .isAlpha()
@@ -1133,26 +1140,60 @@ app.post(
         .isAlphanumeric()
         .withMessage('Username must only be alphanumeric.'),
     body('bio').trim().escape(),
-    (req, res) => {
+    (req, res, next) => {
         // sanitize inputs -- same as account creation more or less
 
         // recieve post data from updating user's basic info
-        const updatedUserInfo = {
-            username: req.body.username,
-            firstName: req.body.firstName,
-            lastName: req.body.lastName,
-            bio: req.body.bio,
-            id: req.body.id,
-            imagePath: path.join('/uploads/', req.file.filename)
+        const updatedUserInfo = {}
+        if (req.body.username) {
+            updatedUserInfo.username = req.body.username
+        }
+        if (req.body.firstName) {
+            updatedUserInfo.firstName = req.body.firstName
+        }
+        if (req.body.lastName) {
+            updatedUserInfo.lastName = req.body.lastName
+        }
+        if (req.body.bio) {
+            updatedUserInfo.bio = req.body.bio
+        }
+        if (req.file) {
+            updatedUserInfo.imagePath = path.join(
+                '/uploads/',
+                req.file.filename
+            )
         }
 
-        // update the user's user object (in database)
-
-        // TODO: Once merged with this last POST request, check for any errors
-        // we want to prevent this from going through as opposed to just saving weird things
-
-        // send a response to the user (sending data back to test)
-        res.json(updatedUserInfo)
+        User.findByIdAndUpdate(req.body.id, updatedUserInfo, {
+            new: true,
+            useFindAndModify: false
+        })
+            .then((user) => {
+                if (
+                    req.file &&
+                    req.body.oldImage.split('/')[0] !== 'starterProfilePictures'
+                ) {
+                    fs.unlink(
+                        path.join(
+                            __dirname,
+                            `../front-end/public/${req.body.oldImage}`
+                        ),
+                        (err) => {
+                            if (err) {
+                                next(err)
+                            } else {
+                                // send a response to the user (sending data back to test)
+                                res.json(user)
+                            }
+                        }
+                    )
+                } else {
+                    res.json(user)
+                }
+            })
+            .catch((err) => {
+                next(err)
+            })
     }
 )
 

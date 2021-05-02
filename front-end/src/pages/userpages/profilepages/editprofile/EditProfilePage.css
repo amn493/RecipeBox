@@ -9,10 +9,8 @@
 .profilePic {
     width: 50%;
     height: 50%;
-}
-
-.editProfilePageForm {
-    margin-top: 10%;
+    max-width: 200px;
+    max-height: 200px;
 }
 
 .submitButton {

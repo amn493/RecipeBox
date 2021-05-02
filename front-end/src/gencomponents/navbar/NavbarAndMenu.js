@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import NavDropdown from 'react-bootstrap/NavDropdown'
 import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
+import { useMediaQuery } from 'react-responsive'
 
 import './NavbarAndMenu.css'
 
@@ -11,7 +12,10 @@ const NavbarAndMenu = (props) => {
     const signOutUser = () => {
         axios
             .post(`http://${process.env.REACT_APP_ORIGIN}:4000/signout`)
-            .then(() => localStorage.removeItem('token'))
+            .then(() => {
+                localStorage.removeItem('token')
+                window.location = '/sign-in'
+            })
     }
 
     // ref for component
@@ -56,6 +60,9 @@ const NavbarAndMenu = (props) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
+    // keep track of whether or not menu is collapsed
+    const isCollapsed = useMediaQuery({ query: '(max-width: 991px)' })
+
     return (
         <nav className="fixed-top navbar-expand-lg rbxNavStyles" ref={ref}>
             <div className="container-fluid">
@@ -78,9 +85,12 @@ const NavbarAndMenu = (props) => {
                             {props.signedIn ? (
                                 // signed-in menu
                                 <>
-                                    <Nav className="mr-auto ml-3">
+                                    <Nav
+                                        className={`mr-auto ${
+                                            isCollapsed ? '' : 'ml-3'
+                                        }`}
+                                    >
                                         <NavDropdown.Divider />
-
                                         <NavDropdown.Item
                                             className="rbxSpaceAdjustment"
                                             href="/new-recipe"
@@ -129,7 +139,6 @@ const NavbarAndMenu = (props) => {
                                     <Nav className="ml-auto">
                                         <NavDropdown.Item
                                             className="rbxSpaceAdjustment"
-                                            href="/sign-in"
                                             onClick={signOutUser}
                                         >
                                             Sign Out
@@ -139,7 +148,11 @@ const NavbarAndMenu = (props) => {
                             ) : (
                                 // not signed-in menu
                                 <>
-                                    <Nav className="mr-auto ml-3">
+                                    <Nav
+                                        className={`mr-auto ${
+                                            isCollapsed ? '' : 'ml-3'
+                                        }`}
+                                    >
                                         <NavDropdown.Divider />
                                         <NavDropdown.Item
                                             className="rbxSpaceAdjustment"

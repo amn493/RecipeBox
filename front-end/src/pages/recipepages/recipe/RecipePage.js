@@ -175,7 +175,10 @@ const RecipePage = (props) => {
                                 </i>
                             </Dropdown.Toggle>
 
-                            <Dropdown.Menu className="dotsDropdownMenu">
+                            <Dropdown.Menu
+                                className="dotsDropdownMenu"
+                                align="right"
+                            >
                                 <Dropdown.Item onClick={handlePin}>
                                     {recipe.pinned ? 'Unpin' : 'Pin'} Recipe
                                 </Dropdown.Item>
@@ -232,6 +235,19 @@ const RecipePage = (props) => {
                                             <Timestamp
                                                 createdAt={recipe.createdAt}
                                             />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <a
+                                                href={`${window.location.href}/likes`}
+                                                className="numLikes"
+                                            >
+                                                <Number number={recipe.likes} />{' '}
+                                                {recipe.likes === 1
+                                                    ? `like`
+                                                    : `likes`}
+                                            </a>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -348,7 +364,6 @@ const LikeButton = (props) => {
                     }
                 }}
             />
-            <Number className="numLikes" number={props.recipe.likes} />
         </div>
     )
 }

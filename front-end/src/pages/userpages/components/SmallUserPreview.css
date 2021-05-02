@@ -39,11 +39,21 @@
 .smallUserProfilePic {
     width: 20vw;
     height: 20vw;
+    max-width: 200px;
+    max-height: 200px;
+    min-width: 125px;
+    min-height: 125px;
 }
 
 .userPreviewImg {
     width: 20vw;
+    max-width: 205px;
+    min-width: 130px;
     padding-right: 5px;
+}
+
+.userPreviewTextCell {
+    width: 100%;
 }
 
 .userPreviewTable,
