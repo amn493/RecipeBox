@@ -17,9 +17,7 @@ const UserListPage = (props) => {
     const { slug } = useParams()
 
     // Request user / recipe on initial render
-    // TODO: replace both with dataFromSlug ?
-    const [user, setUser] = useState()
-    const [recipe, setRecipe] = useState()
+    const [dataFromSlug, setDataFromSlug] = useState()
 
     const [loadedData, setLoadedData] = useState(false)
 
@@ -31,16 +29,34 @@ const UserListPage = (props) => {
     useEffect(() => {
         if (pageType === 'likes') {
             // fetch the recipe whose likes are being displayed
-            /*
-            TODO
-            */
+            axios(
+                `http://${process.env.REACT_APP_ORIGIN}:4000/recipe?slug=${slug}`
+            ).then((recipeResponse) => {
+                setDataFromSlug(recipeResponse.data)
+                setLoadedData(true)
+                // get author user
+                axios(
+                    `http://${process.env.REACT_APP_ORIGIN}:4000/userbyid?id=${recipeResponse.data.user}`
+                ).then((userResponse) => {
+                    setUserBlocked(
+                        userResponse.data.blockedUsers.includes(
+                            props.user._id
+                        ) ||
+                            props.user.blockedUsers.includes(
+                                userResponse.data._id
+                            )
+                            ? true
+                            : false
+                    )
+                })
+            })
         } else {
             // fetch the user whose followers / following are being displayed
             axios(
                 `http://${process.env.REACT_APP_ORIGIN}:4000/userbyslug?slug=${slug}`
             )
                 .then((response) => {
-                    setUser(response.data)
+                    setDataFromSlug(response.data)
                     setLoadedData(true)
                     setUserBlocked(
                         response.data.blockedUsers.includes(props.user._id) ||
@@ -63,37 +79,38 @@ const UserListPage = (props) => {
     const [users, setUsers] = useState([])
 
     useEffect(() => {
-        if (user && pageType && userBlocked !== undefined) {
+        if (dataFromSlug && pageType && userBlocked !== undefined) {
+            let url
             if (pageType === 'likes') {
-                // Fetch all likes
-                /*
-                TODO
-                */
+                url = `http://${process.env.REACT_APP_ORIGIN}:4000/likedby?id=${dataFromSlug._id}`
             } else {
-                // Fetch all followers / following
-                if (user[pageType].length > 0 && userBlocked === false) {
-                    axios(
-                        `http://${
-                            process.env.REACT_APP_ORIGIN
-                        }:4000/usersbyid?id=${user[pageType].reduce(
-                            (acc, userid) => acc + `&id=${userid}`,
-                            ''
-                        )}`
-                    )
-                        .then((response) => {
-                            setAllUsers(response.data)
-                            setUsers(response.data)
-                        })
-                        .catch((err) => {
-                            console.error(err)
-                            setReqError(true)
-                        })
-                } else {
-                    setAllUsers([])
-                }
+                url = `http://${
+                    process.env.REACT_APP_ORIGIN
+                }:4000/usersbyid?id=${dataFromSlug[pageType].reduce(
+                    (acc, userid) => acc + `&id=${userid}`,
+                    ''
+                )}`
+            }
+
+            if (
+                (dataFromSlug.likes > 0 || dataFromSlug[pageType].length > 0) &&
+                userBlocked === false &&
+                url !== undefined
+            ) {
+                axios(url)
+                    .then((response) => {
+                        setAllUsers(response.data)
+                        setUsers(response.data)
+                    })
+                    .catch((err) => {
+                        console.error(err)
+                        setReqError(true)
+                    })
+            } else {
+                setAllUsers([])
             }
         }
-    }, [pageType, user, userBlocked])
+    }, [pageType, dataFromSlug, userBlocked])
 
     // For keyword search bar
     const [filterKeyword, setFilterKeyword] = useState('')
@@ -125,7 +142,7 @@ const UserListPage = (props) => {
     }, [filterKeyword]) // Update users when a new keyword is entered
 
     return !reqError ? (
-        loadedData && allUsers ? (
+        loadedData && allUsers && userBlocked !== undefined ? (
             <div className="users">
                 <div className="usersHeading">
                     <a
@@ -138,11 +155,18 @@ const UserListPage = (props) => {
                             <ArrowLeftCircleFill />
                         </i>
                     </a>
-                    {/* TODO */}
-                    <h3 className="name">@{user.username}</h3>
+                    <h3 className="name">
+                        {pageType === 'likes'
+                            ? dataFromSlug.name
+                            : `@${dataFromSlug.username}`}
+                    </h3>
                     {/* TODO */}
                     <h4 className="numUsers">{`${
-                        userBlocked ? 0 : user[pageType].length
+                        userBlocked
+                            ? 0
+                            : pageType === 'likes'
+                            ? dataFromSlug.likes
+                            : dataFromSlug[pageType].length
                     } ${
                         pageType[0].toUpperCase() +
                         pageType.slice(
