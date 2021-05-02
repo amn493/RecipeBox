@@ -159,6 +159,7 @@ function App() {
                                 <EditProfilePage
                                     user={user}
                                     signedIn={signedIn}
+                                    setUser={setUser}
                                 />
                             ) : (
                                 <Redirect to="/sign-in" />
