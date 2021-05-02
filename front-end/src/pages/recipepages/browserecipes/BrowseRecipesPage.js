@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
+import { useMediaQuery } from 'react-responsive'
 
 import LargeRecipePreview from '../components/LargeRecipePreview.js'
+import SmallRecipePreview from '../components/SmallRecipePreview.js'
 import KeywordSearchBar from '../../../gencomponents/searchbars/KeywordSearchBar.js'
 import ComboBoxSearchBar from '../../../gencomponents/searchbars/ComboBoxSearchBar.js'
 import TagButton from '../../../gencomponents/searchbars/TagButton.js'
+import ErrorComponent from '../../../gencomponents/ErrorComponent.js'
 
 import './BrowseRecipesPage.css'
-import ErrorComponent from '../../../gencomponents/ErrorComponent.js'
 
 const BrowseRecipesPage = (props) => {
     const [reqError, setReqError] = useState(false)
@@ -114,6 +116,9 @@ const BrowseRecipesPage = (props) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [tagSelection])
 
+    // max-width for mobile devices for responsive design
+    const isMobile = useMediaQuery({ query: '(max-width: 480px)' })
+
     return !reqError ? (
         <div className="browseRecipesPage">
             <div className="recipeNameSearchbar">
@@ -161,13 +166,21 @@ const BrowseRecipesPage = (props) => {
                 />
                 {recipes
                     .sort((a, b) => b.likes - a.likes)
-                    .map((recipe, i) => (
-                        <LargeRecipePreview
-                            recipe={recipe}
-                            user={props.user}
-                            key={i}
-                        />
-                    ))}
+                    .map((recipe, i) =>
+                        isMobile ? (
+                            <LargeRecipePreview
+                                recipe={recipe}
+                                user={props.user}
+                                key={i}
+                            />
+                        ) : (
+                            <SmallRecipePreview
+                                recipe={recipe}
+                                user={props.user}
+                                key={i}
+                            />
+                        )
+                    )}
             </div>
             <div
                 className={
@@ -177,13 +190,21 @@ const BrowseRecipesPage = (props) => {
                 }
             >
                 <b className="recommendedRecipesTitle">Recommended Recipes</b>
-                {recommendedRecipes.map((recipe, i) => (
-                    <LargeRecipePreview
-                        recipe={recipe}
-                        user={props.user}
-                        key={i}
-                    />
-                ))}
+                {recommendedRecipes.map((recipe, i) =>
+                    isMobile ? (
+                        <LargeRecipePreview
+                            recipe={recipe}
+                            user={props.user}
+                            key={i}
+                        />
+                    ) : (
+                        <SmallRecipePreview
+                            recipe={recipe}
+                            user={props.user}
+                            key={i}
+                        />
+                    )
+                )}
             </div>
         </div>
     ) : (

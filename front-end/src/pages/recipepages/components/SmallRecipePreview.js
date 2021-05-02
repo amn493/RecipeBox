@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { PinAngleFill } from 'react-bootstrap-icons'
+import { useMediaQuery } from 'react-responsive'
 
 import Timestamp from '../../../gencomponents/Timestamp.js'
 import Number from '../../../gencomponents/Number.js'
@@ -44,6 +45,9 @@ const SmallRecipePreview = (props) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.recipe])
 
+    // max-width for mobile devices for responsive design
+    const isMobile = useMediaQuery({ query: '(max-width: 480px)' })
+
     return (
         <div className="smallRecipePreview">
             {props.pinned ? (
@@ -58,15 +62,31 @@ const SmallRecipePreview = (props) => {
             <div className={props.pinned ? 'pinnedRecipeSmall' : ''}>
                 <table className="smallRecipePreviewOuterTable">
                     <tbody>
-                        <tr>
-                            <td className="smallRecipePreviewImageCell">
+                        <tr className="smallRecipePreviewOuterTableRow">
+                            <td
+                                className={`smallRecipePreviewImageCell${
+                                    isMobile
+                                        ? ''
+                                        : ' smallRecipePreviewImageCellExpanded'
+                                }`}
+                            >
                                 <img
-                                    className="smallRecipePreviewImage"
+                                    className={`smallRecipePreviewImage${
+                                        isMobile
+                                            ? ''
+                                            : ' smallRecipePreviewImageExpanded'
+                                    }`}
                                     src={props.recipe.imagePath}
                                     alt="food"
                                 />
                             </td>
-                            <td>
+                            <td
+                                className={`smallRecipePreviewTextCell${
+                                    isMobile
+                                        ? ''
+                                        : ' smallRecipePreviewTextCellExpanded'
+                                }`}
+                            >
                                 <table className="smallRecipePreviewTable smallRecipePreviewTopTable">
                                     <tbody>
                                         <tr>
@@ -132,6 +152,31 @@ const SmallRecipePreview = (props) => {
                                         </tr>
                                     </tbody>
                                 </table>
+                                {!isMobile ? (
+                                    <table className="smallRecipePreviewExtraDetails">
+                                        <tbody>
+                                            <tr>
+                                                <p className="smallRecipePreviewCaption">
+                                                    {props.recipe.caption}
+                                                </p>
+
+                                                {props.recipe.tags.map(
+                                                    (tag, i) => (
+                                                        <a
+                                                            className="smallRecipePreviewTag text-info"
+                                                            href={`/browse-recipes?tag=${tag}`}
+                                                            key={i}
+                                                        >
+                                                            {'#' + tag}
+                                                        </a>
+                                                    )
+                                                )}
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                ) : (
+                                    <></>
+                                )}
                             </td>
                         </tr>
                     </tbody>

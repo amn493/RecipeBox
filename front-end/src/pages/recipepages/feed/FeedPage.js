@@ -1,10 +1,12 @@
-import './FeedPage.css'
-import RecipeList from '../components/RecipeList.js'
-
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import ErrorComponent from '../../../gencomponents/ErrorComponent.js'
 import Button from 'react-bootstrap/Button'
+import { useMediaQuery } from 'react-responsive'
+
+import RecipeList from '../components/RecipeList.js'
+
+import './FeedPage.css'
 
 // Pulls recipes from the database for the logged-in feed and generates a recipelist for qualifying recipes
 // Qualifying recipes, e.g. latest recipes posted by those someone has followed
@@ -91,11 +93,14 @@ const Feed = (props) => {
         setRecLoadedText(`Showing recipes from ${dateMultiplier * 2} weeks ago`)
     }
 
+    // max-width for mobile devices for responsive design
+    const isMobile = useMediaQuery({ query: '(max-width: 480px)' })
+
     return props.user.username ? (
         !reqError ? (
             <>
                 <RecipeList
-                    size="large"
+                    size={isMobile ? 'large' : 'small'}
                     recipes={recBoxRecipes}
                     user={props.user}
                 />

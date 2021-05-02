@@ -66,12 +66,13 @@ const NewRecipePage = (props) => {
 
     // add tag button pressed
     const addTag = () => {
-        // remove everything aside from letters and make the tag lowercase
+        // remove everything aside from letters and numbers and make the tag lowercase
         const newTag = Array.from(tagValue)
             .filter(
                 (char) =>
                     (char.charCodeAt(0) >= 65 && char.charCodeAt(0) <= 90) ||
-                    (char.charCodeAt(0) >= 97 && char.charCodeAt(0) <= 122)
+                    (char.charCodeAt(0) >= 97 && char.charCodeAt(0) <= 122) ||
+                    (char.charCodeAt(0) >= 48 && char.charCodeAt(0) <= 57)
             )
             .join('')
             .toLowerCase()
