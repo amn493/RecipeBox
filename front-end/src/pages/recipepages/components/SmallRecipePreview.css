@@ -50,8 +50,7 @@
 .smallRecipePreviewRecipeName:active,
 .smallRecipePreviewUsername:hover,
 .smallRecipePreviewUsername:active {
-    color: black;
-    opacity: 60%;
+    color: rgba(0, 0, 0, 0.6);
     text-decoration: none;
 }
 
@@ -114,6 +113,11 @@
     font-weight: bold;
     font-size: 14px;
     display: inline-block;
+}
+
+.smallRecipePreviewTag:hover,
+.smallRecipePreviewTag:active {
+    text-decoration: none;
 }
 
 .smallRecipePreviewCaption {
