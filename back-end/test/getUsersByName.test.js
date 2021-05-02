@@ -1,3 +1,4 @@
+/* eslint-disable */
 // Test expected output when given valid input
 // Test expected output when given invalid input
 
@@ -8,42 +9,67 @@ const expect = chai.expect
 // For chai to run tests on an unused port
 chai.use(chaiHTTP)
 
+const mongoose = require('mongoose')
+require('../db.js')
+
+const User = mongoose.model('User')
+
 const app = require('../app.js')
 
-// If Mockaroo is down, change route to "res.send('Text')" and 
+// If Mockaroo is down, change route to "res.send('Text')" and
 // comment out the axios to make sure the test runs.
 
 // Group of tests
 describe('Testing route handler for GET /usersbyname ', () => {
+    // get 3 users "randomly"
+    let userNames = []
+    let userObjs = []
+    before(async () => {
+        await User.find({})
+            .limit(3)
+            .then((user) => {
+                user.forEach((singleUser) => {
+                    userNames.push(singleUser.username)
+                    userObjs.push(singleUser)
+                })
+            })
+    })
     it('should return 200 OK status ', () => {
-        return chai.request(app).get('/usersbyname').then((response) => {
-            expect(response.status).to.equal(200)
-        })
+        return chai
+            .request(app)
+            .get(`/usersbyname?name=${userNames[0]}`)
+            .then((response) => {
+                expect(response.status).to.equal(200)
+            })
     }).timeout(3000)
 
-    it('should return user objects with the correct fields', () => {
-        return chai.request(app).get('/usersbyname').then((response) => {
-            expect((response.body)[0]).to.have.property('username')
-            expect((response.body)[0]).to.have.property('password')
-            expect((response.body)[0]).to.have.property('firstName')
-            expect((response.body)[0]).to.have.property('lastName')
-            expect((response.body)[0]).to.have.property('bio')
-            expect((response.body)[0]).to.have.property('followers')
-            expect((response.body)[0]).to.have.property('following')
-            expect((response.body)[0]).to.have.property('liked')
-            expect((response.body)[0]).to.have.property('slug')
-            expect((response.body)[0]).to.have.property('imagePath')
-            expect((response.body)[0]).to.have.property('id')
-        })
-    }).timeout(8000)
+    it('should return 3 valid user objects', () => {
+        return chai
+            .request(app)
+            .get(`/usersbyname?name=${userNames[0]}`)
+            .then((response) => {
+                //user 1
+                expect(response.body[0])
+                    .to.have.property('username')
+                    .that.is.a('string')
+                expect(response.body[0])
+                    .to.have.property('followers')
+                    .that.is.an('array')
+                expect(response.body[0])
+                    .to.have.property('notificationSettings')
+                    .that.is.an('object')
+                    .with.deep.property('emailNotifications')
+            })
+    })
 
-    it('should return user objects with the correct field types', () => {
-        return chai.request(app).get('/usersbyname').then((response) => {
-            expect((response.body)[0]).to.have.property('username').that.is.a('string')
-            expect((response.body)[0]).to.have.property('followers').that.is.an('array')
-            expect((response.body)[0]).to.have.property('id').that.is.a('int')
-        })
-    }).timeout(4000)
-
-    // Not testing number of users returned - can be >= 1 based on search term
+    it('should return user object as called', () => {
+        // they're reverse order because I pushed the array earlier vs appending
+        return chai
+            .request(app)
+            .get(`/usersbyname?name=${userNames[0]}`)
+            .then((response) => {
+                //user 1
+                expect(response.body[0].username).to.equal(userObjs[2].username)
+            })
+    })
 })
