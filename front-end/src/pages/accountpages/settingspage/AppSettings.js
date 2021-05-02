@@ -45,7 +45,7 @@ const AppSettings = (props) => {
                         )
                     )
                 )
-                props.setUser(response.data)
+                props.setUser(response.data.currentUser)
             })
     }
 
@@ -78,7 +78,7 @@ const AppSettings = (props) => {
                     usersToBlock.includes(userToUnblock)
                         ? setUsersToBlock(usersToBlock)
                         : setUsersToBlock(usersToBlock.concat(props))
-                    props.setUser(response.data)
+                    props.setUser(response.data.currentUser)
                 })
         }
     }

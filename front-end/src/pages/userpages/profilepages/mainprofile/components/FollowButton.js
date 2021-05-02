@@ -24,8 +24,9 @@ const FollowButton = (props) => {
                     )
                     .then((response) => {
                         // update signed-in user
-                        props.setCurrentUser(response.data)
-                        window.location.reload()
+                        props.setCurrentUser(response.data.currentUser)
+                        props.setProfileUser(response.data.otherUser)
+                        props.setUserBlocked(false)
                     })
             } else {
                 // post request to update followers and following

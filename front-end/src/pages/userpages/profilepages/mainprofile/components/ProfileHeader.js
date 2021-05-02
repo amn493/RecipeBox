@@ -38,8 +38,9 @@ const ProfileHeader = (props) => {
                 blockedUserFollowing: props.profileUser.following,
                 blockedUserFollowers: props.profileUser.followers
             })
-            .then(() => {
-                window.location.reload()
+            .then((response) => {
+                props.setCurrentUser(response.data.currentUser)
+                props.setProfileUser(response.data.otherUser)
             })
     }
 

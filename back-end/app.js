@@ -817,7 +817,7 @@ app.post('/blockuser', (req, res, next) => {
         },
         { new: true, useFindAndModify: false }
     )
-        .then((user) => {
+        .then((currentUser) => {
             User.findByIdAndUpdate(
                 req.body.blockedUserID,
                 {
@@ -826,8 +826,8 @@ app.post('/blockuser', (req, res, next) => {
                 },
                 { new: true, useFindAndModify: false }
             )
-                .then(() => {
-                    res.json(user)
+                .then((otherUser) => {
+                    res.send({ currentUser, otherUser })
                 })
                 .catch((err) => next(err))
         })

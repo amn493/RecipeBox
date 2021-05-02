@@ -88,6 +88,8 @@ const ProfilePage = (props) => {
                 <ProfileHeader
                     currentUser={props.user}
                     profileUser={profileUser}
+                    setProfileUser={setProfileUser}
+                    setCurrentUser={props.setUser}
                     recipeCount={userBlocked ? 0 : recipes.length}
                     userBlocked={userBlocked}
                     isMyProfile={profileUser._id === props.user._id}
@@ -111,6 +113,7 @@ const ProfilePage = (props) => {
                         setProfileUser={setProfileUser}
                         currentUser={props.user}
                         setCurrentUser={props.setUser}
+                        setUserBlocked={setUserBlocked}
                         signedIn={props.signedIn}
                         setShowModal={setShowModal}
                     />
@@ -121,6 +124,7 @@ const ProfilePage = (props) => {
                         setProfileUser={setProfileUser}
                         currentUser={props.user}
                         setCurrentUser={props.setUser}
+                        setUserBlocked={setUserBlocked}
                         signedIn={props.signedIn}
                         setShowModal={setShowModal}
                     />
