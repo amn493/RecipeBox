@@ -110,10 +110,6 @@ const EditProfilePage = (props) => {
     }
     // Upload image file
     const fileUploaded = (event) => {
-        setImageFile(event.target.files[0])
-        /* TODO  show new /cropped/ profile pic once selected */
-        //setProfilePic(URL.createObjectURL(event.target.files[0]))
-
         const userImgForCropperJS = document.getElementById(
             'userimgforcropperjs'
         )
@@ -138,6 +134,13 @@ const EditProfilePage = (props) => {
             setShowModal(false)
         }
     }
+
+    useEffect(() => {
+        if (imageFile) {
+            // show new cropped profile pic once selected
+            setProfilePic(URL.createObjectURL(imageFile))
+        }
+    }, [imageFile])
 
     // Ensure username field is not blank
     const [isUsernameEmpty, setIsUsernameEmpty] = useState(false)
