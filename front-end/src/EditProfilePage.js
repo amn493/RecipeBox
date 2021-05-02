@@ -18,6 +18,7 @@ const EditProfilePage = (props) => {
     const [lastNameVal, setLastNameVal] = useState('')
     const [userNameVal, setUserNameVal] = useState('')
     const [bioVal, setBioVal] = useState('')
+    const [profilePic, setProfilePic] = useState('')
 
     const [usernameTakenMessage, setUsernameTakenMessage] = useState('')
 
@@ -36,6 +37,7 @@ const EditProfilePage = (props) => {
             setLastNameVal(props.user.lastName)
             setUserNameVal(props.user.username)
             setBioVal(props.user.bio)
+            setProfilePic(props.user.imagePath)
             setUserLoaded(true)
         }
     }, [props.user])
@@ -100,6 +102,7 @@ const EditProfilePage = (props) => {
     // Upload image file
     const fileUploaded = (event) => {
         setImageFile(event.target.files[0])
+        setProfilePic(URL.createObjectURL(event.target.files[0]))
     }
 
     // Ensure username field is not blank
@@ -136,7 +139,7 @@ const EditProfilePage = (props) => {
                             <div className="centerPhoto">
                                 <img
                                     className="profilePic"
-                                    src={props.user.imagePath}
+                                    src={profilePic}
                                     alt="Current Profile Avatar"
                                 ></img>
                                 <br />
