@@ -827,7 +827,7 @@ app.post('/blockuser', (req, res, next) => {
                 { new: true, useFindAndModify: false }
             )
                 .then((otherUser) => {
-                    res.send({ currentUser, otherUser })
+                    res.json({ currentUser, otherUser })
                 })
                 .catch((err) => next(err))
         })
