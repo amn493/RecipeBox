@@ -708,10 +708,9 @@ app.post(
             user: req.body.userID,
             name: req.body.name,
             // imagePath: path.join('/uploads/', req.file.filename),
-            imagePath: req.files.forEach((file) => {
-                console.log(file.filename)
+            imagePath: req.files.map((file) =>
                 path.join('/uploads/', file.filename)
-            }),
+            ),
             tags: JSON.parse(req.body.tags).filter((tag) => tag !== ''),
             caption: req.body.caption,
             ingredients: JSON.parse(req.body.ingredients)
