@@ -44,8 +44,7 @@
 .recipeUsername:active,
 .numLikes:hover,
 .numLikes:active {
-    color: black;
-    opacity: 60%;
+    color: rgba(0, 0, 0, 0.6);
     text-decoration: none;
 }
 
