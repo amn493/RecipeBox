@@ -7,6 +7,7 @@ chai.use(chaiHTTP)
 
 const app = require('../app.js')
 const fs = require('fs')
+const path = require('path');
 
 // For finding User from database
 require('dotenv').config({ silent: true })
@@ -30,13 +31,22 @@ describe('Testing route handler for POST /updateuserinfo ', () => {
     let originalFirstName = ''
     let originalLastName = ''
     let originalBio = ''
+    let originalImagePath = ''
     before(async () => {
-        await User.findOne({}).then((user) => {
+        await User.findOne({ $in:{imagePath: [
+            'starterProfilePictures/RBX_PFP_Blue.png',
+            'starterProfilePictures/RBX_PFP_Gold.png',
+            'starterProfilePictures/RBX_PFP_Green.png',
+            'starterProfilePictures/RBX_PFP_Magenta.png',
+            'starterProfilePictures/RBX_PFP_Red.png',
+            'starterProfilePictures/RBX_PFP_Violet.png'
+        ]}}).then((user) => {
             userID = user._id.toString()
             originalUsername = user.username
             originalFirstName = user.firstName
             originalLastName = user.lastName
             originalBio = user.bio
+            originalImagePath = user.imagePath
         })
     })
 
@@ -49,6 +59,7 @@ describe('Testing route handler for POST /updateuserinfo ', () => {
         .field('lastName', lastName)
         .field('bio', bio)
         .field('id', userID)
+        .attach('profilepicture', fs.readFileSync('./test/image.png'), 'image.png')
         .then((response) => {
             expect(response.status).to.equal(200)
         })
@@ -69,6 +80,21 @@ describe('Testing route handler for POST /updateuserinfo ', () => {
             expect(response.body).have.property('lastName').that.is.a('string')
             expect(response.body).have.property('bio').that.is.a('string')
             expect(response.body).have.property('imagePath')
+        })
+    }).timeout(4000)
+
+    it('should return the profile to the original ', () => {
+        return chai.request(app)
+        .post('/updateuserinfo')
+        .set('content-type', 'multipart/form-data')
+        .field('username', originalUsername)
+        .field('firstName', originalFirstName)
+        .field('lastName', originalLastName)
+        .field('bio', originalBio)
+        .field('id', userID)
+        .attach('profilepicture', fs.readFileSync(originalImagePath), path.basename(originalImagePath))
+        .then((response) => {
+            expect(response.status).to.equal(200)
         })
     }).timeout(4000)
 
