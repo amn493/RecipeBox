@@ -702,12 +702,10 @@ app.post(
     body('name').not().isEmpty().trim().escape(),
     body('caption').not().isEmpty().trim().escape(),
     (req, res, next) => {
-        console.log(req.files) // hopefully i remember to remove this
         // new recipe
         const newRecipe = {
             user: req.body.userID,
             name: req.body.name,
-            // imagePath: path.join('/uploads/', req.file.filename),
             imagePath: req.files.map((file) =>
                 path.join('/uploads/', file.filename)
             ),
@@ -725,8 +723,6 @@ app.post(
             likes: 0,
             createdAt: Date.now()
         }
-
-        console.log('imgPath:' + newRecipe.imagePath) // hopefully i remember to remove this
 
         // save new recipe to database
         new Recipe(newRecipe)
