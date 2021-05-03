@@ -23,20 +23,21 @@ const User = mongoose.model('User')
 describe('Testing route handler for POST /newrecipe ', () => {
     let userID = ''
     let name = 'oatmeal'
-    let tags = ['breakfast,oats,vegan']
+    let tags = JSON.stringify(['breakfast,oats,vegan'])
     let caption = 'The best morning oatmeal!'
-    let ingredients = ['rolled oats,banana,blueberries,chia seeds']
-    let instructions = ['boil oats in water,add toppings,enjoy!']
+    let ingredients = JSON.stringify(['rolled oats,banana,blueberries,chia seeds'])
+    let instructions = JSON.stringify(['boil oats in water,add toppings,enjoy!'])
     let pinned = 'false'
+    let id = ''
 
     // Pull in a "random" user
     before(async () => {
         await User.findOne({}).then((user) => {
-            userID = user._id
+            userID = user._id.toString()
         })
     })
 
-    it('POST should return 200 OK status and should return a recipe object with the right field names and types ', () => {
+    it('POST should return 200 OK status AND should return a recipe object with the right field names and types ', () => {
         return chai.request(app)
         .post('/newrecipe')
         .set('content-type', 'multipart/form-data')
@@ -50,6 +51,7 @@ describe('Testing route handler for POST /newrecipe ', () => {
         .field('pinned', pinned)
         .then((response) => {
             expect(response.status).to.equal(200)
+
             expect(response.body).have.property('_id')
             expect(response.body).have.property('tags')
             expect(response.body).have.property('ingredients')
@@ -61,17 +63,14 @@ describe('Testing route handler for POST /newrecipe ', () => {
             expect(response.body).have.property('likes')
             expect(response.body).have.property('createdAt')
             expect(response.body).have.property('pinned')
+            id = response.body._id.toString()
         })
     }).timeout(8000)
 
-    // Get id object for /deleterecipe
-    let id
-    chai.request(app).get('/recipe?slug=oatmeal').then((response) => {
-        id = response.body._id
-    })
-    
-    // Delete the recipe
-    chai.request(app)
+    after(async () => {
+        // Delete the recipe
+        await chai.request(app)
         .post('/deleterecipe')
         .send({id})
+    })
 })
