@@ -16,7 +16,6 @@ const mongoose = require('mongoose')
 require('../db.js')
 // eslint-disable-next-line no-unused-vars
 const JWT = require('jsonwebtoken')
-const Recipe = mongoose.model('Recipe')
 const User = mongoose.model('User')
 
 
@@ -29,7 +28,6 @@ describe('Testing route handler for POST /newrecipe ', () => {
     let instructions = JSON.stringify(['boil oats in water,add toppings,enjoy!'])
     let pinned = 'false'
     let id = ''
-    let slug = ''
 
     // Pull in a "random" user
     before(async () => {
@@ -50,7 +48,6 @@ describe('Testing route handler for POST /newrecipe ', () => {
         .field('pinned', pinned)
         .then((response) => {
             id = response.body._id.toString()
-            slug = response.body.slug
         })
     })
 
