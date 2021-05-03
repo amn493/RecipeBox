@@ -1,8 +1,3 @@
-// COMMENTED OUT TO MERGE TravisCI
-
-/*// Test expected output when given valid input
-// Test expected output when given invalid input
-
 const chai = require('chai')
 const chaiHTTP = require('chai-http')
 const expect = chai.expect
@@ -13,17 +8,37 @@ chai.use(chaiHTTP)
 const app = require('../app.js')
 const fs = require('fs')
 
+// For finding User from database
+require('dotenv').config({ silent: true })
+const mongoose = require('mongoose')
+require('../db.js')
+const User = mongoose.model('User')
+
 // If Mockaroo is down, change route to "res.send('Text')" and 
 // comment out the axios to make sure the test runs.
 
-
 // Group of tests
 describe('Testing route handler for POST /updateuserinfo ', () => {
-    let username = 'userNameVal'
-    let firstName = 'firstNameVal'
-    let lastName = 'lastNameVal'
-    let bio = 'bioVal'
-    let _id = "606faf0fa9841f27a9e1bcea"
+    let username = 'testEditProfile'
+    let firstName = 'neil'
+    let lastName = 'armstrong'
+    let bio = 'Testing edit profile!'
+
+    // Pull in a "random" user
+    let userID = ''
+    let originalUsername = ''
+    let originalFirstName = ''
+    let originalLastName = ''
+    let originalBio = ''
+    before(async () => {
+        await User.findOne({}).then((user) => {
+            userID = user._id.toString()
+            originalUsername = user.username
+            originalFirstName = user.firstName
+            originalLastName = user.lastName
+            originalBio = user.bio
+        })
+    })
 
     it('should return 200 OK status ', () => {
         return chai.request(app)
@@ -33,15 +48,13 @@ describe('Testing route handler for POST /updateuserinfo ', () => {
         .field('firstName', firstName)
         .field('lastName', lastName)
         .field('bio', bio)
-        .field('id', _id)
-        // Change file path to be image files availible to multer
-        .attach('profilepicture', fs.readFileSync('./test/image.png'), 'image.png')
+        .field('id', userID)
         .then((response) => {
             expect(response.status).to.equal(200)
         })
     }).timeout(4000)
 
-    it('should return a user object with the right field names and types', () => {
+    it('should return a user object with the right properties and types ', () => {
         return chai.request(app)
         .post('/updateuserinfo')
         .set('content-type', 'multipart/form-data')
@@ -49,8 +62,7 @@ describe('Testing route handler for POST /updateuserinfo ', () => {
         .field('firstName', firstName)
         .field('lastName', lastName)
         .field('bio', bio)
-        .field('id', _id)
-        .attach('profilepicture', fs.readFileSync('./test/image.png'), 'image.png')
+        .field('id', userID)
         .then((response) => {
             expect(response.body).have.property('username').that.is.a('string')
             expect(response.body).have.property('firstName').that.is.a('string')
@@ -59,4 +71,18 @@ describe('Testing route handler for POST /updateuserinfo ', () => {
             expect(response.body).have.property('imagePath')
         })
     }).timeout(4000)
-})*/
+
+    it('should return the profile to the original ', () => {
+        return chai.request(app)
+        .post('/updateuserinfo')
+        .set('content-type', 'multipart/form-data')
+        .field('username', originalUsername)
+        .field('firstName', originalFirstName)
+        .field('lastName', originalLastName)
+        .field('bio', originalBio)
+        .field('id', userID)
+        .then((response) => {
+            expect(response.status).to.equal(200)
+        })
+    }).timeout(4000)
+})
