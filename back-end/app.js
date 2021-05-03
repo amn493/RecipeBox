@@ -1151,10 +1151,10 @@ app.post(
         if (req.body.firstName) {
             updatedUserInfo.firstName = req.body.firstName
         }
-        if (req.body.lastName) {
+        if (req.body.lastName || req.body.lastName === '') {
             updatedUserInfo.lastName = req.body.lastName
         }
-        if (req.body.bio) {
+        if (req.body.bio || req.body.bio === '') {
             updatedUserInfo.bio = req.body.bio
         }
         if (req.file) {
