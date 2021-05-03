@@ -109,8 +109,6 @@ const RecipeBoxPage = (props) => {
                     setRecBoxRecipes(response.data)
                 })
                 .catch((err) => {
-                    // TODO: Print an error to the user, but for now mockaroo is likely
-                    console.log(err)
                     setReqError(true)
                 })
         } else {
