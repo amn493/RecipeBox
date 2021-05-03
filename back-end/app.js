@@ -697,16 +697,21 @@ const updateTags = (tags, i, cb, next) => {
 
 app.post(
     '/newrecipe',
-    upload.single('recipeimage'),
+    upload.array('recipeimage', 5),
     // sanitize recipe inputs -- text fields since that's what the user has control over
     body('name').not().isEmpty().trim().escape(),
     body('caption').not().isEmpty().trim().escape(),
     (req, res, next) => {
+        console.log(req.files) // hopefully i remember to remove this
         // new recipe
         const newRecipe = {
             user: req.body.userID,
             name: req.body.name,
-            imagePath: path.join('/uploads/', req.file.filename),
+            // imagePath: path.join('/uploads/', req.file.filename),
+            imagePath: req.files.forEach((file) => {
+                console.log(file.filename)
+                path.join('/uploads/', file.filename)
+            }),
             tags: JSON.parse(req.body.tags).filter((tag) => tag !== ''),
             caption: req.body.caption,
             ingredients: JSON.parse(req.body.ingredients)
@@ -721,6 +726,8 @@ app.post(
             likes: 0,
             createdAt: Date.now()
         }
+
+        console.log('imgPath:' + newRecipe.imagePath) // hopefully i remember to remove this
 
         // save new recipe to database
         new Recipe(newRecipe)
