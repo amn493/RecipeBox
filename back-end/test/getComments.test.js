@@ -12,7 +12,7 @@ require('../db.js')
 // eslint-disable-next-line no-unused-vars
 const JWT = require('jsonwebtoken')
 
-const Recipe = mongoose.model('Recipe')
+const Comment = mongoose.model('Comment')
 
 const { expect } = chai
 
@@ -26,9 +26,9 @@ describe('Testing GET for /comments API', () => {
     let recipeID = ''
     before(async () => {
         // dummy users
-        await Recipe.findOne().then((recipe) => {
-            if (recipe) {
-                recipeID = recipe._id
+        await Comment.findOne().then((comment) => {
+            if (comment) {
+                recipeID = comment.recipe
             }
         })
     })
@@ -57,7 +57,7 @@ describe('Testing GET for /comments API', () => {
     it('should return a non-null array of comments given a recipe ID whose respective recipe contains comments', () => {
         return chai
             .request(app)
-            .get('/comments?recipeID=60822cc5cc7a916181964c7b')
+            .get(`/comments?recipeID=${recipeID}`)
             .then((response) => {
                 expect(response.body.length).to.be.greaterThan(0)
                 expect(response.body[0]).to.to.have.property('_id')
@@ -65,6 +65,17 @@ describe('Testing GET for /comments API', () => {
                 expect(response.body[0]).to.to.have.property('user')
                 expect(response.body[0]).to.to.have.property('comment')
                 expect(response.body[0]).to.to.have.property('createdAt')
+            })
+    })
+
+    it('should return only comments whose recipeID field is equal to the given recipeID in query string', () => {
+        return chai
+            .request(app)
+            .get(`/comments?recipeID=${recipeID}`)
+            .then((response) => {
+                response.body.forEach((comment) => {
+                    expect(comment.recipe).to.equal(recipeID.toString())
+                })
             })
     })
 })

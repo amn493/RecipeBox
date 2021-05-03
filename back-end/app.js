@@ -1142,7 +1142,6 @@ app.post(
     body('bio').trim().escape(),
     (req, res, next) => {
         // sanitize inputs -- same as account creation more or less
-
         // recieve post data from updating user's basic info
         const updatedUserInfo = {}
         if (req.body.username) {
@@ -1151,12 +1150,13 @@ app.post(
         if (req.body.firstName) {
             updatedUserInfo.firstName = req.body.firstName
         }
-        if (req.body.lastName) {
+        if (req.body.lastName !== '\n') {
             updatedUserInfo.lastName = req.body.lastName
         }
-        if (req.body.bio) {
+        if (req.body.bio !== '\n') {
             updatedUserInfo.bio = req.body.bio
         }
+
         if (req.file) {
             updatedUserInfo.imagePath = path.join(
                 '/uploads/',
