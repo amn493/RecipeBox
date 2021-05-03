@@ -60,6 +60,11 @@ const SignInForm = (props) => {
                             placeholder="Username"
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
+                            onKeyPress={(event) => {
+                                if (event.key === 'Enter') {
+                                    handleSubmit(event)
+                                }
+                            }}
                         />
                     </Form.Group>
                     <Form.Group className="password" controlId="password">
@@ -69,6 +74,11 @@ const SignInForm = (props) => {
                             placeholder="Password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
+                            onKeyPress={(event) => {
+                                if (event.key === 'Enter') {
+                                    handleSubmit(event)
+                                }
+                            }}
                         />
                     </Form.Group>
                     <Button
