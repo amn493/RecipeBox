@@ -1,5 +1,7 @@
 # RecipeBox
 
+[![Build Status](https://www.travis-ci.com/agile-dev-assignments/project-setup-team-ntobo-global.svg?branch=master)](https://www.travis-ci.com/agile-dev-assignments/project-setup-team-ntobo-global)
+
 ## Vision Statement
 
 RecipeBox is an application that has set out to create an easy one-stop-shop for any and all recipes you want to look for and store that are based by other users- not large websites or automatic algorithms.
