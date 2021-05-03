@@ -76,7 +76,7 @@ const SmallRecipePreview = (props) => {
                                             ? ''
                                             : ' smallRecipePreviewImageExpanded'
                                     }`}
-                                    src={props.recipe.imagePath}
+                                    src={props.recipe.imagePath[0]}
                                     alt="food"
                                 />
                             </td>
