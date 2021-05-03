@@ -1,6 +1,6 @@
-.userPreview{
+.userPreview {
     margin-bottom: 15px;
-    width: 90%;
+    width: 100%;
     margin-left: auto;
     margin-right: auto;
 }
@@ -11,7 +11,8 @@
     width: 100%;
 }
 
-.userPreviewProfileLink:hover, .userPreviewProfileLink:active {
+.userPreviewProfileLink:hover,
+.userPreviewProfileLink:active {
     text-decoration: none;
     color: black;
     opacity: 60%;
@@ -33,19 +34,30 @@
     font-size: 11px;
     font-weight: lighter;
     text-align: right;
-} 
+}
 
-.smallUserProfilePic{
+.smallUserProfilePic {
     width: 20vw;
     height: 20vw;
+    max-width: 200px;
+    max-height: 200px;
+    min-width: 125px;
+    min-height: 125px;
 }
 
 .userPreviewImg {
     width: 20vw;
+    max-width: 205px;
+    min-width: 130px;
     padding-right: 5px;
 }
 
-.userPreviewTable, .userPreviewBottomTable {
+.userPreviewTextCell {
+    width: 100%;
+}
+
+.userPreviewTable,
+.userPreviewBottomTable {
     width: 100%;
 }
 
@@ -53,15 +65,14 @@
     vertical-align: baseline;
 }
 
-
 .userPreviewTopTable {
     margin-bottom: -8px;
     width: 100%;
 }
 
-.unBlock{
+.unBlock {
     vertical-align: top;
     text-align: right;
 }
-.unBlockUserButton{
+.unBlockUserButton {
 }

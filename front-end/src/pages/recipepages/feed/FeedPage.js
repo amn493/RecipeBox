@@ -1,10 +1,12 @@
-import './FeedPage.css'
-import RecipeList from '../components/RecipeList.js'
-
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import ErrorComponent from '../../../gencomponents/ErrorComponent.js'
 import Button from 'react-bootstrap/Button'
+import { useMediaQuery } from 'react-responsive'
+
+import RecipeList from '../components/RecipeList.js'
+
+import './FeedPage.css'
 
 // Pulls recipes from the database for the logged-in feed and generates a recipelist for qualifying recipes
 // Qualifying recipes, e.g. latest recipes posted by those someone has followed
@@ -37,12 +39,12 @@ const Feed = (props) => {
             if (followingArray.length === 0) {
                 setReqError(true)
                 setErrMsg(
-                    "You don't follow anyone. Check out the browse users page to find some tasty recipes!"
+                    "You don't follow anyone. Check out the browse users page to find some tasty recipes! "
                 )
             } else {
                 // Otherwise, go ahead and query the database
                 axios(
-                    `http://localhost:4000/feedrecipes?${
+                    `http://${process.env.REACT_APP_ORIGIN}:4000/feedrecipes?${
                         followingArray.length > 0
                             ? followingArray.reduce(
                                   (acc, following) =>
@@ -75,7 +77,7 @@ const Feed = (props) => {
         let followingArray = props.user.following
 
         axios(
-            `http://localhost:4000/feedrecipes?${
+            `http://${process.env.REACT_APP_ORIGIN}:4000/feedrecipes?${
                 followingArray.length > 0
                     ? followingArray.reduce(
                           (acc, following) => acc + `&following=${following}`,
@@ -91,26 +93,26 @@ const Feed = (props) => {
         setRecLoadedText(`Showing recipes from ${dateMultiplier * 2} weeks ago`)
     }
 
+    // max-width for mobile devices for responsive design
+    const isMobile = useMediaQuery({ query: '(max-width: 480px)' })
+
     return props.user.username ? (
         !reqError ? (
             <>
-                <div className="container">
-                    <RecipeList
-                        size="large"
-                        recipes={recBoxRecipes}
-                        user={props.user}
-                    />
-                    <div className="recLoadedText">{recLoadedText}</div>
-                    <Button
-                        block
-                        size="sm"
-                        variant="info"
-                        id="loadMoreRecipesBtn"
-                        onClick={loadMoreRecipes}
-                    >
-                        Load Older Recipes
-                    </Button>
-                </div>
+                <RecipeList
+                    size={isMobile ? 'large' : 'small'}
+                    recipes={recBoxRecipes}
+                    user={props.user}
+                />
+                <div className="recLoadedText">{recLoadedText}</div>
+                <Button
+                    block
+                    variant="info"
+                    id="loadMoreRecipesBtn"
+                    onClick={loadMoreRecipes}
+                >
+                    Load Older Recipes
+                </Button>
             </>
         ) : (
             <ErrorComponent error={errMsg} />

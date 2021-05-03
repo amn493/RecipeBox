@@ -64,7 +64,11 @@ const RecipeBoxPage = (props) => {
 
     useEffect(() => {
         axios(
-            `http://localhost:4000/filteredrecipes?keyword=${filterKeyword}${
+            `http://${
+                process.env.REACT_APP_ORIGIN
+            }:4000/filteredrecipes?userid=${
+                props.user._id
+            }&keyword=${filterKeyword}${
                 filterTags.length > 0
                     ? filterTags.reduce(
                           (acc, tag) => acc + `&tags=${tag}`,
@@ -126,7 +130,7 @@ const RecipeBoxPage = (props) => {
 
     useEffect(() => {
         // fetch all tags
-        axios('http://localhost:4000/tags')
+        axios(`http://${process.env.REACT_APP_ORIGIN}:4000/tags`)
             .then((response) => {
                 setTags(response.data)
             })

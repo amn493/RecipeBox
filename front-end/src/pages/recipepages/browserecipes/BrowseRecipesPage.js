@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
+import { useMediaQuery } from 'react-responsive'
 
 import LargeRecipePreview from '../components/LargeRecipePreview.js'
+import SmallRecipePreview from '../components/SmallRecipePreview.js'
 import KeywordSearchBar from '../../../gencomponents/searchbars/KeywordSearchBar.js'
 import ComboBoxSearchBar from '../../../gencomponents/searchbars/ComboBoxSearchBar.js'
 import TagButton from '../../../gencomponents/searchbars/TagButton.js'
+import ErrorComponent from '../../../gencomponents/ErrorComponent.js'
 
 import './BrowseRecipesPage.css'
-import ErrorComponent from '../../../gencomponents/ErrorComponent.js'
 
 const BrowseRecipesPage = (props) => {
     const [reqError, setReqError] = useState(false)
@@ -21,8 +23,10 @@ const BrowseRecipesPage = (props) => {
     useEffect(() => {
         // fetch all tags
         axios(
-            `http://localhost:4000/tags?blockedTags=${props.user.blockedTags.reduce(
-                (acc, tag) => `&blockedTags=${tag}`,
+            `http://${
+                process.env.REACT_APP_ORIGIN
+            }:4000/tags?blockedTags=${props.user.blockedTags.reduce(
+                (acc, tag) => acc + `&blockedTags=${tag}`,
                 ''
             )}`
         )
@@ -45,7 +49,9 @@ const BrowseRecipesPage = (props) => {
         } else {
             // fetch all recipes
             axios(
-                `http://localhost:4000/filteredrecipes?keyword=${filterKeyword}${
+                `http://${
+                    process.env.REACT_APP_ORIGIN
+                }:4000/filteredrecipes?keyword=${filterKeyword}${
                     filterTags.length > 0
                         ? filterTags.reduce(
                               (acc, tag) => acc + `&tags=${tag}`,
@@ -76,7 +82,7 @@ const BrowseRecipesPage = (props) => {
     const [recommendedRecipes, setRecommendedRecipes] = useState([])
 
     useEffect(() => {
-        axios('http://localhost:4000/recommendedrecipes')
+        axios(`http://${process.env.REACT_APP_ORIGIN}:4000/recommendedrecipes`)
             .then((response) =>
                 setRecommendedRecipes(
                     response.data.filter(
@@ -109,6 +115,9 @@ const BrowseRecipesPage = (props) => {
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [tagSelection])
+
+    // max-width for mobile devices for responsive design
+    const isMobile = useMediaQuery({ query: '(max-width: 480px)' })
 
     return !reqError ? (
         <div className="browseRecipesPage">
@@ -157,13 +166,21 @@ const BrowseRecipesPage = (props) => {
                 />
                 {recipes
                     .sort((a, b) => b.likes - a.likes)
-                    .map((recipe, i) => (
-                        <LargeRecipePreview
-                            recipe={recipe}
-                            user={props.user}
-                            key={i}
-                        />
-                    ))}
+                    .map((recipe, i) =>
+                        isMobile ? (
+                            <LargeRecipePreview
+                                recipe={recipe}
+                                user={props.user}
+                                key={i}
+                            />
+                        ) : (
+                            <SmallRecipePreview
+                                recipe={recipe}
+                                user={props.user}
+                                key={i}
+                            />
+                        )
+                    )}
             </div>
             <div
                 className={
@@ -173,13 +190,21 @@ const BrowseRecipesPage = (props) => {
                 }
             >
                 <b className="recommendedRecipesTitle">Recommended Recipes</b>
-                {recommendedRecipes.map((recipe, i) => (
-                    <LargeRecipePreview
-                        recipe={recipe}
-                        user={props.user}
-                        key={i}
-                    />
-                ))}
+                {recommendedRecipes.map((recipe, i) =>
+                    isMobile ? (
+                        <LargeRecipePreview
+                            recipe={recipe}
+                            user={props.user}
+                            key={i}
+                        />
+                    ) : (
+                        <SmallRecipePreview
+                            recipe={recipe}
+                            user={props.user}
+                            key={i}
+                        />
+                    )
+                )}
             </div>
         </div>
     ) : (

@@ -1,6 +1,9 @@
 .smallRecipePreview {
     margin-bottom: 15px;
-    width: 90%;
+}
+
+.smallRecipePreviewOuterTable {
+    width: 100%;
     margin-left: auto;
     margin-right: auto;
 }
@@ -8,6 +11,33 @@
 .smallRecipePreviewImage {
     width: 20vw;
     height: 20vw;
+    max-width: 200px;
+    max-height: 200px;
+    min-width: 125px;
+    min-height: 125px;
+}
+
+.smallRecipePreviewImageExpanded {
+    margin-top: 5px;
+}
+
+.smallRecipePreviewImageCell {
+    width: 20vw;
+    max-width: 205px;
+    min-width: 130px;
+    padding-right: 5px;
+}
+
+.smallRecipePreviewImageCellExpanded {
+    vertical-align: top;
+}
+
+.smallRecipePreviewTextCell {
+    width: 100%;
+}
+
+.smallRecipePreviewTextCellExpanded {
+    vertical-align: top;
 }
 
 .smallRecipePreviewRecipeName {
@@ -16,7 +46,10 @@
     color: black;
 }
 
-.smallRecipePreviewRecipeName:hover, .smallRecipePreviewRecipeName:active,.smallRecipePreviewUsername:hover, .smallRecipePreviewUsername:active {
+.smallRecipePreviewRecipeName:hover,
+.smallRecipePreviewRecipeName:active,
+.smallRecipePreviewUsername:hover,
+.smallRecipePreviewUsername:active {
     color: black;
     opacity: 60%;
     text-decoration: none;
@@ -32,6 +65,11 @@
     width: 20px;
     height: 20px;
     margin-right: 5px;
+    display: inline-block;
+}
+
+.numLikes {
+    display: inline-block;
 }
 
 .likedSmall {
@@ -39,7 +77,7 @@
 }
 
 .smallRecipePreviewLikedCol {
-    width: 46px;
+    white-space: nowrap;
 }
 
 .smallRecipePreviewTable {
@@ -51,14 +89,56 @@
 }
 
 .smallRecipePreviewTableRightCol {
-   text-align: right;
-}
-
-.smallRecipePreviewImageCell {
-    width: 20vw;
-    padding-right: 5px;
+    text-align: right;
 }
 
 .smallRecipePreviewTopTableCell {
     vertical-align: baseline;
 }
+
+.pinnedRecipeSmall {
+    background-color: rgba(23, 163, 184, 0.1);
+    border-radius: 10px;
+    padding: 10px;
+    margin-top: -10px;
+}
+
+.pinSmall {
+    color: rgb(23, 163, 184);
+    text-align: right;
+    margin-top: -10px;
+}
+
+.smallRecipePreviewTag {
+    margin-right: 5px;
+    font-weight: bold;
+    font-size: 14px;
+    display: inline-block;
+}
+
+.smallRecipePreviewCaption {
+    font-size: 14px;
+    margin-top: 10px;
+    margin-bottom: 3px;
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    /* 
+    // move this class to outer div
+    height: 9vw;
+    width: 60vw;
+    */
+}
+
+/*
+// class for inner div
+.smallRecipePreviewCaptionInnerDiv {
+    -webkit-column-width: 60vw;
+    column-width: 60vw;
+    height: 100%;
+    text-overflow: ellipsis;
+}
+*/

@@ -1,15 +1,19 @@
 import { useEffect, useState } from 'react'
+import React from 'react'
 import axios from 'axios'
-import { useParams } from 'react-router-dom'
+import { Redirect, useParams } from 'react-router-dom'
 import InputGroup from 'react-bootstrap/InputGroup'
 import FormControl from 'react-bootstrap/FormControl'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
+import Dropdown from 'react-bootstrap/Dropdown'
+import { ThreeDots } from 'react-bootstrap-icons'
 
 import Comment from './Comment.js'
 import Timestamp from '../../../gencomponents/Timestamp.js'
 import ErrorComponent from '../../../gencomponents/ErrorComponent.js'
 import CreateAccountModal from '../../../gencomponents/CreateAccountModal.js'
+import Number from '../../../gencomponents/Number.js'
 
 import './RecipePage.css'
 
@@ -19,6 +23,7 @@ import './RecipePage.css'
 
 const RecipePage = (props) => {
     const [reqError, setReqError] = useState(false)
+    const [deletedRecipe, setDeletedRecipe] = useState(false)
 
     // get slug from url params
     const { slug } = useParams()
@@ -28,7 +33,7 @@ const RecipePage = (props) => {
 
     useEffect(() => {
         // fetch the recipe that corresponds to the slug from the url
-        axios(`http://localhost:4000/recipe?slug=${slug}`)
+        axios(`http://${process.env.REACT_APP_ORIGIN}:4000/recipe?slug=${slug}`)
             .then((response) => {
                 setRecipe(response.data)
             })
@@ -51,7 +56,9 @@ const RecipePage = (props) => {
                     slug: props.user.slug
                 })
             } else {
-                axios(`http://localhost:4000/userbyid?id=${recipe.user}`)
+                axios(
+                    `http://${process.env.REACT_APP_ORIGIN}:4000/userbyid?id=${recipe.user}`
+                )
                     .then((response) => {
                         setAuthorUser({
                             id: response.data._id,
@@ -79,7 +86,9 @@ const RecipePage = (props) => {
 
     useEffect(() => {
         if (recipe) {
-            axios(`http://localhost:4000/comments?recipeID=${recipe._id}`)
+            axios(
+                `http://${process.env.REACT_APP_ORIGIN}:4000/comments?recipeID=${recipe._id}`
+            )
                 .then((response) => {
                     setComments(
                         response.data.sort((a, b) => a.createdAt - b.createdAt)
@@ -96,111 +105,211 @@ const RecipePage = (props) => {
     // state variable for showing sign-in modal
     const [showModal, setShowModal] = useState(false)
 
+    const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
+        // eslint-disable-next-line jsx-a11y/anchor-is-valid
+        <a
+            href=""
+            ref={ref}
+            onClick={(e) => {
+                e.preventDefault()
+                onClick(e)
+            }}
+        >
+            {children}
+        </a>
+    ))
+
+    // delete button clicked
+    const handleDelete = () => {
+        if (window.confirm('Are you sure you want to delete this recipe?')) {
+            // delete recipe
+            axios
+                .post(
+                    `http://${process.env.REACT_APP_ORIGIN}:4000/deleterecipe`,
+                    {
+                        id: recipe._id
+                    }
+                )
+                .then(() => {
+                    //redirect to my profile
+                    setDeletedRecipe(true)
+                })
+                .catch((err) => {
+                    console.error(err)
+                    setReqError(true)
+                })
+        }
+    }
+
+    // pin/unpin button clicked
+    const handlePin = () => {
+        axios
+            .post(`http://${process.env.REACT_APP_ORIGIN}:4000/pinrecipe`, {
+                id: recipe._id,
+                pin: !recipe.pinned
+            })
+            .then((response) => {
+                setRecipe(response.data)
+            })
+            .catch((err) => {
+                console.error(err)
+                setReqError(true)
+            })
+    }
+
     return !reqError ? (
         userBlocked ? (
             <ErrorComponent error={"Couldn't load recipe"} />
         ) : recipe && comments ? (
-            // render the page if all required data has been fetched
-            <div className="recipe">
-                <img
-                    className="recipeImage"
-                    src={recipe.imagePath}
-                    alt="food"
-                />
-                <div className="recipeText">
-                    <div className="recipeDetails">
-                        <table className="recipeDetailsTable recipeDetailsTopTable">
-                            <tbody>
-                                <tr>
-                                    <td className="recipeDetailsTopTableCell">
-                                        <h1 className="recipeName">
-                                            {recipe.name}
-                                        </h1>
-                                    </td>
-                                    <td className="recipeDetailsTableRightCol recipeDetailsTableLikedCol recipeDetailsTopTableCell">
-                                        <LikeButton
-                                            recipe={recipe}
-                                            setRecipe={setRecipe}
-                                            user={props.user}
-                                            setUser={props.setUser}
-                                            signedIn={props.signedIn}
-                                            setShowModal={setShowModal}
-                                        />
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <table className="recipeDetailsTable">
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <a
-                                            className="recipeUsername"
-                                            href={'/user-' + authorUser.slug}
-                                        >
-                                            {'@' + authorUser.username}
-                                        </a>
-                                    </td>
-                                    <td className="recipeDetailsTableRightCol">
-                                        <Timestamp
-                                            createdAt={recipe.createdAt}
-                                        />
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-
-                        <p className="recipeCaption">{recipe.caption}</p>
-                        {recipe.tags.map((tag, i) => (
-                            <a
-                                className="recipeTag  text-info"
-                                href={`/browse-recipes?tag=${tag}`}
-                                key={i}
+            !deletedRecipe ? (
+                // render the page if all required data has been fetched
+                <div className="recipe">
+                    {recipe.user === props.user._id ? (
+                        <Dropdown className="dotsDropdown">
+                            <Dropdown.Toggle
+                                as={CustomToggle}
+                                id="dropdown-basic"
                             >
-                                {'#' + tag}
-                            </a>
-                        ))}
+                                <i className="text-dark">
+                                    <ThreeDots size={20} />
+                                </i>
+                            </Dropdown.Toggle>
+
+                            <Dropdown.Menu
+                                className="dotsDropdownMenu"
+                                align="right"
+                            >
+                                <Dropdown.Item onClick={handlePin}>
+                                    {recipe.pinned ? 'Unpin' : 'Pin'} Recipe
+                                </Dropdown.Item>
+                                <Dropdown.Item onClick={handleDelete}>
+                                    Delete Recipe
+                                </Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
+                    ) : (
+                        <></>
+                    )}
+                    <img
+                        className="recipeImage"
+                        src={recipe.imagePath}
+                        alt="food"
+                    />
+                    <div className="recipeText">
+                        <div className="recipeDetails">
+                            <table className="recipeDetailsTable recipeDetailsTopTable">
+                                <tbody>
+                                    <tr>
+                                        <td className="recipeDetailsTopTableCell">
+                                            <h1 className="recipeName">
+                                                {recipe.name}
+                                            </h1>
+                                        </td>
+                                        <td className="recipeDetailsTableRightCol recipeDetailsTableLikedCol recipeDetailsTopTableCell">
+                                            <LikeButton
+                                                recipe={recipe}
+                                                setRecipe={setRecipe}
+                                                user={props.user}
+                                                setUser={props.setUser}
+                                                signedIn={props.signedIn}
+                                                setShowModal={setShowModal}
+                                            />
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <table className="recipeDetailsTable">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <a
+                                                className="recipeUsername"
+                                                href={
+                                                    '/user-' + authorUser.slug
+                                                }
+                                            >
+                                                {'@' + authorUser.username}
+                                            </a>
+                                        </td>
+                                        <td className="recipeDetailsTableRightCol">
+                                            <Timestamp
+                                                createdAt={recipe.createdAt}
+                                            />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <a
+                                                href={`${window.location.href}/likes`}
+                                                className="numLikes"
+                                            >
+                                                <Number number={recipe.likes} />{' '}
+                                                {recipe.likes === 1
+                                                    ? `like`
+                                                    : `likes`}
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <p className="recipeCaption">{recipe.caption}</p>
+                            {recipe.tags.map((tag, i) => (
+                                <a
+                                    className="recipeTag  text-info"
+                                    href={`/browse-recipes?tag=${tag}`}
+                                    key={i}
+                                >
+                                    {'#' + tag}
+                                </a>
+                            ))}
+                        </div>
+
+                        <div className="recipeSubsection">
+                            <h2 className="recipeSubheading">Ingredients</h2>
+                            <ul className="ingredients">
+                                {recipe.ingredients.map((ingredient, i) => (
+                                    <li className="liIngredient" key={i}>
+                                        <div className="ingredient">
+                                            {ingredient}
+                                        </div>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                        <br />
+                        <div className="recipeSubsection">
+                            <h2 className="recipeSubheading">Instructions</h2>
+                            <ol className="instructions">
+                                {recipe.instructions.map((instruction, i) => (
+                                    <li className="liInstruction" key={i}>
+                                        <div className="instruction">
+                                            {instruction}
+                                        </div>
+                                    </li>
+                                ))}
+                            </ol>
+                        </div>
+                        <br />
+
+                        <CommentsSection
+                            comments={comments}
+                            userId={props.user._id}
+                            recipeId={recipe._id}
+                            signedIn={props.signedIn}
+                            setShowModal={setShowModal}
+                            setReqError={setReqError}
+                        />
                     </div>
 
-                    <div className="recipeSubsection">
-                        <h2 className="recipeSubheading">Ingredients</h2>
-                        <ul className="ingredients">
-                            {recipe.ingredients.map((ingredient, i) => (
-                                <li className="liIngredient" key={i}>
-                                    <div className="ingredient">
-                                        {ingredient}
-                                    </div>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-                    <br />
-                    <div className="recipeSubsection">
-                        <h2 className="recipeSubheading">Instructions</h2>
-                        <ol className="instructions">
-                            {recipe.instructions.map((instruction, i) => (
-                                <li className="liInstruction" key={i}>
-                                    <div className="instruction">
-                                        {instruction}
-                                    </div>
-                                </li>
-                            ))}
-                        </ol>
-                    </div>
-                    <br />
-
-                    <CommentsSection
-                        comments={comments}
-                        userId={props.user._id}
-                        recipeId={recipe._id}
-                        signedIn={props.signedIn}
-                        setShowModal={setShowModal}
-                        setReqError={setReqError}
+                    <CreateAccountModal
+                        show={showModal}
+                        setShow={setShowModal}
                     />
                 </div>
-
-                <CreateAccountModal show={showModal} setShow={setShowModal} />
-            </div>
+            ) : (
+                <Redirect to={`/user-${props.user.slug}`} />
+            )
         ) : (
             // not all data has been fetched yet
             <></>
@@ -220,7 +329,10 @@ const LikeButton = (props) => {
         }
 
         axios
-            .post('http://localhost:4000/likerecipe', requestData)
+            .post(
+                `http://${process.env.REACT_APP_ORIGIN}:4000/likerecipe`,
+                requestData
+            )
             .then((response) => {
                 props.setRecipe(response.data.recipe)
                 props.setUser(response.data.user)
@@ -252,7 +364,6 @@ const LikeButton = (props) => {
                     }
                 }}
             />
-            {props.recipe.likes}
         </div>
     )
 }
@@ -281,7 +392,10 @@ const CommentsSection = (props) => {
                 }
 
                 axios
-                    .post('http://localhost:4000/comment', newComment)
+                    .post(
+                        `http://${process.env.REACT_APP_ORIGIN}:4000/comment`,
+                        newComment
+                    )
                     .then((response) => {
                         //update page to include new comment
                         setComments(comments.concat([response.data]))

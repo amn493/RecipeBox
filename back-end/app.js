@@ -7,7 +7,7 @@ const app = express() // instantiate an Express object
 const morgan = require('morgan') // middleware for nice logging of incoming HTTP requests
 const multer = require('multer') // middleware to handle HTTP POST requests with file uploads
 const path = require('path')
-const axios = require('axios') // middleware for making requests to APIs
+const fs = require('fs')
 require('dotenv').config({ silent: true }) // load environmental variables from a hidden file named .env
 
 // passport
@@ -19,6 +19,8 @@ const JWT = require('jsonwebtoken')
 
 // Express Validator for sanitizing inputs *soap emoji in spirit*
 const { body, validationResult } = require('express-validator')
+// HTML Entities for encoding and decoding (escaping/unescaping)
+const he = require('he')
 
 // nodemailer for emailing users
 const nodemailer = require('nodemailer')
@@ -54,7 +56,14 @@ app.use(express.static(path.join(__dirname, '../front-end/public')))
 // CORS
 
 app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', 'http://localhost:3000')
+    const allowedOrigins = [
+        `http://${process.env.ORIGIN}`,
+        `http://${process.env.ORIGIN}:3000`
+    ]
+    const { origin } = req.headers
+    if (allowedOrigins.includes(origin)) {
+        res.header('Access-Control-Allow-Origin', origin)
+    }
     res.header(
         'Access-Control-Allow-Headers',
         'Origin, X-Requested-With, Content-Type, Accept, Authorization'
@@ -237,7 +246,22 @@ app.get('/recipe', (req, res, next) => {
     // fetch recipe where slug === req.query.slug from database
 
     Recipe.findOne({ slug: req.query.slug })
-        .then((recipe) => res.json(recipe))
+        .then((recipe) => {
+            // Unescape recipe fields
+            // eslint-disable-next-line no-param-reassign
+            recipe.name = he.decode(recipe.name)
+            // eslint-disable-next-line no-param-reassign
+            recipe.caption = he.decode(recipe.caption)
+            // eslint-disable-next-line no-param-reassign
+            recipe.ingredients = recipe.ingredients.map((ingredient) =>
+                he.decode(ingredient)
+            )
+            // eslint-disable-next-line no-param-reassign
+            recipe.instructions = recipe.instructions.map((instruction) =>
+                he.decode(instruction)
+            )
+            res.json(recipe)
+        })
         .catch((err) => next(err))
 })
 
@@ -297,7 +321,12 @@ app.get('/userbyslug', (req, res, next) => {
     // fetch user where slug === req.query.slug from database
 
     User.findOne({ slug: req.query.slug })
-        .then((user) => res.json(user))
+        .then((user) => {
+            // Unescape fields of the user (name and handle should be alphanumeric already)
+            // eslint-disable-next-line no-param-reassign
+            user.bio = he.decode(user.bio)
+            res.json(user)
+        })
         .catch((err) => next(err))
 })
 
@@ -306,6 +335,11 @@ app.get('/comments', (req, res, next) => {
 
     Comment.find({ recipe: req.query.recipeID })
         .then((comments) => {
+            comments.forEach((commentBody) => {
+                // eslint-disable-next-line no-param-reassign
+                commentBody.comment = he.decode(commentBody.comment)
+            })
+
             res.json(comments)
         })
         .catch((err) => next(err))
@@ -317,7 +351,18 @@ app.get('/recipesbyuser', (req, res, next) => {
         user: req.query.userID
     })
         .sort({ createdAt: -1 }) // Reverse the order of creation dates so latest recipe is on top
-        .then((recipes) => res.json(recipes))
+        .then((recipes) => {
+            // Unescape recipe names
+            recipes.forEach((recipe) => {
+                // eslint-disable-next-line no-param-reassign
+                recipe.name = he.decode(recipe.name)
+                // eslint-disable-next-line no-param-reassign
+                recipe.caption = he.decode(recipe.caption)
+            })
+            // move pinned recipes to the top
+            recipes.sort((a, b) => +b.pinned - +a.pinned)
+            res.json(recipes)
+        })
         .catch((err) => next(err))
 })
 
@@ -369,15 +414,23 @@ app.get('/filteredrecipes', (req, res, next) => {
             return res.json([])
         }
 
-        // eslint-disable-next-line no-underscore-dangle
-        filter._id = {
-            $in: req.query.liked.filter((liked) => liked !== '')
-        }
+        // ignore recipes authored by signed-in user
+        filter.$and = [
+            { _id: { $in: req.query.liked.filter((liked) => liked !== '') } },
+            { user: { $ne: req.query.userid } }
+        ]
     }
 
     // find recipes matching the filter
     Recipe.find(filter)
         .then((recipes) => {
+            recipes.forEach((recipe) => {
+                // eslint-disable-next-line no-param-reassign
+                recipe.name = he.decode(recipe.name)
+                // eslint-disable-next-line no-param-reassign
+                recipe.caption = he.decode(recipe.caption)
+            })
+
             res.json(recipes)
         })
         .catch((err) => next(err))
@@ -388,7 +441,16 @@ app.get('/recommendedrecipes', (req, res, next) => {
     Recipe.find({})
         .sort({ likes: -1 })
         .limit(10)
-        .then((recipes) => res.json(recipes))
+        .then((recipes) => {
+            recipes.forEach((recipe) => {
+                // eslint-disable-next-line no-param-reassign
+                recipe.name = he.decode(recipe.name)
+                // eslint-disable-next-line no-param-reassign
+                recipe.caption = he.decode(recipe.caption)
+            })
+
+            res.json(recipes)
+        })
         .catch((err) => next(err))
 })
 
@@ -415,6 +477,12 @@ app.get('/usernametaken', (req, res, next) => {
 
     User.exists({ username: req.query.username })
         .then((usernametaken) => res.json(usernametaken))
+        .catch((err) => next(err))
+})
+
+app.get('/likedby', (req, res, next) => {
+    User.find({ liked: req.query.id })
+        .then((users) => res.json(users))
         .catch((err) => next(err))
 })
 
@@ -461,9 +529,6 @@ app.post(
     body('username')
         .isAlphanumeric()
         .withMessage('Username must only be alphanumeric.'),
-    body('ReEnterPassword')
-        .equals('password')
-        .withMessage('Does not match password.'),
 
     (req, res) => {
         const errors = validationResult(req)
@@ -506,7 +571,7 @@ app.post(
                 .then((recipe) => {
                     // get name of recipe for given user to receive notification about
                     const recipeNameForEmail = recipe.name
-                    const recipeLinkForEmail = `http://localhost:3000/recipe-${recipe.slug}`
+                    const recipeLinkForEmail = `http://${process.env.ORIGIN}:3000/recipe-${recipe.slug}`
                     // const recipeImgPathForEmail = recipe.imagePath
                     User.findOne({
                         _id: req.body.user
@@ -515,7 +580,7 @@ app.post(
                             // get username of commenting user
                             const usernameOfCommentingUser =
                                 commentingUser.username
-                            const userProfileLinkForEmail = `http://localhost:3000/user-${commentingUser.slug}`
+                            const userProfileLinkForEmail = `http://${process.env.ORIGIN}:3000/user-${commentingUser.slug}`
                             // const userProfilePicForEmail = commentingUser.imagePath
                             User.findOne({
                                 _id: recipe.user
@@ -636,24 +701,23 @@ app.post(
     // sanitize recipe inputs -- text fields since that's what the user has control over
     body('name').not().isEmpty().trim().escape(),
     body('caption').not().isEmpty().trim().escape(),
-    body('ingredients').not().isEmpty().trim().escape(),
-    body('instructions').not().isEmpty().trim().escape(),
     (req, res, next) => {
         // new recipe
         const newRecipe = {
             user: req.body.userID,
             name: req.body.name,
             imagePath: path.join('/uploads/', req.file.filename),
-            tags: req.body.tags.split(',').filter((tag) => tag !== ''),
+            tags: JSON.parse(req.body.tags).filter((tag) => tag !== ''),
             caption: req.body.caption,
-            ingredients: req.body.ingredients
-                .split(',')
+            ingredients: JSON.parse(req.body.ingredients)
                 .map((ingredient) => ingredient.trim())
-                .filter((ingredient) => ingredient !== ''),
-            instructions: req.body.instructions
-                .split(',')
+                .filter((ingredient) => ingredient !== '')
+                .map((ingredient) => he.encode(ingredient)),
+            instructions: JSON.parse(req.body.instructions)
                 .map((instruction) => instruction.trim())
-                .filter((instruction) => instruction !== ''),
+                .filter((instruction) => instruction !== '')
+                .map((instruction) => he.encode(instruction)),
+            pinned: false,
             likes: 0,
             createdAt: Date.now()
         }
@@ -676,12 +740,16 @@ app.post('/blockuser', (req, res, next) => {
     // update signed-in users's following/followers array appropriately
     // update blocked user's following/followers array appropriately
 
-    const updatedSignedInBlockedUsers = req.body.signedInblockedUsers
-
-    const updatedSignedInUserFollowing = req.body.signedInUserFollowing
-    const updatedSignedInUserFollowers = req.body.signedInUserFollowers
-    const updatedblockedUserFollowing = req.body.blockedUserFollowing
-    const updatedblockedUserFollowers = req.body.blockedUserFollowers
+    // eslint-disable-next-line prefer-const
+    let updatedSignedInBlockedUsers = req.body.signedInBlockedUsers
+    // eslint-disable-next-line prefer-const
+    let updatedSignedInUserFollowing = req.body.signedInUserFollowing
+    // eslint-disable-next-line prefer-const
+    let updatedSignedInUserFollowers = req.body.signedInUserFollowers
+    // eslint-disable-next-line prefer-const
+    let updatedblockedUserFollowing = req.body.blockedUserFollowing
+    // eslint-disable-next-line prefer-const
+    let updatedblockedUserFollowers = req.body.blockedUserFollowers
 
     if (req.body.addBlock) {
         updatedSignedInBlockedUsers.push(req.body.blockedUserID)
@@ -691,6 +759,8 @@ app.post('/blockuser', (req, res, next) => {
                 updatedSignedInUserFollowing.indexOf(req.body.blockedUserID),
                 1
             )
+        }
+        if (updatedblockedUserFollowers.includes(req.body.signedInUserID)) {
             updatedblockedUserFollowers.splice(
                 updatedblockedUserFollowers.indexOf(req.body.signedInUserID),
                 1
@@ -701,6 +771,8 @@ app.post('/blockuser', (req, res, next) => {
                 updatedSignedInUserFollowers.indexOf(req.body.blockedUserID),
                 1
             )
+        }
+        if (updatedblockedUserFollowing.includes(req.body.signedInUserID)) {
             updatedblockedUserFollowing.splice(
                 updatedblockedUserFollowing.indexOf(req.body.signedInUserID),
                 1
@@ -711,6 +783,30 @@ app.post('/blockuser', (req, res, next) => {
             updatedSignedInBlockedUsers.indexOf(req.body.blockedUserID),
             1
         )
+        if (updatedSignedInUserFollowing.includes(req.body.blockedUserID)) {
+            updatedSignedInUserFollowing.splice(
+                updatedSignedInUserFollowing.indexOf(req.body.blockedUserID),
+                1
+            )
+        }
+        if (updatedblockedUserFollowers.includes(req.body.signedInUserID)) {
+            updatedblockedUserFollowers.splice(
+                updatedblockedUserFollowers.indexOf(req.body.signedInUserID),
+                1
+            )
+        }
+        if (updatedSignedInUserFollowers.includes(req.body.blockedUserID)) {
+            updatedSignedInUserFollowers.splice(
+                updatedSignedInUserFollowers.indexOf(req.body.blockedUserID),
+                1
+            )
+        }
+        if (updatedblockedUserFollowing.includes(req.body.signedInUserID)) {
+            updatedblockedUserFollowing.splice(
+                updatedblockedUserFollowing.indexOf(req.body.signedInUserID),
+                1
+            )
+        }
     }
     User.findByIdAndUpdate(
         req.body.signedInUserID,
@@ -721,18 +817,17 @@ app.post('/blockuser', (req, res, next) => {
         },
         { new: true, useFindAndModify: false }
     )
-        .then((user) => {
+        .then((currentUser) => {
             User.findByIdAndUpdate(
                 req.body.blockedUserID,
                 {
                     followers: updatedblockedUserFollowers,
                     following: updatedblockedUserFollowing
                 },
-                { useFindAndModify: false }
+                { new: true, useFindAndModify: false }
             )
-
-                .then(() => {
-                    res.json(user)
+                .then((otherUser) => {
+                    res.json({ currentUser, otherUser })
                 })
                 .catch((err) => next(err))
         })
@@ -778,7 +873,7 @@ app.post('/likerecipe', (req, res, next) => {
             .then((recipe) => {
                 // get name of recipe for given user to receive notification about
                 const recipeNameForEmail = recipe.name
-                const recipeLinkForEmail = `http://localhost:3000/recipe-${recipe.slug}`
+                const recipeLinkForEmail = `http://${process.env.ORIGIN}:3000/recipe-${recipe.slug}`
                 // const recipeImgPathForEmail = recipe.imagePath
                 User.findOne({
                     _id: req.body.userID
@@ -786,7 +881,7 @@ app.post('/likerecipe', (req, res, next) => {
                     .then((likinguser) => {
                         // get username of liking user
                         const usernameOfLikingUser = likinguser.username
-                        const userProfileLinkForEmail = `http://localhost:3000/user-${likinguser.slug}`
+                        const userProfileLinkForEmail = `http://${process.env.ORIGIN}:3000/user-${likinguser.slug}`
                         // const userProfilePicForEmail = likinguser.imagePath
                         User.findOne({
                             _id: recipe.user
@@ -917,7 +1012,7 @@ app.post('/followuser', (req, res, next) => {
             .then((followingUser) => {
                 // get username of following user
                 const usernameOfFollowingUser = followingUser.username
-                const userProfileLinkForEmail = `http://localhost:3000/user-${followingUser.slug}`
+                const userProfileLinkForEmail = `http://${process.env.ORIGIN}:3000/user-${followingUser.slug}`
                 const userImgPathForEmail =
                     // TODO: replace starter profile pic with actual user profile pictures in email
                     path.basename(followingUser.imagePath).substring(0, 8) ===
@@ -1033,6 +1128,7 @@ app.post('/notificationsettings', (req, res, next) => {
 app.post(
     '/updateuserinfo',
     upload.single('profilepicture'),
+
     body('email').isEmail().withMessage('Email entered is not a valid email.'),
     body('firstName')
         .isAlpha()
@@ -1043,32 +1139,138 @@ app.post(
     body('username')
         .isAlphanumeric()
         .withMessage('Username must only be alphanumeric.'),
-    body('ReEnterPassword')
-        .equals('password')
-        .withMessage('Does not match password.'),
     body('bio').trim().escape(),
-    (req, res) => {
+    (req, res, next) => {
         // sanitize inputs -- same as account creation more or less
 
         // recieve post data from updating user's basic info
-        const updatedUserInfo = {
-            username: req.body.username,
-            firstName: req.body.firstName,
-            lastName: req.body.lastName,
-            bio: req.body.bio,
-            id: req.body.id,
-            imagePath: path.join('/uploads/', req.file.filename)
+        const updatedUserInfo = {}
+        if (req.body.username) {
+            updatedUserInfo.username = req.body.username
+        }
+        if (req.body.firstName) {
+            updatedUserInfo.firstName = req.body.firstName
+        }
+        if (req.body.lastName) {
+            updatedUserInfo.lastName = req.body.lastName
+        }
+        if (req.body.bio) {
+            updatedUserInfo.bio = req.body.bio
+        }
+        if (req.file) {
+            updatedUserInfo.imagePath = path.join(
+                '/uploads/',
+                req.file.filename
+            )
         }
 
-        // update the user's user object (in database)
-
-        // TODO: Once merged with this last POST request, check for any errors
-        // we want to prevent this from going through as opposed to just saving weird things
-
-        // send a response to the user (sending data back to test)
-        res.json(updatedUserInfo)
+        User.findByIdAndUpdate(req.body.id, updatedUserInfo, {
+            new: true,
+            useFindAndModify: false
+        })
+            .then((user) => {
+                if (
+                    req.file &&
+                    req.body.oldImage.split('/')[0] !== 'starterProfilePictures'
+                ) {
+                    fs.unlink(
+                        path.join(
+                            __dirname,
+                            `../front-end/public/${req.body.oldImage}`
+                        ),
+                        (err) => {
+                            if (err) {
+                                next(err)
+                            } else {
+                                // send a response to the user (sending data back to test)
+                                res.json(user)
+                            }
+                        }
+                    )
+                } else {
+                    res.json(user)
+                }
+            })
+            .catch((err) => {
+                next(err)
+            })
     }
 )
+
+app.post('/deleterecipe', (req, res, next) => {
+    // delete recipe document
+    Recipe.findByIdAndDelete(req.body.id)
+        .then((recipe) => {
+            // remove recipe from all users' liked
+            User.updateMany(
+                { liked: req.body.id },
+                { $pull: { liked: req.body.id } }
+            )
+                .then(() => {
+                    // delete all comments belonging to the recipe
+                    Comment.deleteMany({ recipe: req.body.id })
+                        .then(() => {
+                            // decrement all tags used on recipe
+                            Tag.updateMany(
+                                { tag: { $in: recipe.tags } },
+                                { $inc: { count: -1 } }
+                            )
+                                .then(() => {
+                                    // delete all tags that now have a count of 0
+                                    Tag.deleteMany({ count: { $lt: 1 } })
+                                        .then(() => {
+                                            // delete the recipe image
+                                            // TODO: change to multiple images when carousel + multiple uploads is implemented
+                                            fs.unlink(
+                                                path.join(
+                                                    __dirname,
+                                                    `../front-end/public${recipe.imagePath}`
+                                                ),
+                                                (err) => {
+                                                    if (err) {
+                                                        next(err)
+                                                    } else {
+                                                        res.send(
+                                                            'deleted recipe'
+                                                        )
+                                                    }
+                                                }
+                                            )
+                                        })
+                                        .catch((err) => {
+                                            next(err)
+                                        })
+                                })
+                                .catch((err) => {
+                                    next(err)
+                                })
+                        })
+                        .catch((err) => {
+                            next(err)
+                        })
+                })
+                .catch((err) => {
+                    next(err)
+                })
+        })
+        .catch((err) => {
+            next(err)
+        })
+})
+
+app.post('/pinrecipe', (req, res, next) => {
+    Recipe.findByIdAndUpdate(
+        req.body.id,
+        { $set: { pinned: req.body.pin } },
+        { new: true, useFindAndModify: false }
+    )
+        .then((recipe) => {
+            res.json(recipe)
+        })
+        .catch((err) => {
+            next(err)
+        })
+})
 
 // export the express app we created to make it available to other modules
 module.exports = app

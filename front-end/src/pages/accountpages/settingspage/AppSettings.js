@@ -21,10 +21,10 @@ const AppSettings = (props) => {
     const blockUser = (userNameToBlock) => {
         //function to add a blocked user
         axios
-            .post('http://localhost:4000/blockuser', {
+            .post(`http://${process.env.REACT_APP_ORIGIN}:4000/blockuser`, {
                 addBlock: true,
                 signedInUserID: currentUser._id,
-                signedInblockedUsers: blockedUsers.map((user) => user._id),
+                signedInBlockedUsers: blockedUsers.map((user) => user._id),
                 signedInUserFollowing: currentUser.following,
                 signedInUserFollowers: currentUser.followers,
                 blockedUserID: usersToBlock
@@ -45,7 +45,7 @@ const AppSettings = (props) => {
                         )
                     )
                 )
-                props.setUser(response.data)
+                props.setUser(response.data.currentUser)
             })
     }
 
@@ -53,10 +53,10 @@ const AppSettings = (props) => {
         //function to unblock a user
         if (blockedUsers.includes(userToUnblock) === true) {
             axios
-                .post('http://localhost:4000/blockuser', {
+                .post(`http://${process.env.REACT_APP_ORIGIN}:4000/blockuser`, {
                     addBlock: false,
                     signedInUserID: currentUser._id,
-                    signedInblockedUsers: blockedUsers.map((user) => user._id),
+                    signedInBlockedUsers: blockedUsers.map((user) => user._id),
                     signedInUserFollowing: currentUser.following,
                     signedInUserFollowers: currentUser.followers,
                     blockedUserID: userToUnblock._id,
@@ -78,14 +78,16 @@ const AppSettings = (props) => {
                     usersToBlock.includes(userToUnblock)
                         ? setUsersToBlock(usersToBlock)
                         : setUsersToBlock(usersToBlock.concat(props))
-                    props.setUser(response.data)
+                    props.setUser(response.data.currentUser)
                 })
         }
     }
 
     //retrieve blocked users using GET handler
     useEffect(() => {
-        axios(`http://localhost:4000/users?userID=${currentUser._id}`)
+        axios(
+            `http://${process.env.REACT_APP_ORIGIN}:4000/users?userID=${currentUser._id}`
+        )
             .then((response) => {
                 setBlockedUsers(
                     response.data.filter((user) =>
@@ -115,7 +117,9 @@ const AppSettings = (props) => {
     useEffect(() => {
         // fetch recipe tags
         axios(
-            `http://localhost:4000/tags?blockedTags=${props.user.blockedTags.reduce(
+            `http://${
+                process.env.REACT_APP_ORIGIN
+            }:4000/tags?blockedTags=${props.user.blockedTags.reduce(
                 (acc, tag) => `&blockedTags=${tag}`,
                 ''
             )}`
@@ -137,13 +141,16 @@ const AppSettings = (props) => {
 
     const handleChangedNotifSwitch = () => {
         axios
-            .post('http://localhost:4000/notificationsettings', {
-                emailNotifications: emailNotifs,
-                likes: likesNotifs,
-                comments: commentsNotifs,
-                follows: followersNotifs,
-                userID: currentUser._id
-            })
+            .post(
+                `http://${process.env.REACT_APP_ORIGIN}:4000/notificationsettings`,
+                {
+                    emailNotifications: emailNotifs,
+                    likes: likesNotifs,
+                    comments: commentsNotifs,
+                    follows: followersNotifs,
+                    userID: currentUser._id
+                }
+            )
             .then((response) => {
                 props.setUser(response.data)
             })
@@ -155,7 +162,7 @@ const AppSettings = (props) => {
     const handleAddBlockedTag = (tagToBlock) => {
         if (blockedTagsList.includes(tagToBlock) === false) {
             axios
-                .post('http://localhost:4000/blocktag', {
+                .post(`http://${process.env.REACT_APP_ORIGIN}:4000/blocktag`, {
                     addBlock: true,
                     tagToBlockOrUnblock: tagToBlock,
                     signedInBlockedTags: blockedTagsList,
@@ -178,7 +185,7 @@ const AppSettings = (props) => {
 
     const handleRemoveBlockedTag = (tagToUnblock) => {
         axios
-            .post('http://localhost:4000/blocktag', {
+            .post(`http://${process.env.REACT_APP_ORIGIN}:4000/blocktag`, {
                 addBlock: false,
                 tagToBlockOrUnblock: tagToUnblock,
                 signedInBlockedTags: blockedTagsList,
@@ -216,8 +223,11 @@ const AppSettings = (props) => {
     // sign out user when sign out button is clicked
     const signOutUser = () => {
         axios
-            .post('http://localhost:4000/signout')
-            .then(() => localStorage.removeItem('token'))
+            .post(`http://${process.env.REACT_APP_ORIGIN}:4000/signout`)
+            .then(() => {
+                localStorage.removeItem('token')
+                window.location = '/sign-in'
+            })
     }
 
     return !reqError ? (
@@ -505,19 +515,17 @@ const AppSettings = (props) => {
 
                 {/* signout button*/}
                 <div className="signOutButton">
-                    <a href="/sign-in">
-                        <br />
-                        <br />
-                        <Button
-                            className="submitButton"
-                            type="submit"
-                            variant="outline-info"
-                            onClick={signOutUser}
-                        >
-                            Sign Out
-                        </Button>
-                        {/* TODO: handle credentials stuff*/}
-                    </a>
+                    <br />
+                    <br />
+                    <Button
+                        className="submitButton"
+                        type="submit"
+                        variant="outline-info"
+                        onClick={signOutUser}
+                    >
+                        Sign Out
+                    </Button>
+                    {/* TODO: handle credentials stuff*/}
                 </div>
             </div>
         ) : (

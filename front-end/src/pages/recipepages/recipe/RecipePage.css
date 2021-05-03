@@ -2,19 +2,24 @@
     display: block;
     margin-left: auto;
     margin-right: auto;
-    width: 90%;
+    width: 100%;
     margin-bottom: 10px;
 }
 
 .recipeText {
     margin: auto;
-    width: 90%;
+    width: 100%;
 }
 
 .likeButton {
     width: 20px;
     height: 20px;
     margin-right: 5px;
+    display: inline-block;
+}
+
+.numLikes {
+    display: inline-block;
 }
 
 .likeButtonDiv {
@@ -28,13 +33,17 @@
     color: black;
 }
 
-.recipeUsername {
+.recipeUsername,
+.numLikes {
     font-weight: bold;
     color: black;
     font-size: 14px;
 }
 
-.recipeUsername:hover, .recipeUsername:active {
+.recipeUsername:hover,
+.recipeUsername:active,
+.numLikes:hover,
+.numLikes:active {
     color: black;
     opacity: 60%;
     text-decoration: none;
@@ -53,7 +62,8 @@
     display: inline-block;
 }
 
-.recipeTag:hover, .recipeTag:active {
+.recipeTag:hover,
+.recipeTag:active {
     text-decoration: none;
 }
 
@@ -61,10 +71,9 @@
     margin-bottom: 25px;
 }
 
-
 .recipeSubsection {
     padding: 10px;
-    background-color: rgb(23, 162, 184, .3);
+    background-color: rgb(23, 162, 184, 0.3);
     border-radius: 15px;
 }
 
@@ -73,21 +82,23 @@
     font-weight: bold;
 }
 
-.ingredients, .instructions {
+.ingredients,
+.instructions {
     margin-left: -15px;
     margin-bottom: 0px;
 }
 
-.liIngredient, .liInstruction {
+.liIngredient,
+.liInstruction {
     font-size: 14px;
     font-weight: bold;
 }
 
-.ingredient, .instruction {
+.ingredient,
+.instruction {
     font-size: 14px;
     font-weight: normal;
 }
-
 
 .commentsSection {
     margin-bottom: 30px;
@@ -98,7 +109,7 @@
 }
 
 .recipeDetailsTableLikedCol {
-    width: 46px;
+    white-space: nowrap;
 }
 
 .recipeDetailsTable {
@@ -110,9 +121,18 @@
 }
 
 .recipeDetailsTableRightCol {
-   text-align: right;
+    text-align: right;
 }
 
 .recipeDetailsTopTableCell {
     vertical-align: baseline;
+}
+
+.dotsDropdown {
+    text-align: right;
+    margin-bottom: 20px;
+}
+
+.dotsDropdownMenu {
+    font-size: 14px;
 }

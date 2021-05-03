@@ -2,4 +2,5 @@
     display: inline;
     font-size: 11px;
     font-weight: lighter;
+    white-space: nowrap;
 }

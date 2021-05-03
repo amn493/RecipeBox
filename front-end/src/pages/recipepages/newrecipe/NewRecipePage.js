@@ -7,8 +7,8 @@ import Button from 'react-bootstrap/Button'
 import bsCustomFileInput from 'bs-custom-file-input'
 import axios from 'axios'
 import { Redirect } from 'react-router-dom'
-
 import './NewRecipePage.css'
+import ImageCropModal from '../../../gencomponents/ImageCropModal.js'
 
 // component for recipe page
 // expects user (a user object for the signed-in user) as props
@@ -31,6 +31,11 @@ const NewRecipePage = (props) => {
     // state for when form is submitted successfully
     const [submitted, setSubmitted] = useState(false)
 
+    // state variable for showing image crop modal
+    const [showModal, setShowModal] = useState(false)
+    // state variable for setting recipe <img> src to send to cropperjs in modal
+    const [recipeImgSrc, setRecipeImgSrc] = useState('')
+
     // make post request on form submission
     const handleSubmit = (event) => {
         event.preventDefault()
@@ -43,20 +48,35 @@ const NewRecipePage = (props) => {
         newRecipe.append('userID', props.user._id)
         newRecipe.append('name', nameValue)
         newRecipe.append('recipeimage', imageFile)
-        newRecipe.append('tags', tags)
+        newRecipe.append('tags', JSON.stringify(tags))
         newRecipe.append('caption', captionValue)
-        newRecipe.append('ingredients', ingredientValues)
-        newRecipe.append('instructions', instructionValues)
+        newRecipe.append('ingredients', JSON.stringify(ingredientValues))
+        newRecipe.append('instructions', JSON.stringify(instructionValues))
 
         axios
-            .post('http://localhost:4000/newrecipe', newRecipe, { headers })
+            .post(
+                `http://${process.env.REACT_APP_ORIGIN}:4000/newrecipe`,
+                newRecipe,
+                {
+                    headers
+                }
+            )
             .then((response) => setSubmitted(true))
     }
 
     // add tag button pressed
     const addTag = () => {
-        const newTag = tagValue.trim()
-        if (tagValue.trim() !== '' && !tags.includes(newTag)) {
+        // remove everything aside from letters and numbers and make the tag lowercase
+        const newTag = Array.from(tagValue)
+            .filter(
+                (char) =>
+                    (char.charCodeAt(0) >= 65 && char.charCodeAt(0) <= 90) ||
+                    (char.charCodeAt(0) >= 97 && char.charCodeAt(0) <= 122) ||
+                    (char.charCodeAt(0) >= 48 && char.charCodeAt(0) <= 57)
+            )
+            .join('')
+            .toLowerCase()
+        if (newTag !== '' && !tags.includes(newTag)) {
             // add tag to tags array and clear tag field
             setTags(tags.concat([newTag]))
         }
@@ -68,11 +88,6 @@ const NewRecipePage = (props) => {
         // remove the tag from tags array
         setTags(tags.slice(0, i).concat(tags.slice(i + 1)))
     }
-
-    // display file name on upload
-    useEffect(() => {
-        bsCustomFileInput.init()
-    }, [])
 
     // check for empty fields
     useEffect(() => {
@@ -89,9 +104,37 @@ const NewRecipePage = (props) => {
         uploadedImage
     ])
 
+    // function to allow user to re-upload/re-crop a photo
+    // that they just cleared/uploaded
+    const clearUpload = (event) => {
+        event.target.value = ''
+    }
+
     const fileUploaded = (event) => {
         setUploadedImage(event.target.value !== '')
         setImageFile(event.target.files[0])
+
+        const recipeimgForCropperJS = document.querySelector('img')
+        const file = event.target.files[0]
+
+        const reader = new FileReader()
+
+        reader.addEventListener(
+            'load',
+            function () {
+                // convert image file to base64 string for cropperJS <img> src
+                setRecipeImgSrc(reader.result)
+                setShowModal(true)
+            },
+            false
+        )
+
+        if (file) {
+            reader.readAsDataURL(file)
+            recipeimgForCropperJS.style.display = 'none'
+        } else {
+            setShowModal(false)
+        }
     }
 
     return !submitted ? (
@@ -192,6 +235,7 @@ const NewRecipePage = (props) => {
                         id="custom-file"
                         label="Upload recipe image"
                         onChange={fileUploaded}
+                        onClick={clearUpload}
                         custom
                     />
                 </Form.Group>
@@ -206,6 +250,18 @@ const NewRecipePage = (props) => {
                 >
                     Post Recipe
                 </Button>
+
+                {/*to send to cropper modal*/}
+                <img id="img" alt="" />
+
+                <ImageCropModal
+                    bsCustomFileInput={bsCustomFileInput}
+                    setImgForUpload={setImageFile}
+                    setUploadedImage={setUploadedImage}
+                    imgsrc={recipeImgSrc}
+                    show={showModal}
+                    setShow={setShowModal}
+                />
             </Form>
         </div>
     ) : (

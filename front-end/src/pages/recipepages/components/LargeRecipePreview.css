@@ -1,6 +1,9 @@
 .largeRecipePreview {
     margin-bottom: 40px;
-    width: 90%;
+}
+
+.largeRecipePreviewCard {
+    width: 100%;
     margin-left: auto;
     margin-right: auto;
 }
@@ -36,6 +39,7 @@
     width: 20px;
     height: 20px;
     margin-right: 5px;
+    display: inline-block;
 }
 
 .largeRecipePreviewCaption {
@@ -59,8 +63,12 @@
     display: inline-block;
 }
 
+.numLikes {
+    display: inline-block;
+}
+
 .largeRecipePreviewLikedCol {
-    width: 46px;
+    white-space: nowrap;
 }
 
 .largeRecipePreviewTable {
@@ -77,4 +85,17 @@
 
 .largeRecipePreviewTopTableCell {
     vertical-align: baseline;
+}
+
+.pinnedRecipeLarge {
+    background-color: rgba(23, 163, 184, 0.1);
+    border-radius: 10px;
+    padding: 10px;
+    margin-top: -10px;
+}
+
+.pinLarge {
+    color: rgb(23, 163, 184);
+    text-align: right;
+    margin-top: -10px;
 }
