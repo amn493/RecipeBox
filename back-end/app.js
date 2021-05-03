@@ -1013,12 +1013,22 @@ app.post('/followuser', (req, res, next) => {
                 // get username of following user
                 const usernameOfFollowingUser = followingUser.username
                 const userProfileLinkForEmail = `http://${process.env.ORIGIN}:3000/user-${followingUser.slug}`
-                const userImgPathForEmail =
-                    // TODO: replace starter profile pic with actual user profile pictures in email
-                    path.basename(followingUser.imagePath).substring(0, 8) ===
-                    'RBX_PFP_'
-                        ? followingUser.imagePath
-                        : 'starterProfilePictures/RBX_PFP_Blue.png'
+                let userImgPathForEmail = ''
+                try {
+                    // eslint-disable-next-line no-unused-expressions
+                    fs.existsSync(
+                        path.join(
+                            __dirname,
+                            `../front-end/public/${followingUser.imagePath}`
+                        )
+                    )
+                        ? (userImgPathForEmail = followingUser.imagePath)
+                        : (userImgPathForEmail =
+                              'starterProfilePictures/RBX_PFP_Blue.png')
+                } catch (err) {
+                    userImgPathForEmail =
+                        'starterProfilePictures/RBX_PFP_Blue.png'
+                }
                 User.findOne({
                     _id: req.body.profileUserID
                 })
