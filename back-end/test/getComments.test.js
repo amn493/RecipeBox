@@ -2,11 +2,7 @@
 /* eslint-disable arrow-body-style */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable consistent-return */
-/*const chai = require('chai')
-
-
-// COMMENTED OUT TO MERGE TravisCI
-
+const chai = require('chai')
 
 const chaiHTTP = require('chai-http')
 require('dotenv').config({ silent: true }) // load environmental variables from a hidden file named .env
@@ -17,6 +13,7 @@ require('../db.js')
 const JWT = require('jsonwebtoken')
 
 const Recipe = mongoose.model('Recipe')
+const Comment = mongoose.model('Comment')
 
 const { expect } = chai
 
@@ -30,9 +27,9 @@ describe('Testing GET for /comments API', () => {
     let recipeID = ''
     before(async () => {
         // dummy users
-        await Recipe.findOne().then((recipe) => {
-            if (recipe) {
-                recipeID = recipe._id
+        await Comment.findOne().then((comment) => {
+            if (comment) {
+                recipeID = comment.recipe
             }
         })
     })
@@ -61,7 +58,7 @@ describe('Testing GET for /comments API', () => {
     it('should return a non-null array of comments given a recipe ID whose respective recipe contains comments', () => {
         return chai
             .request(app)
-            .get('/comments?recipeID=60822cc5cc7a916181964c7b')
+            .get(`/comments?recipeID=${recipeID}`)
             .then((response) => {
                 expect(response.body.length).to.be.greaterThan(0)
                 expect(response.body[0]).to.to.have.property('_id')
@@ -71,4 +68,4 @@ describe('Testing GET for /comments API', () => {
                 expect(response.body[0]).to.to.have.property('createdAt')
             })
     })
-})*/
+})
