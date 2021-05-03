@@ -91,7 +91,12 @@ const ImageCropModal = (props) => {
                 rel="stylesheet"
             />
             <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.js"></script>
-            <Modal centered show={props.show} onHide={handleClose}>
+            <Modal
+                centered
+                show={props.show}
+                onHide={handleClose}
+                backdrop="static"
+            >
                 <Modal.Body className="imageCropModal">
                     <div className="imgforcropdiv">
                         <img

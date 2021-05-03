@@ -24,8 +24,7 @@
 .largeRecipePreviewRecipeName:active,
 .largeRecipePreviewUsername:hover,
 .largeRecipePreviewUsername:active {
-    color: black;
-    opacity: 60%;
+    color: rgba(0, 0, 0, 0.6);
     text-decoration: none;
 }
 
@@ -54,6 +53,7 @@
     font-size: 14px;
     display: inline-block;
 }
+
 .largeRecipePreviewTag:hover,
 .largeRecipePreviewTag:active {
     text-decoration: none;

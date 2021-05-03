@@ -20,7 +20,7 @@ const NewRecipePage = (props) => {
     const [tags, setTags] = useState([])
     const [ingredientValues, setIngredientValues] = useState([''])
     const [instructionValues, setInstructionValues] = useState([''])
-    const [imageFile, setImageFile] = useState([''])
+    const [imageFiles, setImageFiles] = useState([''])
 
     // state variables for disabling post recipe button
     const [emptyField, setEmptyField] = useState(true)
@@ -47,12 +47,9 @@ const NewRecipePage = (props) => {
         const newRecipe = new FormData()
         newRecipe.append('userID', props.user._id)
         newRecipe.append('name', nameValue)
-        console.log(imageFile)
-        imageFile.forEach((image) => {
-            newRecipe.append('recipeimage[]', image)
-        })
-        console.log(newRecipe.recipeimage)
-        newRecipe.append('recipeimage', JSON.stringify(imageFile))
+        for (let i = 0; i < imageFiles.length; i++) {
+            newRecipe.append('recipeimage', imageFiles[i])
+        }
         newRecipe.append('tags', JSON.stringify(tags))
         newRecipe.append('caption', captionValue)
         newRecipe.append('ingredients', JSON.stringify(ingredientValues))
@@ -123,7 +120,7 @@ const NewRecipePage = (props) => {
 
     const fileUploaded = (event) => {
         setUploadedImage(event.target.value !== '')
-        setImageFile(event.target.files)
+        setImageFiles(event.target.files)
 
         /* STUFF FOR CROPPING
         const recipeimgForCropperJS = document.querySelector('img')
@@ -271,7 +268,7 @@ const NewRecipePage = (props) => {
                 {/* Need to implement cropping for all images once it works without that
                 <ImageCropModal
                     bsCustomFileInput={bsCustomFileInput}
-                    setImgForUpload={setImageFile}
+                    setImgForUpload={setImageFiles}
                     setUploadedImage={setUploadedImage}
                     imgsrc={recipeImgSrc}
                     show={showModal}

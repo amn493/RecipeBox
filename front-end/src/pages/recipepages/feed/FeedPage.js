@@ -17,9 +17,6 @@ const Feed = (props) => {
     // Recipe list to show -- Is later re-assigned if/when sorts are applied
     const [recBoxRecipes, setRecBoxRecipes] = useState([])
 
-    // Error message for the component
-    const [errMsg, setErrMsg] = useState('')
-
     // Create a multiplier for the date
     const [dateMultiplier, setDateMultiplier] = useState(1)
 
@@ -33,20 +30,15 @@ const Feed = (props) => {
             // userid is the logged in user so we can get their following
             // timestamp is the current time to pull recipes from a certain timeframe, e.g. a week
 
-            let followingArray = props.user.following
-
             // Check the array length and if it's zero (e.g. user doesn't follow anyone), generate a custom error component
-            if (followingArray.length === 0) {
+            if (props.user.following.length === 0) {
                 setReqError(true)
-                setErrMsg(
-                    "You don't follow anyone. Check out the browse users page to find some tasty recipes! "
-                )
             } else {
                 // Otherwise, go ahead and query the database
                 axios(
                     `http://${process.env.REACT_APP_ORIGIN}:4000/feedrecipes?${
-                        followingArray.length > 0
-                            ? followingArray.reduce(
+                        props.user.following.length > 0
+                            ? props.user.following.reduce(
                                   (acc, following) =>
                                       acc + `&following=${following}`,
                                   `following=`
@@ -115,7 +107,19 @@ const Feed = (props) => {
                 </Button>
             </>
         ) : (
-            <ErrorComponent error={errMsg} />
+            <ErrorComponent
+                error={
+                    props.user.following.length === 0
+                        ? "You don't follow anyone. Follow people to see their latest recipes."
+                        : ''
+                }
+                link={
+                    props.user.following.length === 0
+                        ? 'Go to browse users page'
+                        : ''
+                }
+                url={props.user.following.length === 0 ? '/browse-users' : ''}
+            />
         )
     ) : (
         <></>

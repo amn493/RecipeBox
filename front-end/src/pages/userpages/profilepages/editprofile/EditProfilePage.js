@@ -73,12 +73,13 @@ const EditProfilePage = (props) => {
                     )
                     updatedUserInfo.append(
                         'lastName',
-                        lastNameVal !== props.user.lastName ? lastNameVal : ''
+                        lastNameVal !== props.user.lastName ? lastNameVal : '\n'
                     )
                     updatedUserInfo.append(
                         'bio',
-                        bioVal !== props.user.bio ? bioVal : ''
+                        bioVal !== props.user.bio ? bioVal : '\n'
                     )
+
                     updatedUserInfo.append('id', props.user._id)
                     updatedUserInfo.append('profilepicture', imageFile)
                     updatedUserInfo.append('oldImage', props.user.imagePath)

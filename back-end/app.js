@@ -702,16 +702,13 @@ app.post(
     body('name').not().isEmpty().trim().escape(),
     body('caption').not().isEmpty().trim().escape(),
     (req, res, next) => {
-        console.log(req.files) // hopefully i remember to remove this
         // new recipe
         const newRecipe = {
             user: req.body.userID,
             name: req.body.name,
-            // imagePath: path.join('/uploads/', req.file.filename),
-            imagePath: req.files.forEach((file) => {
-                console.log(file.filename)
+            imagePath: req.files.map((file) =>
                 path.join('/uploads/', file.filename)
-            }),
+            ),
             tags: JSON.parse(req.body.tags).filter((tag) => tag !== ''),
             caption: req.body.caption,
             ingredients: JSON.parse(req.body.ingredients)
@@ -726,8 +723,6 @@ app.post(
             likes: 0,
             createdAt: Date.now()
         }
-
-        console.log('imgPath:' + newRecipe.imagePath) // hopefully i remember to remove this
 
         // save new recipe to database
         new Recipe(newRecipe)
@@ -1020,12 +1015,22 @@ app.post('/followuser', (req, res, next) => {
                 // get username of following user
                 const usernameOfFollowingUser = followingUser.username
                 const userProfileLinkForEmail = `http://${process.env.ORIGIN}:3000/user-${followingUser.slug}`
-                const userImgPathForEmail =
-                    // TODO: replace starter profile pic with actual user profile pictures in email
-                    path.basename(followingUser.imagePath).substring(0, 8) ===
-                    'RBX_PFP_'
-                        ? followingUser.imagePath
-                        : 'starterProfilePictures/RBX_PFP_Blue.png'
+                let userImgPathForEmail = ''
+                try {
+                    // eslint-disable-next-line no-unused-expressions
+                    fs.existsSync(
+                        path.join(
+                            __dirname,
+                            `../front-end/public/${followingUser.imagePath}`
+                        )
+                    )
+                        ? (userImgPathForEmail = followingUser.imagePath)
+                        : (userImgPathForEmail =
+                              'starterProfilePictures/RBX_PFP_Blue.png')
+                } catch (err) {
+                    userImgPathForEmail =
+                        'starterProfilePictures/RBX_PFP_Blue.png'
+                }
                 User.findOne({
                     _id: req.body.profileUserID
                 })
@@ -1149,7 +1154,6 @@ app.post(
     body('bio').trim().escape(),
     (req, res, next) => {
         // sanitize inputs -- same as account creation more or less
-
         // recieve post data from updating user's basic info
         const updatedUserInfo = {}
         if (req.body.username) {
@@ -1158,12 +1162,13 @@ app.post(
         if (req.body.firstName) {
             updatedUserInfo.firstName = req.body.firstName
         }
-        if (req.body.lastName) {
+        if (req.body.lastName !== '\n') {
             updatedUserInfo.lastName = req.body.lastName
         }
-        if (req.body.bio) {
+        if (req.body.bio !== '\n') {
             updatedUserInfo.bio = req.body.bio
         }
+
         if (req.file) {
             updatedUserInfo.imagePath = path.join(
                 '/uploads/',
