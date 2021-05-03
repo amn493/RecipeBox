@@ -73,13 +73,11 @@ const EditProfilePage = (props) => {
                     )
                     updatedUserInfo.append(
                         'lastName',
-                        lastNameVal !== props.user.lastName
-                            ? lastNameVal
-                            : false
+                        lastNameVal !== props.user.lastName ? lastNameVal : '\n'
                     )
                     updatedUserInfo.append(
                         'bio',
-                        bioVal !== props.user.bio ? bioVal : false
+                        bioVal !== props.user.bio ? bioVal : '\n'
                     )
 
                     updatedUserInfo.append('id', props.user._id)
