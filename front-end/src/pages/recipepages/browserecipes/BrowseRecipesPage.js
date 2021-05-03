@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { useMediaQuery } from 'react-responsive'
+import { useLocation } from 'react-router-dom'
 
 import LargeRecipePreview from '../components/LargeRecipePreview.js'
 import SmallRecipePreview from '../components/SmallRecipePreview.js'
@@ -12,10 +13,15 @@ import ErrorComponent from '../../../gencomponents/ErrorComponent.js'
 import './BrowseRecipesPage.css'
 
 const BrowseRecipesPage = (props) => {
+    const query = new URLSearchParams(useLocation().search)
+    console.log(query.get('tag'))
+
     const [reqError, setReqError] = useState(false)
 
     const [filterKeyword, setFilterKeyword] = useState('')
-    const [filterTags, setFilterTags] = useState([])
+    const [filterTags, setFilterTags] = useState(
+        query.get('tag') ? [query.get('tag')] : []
+    )
 
     // request all tags on initial render
     const [tags, setTags] = useState([])
