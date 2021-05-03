@@ -21,10 +21,12 @@ const Recipe = mongoose.model('Recipe')
 
 describe('Testing route handler for GET /recipe ', () => {
     let slug = ''
+    let findRecipe = ''
 
     before(async () => { 
         await Recipe.findOne({}).then((recipe) => {
             slug = recipe.slug
+            findRecipe = recipe
         })
     })
 
@@ -60,4 +62,11 @@ describe('Testing route handler for GET /recipe ', () => {
             expect(response.body).to.have.property('imagePath').that.is.a('string')
         })
     }).timeout(8000)
+
+    it ('should return the correct recipe', () => {
+        return chai.request(app).get(`/recipe?slug=${slug}`).then((response) => {
+            expect(response.body.name).to.equal(findRecipe.name)
+            expect(response.body.caption).to.equal(findRecipe.caption)
+        })
+    })
 })
