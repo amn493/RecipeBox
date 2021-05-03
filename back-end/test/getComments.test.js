@@ -12,7 +12,6 @@ require('../db.js')
 // eslint-disable-next-line no-unused-vars
 const JWT = require('jsonwebtoken')
 
-const Recipe = mongoose.model('Recipe')
 const Comment = mongoose.model('Comment')
 
 const { expect } = chai
@@ -66,6 +65,17 @@ describe('Testing GET for /comments API', () => {
                 expect(response.body[0]).to.to.have.property('user')
                 expect(response.body[0]).to.to.have.property('comment')
                 expect(response.body[0]).to.to.have.property('createdAt')
+            })
+    })
+
+    it('should return only comments whose recipeID field is equal to the given recipeID in query string', () => {
+        return chai
+            .request(app)
+            .get(`/comments?recipeID=${recipeID}`)
+            .then((response) => {
+                response.body.forEach((comment) => {
+                    expect(comment.recipe).to.equal(recipeID.toString())
+                })
             })
     })
 })
