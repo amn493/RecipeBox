@@ -1,7 +1,11 @@
 .searchIcon {
     height: 16px;
-    width: 16px; 
+    width: 16px;
 }
-.searchBar{
+.searchBar {
     width: 100%;
+}
+
+.comboBoxInput {
+    -webkit-appearance: none;
 }

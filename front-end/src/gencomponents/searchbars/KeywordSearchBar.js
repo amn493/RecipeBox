@@ -57,6 +57,11 @@ const KeywordSearchBar = (props) => {
                             : 'Name or username'
                     }
                     onChange={handleChange}
+                    onKeyPress={(event) => {
+                        if (event.key === 'Enter') {
+                            handleSubmit()
+                        }
+                    }}
                     value={value}
                 />
                 <InputGroup.Append>
