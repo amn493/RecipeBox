@@ -16,19 +16,18 @@ const mongoose = require('mongoose')
 require('../db.js')
 // eslint-disable-next-line no-unused-vars
 const JWT = require('jsonwebtoken')
-const Recipe = mongoose.model('Recipe')
 const User = mongoose.model('User')
 
 
 describe('Testing route handler for POST /newrecipe ', () => {
     let userID = ''
     let name = 'oatmeal'
-    let tags = JSON.stringify(['breakfast,oats,vegan'])
+    let tags = JSON.stringify(['breakfast','oats','vegan'])
     let caption = 'The best morning oatmeal!'
-    let ingredients = JSON.stringify(['rolled oats,banana,blueberries,chia seeds'])
-    let instructions = JSON.stringify(['boil oats in water,add toppings,enjoy!'])
+    let ingredients = JSON.stringify(['rolled oats','banana','blueberries','chia seeds'])
+    let instructions = JSON.stringify(['boil oats in water','add toppings,enjoy!'])
     let pinned = 'false'
-    let id = ''
+    let idOne = ''
 
     // Pull in a "random" user
     before(async () => {
@@ -37,7 +36,7 @@ describe('Testing route handler for POST /newrecipe ', () => {
         })
     })
 
-    it('POST should return 200 OK status AND should return a recipe object with the right field names and types ', () => {
+    it('POST should return 200 OK status', () => {
         return chai.request(app)
         .post('/newrecipe')
         .set('content-type', 'multipart/form-data')
@@ -51,7 +50,28 @@ describe('Testing route handler for POST /newrecipe ', () => {
         .field('pinned', pinned)
         .then((response) => {
             expect(response.status).to.equal(200)
+            idOne = response.body._id.toString()
+        })
+    }).timeout(4000)
 
+    // POST a new recipe
+    name = 'maple-brown-sugar-oatmeal'
+    ingredients = JSON.stringify(['rolled oats','banana','blueberries','chia seeds','brown sugar','maple syrup'])
+    let idTwo = ''
+
+    it('should return a recipe object with the right field names and types ', () => {
+        return chai.request(app)
+        .post('/newrecipe')
+        .set('content-type', 'multipart/form-data')
+        .field('userID', userID)
+        .field('name', name)
+        .attach('recipeimage', fs.readFileSync('./test/image.png'), 'image.png')
+        .field('tags', tags)
+        .field('caption', caption)
+        .field('ingredients', ingredients)
+        .field('instructions', instructions)
+        .field('pinned', pinned)
+        .then((response) => {
             expect(response.body).have.property('_id')
             expect(response.body).have.property('tags')
             expect(response.body).have.property('ingredients')
@@ -63,14 +83,20 @@ describe('Testing route handler for POST /newrecipe ', () => {
             expect(response.body).have.property('likes')
             expect(response.body).have.property('createdAt')
             expect(response.body).have.property('pinned')
-            id = response.body._id.toString()
+            idTwo = response.body._id.toString()
         })
-    }).timeout(8000)
+    }).timeout(4000)
 
     after(async () => {
-        // Delete the recipe
+        // Delete the recipes
         await chai.request(app)
         .post('/deleterecipe')
-        .send({id})
+        .send({'id': idOne})
+        .then(response)
+
+        await chai.request(app)
+        .post('/deleterecipe')
+        .send({'id': idTwo})
+        .then(response)
     })
 })
