@@ -2,9 +2,8 @@ name: Continuous Integration for RecipeBox
 
 on: [push]
 
-jobs: 
-  runs-on: [self-hosted, linux]
-
+jobs:
+  runs-on: ubuntu-latest
   env:
       DB_PASS: ${{ secrets.DB_PASS }}
       DB_USER: ${{ secrets.DB_USER }}
