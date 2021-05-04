@@ -49,7 +49,7 @@ describe('Testing GET to /recommendedrecipes API', () => {
                         .that.is.a('string')
                     expect(recipe)
                         .to.have.property('imagePath')
-                        .that.is.a('string')
+                        .that.is.a('array')
                     expect(recipe).to.have.property('likes').that.is.a('number')
                 })
             }))
