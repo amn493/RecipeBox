@@ -21,5 +21,4 @@ jobs:
           npm install
           npm i nyc
       - name: Run unit tests
-          run: |
-            npm test
+          run: npm test
