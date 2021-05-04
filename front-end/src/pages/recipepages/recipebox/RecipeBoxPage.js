@@ -37,9 +37,10 @@ const RecipeBoxPage = (props) => {
 
     /* Sorting! */
     let sortRecBoxRecipes = () => {
+        // Filter so that only liked recipes are shown
         let resultingRecipes = recBoxRecipes
 
-        // Sort by date posted -- TODO is to test! Mockaroo doesn't give us the greatest of dates
+        // Sort by date posted
         if (sortByString === 'Sort by Date Posted') {
             resultingRecipes.sort((a, b) => {
                 if (ascendingOrder) return a.createdAt > b.createdAt ? 1 : -1
@@ -62,6 +63,7 @@ const RecipeBoxPage = (props) => {
     const [filterKeyword, setFilterKeyword] = useState('')
     const [filterTags, setFilterTags] = useState([])
 
+    // Filter images by tag in combobox search bar
     useEffect(() => {
         // fetch all tags
         axios(
@@ -82,6 +84,7 @@ const RecipeBoxPage = (props) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
+    // Filter images by keyword in search bar
     useEffect(() => {
         if (filterKeyword === '' && filterTags.length === 0) {
             axios(
@@ -236,6 +239,24 @@ const RecipeBoxPage = (props) => {
             <br />
 
             {sortRecBoxRecipes()}
+            <p
+                className={
+                    recBoxRecipes.length === 0 &&
+                    (filterKeyword !== '' || filterTags.length > 0)
+                        ? 'noRecsFound'
+                        : 'hidden'
+                }
+            >
+                No recipes found
+            </p>
+            <hr
+                className={
+                    recBoxRecipes.length === 0 &&
+                    (filterKeyword !== '' || filterTags.length > 0)
+                        ? 'noRecsFound'
+                        : 'hidden'
+                }
+            />
             <RecipeList
                 size="small"
                 recipes={recBoxRecipes}
