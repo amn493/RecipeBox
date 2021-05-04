@@ -14,15 +14,9 @@ jobs:
         RBXPASS: ${{ secrets.RBXPASS }}
         REACT_APP_ORIGIN: ${{ secrets.REACT_APP_ORIGIN }}
 
-    strategy:
-        matrix:
-          node-version: [10.x, 12.x, 14.x, 15.x]
-
     steps:
       - name: Install dependencies and run unit tests
         working-directory: ./back-end
-        with:
-          node-version: ${{ matrix.node-version }}
         run: |
           npm i nyc
           npm test
