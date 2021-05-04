@@ -17,7 +17,7 @@ jobs:
     steps:
       - name: Install dependencies and run unit tests
         run: |
-          cd back-end
           npm install
           npm i nyc
           npm test
+        working-directory: ./back-end
