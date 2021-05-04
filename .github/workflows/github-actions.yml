@@ -11,12 +11,16 @@ jobs:
 
   steps:
     env:
+      REACT_APP_ORIGIN: ${{ secrets.REACT_APP_ORIGIN }}
+    working-directory: ./front-end
+
+  steps:
+    env:
       DB_PASS: ${{ secrets.DB_PASS }}
       DB_USER: ${{ secrets.DB_USER }}
       JWT_SECRET: ${{ secrets.JWT_SECRET }}
       ORIGIN: ${{ secrets.ORIGIN }}
       RBXPASS: ${{ secrets.RBXPASS }}
-      REACT_APP_ORIGIN: ${{ secrets.REACT_APP_ORIGIN }}
     - name: Install dependencies and run unit tests
     - run: |
         npm i nyc
