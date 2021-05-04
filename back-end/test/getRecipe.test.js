@@ -59,7 +59,7 @@ describe('Testing route handler for GET /recipe ', () => {
         return chai.request(app).get(`/recipe?slug=${slug}`).then((response) => {
             expect(response.body).to.have.property('name').that.is.a('string')
             expect(response.body).to.have.property('ingredients').that.is.an('array')
-            expect(response.body).to.have.property('imagePath').that.is.a('string')
+            expect(response.body).to.have.property('imagePath').that.is.a('array')
         })
     }).timeout(8000)
 

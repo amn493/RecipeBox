@@ -76,7 +76,15 @@ app.use((req, res, next) => {
 // object for storage option for multer
 const storage = multer.diskStorage({
     destination: (req, file, cb) =>
-        cb(null, path.join(__dirname, '../front-end/public/uploads')),
+        cb(
+            null,
+            path.join(
+                __dirname,
+                process.env.CONTAINER === 'docker'
+                    ? 'public/uploads'
+                    : '../front-end/public/uploads'
+            )
+        ),
     filename: (req, file, cb) =>
         cb(
             null,
@@ -931,8 +939,10 @@ app.post('/likerecipe', (req, res, next) => {
                                             {
                                                 filename: 'heartFill.png',
                                                 path: path.join(
-                                                    __dirname,
-                                                    '../front-end/public/heartFill.png'
+                                                    process.env.CONTAINER ===
+                                                        'docker'
+                                                        ? 'public/icons/heartFill.png'
+                                                        : '../front-end/public/icons/heartFill.png'
                                                 ),
                                                 cid: 'heartFillIcon'
                                             }
@@ -1021,7 +1031,9 @@ app.post('/followuser', (req, res, next) => {
                     fs.existsSync(
                         path.join(
                             __dirname,
-                            `../front-end/public/${followingUser.imagePath}`
+                            process.env.CONTAINER === 'docker'
+                                ? `public/${followingUser.imagePath}`
+                                : `../front-end/public/${followingUser.imagePath}`
                         )
                     )
                         ? (userImgPathForEmail = followingUser.imagePath)
@@ -1060,7 +1072,9 @@ app.post('/followuser', (req, res, next) => {
                                         ),
                                         path: path.join(
                                             __dirname,
-                                            `../front-end/public/${userImgPathForEmail}`
+                                            process.env.CONTAINER === 'docker'
+                                                ? `public/${userImgPathForEmail}`
+                                                : `../front-end/public/${userImgPathForEmail}`
                                         ),
                                         cid: 'followinguserimg'
                                     }
@@ -1188,7 +1202,11 @@ app.post(
                     fs.unlink(
                         path.join(
                             __dirname,
-                            `../front-end/public/${req.body.oldImage}`
+                            `${
+                                process.env.CONTAINER === 'docker'
+                                    ? 'public'
+                                    : '../front-end/public'
+                            }${req.body.oldImage}`
                         ),
                         (err) => {
                             if (err) {
@@ -1236,7 +1254,13 @@ app.post('/deleterecipe', (req, res, next) => {
                                             fs.unlink(
                                                 path.join(
                                                     __dirname,
-                                                    `../front-end/public${recipe.imagePath}`
+                                                    `${
+                                                        process.env
+                                                            .CONTAINER ===
+                                                        'docker'
+                                                            ? 'public'
+                                                            : '../front-end/public'
+                                                    }${recipe.imagePath[0]}`
                                                 ),
                                                 (err) => {
                                                     if (err) {
