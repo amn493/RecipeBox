@@ -3,7 +3,7 @@ name: deploy
 on:
   push:
     branches:
-      - master
+      - spike/454/set-up-continuous-deployment
 
 jobs:
   deploy:
@@ -19,5 +19,6 @@ jobs:
           script: |
             cd recipebox-repo/project-setup-team-ntobo-global/
             docker-compose down
+            git checkout spike/454/set-up-continuous-deployment
             git pull
             docker-compose up --build -d
