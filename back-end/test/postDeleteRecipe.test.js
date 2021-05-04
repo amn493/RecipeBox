@@ -15,11 +15,11 @@ require('dotenv').config({ silent: true }) // load environmental variables from 
 const mongoose = require('mongoose')
 require('../db.js')
 // eslint-disable-next-line no-unused-vars
-const JWT = require('jsonwebtoken')
 const User = mongoose.model('User')
+const Recipe = mongoose.model('Recipe')
 
 
-describe('Testing route handler for POST /newrecipe ', () => {
+describe('Testing route handler for POST /deleterecipe ', () => {
     let userID = ''
     let name = 'oatmeal'
     let tags = JSON.stringify(['breakfast,oats,vegan'])
@@ -59,4 +59,10 @@ describe('Testing route handler for POST /newrecipe ', () => {
             expect(response.status).to.equal(200)
         })
     }).timeout(8000)
+
+    // Pull in a "random" user
+    after(async () => {
+        await User.find({}).then((user) => {
+        })
+    })
 })
