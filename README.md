@@ -1,6 +1,6 @@
 # RecipeBox
 
-![Build Status](https://github.com/github/agile-dev-assignments/project-setup-team-ntobo-global/actions/workflows/github-actions.yml/badge.svg)
+![Build Status](https://github.com/agile-dev-assignments/project-setup-team-ntobo-global/actions/workflows/continuous-integration.yml/badge.svg)
 
 ## Vision Statement
 
