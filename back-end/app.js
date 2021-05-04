@@ -1231,21 +1231,37 @@ app.post('/deleterecipe', (req, res, next) => {
                                     // delete all tags that now have a count of 0
                                     Tag.deleteMany({ count: { $lt: 1 } })
                                         .then(() => {
-                                            // delete the recipe image
-                                            // TODO: change to multiple images when carousel + multiple uploads is implemented
-                                            fs.unlink(
-                                                path.join(
-                                                    __dirname,
-                                                    `../front-end/public${recipe.imagePath}`
-                                                ),
-                                                (err) => {
-                                                    if (err) {
-                                                        next(err)
-                                                    } else {
-                                                        res.send(
-                                                            'deleted recipe'
-                                                        )
-                                                    }
+                                            // delete all of the recipe images
+                                            recipe.imagePath.forEach(
+                                                (imagePath) => {
+                                                    fs.unlink(
+                                                        path.join(
+                                                            __dirname,
+                                                            `../front-end/public${imagePath}`
+                                                        ),
+                                                        (err) => {
+                                                            if (err) {
+                                                                next(err)
+                                                            } else {
+                                                                // If it's the last file and it was deleted, send that we deleted the recipe
+                                                                // eslint-disable-next-line no-lonely-if
+                                                                if (
+                                                                    imagePath ===
+                                                                    recipe
+                                                                        .imagePath[
+                                                                        recipe
+                                                                            .imagePath
+                                                                            .length -
+                                                                            1
+                                                                    ]
+                                                                ) {
+                                                                    res.send(
+                                                                        'deleted recipe'
+                                                                    )
+                                                                }
+                                                            }
+                                                        }
+                                                    )
                                                 }
                                             )
                                         })
