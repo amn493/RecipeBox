@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { PinAngleFill } from 'react-bootstrap-icons'
+import Carousel from 'react-bootstrap/Carousel'
 
 import Timestamp from '../../../gencomponents/Timestamp.js'
 import Number from '../../../gencomponents/Number.js'
@@ -60,11 +61,25 @@ const LargeRecipePreview = (props) => {
                     props.pinned ? ' pinnedRecipeLarge' : ''
                 }`}
             >
-                <img
-                    className="largeRecipePreviewImage"
-                    src={process.env.PUBLIC_URL + props.recipe.imagePath[0]}
-                    alt="food"
-                />
+                {props.recipe.imagePath.length > 1 ? (
+                    <Carousel interval={null}>
+                        {props.recipe.imagePath.map((image) => (
+                            <Carousel.Item>
+                                <img
+                                    className="largeRecipePreviewImage"
+                                    src={image}
+                                    alt="food"
+                                />
+                            </Carousel.Item>
+                        ))}
+                    </Carousel>
+                ) : (
+                    <img
+                        className="largeRecipePreviewImage"
+                        src={props.recipe.imagePath[0]}
+                        alt="food"
+                    />
+                )}
                 <table className="largeRecipePreviewTable largeRecipePreviewTopTable">
                     <tbody>
                         <tr>
