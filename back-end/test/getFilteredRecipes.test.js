@@ -110,7 +110,7 @@ describe('Testing route handler for GET /filteredrecipes ', () => {
                     .that.is.a('string')
                 expect(response.body[0])
                     .to.have.property('imagePath')
-                    .that.is.a('string')
+                    .that.is.a('array')
                 expect(response.body[0])
                     .to.have.property('tags')
                     .that.is.an('array')
