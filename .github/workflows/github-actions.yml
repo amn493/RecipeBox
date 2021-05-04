@@ -20,9 +20,9 @@ jobs:
 
     steps:
       - name: Install dependencies and run unit tests
-        run: |
-          npm i nyc
-          npm test
         working-directory: ./back-end
         with:
           node-version: ${{ matrix.node-version }}
+        run: |
+          npm i nyc
+          npm test
