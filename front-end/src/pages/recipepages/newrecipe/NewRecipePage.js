@@ -122,16 +122,19 @@ const NewRecipePage = (props) => {
         setUploadedImage(event.target.value !== '')
         setImageFiles(event.target.files)
 
-        /* STUFF FOR CROPPING
-        const recipeimgForCropperJS = document.querySelector('img')
+        /* Begin Cropping */
+        const recipeimgForCropperJS = document.querySelectorAll('img')[0]
         const file = event.target.files[0]
 
         const reader = new FileReader()
 
+        // Clear image sources to support multiple images
+        setRecipeImgSrc([])
         reader.addEventListener(
             'load',
             function () {
                 // convert image file to base64 string for cropperJS <img> src
+                console.log(reader.result)
                 setRecipeImgSrc(reader.result)
                 setShowModal(true)
             },
@@ -144,8 +147,7 @@ const NewRecipePage = (props) => {
         } else {
             setShowModal(false)
         }
-
-        END OF STUFF FOR CROPPING */
+        /* End of Cropping */
     }
 
     return !submitted ? (
@@ -263,9 +265,8 @@ const NewRecipePage = (props) => {
                     Post Recipe
                 </Button>
 
-                {/*to send to cropper modal*/}
                 <img id="img" alt="" />
-                {/* Need to implement cropping for all images once it works without that
+                {/* Crop Modal */}
                 <ImageCropModal
                     bsCustomFileInput={bsCustomFileInput}
                     setImgForUpload={setImageFiles}
@@ -273,7 +274,7 @@ const NewRecipePage = (props) => {
                     imgsrc={recipeImgSrc}
                     show={showModal}
                     setShow={setShowModal}
-                /> */}
+                />
             </Form>
         </div>
     ) : (
