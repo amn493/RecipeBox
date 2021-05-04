@@ -15,10 +15,9 @@ jobs:
         REACT_APP_ORIGIN: ${{ secrets.REACT_APP_ORIGIN }}
 
     steps:
-      - name: Install dependencies
+      - name: Install dependencies and run unit tests
         run: |
           cd back-end
           npm install
           npm i nyc
-      - name: Run unit tests
-          run: npm test
+          npm test
