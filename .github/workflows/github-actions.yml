@@ -1,6 +1,7 @@
 name: Continuous Integration for RecipeBox
 
 on: [push]
+
 jobs: 
   runs-on: ubuntu-latest
 
@@ -16,7 +17,6 @@ jobs:
       ORIGIN: ${{ secrets.ORIGIN }}
       RBXPASS: ${{ secrets.RBXPASS }}
       REACT_APP_ORIGIN: ${{ secrets.REACT_APP_ORIGIN }}
-
     - name: Install dependencies and run unit tests
     - run: |
         npm i nyc
