@@ -5,22 +5,19 @@ on: [push]
 jobs: 
   runs-on: ubuntu-latest
 
-  strategy:
-      matrix:
-        node-version: [10.x, 12.x, 14.x, 15.x]
-
-  steps:
-    env:
-      REACT_APP_ORIGIN: ${{ secrets.REACT_APP_ORIGIN }}
-    working-directory: ./front-end
-
-  steps:
-    env:
+  env:
       DB_PASS: ${{ secrets.DB_PASS }}
       DB_USER: ${{ secrets.DB_USER }}
       JWT_SECRET: ${{ secrets.JWT_SECRET }}
       ORIGIN: ${{ secrets.ORIGIN }}
       RBXPASS: ${{ secrets.RBXPASS }}
+      REACT_APP_ORIGIN: ${{ secrets.REACT_APP_ORIGIN }}
+
+  strategy:
+      matrix:
+        node-version: [10.x, 12.x, 14.x, 15.x]
+
+  steps:
     - name: Install dependencies and run unit tests
     - run: |
         npm i nyc
