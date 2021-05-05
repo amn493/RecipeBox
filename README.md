@@ -1,6 +1,6 @@
 # RecipeBox
 
-[![Build Status](https://www.travis-ci.com/agile-dev-assignments/project-setup-team-ntobo-global.svg?branch=master)](https://www.travis-ci.com/agile-dev-assignments/project-setup-team-ntobo-global)
+![Build Status](https://github.com/agile-dev-assignments/project-setup-team-ntobo-global/actions/workflows/continuous-integration.yml/badge.svg)
 
 ## Vision Statement
 

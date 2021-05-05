@@ -20,7 +20,7 @@ const NewRecipePage = (props) => {
     const [tags, setTags] = useState([])
     const [ingredientValues, setIngredientValues] = useState([''])
     const [instructionValues, setInstructionValues] = useState([''])
-    const [imageFile, setImageFile] = useState()
+    const [imageFiles, setImageFiles] = useState([''])
 
     // state variables for disabling post recipe button
     const [emptyField, setEmptyField] = useState(true)
@@ -47,7 +47,9 @@ const NewRecipePage = (props) => {
         const newRecipe = new FormData()
         newRecipe.append('userID', props.user._id)
         newRecipe.append('name', nameValue)
-        newRecipe.append('recipeimage', imageFile)
+        for (let i = 0; i < imageFiles.length; i++) {
+            newRecipe.append('recipeimage', imageFiles[i])
+        }
         newRecipe.append('tags', JSON.stringify(tags))
         newRecipe.append('caption', captionValue)
         newRecipe.append('ingredients', JSON.stringify(ingredientValues))
@@ -89,6 +91,12 @@ const NewRecipePage = (props) => {
         setTags(tags.slice(0, i).concat(tags.slice(i + 1)))
     }
 
+    // REMOVED FOR CROPPING?
+    useEffect(() => {
+        bsCustomFileInput.init()
+    }, [])
+    // END OF WHAT WAS REMOVED FOR CROPPING
+
     // check for empty fields
     useEffect(() => {
         setEmptyField(
@@ -112,8 +120,9 @@ const NewRecipePage = (props) => {
 
     const fileUploaded = (event) => {
         setUploadedImage(event.target.value !== '')
-        setImageFile(event.target.files[0])
+        setImageFiles(event.target.files)
 
+        /* STUFF FOR CROPPING
         const recipeimgForCropperJS = document.querySelector('img')
         const file = event.target.files[0]
 
@@ -135,6 +144,8 @@ const NewRecipePage = (props) => {
         } else {
             setShowModal(false)
         }
+
+        END OF STUFF FOR CROPPING */
     }
 
     return !submitted ? (
@@ -233,7 +244,8 @@ const NewRecipePage = (props) => {
                 <Form.Group controlId="formRecipeImage">
                     <Form.File
                         id="custom-file"
-                        label="Upload recipe image"
+                        label="Upload recipe image (max. 5)"
+                        multiple
                         onChange={fileUploaded}
                         onClick={clearUpload}
                         custom
@@ -253,15 +265,15 @@ const NewRecipePage = (props) => {
 
                 {/*to send to cropper modal*/}
                 <img id="img" alt="" />
-
+                {/* Need to implement cropping for all images once it works without that
                 <ImageCropModal
                     bsCustomFileInput={bsCustomFileInput}
-                    setImgForUpload={setImageFile}
+                    setImgForUpload={setImageFiles}
                     setUploadedImage={setUploadedImage}
                     imgsrc={recipeImgSrc}
                     show={showModal}
                     setShow={setShowModal}
-                />
+                /> */}
             </Form>
         </div>
     ) : (

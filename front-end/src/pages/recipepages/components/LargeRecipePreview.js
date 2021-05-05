@@ -62,7 +62,7 @@ const LargeRecipePreview = (props) => {
             >
                 <img
                     className="largeRecipePreviewImage"
-                    src={process.env.PUBLIC_URL + props.recipe.imagePath}
+                    src={process.env.PUBLIC_URL + props.recipe.imagePath[0]}
                     alt="food"
                 />
                 <table className="largeRecipePreviewTable largeRecipePreviewTopTable">

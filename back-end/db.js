@@ -32,7 +32,7 @@ User.plugin(URLSlugs('username', { field: 'slug' }))
 const Recipe = new mongoose.Schema({
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     name: { type: String, required: true },
-    imagePath: { type: String, required: true },
+    imagePath: { type: [String], required: true },
     tags: [String],
     caption: { type: String },
     ingredients: [String],

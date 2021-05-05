@@ -1,12 +1,21 @@
-version: '2'
+version: "3.3"
 services:
   front-end:
     build: ./front-end
+    volumes:
+      - type: bind
+        source: ./front-end/public/uploads
+        target: /usr/share/nginx/html/uploads
+        read_only: true
     ports:
-      - '80:80'
+      - "80:80"
     depends_on:
       - back-end
   back-end:
     build: ./back-end
+    volumes:
+      - type: bind
+        source: ./front-end/public
+        target: /usr/src/app/public
     ports:
-      - '4000:4000'
+      - "4000:4000"
