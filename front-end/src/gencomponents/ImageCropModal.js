@@ -1,7 +1,7 @@
 import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
 import Cropper from 'cropperjs'
-//import Croppie from 'croppie'
+// import Croppie from 'croppie'
 import './ImageCropModal.css'
 
 const ImageCropModal = (props) => {
@@ -77,6 +77,7 @@ const ImageCropModal = (props) => {
         }
         const loaded = () => {
             if (props.show) {
+                console.log('cropper loaded')
                 setTimeout(initCropper, 100)
             }
         }

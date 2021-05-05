@@ -136,6 +136,7 @@ const NewRecipePage = (props) => {
         if (uploadedFiles.length > 0) {
             if (imageIndex === uploadedFiles.length) {
                 setUploadedFiles([])
+                setImageIndex(0)
             } else if (imageIndex >= 0) {
                 const file = uploadedFiles[imageIndex]
 
@@ -147,9 +148,7 @@ const NewRecipePage = (props) => {
                     'load',
                     function () {
                         // convert image file to base64 string for cropperJS <img> src
-                        //console.log(reader.result)
                         setRecipeImgSrc(reader.result)
-                        setShowModal(true)
                     },
                     false
                 )
@@ -163,6 +162,12 @@ const NewRecipePage = (props) => {
             }
         }
     }, [uploadedFiles, imageIndex])
+
+    useEffect(() => {
+        if (recipeImgSrc) {
+            setShowModal(true)
+        }
+    }, [recipeImgSrc])
 
     const fileUploaded = (event) => {
         setUploadedImage(event.target.value !== '')
@@ -195,7 +200,6 @@ const NewRecipePage = (props) => {
                         onChange={(event) => setNameValue(event.target.value)}
                     />
                 </Form.Group>
-
                 <Form.Group controlId="formCaption">
                     <Form.Control
                         className="textField"
@@ -208,7 +212,6 @@ const NewRecipePage = (props) => {
                         }
                     />
                 </Form.Group>
-
                 <Form.Group controlId="formTags">
                     <InputGroup className="tagField">
                         <InputGroup.Prepend>
@@ -248,7 +251,6 @@ const NewRecipePage = (props) => {
                         </Button>
                     ))}
                 </Form.Group>
-
                 <Form.Group controlId="formIngredientsSection">
                     <Form.Label className="newRecipeSubheading">
                         Ingredients
@@ -261,7 +263,6 @@ const NewRecipePage = (props) => {
                         setValues={setIngredientValues}
                     />
                 </Form.Group>
-
                 <Form.Group controlId="formInstructionsSection">
                     <Form.Label className="newRecipeSubheading">
                         Instructions
@@ -274,7 +275,6 @@ const NewRecipePage = (props) => {
                         setValues={setInstructionValues}
                     />
                 </Form.Group>
-
                 <Form.Group controlId="formRecipeImage">
                     <Form.File
                         id="custom-file"
@@ -285,7 +285,6 @@ const NewRecipePage = (props) => {
                         custom
                     />
                 </Form.Group>
-
                 <Button
                     block
                     variant="info"
@@ -296,17 +295,20 @@ const NewRecipePage = (props) => {
                 >
                     Post Recipe
                 </Button>
-
                 <img id="img" alt="" />
                 {/* Crop Modal */}
-                <ImageCropModal
-                    bsCustomFileInput={bsCustomFileInput}
-                    setImgForUpload={setCroppedImage}
-                    setUploadedImage={setUploadedImage}
-                    imgsrc={recipeImgSrc}
-                    show={showModal}
-                    setShow={setShowModal}
-                />
+                {recipeImgSrc ? (
+                    <ImageCropModal
+                        bsCustomFileInput={bsCustomFileInput}
+                        setImgForUpload={setCroppedImage}
+                        setUploadedImage={setUploadedImage}
+                        imgsrc={recipeImgSrc}
+                        show={showModal}
+                        setShow={setShowModal}
+                    />
+                ) : (
+                    <></>
+                )}
             </Form>
         </div>
     ) : (
