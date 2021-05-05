@@ -19,6 +19,10 @@ const User = mongoose.model('User')
 const Recipe = mongoose.model('Recipe')
 
 
+// For the future: 
+// include tests to check tags are decremented
+// comments are deleted and likes are removed (check by liking and commenting before)
+// make sure recipe image is also deleted
 describe('Testing route handler for POST /deleterecipe ', () => {
     let userID = ''
     let name = 'oatmeal'
