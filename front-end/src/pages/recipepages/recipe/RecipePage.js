@@ -8,6 +8,7 @@ import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import Dropdown from 'react-bootstrap/Dropdown'
 import { ThreeDots } from 'react-bootstrap-icons'
+import Carousel from 'react-bootstrap/Carousel'
 
 import Comment from './Comment.js'
 import Timestamp from '../../../gencomponents/Timestamp.js'
@@ -188,11 +189,27 @@ const RecipePage = (props) => {
                     ) : (
                         <></>
                     )}
-                    <img
-                        className="recipeImage"
-                        src={recipe.imagePath}
-                        alt="food"
-                    />
+
+                    {recipe.imagePath.length > 1 ? (
+                        <Carousel interval={null}>
+                            {recipe.imagePath.map((image) => (
+                                <Carousel.Item>
+                                    <img
+                                        className="recipeImage"
+                                        src={image}
+                                        alt="food"
+                                    />
+                                </Carousel.Item>
+                            ))}
+                        </Carousel>
+                    ) : (
+                        <img
+                            className="recipeImage"
+                            src={recipe.imagePath[0]}
+                            alt="food"
+                        />
+                    )}
+
                     <div className="recipeText">
                         <div className="recipeDetails">
                             <table className="recipeDetailsTable recipeDetailsTopTable">
@@ -299,7 +316,6 @@ const RecipePage = (props) => {
                             setReqError={setReqError}
                         />
                     </div>
-
                     <CreateAccountModal
                         show={showModal}
                         setShow={setShowModal}

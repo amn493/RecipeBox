@@ -1,7 +1,9 @@
 import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
 import Cropper from 'cropperjs'
+// import Croppie from 'croppie'
 import './ImageCropModal.css'
+
 const ImageCropModal = (props) => {
     const handleClose = () => {
         // if user clicks outside of crop modal, assume they want to upload uncropped image:
@@ -64,6 +66,7 @@ const ImageCropModal = (props) => {
                             })
                     }
                 })
+                console.log(cropper)
             } catch (e) {
                 props.setImgForUpload()
                 if (props.setUploadedImage) {
@@ -74,6 +77,7 @@ const ImageCropModal = (props) => {
         }
         const loaded = () => {
             if (props.show) {
+                console.log('cropper loaded')
                 setTimeout(initCropper, 100)
             }
         }
@@ -91,6 +95,9 @@ const ImageCropModal = (props) => {
                 rel="stylesheet"
             />
             <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.js"></script>
+
+            <link rel="stylesheet" href="croppie.css" />
+            <script src="croppie.js"></script>
             <Modal
                 centered
                 show={props.show}
