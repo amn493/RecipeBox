@@ -6,8 +6,6 @@ const expect = chai.expect
 chai.use(chaiHTTP)
 
 const app = require('../app.js')
-const fs = require('fs')
-const path = require('path');
 
 // For finding User from database
 require('dotenv').config({ silent: true })
@@ -15,10 +13,11 @@ const mongoose = require('mongoose')
 require('../db.js')
 const User = mongoose.model('User')
 
-// If Mockaroo is down, change route to "res.send('Text')" and 
-// comment out the axios to make sure the test runs.
 
-// Group of tests
+// For the future:
+// Include tests to edit the profile picture then revert back to original
+// Find an account with a default profile picture (non-default profile pictures
+// get deleted once updated)
 describe('Testing route handler for POST /updateuserinfo ', () => {
     let username = 'testEditProfile'
     let firstName = 'neil'
@@ -31,23 +30,28 @@ describe('Testing route handler for POST /updateuserinfo ', () => {
     let originalFirstName = ''
     let originalLastName = ''
     let originalBio = ''
-    let originalImagePath = ''
+
     before(async () => {
-        await User.findOne({ $in:{imagePath: [
-            'starterProfilePictures/RBX_PFP_Blue.png',
-            'starterProfilePictures/RBX_PFP_Gold.png',
-            'starterProfilePictures/RBX_PFP_Green.png',
-            'starterProfilePictures/RBX_PFP_Magenta.png',
-            'starterProfilePictures/RBX_PFP_Red.png',
-            'starterProfilePictures/RBX_PFP_Violet.png'
-        ]}}).then((user) => {
+        await User.findOne({}).then((user) => {
             userID = user._id.toString()
             originalUsername = user.username
             originalFirstName = user.firstName
             originalLastName = user.lastName
             originalBio = user.bio
-            originalImagePath = user.imagePath
         })
+    })
+
+    afterEach(async () => {
+        // eslint-disable-next-line no-console
+        console.log('\x1b[2m', '...setting profile back to original...')
+        return chai.request(app)
+        .post('/updateuserinfo')
+        .set('content-type', 'multipart/form-data')
+        .field('username', originalUsername)
+        .field('firstName', originalFirstName)
+        .field('lastName', originalLastName)
+        .field('bio', originalBio)
+        .field('id', userID)
     })
 
     it('should return 200 OK status ', () => {
@@ -59,7 +63,6 @@ describe('Testing route handler for POST /updateuserinfo ', () => {
         .field('lastName', lastName)
         .field('bio', bio)
         .field('id', userID)
-        .attach('profilepicture', fs.readFileSync('./test/image.png'), 'image.png')
         .then((response) => {
             expect(response.status).to.equal(200)
         })
@@ -83,32 +86,20 @@ describe('Testing route handler for POST /updateuserinfo ', () => {
         })
     }).timeout(4000)
 
-    it('should return the profile to the original ', () => {
+    it('should make sure the profile fields have been updated ', () => {
         return chai.request(app)
         .post('/updateuserinfo')
         .set('content-type', 'multipart/form-data')
-        .field('username', originalUsername)
-        .field('firstName', originalFirstName)
-        .field('lastName', originalLastName)
-        .field('bio', originalBio)
-        .field('id', userID)
-        .attach('profilepicture', fs.readFileSync(originalImagePath), path.basename(originalImagePath))
-        .then((response) => {
-            expect(response.status).to.equal(200)
-        })
-    }).timeout(4000)
-
-    it('should return the profile to the original ', () => {
-        return chai.request(app)
-        .post('/updateuserinfo')
-        .set('content-type', 'multipart/form-data')
-        .field('username', originalUsername)
-        .field('firstName', originalFirstName)
-        .field('lastName', originalLastName)
-        .field('bio', originalBio)
+        .field('username', username)
+        .field('firstName', firstName)
+        .field('lastName', lastName)
+        .field('bio', bio)
         .field('id', userID)
         .then((response) => {
-            expect(response.status).to.equal(200)
+            expect(response.body.username).to.equal(username)
+            expect(response.body.firstName).to.equal(firstName)
+            expect(response.body.lastName).to.equal(lastName)
+            expect(response.body.bio).to.equal(bio)
         })
     }).timeout(4000)
 })
