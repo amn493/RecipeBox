@@ -1,0 +1,28 @@
+name: build
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    env:
+        DB_PASS: ${{ secrets.DB_PASS }}
+        DB_USER: ${{ secrets.DB_USER }}
+        JWT_SECRET: ${{ secrets.JWT_SECRET }}
+        ORIGIN: ${{ secrets.ORIGIN }}
+        RBXPASS: ${{ secrets.RBXPASS }}
+        REACT_APP_ORIGIN: ${{ secrets.REACT_APP_ORIGIN }}
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: '12.x'
+      - name: Install dependencies and run unit tests
+        run: |
+          npm ci
+          npm i nyc
+          npm test
+        working-directory: ./back-end
