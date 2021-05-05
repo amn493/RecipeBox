@@ -37,7 +37,6 @@ const RecipeBoxPage = (props) => {
 
     /* Sorting! */
     let sortRecBoxRecipes = () => {
-        // Filter so that only liked recipes are shown
         let resultingRecipes = recBoxRecipes
 
         // Sort by date posted
@@ -126,6 +125,13 @@ const RecipeBoxPage = (props) => {
                               `&tags=`
                           )
                         : `&tags=`
+                }${
+                    likedRecipes.length > 0
+                        ? likedRecipes.reduce(
+                              (acc, likedRec) => acc + `&liked=${likedRec}`,
+                              `&liked=`
+                          )
+                        : `&liked=`
                 }`
             )
                 .then((response) => {
