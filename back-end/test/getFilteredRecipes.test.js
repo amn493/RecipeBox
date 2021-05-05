@@ -31,6 +31,7 @@ const app = require('../app.js')
 describe('Testing route handler for GET /filteredrecipes ', () => {
     let recipeCount = 0
     let likedArray = []
+    let userid
     let filtertag = ''
     let filterkeyword = ''
     let filtertags = []
@@ -64,6 +65,7 @@ describe('Testing route handler for GET /filteredrecipes ', () => {
         }).then((user) => {
             if (user) {
                 likedArray = user.liked
+                userid = user._id
             }
         })
 
@@ -195,7 +197,7 @@ describe('Testing route handler for GET /filteredrecipes ', () => {
         chai
             .request(app)
             .get(
-                `/filteredrecipes?keyword=&tags=${likedArray.reduce(
+                `/filteredrecipes?userid=${userid}&keyword=&tags=${likedArray.reduce(
                     (acc, liked) => `${acc}&liked=${liked}`,
                     `&liked=`
                 )}`
