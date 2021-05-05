@@ -71,8 +71,8 @@ Once you have pulled the repository, the back-end and front-end must be run sepa
 
 Both the front-end and back-end require a `.env` file for secret credentials. Filling out section for community editing is `TODO`.
 
-- [] Fill in sample front-end `.env`
-- [] Fill in the sampe back-end `.env`
+- [ ] Fill in sample front-end `.env`
+- [ ] Fill in the sampe back-end `.env`
 
 ## Building
 
