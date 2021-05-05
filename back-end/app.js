@@ -427,11 +427,9 @@ app.get('/filteredrecipes', (req, res, next) => {
             // ignore recipes authored by signed-in user
             { user: { $ne: req.query.userid.toString() } }
         ]
-        if ('$and' in filter) {
-            filter.$and.concat(likedFilter)
-        } else {
-            filter.$and = likedFilter
-        }
+
+        filter.$and =
+            '$and' in filter ? filter.$and.concat(likedFilter) : likedFilter
     }
 
     // find recipes matching the filter
