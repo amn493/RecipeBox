@@ -19,38 +19,6 @@ import ErrorComponent from '../../../gencomponents/ErrorComponent.js'
 const RecipeBoxPage = (props) => {
     const [reqError, setReqError] = useState(false)
 
-    // TODO: Back-end task -- Fill rbxEntries. Also need to adjust below so the array contains both "recipe" and "likes"
-    let rbxEntries = [
-        {
-            imagePath: 'https://picsum.photos/300',
-            slug: 'foobar-guacamole',
-            name: 'Guacamole',
-            user: {
-                username: 'foobar',
-                slug: 'foobar'
-            },
-            likes: 36,
-            createdAt: 1615864425952,
-            caption: "Because who doesn't love guac?",
-            tags: ['mexican', 'spicy', 'dip'],
-            id: 2
-        },
-        {
-            imagePath: 'https://picsum.photos/300',
-            slug: 'foobar-guacamole',
-            name: 'GuacaMOLE',
-            user: {
-                username: 'foobar',
-                slug: 'foobar'
-            },
-            likes: 20,
-            createdAt: 1615264429952,
-            caption: "Because who doesn't love GUACAMOLE!?",
-            tags: ['mexican', 'spicy', 'dip'],
-            id: 3
-        }
-    ]
-
     /* Generate state variables */
     // Recipe list to show -- Is later re-assigned if/when sorts are applied
     const [recBoxRecipes, setRecBoxRecipes] = useState([])
@@ -62,40 +30,6 @@ const RecipeBoxPage = (props) => {
     /* Pull in recipes from route handler */
     let likedRecipes = props.user.liked
 
-    useEffect(() => {
-        axios(
-            `http://${
-                process.env.REACT_APP_ORIGIN
-            }:4000/filteredrecipes?userid=${
-                props.user._id
-            }&keyword=${filterKeyword}${
-                filterTags.length > 0
-                    ? filterTags.reduce(
-                          (acc, tag) => acc + `&tags=${tag}`,
-                          `&tags=`
-                      )
-                    : `&tags=`
-            }${
-                likedRecipes.length > 0
-                    ? likedRecipes.reduce(
-                          (acc, likedRec) => acc + `&liked=${likedRec}`,
-                          `&liked=`
-                      )
-                    : `&liked=`
-            }`
-        )
-            .then((response) => {
-                setRecBoxRecipes(response.data)
-            })
-            .catch((err) => {
-                // TODO: Print an error to the user, but for now mockaroo is likely
-                console.log(err)
-                setReqError(true)
-                setRecBoxRecipes(rbxEntries)
-            })
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
-
     /* Change dropdown menu according to click */
     let onDatePosted = (sortingString) => {
         setSortByString('Sort by ' + sortingString)
@@ -105,7 +39,7 @@ const RecipeBoxPage = (props) => {
     let sortRecBoxRecipes = () => {
         let resultingRecipes = recBoxRecipes
 
-        // Sort by date posted -- TODO is to test! Mockaroo doesn't give us the greatest of dates
+        // Sort by date posted
         if (sortByString === 'Sort by Date Posted') {
             resultingRecipes.sort((a, b) => {
                 if (ascendingOrder) return a.createdAt > b.createdAt ? 1 : -1
@@ -128,38 +62,67 @@ const RecipeBoxPage = (props) => {
     const [filterKeyword, setFilterKeyword] = useState('')
     const [filterTags, setFilterTags] = useState([])
 
+    // Filter images by tag in combobox search bar
     useEffect(() => {
         // fetch all tags
-        axios(`http://${process.env.REACT_APP_ORIGIN}:4000/tags`)
+        axios(
+            `http://${
+                process.env.REACT_APP_ORIGIN
+            }:4000/tags?blockedTags=${props.user.blockedTags.reduce(
+                (acc, tag) => acc + `&blockedTags=${tag}`,
+                ''
+            )}`
+        )
             .then((response) => {
                 setTags(response.data)
             })
             .catch((err) => {
                 console.error(err)
                 setReqError(true)
-
-                // make some backup fake data
-                const backupData = [
-                    {
-                        tag: 'vegan',
-                        count: 10,
-                        id: 1
-                    },
-                    {
-                        tag: 'appetizer',
-                        count: 34,
-                        id: 2
-                    },
-                    {
-                        tag: 'mexican',
-                        count: 22,
-                        id: 3
-                    }
-                ]
-
-                setTags(backupData.map((tag) => tag.tag))
             })
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
+
+    // Filter images by keyword in search bar
+    useEffect(() => {
+        // fetch all recipes
+        axios(
+            `http://${
+                process.env.REACT_APP_ORIGIN
+            }:4000/filteredrecipes?userid=${
+                props.user._id
+            }&keyword=${filterKeyword}${
+                filterTags.length > 0
+                    ? filterTags.reduce(
+                          (acc, tag) => acc + `&tags=${tag}`,
+                          `&tags=`
+                      )
+                    : `&tags=`
+            }${
+                likedRecipes.length > 0
+                    ? likedRecipes.reduce(
+                          (acc, likedRec) => acc + `&liked=${likedRec}`,
+                          `&liked=`
+                      )
+                    : `&liked=`
+            }`
+        )
+            .then((response) => {
+                setRecBoxRecipes(
+                    response.data.filter(
+                        (recipe) =>
+                            !recipe.tags.some((tag) =>
+                                props.user.blockedTags.includes(tag)
+                            )
+                    )
+                )
+            })
+            .catch((err) => {
+                console.error(err)
+                setReqError(true)
+            })
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [filterKeyword, filterTags])
 
     const [tagSelection, setTagSelection] = useState('')
 
@@ -171,6 +134,7 @@ const RecipeBoxPage = (props) => {
             // remove selected tag from tags array
             const tagIndex = tags.indexOf(tagSelection)
             setTags(tags.slice(0, tagIndex).concat(tags.slice(tagIndex + 1)))
+            setTagSelection('')
         }
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -254,6 +218,24 @@ const RecipeBoxPage = (props) => {
             <br />
 
             {sortRecBoxRecipes()}
+            <p
+                className={
+                    recBoxRecipes.length === 0 &&
+                    (filterKeyword !== '' || filterTags.length > 0)
+                        ? 'noRecsFound'
+                        : 'hidden'
+                }
+            >
+                No recipes found
+            </p>
+            <hr
+                className={
+                    recBoxRecipes.length === 0 &&
+                    (filterKeyword !== '' || filterTags.length > 0)
+                        ? 'noRecsFound'
+                        : 'hidden'
+                }
+            />
             <RecipeList
                 size="small"
                 recipes={recBoxRecipes}
