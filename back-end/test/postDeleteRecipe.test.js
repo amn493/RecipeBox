@@ -28,6 +28,7 @@ describe('Testing route handler for POST /deleterecipe ', () => {
     let instructions = JSON.stringify(['boil oats in water,add toppings,enjoy!'])
     let pinned = 'false'
     let id = ''
+    let slug = ''
 
     // Pull in a "random" user
     before(async () => {
@@ -48,6 +49,7 @@ describe('Testing route handler for POST /deleterecipe ', () => {
         .field('pinned', pinned)
         .then((response) => {
             id = response.body._id.toString()
+            slug = response.body.slug
         })
     })
 
@@ -58,11 +60,11 @@ describe('Testing route handler for POST /deleterecipe ', () => {
         .then((response) => {
             expect(response.status).to.equal(200)
         })
-    }).timeout(8000)
+    }).timeout(4000)
 
-    // Pull in a "random" user
-    after(async () => {
-        await User.find({}).then((user) => {
+    it('should return an empty array when searching for the recipe in the database', () => {
+        Recipe.find({ 'slug': slug}).then((recipe) => {
+            expect(recipe).to.be.empty
         })
-    })
+    }).timeout(4000)
 })
