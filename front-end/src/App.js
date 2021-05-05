@@ -120,6 +120,7 @@ function App() {
                             <RecipePage
                                 user={user}
                                 signedIn={signedIn}
+                                setSignedIn={setSignedIn}
                                 setUser={setUser}
                             />
                         </Route>
@@ -139,6 +140,7 @@ function App() {
                         <Route exact path="/user-:slug">
                             <ProfilePage
                                 user={user}
+                                setSignedIn={setSignedIn}
                                 signedIn={signedIn}
                                 setUser={setUser}
                             />

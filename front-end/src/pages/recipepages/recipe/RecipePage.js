@@ -319,6 +319,8 @@ const RecipePage = (props) => {
                     <CreateAccountModal
                         show={showModal}
                         setShow={setShowModal}
+                        user={props.user}
+                        setSignedIn={props.setSignedIn}
                     />
                 </div>
             ) : (

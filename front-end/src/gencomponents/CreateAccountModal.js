@@ -10,7 +10,10 @@ const CreateAccountModal = (props) => {
         <>
             <Modal centered show={props.show} onHide={handleClose}>
                 <Modal.Body className="createAccountModal">
-                    <CreateAccountPage />
+                    <CreateAccountPage
+                        user={props.user}
+                        setSignedIn={props.setSignedIn}
+                    />
                 </Modal.Body>
             </Modal>
         </>

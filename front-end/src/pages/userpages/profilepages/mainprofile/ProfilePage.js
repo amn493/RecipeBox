@@ -237,7 +237,12 @@ const ProfilePage = (props) => {
                 ) : (
                     <p className="noRecipesMessage">No recipes yet</p>
                 )}
-                <CreateAccountModal show={showModal} setShow={setShowModal} />
+                <CreateAccountModal
+                    show={showModal}
+                    setShow={setShowModal}
+                    user={props.user}
+                    setSignedIn={props.setSignedIn}
+                />
             </div>
         ) : (
             <></>
