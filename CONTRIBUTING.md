@@ -32,23 +32,21 @@ Standups will [take place on Zoom](https://nyu.zoom.us/j/96743743979) on a re-oc
 
 ### Coding Standards
 
-The editor we will be using is **VS Code.** Linting follows the AirBnB standard and is run with eslint. _CI TBD._
+The editor we will be using is **VS Code.** Linting follows the AirBnB standard and is run with eslint. We are using [GitHub Actions](https://github.com/features/actions) for CI and CD. Docker is used to implementing containerization and Digital Ocean is our server's host.
 
 ## Git Workflow of RecipeBox
 
-RecipeBox uses a simple git workflow of develop branches.
+RecipeBox uses a simple git workflow of per-feature branches.
 
-For any user's current progress, they push to a develop branch with their name, e.g. `John-develop`, and create a PR when they are ready to add their changes to the trunk of the project.
+When a task (or multiple tasks that are closely related) are being worked on, they are checked out on a new branch that follows the following naming scheme: `user-story/#/task|spike/#/short-task-description`. Then a PR is made to master and at least one repository administrator's approval is required to merge, along with a passing build from CI.
 
 ## How to Contribute
 
-You can contribute to recipebox by first forking the project and creating your own repository. Create a branch that contains **issue number** that you are working on followed by a **/** with a short version of the task at hand.
+You can contribute to recipebox by first forking the project and creating your own repository. To create features, follow the above information.
 
 When creating a PR, request to merge with the _develop_ branch. 
 
-_RecipeBox is currently being written, so contributing is currently not something we're looking for. If you're somehow here... thanks for your interest!_
-
-## Building and Testing
+## Testing
 
 Once you have pulled the repository, the back-end and front-end must be run separately. If you are testing anything like form submissions or loading recipes anywhere on the app, you must run the back-end! That's where all of our routes are.
 
@@ -68,3 +66,14 @@ Once you have pulled the repository, the back-end and front-end must be run sepa
     - _Do not change the port!_ It is specified so that the front-end can communicate with the back-end.
 1. To run any unit tests, simply run `npm test`
 1. Edit as you wish!
+
+### Database Information
+
+Both the front-end and back-end require a `.env` file for secret credentials. Filling out section for community editing is `TODO`.
+
+- [ ] Fill in sample front-end `.env`
+- [ ] Fill in the sampe back-end `.env`
+
+## Building
+
+In order to build and run the Docker container for the app, go to command line and run `docker-compose up --build -d`. In order to stop (and remove) the container, you run `docker-compose down`. The site will run on `localhost` (with default port `80`) on the container.
