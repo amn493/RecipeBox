@@ -89,7 +89,9 @@ const RecipeBoxPage = (props) => {
         axios(
             `http://${
                 process.env.REACT_APP_ORIGIN
-            }:4000/filteredrecipes?keyword=${filterKeyword}${
+            }:4000/filteredrecipes?userid=${
+                props.user._id
+            }&keyword=${filterKeyword}${
                 filterTags.length > 0
                     ? filterTags.reduce(
                           (acc, tag) => acc + `&tags=${tag}`,
