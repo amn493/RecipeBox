@@ -14,4 +14,7 @@
 
 .noRecsFound {
     text-align: center;
+    font-size: 14px;
+    font-weight: lighter;
+    text-align: center;
 }
