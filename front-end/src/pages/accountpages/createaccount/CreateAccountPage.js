@@ -243,6 +243,11 @@ const CreateAccountPage = (props) => {
                                 setReEnterPassword(e.target.value)
                                 setInitialReEnterPassword(false)
                             }}
+                            onKeyPress={(event) => {
+                                if (event.key === 'Enter') {
+                                    handleSubmit(event)
+                                }
+                            }}
                         />
                         <Form.Text id="errorMessage" muted>
                             {!initialReEnterPassword

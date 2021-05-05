@@ -7,3 +7,13 @@
     margin-bottom: 15px;
     text-align: right;
 }
+
+.hidden {
+    display: none;
+}
+
+.noRecsFound {
+    font-size: 14px;
+    font-weight: lighter;
+    text-align: center;
+}
