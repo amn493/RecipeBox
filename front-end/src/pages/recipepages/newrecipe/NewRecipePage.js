@@ -20,7 +20,8 @@ const NewRecipePage = (props) => {
     const [tags, setTags] = useState([])
     const [ingredientValues, setIngredientValues] = useState([''])
     const [instructionValues, setInstructionValues] = useState([''])
-    const [imageFiles, setImageFiles] = useState([''])
+    const [imageFiles, setImageFiles] = useState([])
+    const [croppedImage, setCroppedImage] = useState()
 
     // state variables for disabling post recipe button
     const [emptyField, setEmptyField] = useState(true)
@@ -112,43 +113,74 @@ const NewRecipePage = (props) => {
         uploadedImage
     ])
 
+    const [imageToCrop, setImageToCrop] = useState()
+
     // function to allow user to re-upload/re-crop a photo
     // that they just cleared/uploaded
     const clearUpload = (event) => {
         event.target.value = ''
     }
 
+    const [imageIndex, setImageIndex] = useState(-1)
+
+    useEffect(() => {
+        if (showModal === false) {
+            setImageIndex(imageIndex + 1)
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [showModal])
+
+    const [uploadedFiles, setUploadedFiles] = useState([])
+
+    useEffect(() => {
+        if (uploadedFiles.length > 0) {
+            if (imageIndex === uploadedFiles.length) {
+                setUploadedFiles([])
+            } else if (imageIndex >= 0) {
+                const file = uploadedFiles[imageIndex]
+
+                const reader = new FileReader()
+
+                // Clear image sources to support multiple images
+                setRecipeImgSrc()
+                reader.addEventListener(
+                    'load',
+                    function () {
+                        // convert image file to base64 string for cropperJS <img> src
+                        //console.log(reader.result)
+                        setRecipeImgSrc(reader.result)
+                        setShowModal(true)
+                    },
+                    false
+                )
+
+                if (file) {
+                    reader.readAsDataURL(file)
+                    //recipeimgForCropperJS.style.display = 'none'
+                } else {
+                    setShowModal(false)
+                }
+            }
+        }
+    }, [uploadedFiles, imageIndex])
+
     const fileUploaded = (event) => {
         setUploadedImage(event.target.value !== '')
-        setImageFiles(event.target.files)
 
         /* Begin Cropping */
-        const recipeimgForCropperJS = document.querySelectorAll('img')[0]
-        const file = event.target.files[0]
+        const recipeimgForCropperJS = document.querySelectorAll('img')
+        setUploadedFiles(event.target.files)
 
-        const reader = new FileReader()
-
-        // Clear image sources to support multiple images
-        setRecipeImgSrc([])
-        reader.addEventListener(
-            'load',
-            function () {
-                // convert image file to base64 string for cropperJS <img> src
-                console.log(reader.result)
-                setRecipeImgSrc(reader.result)
-                setShowModal(true)
-            },
-            false
-        )
-
-        if (file) {
-            reader.readAsDataURL(file)
-            recipeimgForCropperJS.style.display = 'none'
-        } else {
-            setShowModal(false)
-        }
         /* End of Cropping */
     }
+
+    useEffect(() => {
+        if (croppedImage) {
+            setImageFiles(imageFiles.concat([croppedImage]))
+            setCroppedImage()
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [croppedImage])
 
     return !submitted ? (
         <div className="newRecipePage">
@@ -269,7 +301,7 @@ const NewRecipePage = (props) => {
                 {/* Crop Modal */}
                 <ImageCropModal
                     bsCustomFileInput={bsCustomFileInput}
-                    setImgForUpload={setImageFiles}
+                    setImgForUpload={setCroppedImage}
                     setUploadedImage={setUploadedImage}
                     imgsrc={recipeImgSrc}
                     show={showModal}

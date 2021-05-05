@@ -1,7 +1,7 @@
 import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
 import Cropper from 'cropperjs'
-import Croppie from 'croppie'
+//import Croppie from 'croppie'
 import './ImageCropModal.css'
 
 const ImageCropModal = (props) => {
@@ -66,6 +66,7 @@ const ImageCropModal = (props) => {
                             })
                     }
                 })
+                console.log(cropper)
             } catch (e) {
                 props.setImgForUpload()
                 if (props.setUploadedImage) {
