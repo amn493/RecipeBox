@@ -582,7 +582,9 @@ app.post(
                 .then((recipe) => {
                     // get name of recipe for given user to receive notification about
                     const recipeNameForEmail = recipe.name
-                    const recipeLinkForEmail = `http://${process.env.ORIGIN}:3000/recipe-${recipe.slug}`
+                    const recipeLinkForEmail = `http://${process.env.ORIGIN}${
+                        process.env.CONTAINER === 'docker' ? '' : ':3000'
+                    }/recipe-${recipe.slug}`
                     // const recipeImgPathForEmail = recipe.imagePath
                     User.findOne({
                         _id: req.body.user
@@ -591,7 +593,13 @@ app.post(
                             // get username of commenting user
                             const usernameOfCommentingUser =
                                 commentingUser.username
-                            const userProfileLinkForEmail = `http://${process.env.ORIGIN}:3000/user-${commentingUser.slug}`
+                            const userProfileLinkForEmail = `http://${
+                                process.env.ORIGIN
+                            }${
+                                process.env.CONTAINER === 'docker'
+                                    ? ''
+                                    : ':3000'
+                            }/user-${commentingUser.slug}`
                             // const userProfilePicForEmail = commentingUser.imagePath
                             User.findOne({
                                 _id: recipe.user
@@ -886,7 +894,9 @@ app.post('/likerecipe', (req, res, next) => {
             .then((recipe) => {
                 // get name of recipe for given user to receive notification about
                 const recipeNameForEmail = recipe.name
-                const recipeLinkForEmail = `http://${process.env.ORIGIN}:3000/recipe-${recipe.slug}`
+                const recipeLinkForEmail = `http://${process.env.ORIGIN}${
+                    process.env.CONTAINER === 'docker' ? '' : ':3000'
+                }/recipe-${recipe.slug}`
                 // const recipeImgPathForEmail = recipe.imagePath
                 User.findOne({
                     _id: req.body.userID
@@ -894,7 +904,11 @@ app.post('/likerecipe', (req, res, next) => {
                     .then((likinguser) => {
                         // get username of liking user
                         const usernameOfLikingUser = likinguser.username
-                        const userProfileLinkForEmail = `http://${process.env.ORIGIN}:3000/user-${likinguser.slug}`
+                        const userProfileLinkForEmail = `http://${
+                            process.env.ORIGIN
+                        }${
+                            process.env.CONTAINER === 'docker' ? '' : ':3000'
+                        }/user-${likinguser.slug}`
                         // const userProfilePicForEmail = likinguser.imagePath
                         User.findOne({
                             _id: recipe.user
@@ -1027,7 +1041,9 @@ app.post('/followuser', (req, res, next) => {
             .then((followingUser) => {
                 // get username of following user
                 const usernameOfFollowingUser = followingUser.username
-                const userProfileLinkForEmail = `http://${process.env.ORIGIN}:3000/user-${followingUser.slug}`
+                const userProfileLinkForEmail = `http://${process.env.ORIGIN}${
+                    process.env.CONTAINER === 'docker' ? '' : ':3000'
+                }/user-${followingUser.slug}`
                 let userImgPathForEmail = ''
                 try {
                     // eslint-disable-next-line no-unused-expressions
