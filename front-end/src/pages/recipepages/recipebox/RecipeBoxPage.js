@@ -85,70 +85,40 @@ const RecipeBoxPage = (props) => {
 
     // Filter images by keyword in search bar
     useEffect(() => {
-        if (filterKeyword === '' && filterTags.length === 0) {
-            axios(
-                `http://${
-                    process.env.REACT_APP_ORIGIN
-                }:4000/filteredrecipes?userid=${
-                    props.user._id
-                }&keyword=${filterKeyword}${
-                    filterTags.length > 0
-                        ? filterTags.reduce(
-                              (acc, tag) => acc + `&tags=${tag}`,
-                              `&tags=`
-                          )
-                        : `&tags=`
-                }${
-                    likedRecipes.length > 0
-                        ? likedRecipes.reduce(
-                              (acc, likedRec) => acc + `&liked=${likedRec}`,
-                              `&liked=`
-                          )
-                        : `&liked=`
-                }`
-            )
-                .then((response) => {
-                    setRecBoxRecipes(response.data)
-                })
-                .catch((err) => {
-                    setReqError(true)
-                })
-        } else {
-            // fetch all recipes
-            axios(
-                `http://${
-                    process.env.REACT_APP_ORIGIN
-                }:4000/filteredrecipes?keyword=${filterKeyword}${
-                    filterTags.length > 0
-                        ? filterTags.reduce(
-                              (acc, tag) => acc + `&tags=${tag}`,
-                              `&tags=`
-                          )
-                        : `&tags=`
-                }${
-                    likedRecipes.length > 0
-                        ? likedRecipes.reduce(
-                              (acc, likedRec) => acc + `&liked=${likedRec}`,
-                              `&liked=`
-                          )
-                        : `&liked=`
-                }`
-            )
-                .then((response) => {
-                    setRecBoxRecipes(
-                        response.data.filter(
-                            (recipe) =>
-                                !recipe.tags.some((tag) =>
-                                    props.user.blockedTags.includes(tag)
-                                )
-                        )
+        // fetch all recipes
+        axios(
+            `http://${
+                process.env.REACT_APP_ORIGIN
+            }:4000/filteredrecipes?keyword=${filterKeyword}${
+                filterTags.length > 0
+                    ? filterTags.reduce(
+                          (acc, tag) => acc + `&tags=${tag}`,
+                          `&tags=`
+                      )
+                    : `&tags=`
+            }${
+                likedRecipes.length > 0
+                    ? likedRecipes.reduce(
+                          (acc, likedRec) => acc + `&liked=${likedRec}`,
+                          `&liked=`
+                      )
+                    : `&liked=`
+            }`
+        )
+            .then((response) => {
+                setRecBoxRecipes(
+                    response.data.filter(
+                        (recipe) =>
+                            !recipe.tags.some((tag) =>
+                                props.user.blockedTags.includes(tag)
+                            )
                     )
-                })
-                .catch((err) => {
-                    console.error(err)
-                    setReqError(true)
-                })
-        }
+                )
+            })
+            .catch((err) => {
+                console.error(err)
+                setReqError(true)
+            })
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [filterKeyword, filterTags])
 
@@ -162,6 +132,7 @@ const RecipeBoxPage = (props) => {
             // remove selected tag from tags array
             const tagIndex = tags.indexOf(tagSelection)
             setTags(tags.slice(0, tagIndex).concat(tags.slice(tagIndex + 1)))
+            setTagSelection('')
         }
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
