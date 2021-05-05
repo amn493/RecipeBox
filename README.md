@@ -2,6 +2,8 @@
 
 ![Build Status](https://github.com/agile-dev-assignments/project-setup-team-ntobo-global/actions/workflows/continuous-integration.yml/badge.svg)
 
+You can find the live [RecipeBox app here](http://142.93.127.57/)
+
 ## Vision Statement
 
 RecipeBox is an application that has set out to create an easy one-stop-shop for any and all recipes you want to look for and store that are based by other users- not large websites or automatic algorithms.
@@ -30,11 +32,11 @@ The themes of our MVP will be broken down into the outlined things above. More e
 
 ## Team Members
 
-Ashley Nussbaum: https://github.com/amn493
-Olivia Edell: https://github.com/oliviaedell
-Jonathan Sussman: https://github.com/JonathanSussman1
-Anvita Yellamanchli: https://github.com/anvitayella
-Mark Bacon: https://github.com/Dendrobyte
+- Ashley Nussbaum: https://github.com/amn493
+- Olivia Edell: https://github.com/oliviaedell
+- Jonathan Sussman: https://github.com/JonathanSussman1
+- Anvita Yellamanchli: https://github.com/anvitayella
+- Mark Bacon: https://github.com/Dendrobyte
 
 ## What Problem Does RecipeBox Solve?
 
