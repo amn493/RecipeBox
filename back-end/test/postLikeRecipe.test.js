@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable no-undef */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable consistent-return */
@@ -24,11 +25,14 @@ describe('Testing POST to /likerecipe API (like)', () => {
     let recipeID = ''
     let userID = ''
     let likes
+    let authorID
+    let authorNotificationSettings
     beforeEach(async () => {
         await Recipe.findOne({}).then((recipe) => {
             if (recipe) {
                 recipeID = recipe._id
                 likes = recipe.likes
+                authorID = recipe.user
             }
         })
         await User.findOne({ liked: { $nin: recipeID } }).then((user) => {
@@ -36,14 +40,41 @@ describe('Testing POST to /likerecipe API (like)', () => {
                 userID = user._id
             }
         })
+        await User.findById(authorID).then((author) => {
+            if (author) {
+                authorNotificationSettings = author.notificationSettings
+            }
+        })
+        if (authorNotificationSettings.emailNotifications === true) {
+            console.log('\x1b[2m', '...turning off email notifications...')
+            return chai.request(app).post('/notificationsettings').send({
+                emailNotifications: false,
+                likes: authorNotificationSettings.likes,
+                comments: authorNotificationSettings.comments,
+                follows: authorNotificationSettings.follows,
+                userID: authorID
+            })
+        }
     })
     afterEach(async () => {
-        console.log('\x1b[2m', '...unlike test...')
-        chai.request(app).post('/likerecipe').send({
+        console.log('\x1b[2m', '...unlike test recipe...')
+        return chai.request(app).post('/likerecipe').send({
             like: false,
             recipeID: recipeID,
             userID: userID
         })
+    })
+    afterEach(async () => {
+        if (authorNotificationSettings.emailNotifications === true) {
+            console.log('\x1b[2m', '...turning back on email notifications...')
+            return chai.request(app).post('/notificationsettings').send({
+                emailNotifications: true,
+                likes: authorNotificationSettings.likes,
+                comments: authorNotificationSettings.comments,
+                follows: authorNotificationSettings.follows,
+                userID: authorID
+            })
+        }
     })
     it('should return 200 OK status', () =>
         chai
@@ -114,11 +145,14 @@ describe('Testing POST to /likerecipe API (unlike)', () => {
     let recipeID = ''
     let userID = ''
     let likes
+    let authorID
+    let authorNotificationSettings
     beforeEach(async () => {
         await Recipe.findOne({}).then((recipe) => {
             if (recipe) {
                 recipeID = recipe._id
                 likes = recipe.likes
+                authorID = recipe.user
             }
         })
         await User.findOne({ liked: { $in: recipeID } }).then((user) => {
@@ -126,14 +160,41 @@ describe('Testing POST to /likerecipe API (unlike)', () => {
                 userID = user._id
             }
         })
+        await User.findById(authorID).then((author) => {
+            if (author) {
+                authorNotificationSettings = author.notificationSettings
+            }
+        })
+        if (authorNotificationSettings.emailNotifications === true) {
+            console.log('\x1b[2m', '...turning off email notifications...')
+            return chai.request(app).post('/notificationsettings').send({
+                emailNotifications: false,
+                likes: authorNotificationSettings.likes,
+                comments: authorNotificationSettings.comments,
+                follows: authorNotificationSettings.follows,
+                userID: authorID
+            })
+        }
     })
     afterEach(async () => {
-        console.log('\x1b[2m', '...like test...')
-        chai.request(app).post('/likerecipe').send({
+        console.log('\x1b[2m', '...re-like test recipe...')
+        return chai.request(app).post('/likerecipe').send({
             like: true,
             recipeID: recipeID,
             userID: userID
         })
+    })
+    afterEach(async () => {
+        if (authorNotificationSettings.emailNotifications === true) {
+            console.log('\x1b[2m', '...turning back on email notifications...')
+            return chai.request(app).post('/notificationsettings').send({
+                emailNotifications: true,
+                likes: authorNotificationSettings.likes,
+                comments: authorNotificationSettings.comments,
+                follows: authorNotificationSettings.follows,
+                userID: authorID
+            })
+        }
     })
     it('should return 200 OK status', () =>
         chai
