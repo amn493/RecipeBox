@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+/* eslint-disable consistent-return */
 /* eslint-disable no-undef */
 /* eslint-disable no-underscore-dangle */
 const chai = require('chai')
@@ -20,28 +22,54 @@ const app = require('../app.js')
 describe('testing POST to /followuser API (follow)', () => {
     let profileUserID = ''
     let signedInUserID = ''
+    let profileUserNotificationSettings
     beforeEach(async () => {
         await User.findOne({}).then((signedInUser) => {
             if (signedInUser) {
                 signedInUserID = signedInUser._id
             }
         })
-        await User.findOne({ followers: { $nin: signedInUserID } }).then(
-            (profileUser) => {
-                if (profileUser) {
-                    profileUserID = profileUser._id
-                }
+        await User.findOne({
+            followers: { $nin: signedInUserID },
+            _id: { $ne: signedInUserID.toString() }
+        }).then((profileUser) => {
+            if (profileUser) {
+                profileUserID = profileUser._id
+                profileUserNotificationSettings =
+                    profileUser.notificationSettings
             }
-        )
+        })
+        if (profileUserNotificationSettings.emailNotifications === true) {
+            console.log('\x1b[2m', '...turning off email notifications...')
+            return chai.request(app).post('/notificationsettings').send({
+                emailNotifications: false,
+                likes: profileUserNotificationSettings.likes,
+                comments: profileUserNotificationSettings.comments,
+                follows: profileUserNotificationSettings.follows,
+                userID: profileUserID
+            })
+        }
     })
     afterEach(async () => {
         // unfollow user
         console.log('\x1b[2m', '...unfollowing test user...')
-        chai.request(app).post('/followuser').send({
+        return chai.request(app).post('/followuser').send({
             signedInUserID: signedInUserID,
             profileUserID: profileUserID,
             follow: false
         })
+    })
+    afterEach(async () => {
+        if (profileUserNotificationSettings.emailNotifications === true) {
+            console.log('\x1b[2m', '...turning back on email notifications...')
+            return chai.request(app).post('/notificationsettings').send({
+                emailNotifications: true,
+                likes: profileUserNotificationSettings.likes,
+                comments: profileUserNotificationSettings.comments,
+                follows: profileUserNotificationSettings.follows,
+                userID: profileUserID
+            })
+        }
     })
     it('should return 200 OK status', () =>
         chai
@@ -114,28 +142,54 @@ describe('testing POST to /followuser API (follow)', () => {
 describe('testing POST to /followuser API (unfollow) ', () => {
     let profileUserID = ''
     let signedInUserID = ''
+    let profileUserNotificationSettings
     beforeEach(async () => {
         await User.findOne({}).then((signedInUser) => {
             if (signedInUser) {
                 signedInUserID = signedInUser._id
             }
         })
-        await User.findOne({ followers: { $in: signedInUserID } }).then(
-            (profileUser) => {
-                if (profileUser) {
-                    profileUserID = profileUser._id
-                }
+        await User.findOne({
+            followers: { $in: signedInUserID },
+            _id: { $ne: signedInUserID.toString() }
+        }).then((profileUser) => {
+            if (profileUser) {
+                profileUserID = profileUser._id
+                profileUserNotificationSettings =
+                    profileUser.notificationSettings
             }
-        )
+        })
+        if (profileUserNotificationSettings.emailNotifications === true) {
+            console.log('\x1b[2m', '...turning off email notifications...')
+            return chai.request(app).post('/notificationsettings').send({
+                emailNotifications: false,
+                likes: profileUserNotificationSettings.likes,
+                comments: profileUserNotificationSettings.comments,
+                follows: profileUserNotificationSettings.follows,
+                userID: profileUserID
+            })
+        }
     })
     afterEach(async () => {
-        // unfollow user
-        console.log('\x1b[2m', '...following test user...')
-        chai.request(app).post('/followuser').send({
+        // re-follow user
+        console.log('\x1b[2m', '...re-following test user...')
+        return chai.request(app).post('/followuser').send({
             signedInUserID: signedInUserID,
             profileUserID: profileUserID,
             follow: true
         })
+    })
+    afterEach(async () => {
+        if (profileUserNotificationSettings.emailNotifications === true) {
+            console.log('\x1b[2m', '...turning back on email notifications...')
+            return chai.request(app).post('/notificationsettings').send({
+                emailNotifications: true,
+                likes: profileUserNotificationSettings.likes,
+                comments: profileUserNotificationSettings.comments,
+                follows: profileUserNotificationSettings.follows,
+                userID: profileUserID
+            })
+        }
     })
     it('should return 200 OK status', () =>
         chai
