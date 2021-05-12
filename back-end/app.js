@@ -692,7 +692,6 @@ app.post('/deletecomment', (req, res, next) => {
     // delete comment document
     Comment.findByIdAndDelete(req.body.id)
         .then(() => {
-            // remove recipe from all users' liked
             res.send('deleted comment')
         })
         .catch((err) => {
