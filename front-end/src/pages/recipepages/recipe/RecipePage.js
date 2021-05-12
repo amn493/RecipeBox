@@ -101,7 +101,7 @@ const RecipePage = (props) => {
                 })
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [recipe])
+    }, [recipe, comments])
 
     // state variable for showing sign-in modal
     const [showModal, setShowModal] = useState(false)
@@ -308,9 +308,11 @@ const RecipePage = (props) => {
                         <br />
 
                         <CommentsSection
+                            setComments={setComments}
                             comments={comments}
                             userId={props.user._id}
                             recipeId={recipe._id}
+                            recipeUserId={recipe.user}
                             signedIn={props.signedIn}
                             setShowModal={setShowModal}
                             setReqError={setReqError}
@@ -434,6 +436,10 @@ const CommentsSection = (props) => {
             <h2 className="recipeSubheading">Comments</h2>
             {comments.map((comment, i) => (
                 <Comment
+                    setComments={setComments}
+                    comments={comments}
+                    recipeUser={props.recipeUserId}
+                    currentUser={props.userId}
                     comment={comment}
                     key={i}
                     setReqError={props.setReqError}

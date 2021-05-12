@@ -35,3 +35,8 @@
 .commentDetailsTableRightCol {
     text-align: right;
 }
+
+.deleteComment {
+    color: rgb(23, 163, 184);
+    text-align: right;
+}

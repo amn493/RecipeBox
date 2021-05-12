@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
+import { TrashFill } from 'react-bootstrap-icons'
 
 import './Comment.css'
 import Timestamp from '../../../gencomponents/Timestamp.js'
@@ -26,8 +27,45 @@ const Comment = (props) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.comment.user])
 
+    // delete button clicked
+    const handleDeleteComment = () => {
+        if (window.confirm('Are you sure you want to delete this comment?')) {
+            // delete comment
+            axios
+                .post(
+                    `http://${process.env.REACT_APP_ORIGIN}:4000/deletecomment`,
+                    {
+                        id: props.comment._id
+                    }
+                )
+                .then(() => {
+                    props.comments.splice(
+                        props.comments.indexOf(props.comment),
+                        1
+                    )
+                    props.setComments(props.comments)
+                })
+                .catch((err) => {
+                    console.error(err)
+                    props.setReqError(true)
+                })
+        }
+    }
+
     return (
         <div className="comment">
+            {props.currentUser === props.comment.user ||
+            props.currentUser === props.recipeUser ? (
+                <div className="deleteComment">
+                    <span onClick={handleDeleteComment}>
+                        <i>
+                            <TrashFill />
+                        </i>
+                    </span>
+                </div>
+            ) : (
+                <></>
+            )}
             <p className="commentText">{props.comment.comment}</p>
             <table className="commentDetailsTable">
                 <tbody>

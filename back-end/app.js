@@ -688,6 +688,18 @@ app.post(
     }
 )
 
+app.post('/deletecomment', (req, res, next) => {
+    // delete comment document
+    Comment.findByIdAndDelete(req.body.id)
+        .then(() => {
+            // remove recipe from all users' liked
+            res.send('deleted comment')
+        })
+        .catch((err) => {
+            next(err)
+        })
+})
+
 // recursive function for adding new tags to database and updating counts of existing tags
 const updateTags = (tags, i, cb, next) => {
     if (i === tags.length) {
