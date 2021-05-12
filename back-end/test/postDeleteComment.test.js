@@ -23,7 +23,6 @@ const app = require('../app.js')
 chai.use(chaiHTTP)
 
 describe('Testing route handler for POST /deletecomment ', () => {
-    // Pull in a "random" user
     let recipeAuthorID = ''
     let recipeID = ''
     let commentingUserID = ''
@@ -31,12 +30,13 @@ describe('Testing route handler for POST /deletecomment ', () => {
 
     let commentID = ''
     before(async () => {
+        //find random recipe to comment on
         await Recipe.findOne({}).then(async (recipe) => {
             recipeID = recipe._id
-            // turn off comment notifications for recipe author for these tests
+            // turn off comment notifications for recipe author for tests
             await User.findOne({ _id: recipe.user }).then(
                 async (recipeAuthor) => {
-                    // get id of recipe author user for test
+                    // get id of recipe author user for tests
                     recipeAuthorID = recipeAuthor._id
                     if (recipeAuthor.notificationSettings.comments) {
                         commentNotifsOn = true
@@ -54,7 +54,7 @@ describe('Testing route handler for POST /deletecomment ', () => {
                                 userID: recipeAuthor._id
                             })
                     }
-                    // get id of test commenting user
+                    // get id of commenting user for tests
                     await User.findOne({ _id: { $ne: recipeAuthor._id } }).then(
                         (commentingUser) => {
                             commentingUserID = commentingUser._id
@@ -79,7 +79,7 @@ describe('Testing route handler for POST /deletecomment ', () => {
             })
     })
 
-    // turn back on comment notifications for recipe author
+    // turn back on comment notifications for recipe author after tests
     after(async () => {
         if (commentNotifsOn) {
             await User.findOne({ _id: recipeAuthorID }).then(async (user) => {
@@ -105,7 +105,7 @@ describe('Testing route handler for POST /deletecomment ', () => {
             })
     }).timeout(4000)
 
-    it('should return an empty array when searching for the comment in the database', () => {
+    it('should return no instances of the deleted comment in the database', () => {
         return chai
             .request(app)
             .post('/deletecomment')
