@@ -100,18 +100,10 @@ const upload = multer({
 })
 
 // function for choosing a random profile picture
-const getRandomStarterProPic = () => {
-    const imagePaths = [
-        'starterProfilePictures/RBX_PFP_Blue.png',
-        'starterProfilePictures/RBX_PFP_Gold.png',
-        'starterProfilePictures/RBX_PFP_Green.png',
-        'starterProfilePictures/RBX_PFP_Magenta.png',
-        'starterProfilePictures/RBX_PFP_Red.png',
-        'starterProfilePictures/RBX_PFP_Violet.png'
-    ]
-    const index = Math.floor(Math.random() * imagePaths.length)
-    return imagePaths[index]
-}
+const getRandomStarterProPic = () =>
+    `starterProfilePictures/starterProPic${
+        Math.floor(Math.random() * 10) + 1
+    }.png`
 
 // PASSPORT
 
@@ -1056,11 +1048,9 @@ app.post('/followuser', (req, res, next) => {
                         )
                     )
                         ? (userImgPathForEmail = followingUser.imagePath)
-                        : (userImgPathForEmail =
-                              'starterProfilePictures/RBX_PFP_Blue.png')
+                        : (userImgPathForEmail = getRandomStarterProPic())
                 } catch (err) {
-                    userImgPathForEmail =
-                        'starterProfilePictures/RBX_PFP_Blue.png'
+                    userImgPathForEmail = getRandomStarterProPic()
                 }
                 User.findOne({
                     _id: req.body.profileUserID
