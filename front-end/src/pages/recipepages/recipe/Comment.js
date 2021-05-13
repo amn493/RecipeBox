@@ -39,11 +39,16 @@ const Comment = (props) => {
                     }
                 )
                 .then(() => {
-                    props.comments.splice(
-                        props.comments.indexOf(props.comment),
-                        1
+                    props.setComments(
+                        props.comments
+                            .slice(0, props.comments.indexOf(props.comment))
+                            .concat(
+                                props.comments.slice(
+                                    props.comments.indexOf(props.comment) + 1,
+                                    props.comments.length
+                                )
+                            )
                     )
-                    props.setComments(props.comments)
                 })
                 .catch((err) => {
                     console.error(err)
