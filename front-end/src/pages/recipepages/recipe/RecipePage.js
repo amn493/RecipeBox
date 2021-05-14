@@ -101,7 +101,7 @@ const RecipePage = (props) => {
                 })
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [recipe, comments])
+    }, [recipe])
 
     // state variable for showing sign-in modal
     const [showModal, setShowModal] = useState(false)
