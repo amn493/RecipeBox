@@ -1,6 +1,8 @@
+/* eslint-disable no-undef */
 const chai = require('chai')
 const chaiHTTP = require('chai-http')
-const expect = chai.expect
+
+const { expect } = chai
 
 chai.use(chaiHTTP)
 require('dotenv').config({ silent: true })
@@ -14,38 +16,40 @@ const app = require('../app.js')
 
 describe('Testing GET for /usersbyid API', () => {
     // get 3 users "randomly"
+    // eslint-disable-next-line prefer-const
     let userIDs = []
+    // eslint-disable-next-line prefer-const
     let userObjs = []
     before(async () => {
         await User.find({})
             .limit(3)
             .then((user) => {
                 user.forEach((singleUser) => {
+                    // eslint-disable-next-line no-underscore-dangle
                     userIDs.push(singleUser._id)
                     userObjs.push(singleUser)
                 })
             })
     })
 
-    it('should return 200 OK status', () => {
-        return chai
+    it('should return 200 OK status', () =>
+        chai
             .request(app)
             .get(
                 `/usersbyid?id=${userIDs[0]}&id=${userIDs[1]}&id=${userIDs[2]}`
             )
             .then((response) => {
                 expect(response.status).to.equal(200)
-            })
-    })
+            }))
 
-    it('should return 3 valid user objects', () => {
-        return chai
+    it('should return 3 valid user objects', () =>
+        chai
             .request(app)
             .get(
                 `/usersbyid?id=${userIDs[0]}&id=${userIDs[1]}&id=${userIDs[2]}`
             )
             .then((response) => {
-                //user 1
+                // user 1
                 expect(response.body[0])
                     .to.have.property('username')
                     .that.is.a('string')
@@ -57,7 +61,7 @@ describe('Testing GET for /usersbyid API', () => {
                     .that.is.an('object')
                     .with.deep.property('emailNotifications')
 
-                //user 2
+                // user 2
                 expect(response.body[1])
                     .to.have.property('username')
                     .that.is.a('string')
@@ -69,7 +73,7 @@ describe('Testing GET for /usersbyid API', () => {
                     .that.is.an('object')
                     .with.deep.property('emailNotifications')
 
-                //user 3
+                // user 3
                 expect(response.body[2])
                     .to.have.property('username')
                     .that.is.a('string')
@@ -80,25 +84,23 @@ describe('Testing GET for /usersbyid API', () => {
                     .to.have.property('notificationSettings')
                     .that.is.an('object')
                     .with.deep.property('emailNotifications')
-            })
-    })
+            }))
 
-    it('should return same 3 user objects as called', () => {
+    it('should return same 3 user objects as called', () =>
         // they're reverse order because I pushed the array earlier vs appending
-        return chai
+        chai
             .request(app)
             .get(
                 `/usersbyid?id=${userIDs[0]}&id=${userIDs[1]}&id=${userIDs[2]}`
             )
             .then((response) => {
-                //user 1
+                // user 1
                 expect(response.body[0].username).to.equal(userObjs[2].username)
 
-                //user 2
+                // user 2
                 expect(response.body[1].username).to.equal(userObjs[1].username)
 
-                //user 3
+                // user 3
                 expect(response.body[2].username).to.equal(userObjs[0].username)
-            })
-    })
+            }))
 })
