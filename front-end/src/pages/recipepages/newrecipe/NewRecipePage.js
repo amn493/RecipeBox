@@ -113,8 +113,6 @@ const NewRecipePage = (props) => {
         uploadedImage
     ])
 
-    const [imageToCrop, setImageToCrop] = useState()
-
     // function to allow user to re-upload/re-crop a photo
     // that they just cleared/uploaded
     const clearUpload = (event) => {
@@ -173,7 +171,6 @@ const NewRecipePage = (props) => {
         setUploadedImage(event.target.value !== '')
 
         /* Begin Cropping */
-        const recipeimgForCropperJS = document.querySelectorAll('img')
         setUploadedFiles(event.target.files)
 
         /* End of Cropping */

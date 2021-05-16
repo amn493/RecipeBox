@@ -6,6 +6,7 @@
 }
 
 .commentText {
+    order:-1;
     font-size: 13px;
     margin-top: 10px;
     margin-bottom: 3px;
@@ -34,4 +35,14 @@
 
 .commentDetailsTableRightCol {
     text-align: right;
+}
+
+
+.commentFirstRow {
+    display: flex;
+    justify-content: space-between;
+  }
+
+.text-dark{
+    float:right;
 }
