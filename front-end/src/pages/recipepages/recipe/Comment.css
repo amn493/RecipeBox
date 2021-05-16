@@ -6,6 +6,7 @@
 }
 
 .commentText {
+    order:-1;
     font-size: 13px;
     margin-top: 10px;
     margin-bottom: 3px;
@@ -36,7 +37,12 @@
     text-align: right;
 }
 
-.deleteComment {
-    color: rgb(23, 163, 184);
-    text-align: right;
+
+.commentFirstRow {
+    display: flex;
+    justify-content: space-between;
+  }
+
+.text-dark{
+    float:right;
 }

@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
-import { TrashFill } from 'react-bootstrap-icons'
+import { ThreeDots } from 'react-bootstrap-icons'
+import Dropdown from 'react-bootstrap/Dropdown'
+import React from 'react'
 
 import './Comment.css'
 import Timestamp from '../../../gencomponents/Timestamp.js'
@@ -26,6 +28,20 @@ const Comment = (props) => {
             })
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.comment.user])
+
+    const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
+        // eslint-disable-next-line jsx-a11y/anchor-is-valid
+        <a
+            href=""
+            ref={ref}
+            onClick={(e) => {
+                e.preventDefault()
+                onClick(e)
+            }}
+        >
+            {children}
+        </a>
+    ))
 
     // delete button clicked
     const handleDeleteComment = () => {
@@ -59,19 +75,35 @@ const Comment = (props) => {
 
     return (
         <div className="comment">
-            {props.currentUser === props.comment.user ||
-            props.currentUser === props.recipeUser ? (
-                <div className="deleteComment">
-                    <span onClick={handleDeleteComment}>
-                        <i>
-                            <TrashFill />
-                        </i>
-                    </span>
-                </div>
-            ) : (
-                <></>
-            )}
-            <p className="commentText">{props.comment.comment}</p>
+            <div className="commentFirstRow">
+                {props.currentUser === props.comment.user ||
+                props.currentUser === props.recipeUser ? (
+                    <div className="commentFirstRowDropdown">
+                        <Dropdown className="dotsDropdown">
+                            <Dropdown.Toggle
+                                as={CustomToggle}
+                                id="dropdown-basic"
+                            >
+                                <i className="text-dark">
+                                    <ThreeDots size={20} />
+                                </i>
+                            </Dropdown.Toggle>
+
+                            <Dropdown.Menu
+                                className="dotsDropdownMenu"
+                                align="right"
+                            >
+                                <Dropdown.Item onClick={handleDeleteComment}>
+                                    Delete Comment
+                                </Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
+                    </div>
+                ) : (
+                    <></>
+                )}
+                <p className="commentText">{props.comment.comment}</p>
+            </div>
             <table className="commentDetailsTable">
                 <tbody>
                     <tr>
