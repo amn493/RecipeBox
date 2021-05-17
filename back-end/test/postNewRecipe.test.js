@@ -66,8 +66,8 @@ describe('Testing route handler for POST /newrecipe ', () => {
             .field('instructions', instructions)
             .field('pinned', pinned)
             // eslint-disable-next-line no-shadow
-            .then((response) => {
-                expect(response.status).to.equal(200)
+            .then(async (response) => {
+                await expect(response.status).to.equal(200)
                 idOne = response.body._id.toString()
             })).timeout(4000)
 
@@ -101,8 +101,8 @@ describe('Testing route handler for POST /newrecipe ', () => {
             .field('instructions', instructions)
             .field('pinned', pinned)
             // eslint-disable-next-line no-shadow
-            .then((response) => {
-                expect(response.body).have.property('_id')
+            .then(async (response) => {
+                await expect(response.body).have.property('_id')
                 expect(response.body).have.property('tags')
                 expect(response.body).have.property('ingredients')
                 expect(response.body).have.property('instructions')
@@ -125,7 +125,6 @@ describe('Testing route handler for POST /newrecipe ', () => {
             .post('/deleterecipe')
             .send({ id: idOne })
             .then(response)
-
         await chai
             .request(app)
             .post('/deleterecipe')
