@@ -351,7 +351,7 @@ const AdditionalFields = (props) => {
     }
 
     // swap instruction/ingredient for the instruction/ingredient below or above it
-    const swapField = (event, i, swapWithUpper) => {
+    const swapField = (i, swapWithUpper) => {
         swapWithUpper
             ? props.setValues(
                   Object.assign([], props.values, {
@@ -365,8 +365,8 @@ const AdditionalFields = (props) => {
                       [i - 1]: props.values[i]
                   })
               )
-        event.preventDefault()
     }
+
     for (let i = 0; i < fieldCount; i++) {
         textFields.push(
             <InputGroup className="subsectionField mt-1" key={i}>
@@ -396,7 +396,7 @@ const AdditionalFields = (props) => {
                     ) : (
                         <span
                             className="swapArrow"
-                            onClick={(event) => swapField(event, i, false)}
+                            onClick={() => swapField(i, false)}
                             disabled={
                                 !props.values[i - 1] || props.values[i] === ''
                             }
@@ -411,7 +411,7 @@ const AdditionalFields = (props) => {
                     ) : (
                         <span
                             className="swapArrow"
-                            onClick={(event) => swapField(event, i, true)}
+                            onClick={() => swapField(i, true)}
                         >
                             <ArrowDownSquareFill size={20} />
                         </span>
