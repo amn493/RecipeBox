@@ -397,9 +397,6 @@ const AdditionalFields = (props) => {
                         <span
                             className="swapArrow"
                             onClick={() => swapField(i, false)}
-                            disabled={
-                                !props.values[i - 1] || props.values[i] === ''
-                            }
                         >
                             <ArrowUpSquareFill size={20} />
                         </span>
