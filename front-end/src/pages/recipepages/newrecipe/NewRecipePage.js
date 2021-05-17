@@ -1,5 +1,11 @@
 import { useEffect, useState } from 'react'
-import { Plus, Hash, Dot } from 'react-bootstrap-icons'
+import {
+    Plus,
+    Hash,
+    Dot,
+    ArrowDownSquareFill,
+    ArrowUpSquareFill
+} from 'react-bootstrap-icons'
 import InputGroup from 'react-bootstrap/InputGroup'
 import FormControl from 'react-bootstrap/FormControl'
 import Form from 'react-bootstrap/Form'
@@ -344,6 +350,23 @@ const AdditionalFields = (props) => {
         props.setValues(temp)
     }
 
+    // swap instruction/ingredient for the instruction/ingredient below or above it
+    const swapField = (event, i, swapWithUpper) => {
+        swapWithUpper
+            ? props.setValues(
+                  Object.assign([], props.values, {
+                      [i]: props.values[i + 1],
+                      [i + 1]: props.values[i]
+                  })
+              )
+            : props.setValues(
+                  Object.assign([], props.values, {
+                      [i]: props.values[i - 1],
+                      [i - 1]: props.values[i]
+                  })
+              )
+        event.preventDefault()
+    }
     for (let i = 0; i < fieldCount; i++) {
         textFields.push(
             <InputGroup className="subsectionField mt-1" key={i}>
@@ -365,6 +388,35 @@ const AdditionalFields = (props) => {
                     value={props.values[i]}
                     onChange={(event) => handleChange(event, i)}
                 />
+                <InputGroup.Append>
+                    {!props.values[i - 1] || props.values[i] === '' ? (
+                        <span className="swapArrowDisabled">
+                            <ArrowUpSquareFill size={20} />
+                        </span>
+                    ) : (
+                        <span
+                            className="swapArrow"
+                            onClick={(event) => swapField(event, i, false)}
+                            disabled={
+                                !props.values[i - 1] || props.values[i] === ''
+                            }
+                        >
+                            <ArrowUpSquareFill size={20} />
+                        </span>
+                    )}
+                    {!props.values[i + 1] || props.values[i] === '' ? (
+                        <span className="swapArrowDisabled" id="swapArrow">
+                            <ArrowDownSquareFill size={20} />
+                        </span>
+                    ) : (
+                        <span
+                            className="swapArrow"
+                            onClick={(event) => swapField(event, i, true)}
+                        >
+                            <ArrowDownSquareFill size={20} />
+                        </span>
+                    )}
+                </InputGroup.Append>
             </InputGroup>
         )
     }
