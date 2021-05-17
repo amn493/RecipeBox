@@ -402,7 +402,7 @@ const AdditionalFields = (props) => {
                         </span>
                     )}
                     {!props.values[i + 1] || props.values[i] === '' ? (
-                        <span className="swapArrowDisabled" id="swapArrow">
+                        <span className="swapArrowDisabled">
                             <ArrowDownSquareFill size={20} />
                         </span>
                     ) : (
