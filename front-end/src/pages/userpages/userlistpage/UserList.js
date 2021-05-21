@@ -82,6 +82,8 @@ const UserList = (props) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [filterKeyword]) // Update users when a new keyword is entered
 
+    const numText = props.pageType !== 'likers' ? props.pageType : 'likes'
+
     return allUsers ? (
         <div>
             <h4 className="numUsers">{`${
@@ -91,11 +93,11 @@ const UserList = (props) => {
                     ? props.dataFromSlug.likes
                     : props.dataFromSlug[props.pageType].length
             } ${
-                props.pageType[0].toUpperCase() +
-                props.pageType.slice(
+                numText[0].toUpperCase() +
+                numText.slice(
                     1,
-                    props.pageType.length -
-                        (props.pageType !== 'following' && allUsers.length === 1
+                    numText.length -
+                        (numText !== 'following' && allUsers.length === 1
                             ? 1
                             : 0)
                 )

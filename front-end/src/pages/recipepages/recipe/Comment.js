@@ -9,6 +9,7 @@ import LikeButton from './LikeButton.js'
 import Number from '../../../gencomponents/Number.js'
 
 import './Comment.css'
+import UserListModal from '../../userpages/userlistpage/UserListModal.js'
 
 // Component for comment
 // Expects comment (a comment object) as props
@@ -107,6 +108,9 @@ const Comment = (props) => {
         }
     }
 
+    // state variable for showing likes modal
+    const [showModal, setShowModal] = useState(false)
+
     return (
         <div className={`comment ${comment.thread ? 'reply' : ''}`}>
             {!comment.deleted ? (
@@ -179,11 +183,9 @@ const Comment = (props) => {
                                         setShowModal={props.setShowModal}
                                     />
                                     {comment.likers.length > 0 ? (
-                                        <a
-                                            href={
-                                                '' /*`/recipe-${slug}/likes`*/
-                                            } // TODO
+                                        <button
                                             className="numLikesComment"
+                                            onClick={() => setShowModal(true)}
                                         >
                                             <Number
                                                 number={comment.likers.length}
@@ -191,7 +193,7 @@ const Comment = (props) => {
                                             {comment.likers.length === 1
                                                 ? `like`
                                                 : `likes`}
-                                        </a>
+                                        </button>
                                     ) : (
                                         <></>
                                     )}
@@ -206,6 +208,11 @@ const Comment = (props) => {
             ) : (
                 <i className="deletedText">This comment was deleted</i>
             )}
+            <UserListModal
+                show={showModal}
+                setShow={setShowModal}
+                comment={comment}
+            />
         </div>
     )
 }
