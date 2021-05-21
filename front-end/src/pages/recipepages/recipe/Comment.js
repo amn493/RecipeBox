@@ -1,23 +1,28 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
-import { ThreeDots } from 'react-bootstrap-icons'
+import { ThreeDots, ReplyFill } from 'react-bootstrap-icons'
 import Dropdown from 'react-bootstrap/Dropdown'
 import React from 'react'
 
-import './Comment.css'
 import Timestamp from '../../../gencomponents/Timestamp.js'
+import LikeButton from './LikeButton.js'
+import Number from '../../../gencomponents/Number.js'
+
+import './Comment.css'
 
 // Component for comment
 // Expects comment (a comment object) as props
 //Example: <Comment comment={{recipe: 2, user: 5, comment: 'Love this recipe!', createdAt: 1615864460796}} />
 
 const Comment = (props) => {
+    const [comment, setComment] = useState(props.comment)
+
     // request user that authored recipe (user id = props.comment.user) when component is rendered
     const [user, setUser] = useState([])
 
     useEffect(() => {
         axios(
-            `http://${process.env.REACT_APP_ORIGIN}:4000/userbyid?id=${props.comment.user}`
+            `http://${process.env.REACT_APP_ORIGIN}:4000/userbyid?id=${comment.user}`
         )
             .then((response) => {
                 setUser(response.data)
@@ -27,7 +32,7 @@ const Comment = (props) => {
                 props.setReqError(true)
             })
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [props.comment.user])
+    }, [comment.user])
 
     const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
         // eslint-disable-next-line jsx-a11y/anchor-is-valid
@@ -43,6 +48,24 @@ const Comment = (props) => {
         </a>
     ))
 
+    const [replyTo, setReplyTo] = useState()
+
+    useEffect(() => {
+        if (comment.replyTo) {
+            axios(
+                `http://${process.env.REACT_APP_ORIGIN}:4000/userbyid?id=${comment.replyTo}`
+            )
+                .then((response) => {
+                    setReplyTo(response.data)
+                })
+                .catch((err) => {
+                    console.error(err)
+                    props.setReqError(true)
+                })
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [comment.replyTo])
+
     // delete button clicked
     const handleDeleteComment = () => {
         if (window.confirm('Are you sure you want to delete this comment?')) {
@@ -51,20 +74,31 @@ const Comment = (props) => {
                 .post(
                     `http://${process.env.REACT_APP_ORIGIN}:4000/deletecomment`,
                     {
-                        id: props.comment._id
+                        id: comment._id,
+                        thread: comment.thread ? comment.thread : undefined
                     }
                 )
-                .then(() => {
-                    props.setComments(
-                        props.comments
-                            .slice(0, props.comments.indexOf(props.comment))
-                            .concat(
-                                props.comments.slice(
-                                    props.comments.indexOf(props.comment) + 1,
-                                    props.comments.length
+                .then((response) => {
+                    if (response.data.deleted) {
+                        setComment(response.data)
+                    } else {
+                        // remove the comment from the comments array
+                        const oldComments = props.comments
+                        props.setComments([]) // change this ?
+                        props.setComments(
+                            oldComments
+                                .slice(
+                                    0,
+                                    oldComments.indexOf(props.comment) -
+                                        (response.data.deletedThread ? 1 : 0)
                                 )
-                            )
-                    )
+                                .concat(
+                                    oldComments.slice(
+                                        oldComments.indexOf(props.comment) + 1
+                                    )
+                                )
+                        )
+                    }
                 })
                 .catch((err) => {
                     console.error(err)
@@ -74,54 +108,122 @@ const Comment = (props) => {
     }
 
     return (
-        <div className="comment">
-            <div className="commentFirstRow">
-                {props.currentUser === props.comment.user ||
-                props.currentUser === props.recipeUser ? (
-                    <div className="commentFirstRowDropdown">
-                        <Dropdown className="dotsDropdown">
-                            <Dropdown.Toggle
-                                as={CustomToggle}
-                                id="dropdown-basic"
-                            >
-                                <i className="text-dark">
-                                    <ThreeDots size={20} />
-                                </i>
-                            </Dropdown.Toggle>
+        <div className={`comment ${comment.thread ? 'reply' : ''}`}>
+            {!comment.deleted ? (
+                <div>
+                    <div className="commentFirstRow">
+                        {props.user._id === user._id ||
+                        props.user._id === props.recipeUser ? (
+                            <div className="commentFirstRowDropdown">
+                                <Dropdown className="dotsDropdown">
+                                    <Dropdown.Toggle
+                                        as={CustomToggle}
+                                        id="dropdown-basic"
+                                    >
+                                        <i className="text-dark">
+                                            <ThreeDots size={20} />
+                                        </i>
+                                    </Dropdown.Toggle>
 
-                            <Dropdown.Menu
-                                className="dotsDropdownMenu"
-                                align="right"
-                            >
-                                <Dropdown.Item onClick={handleDeleteComment}>
-                                    Delete Comment
-                                </Dropdown.Item>
-                            </Dropdown.Menu>
-                        </Dropdown>
-                    </div>
-                ) : (
-                    <></>
-                )}
-                <p className="commentText">{props.comment.comment}</p>
-            </div>
-            <table className="commentDetailsTable">
-                <tbody>
-                    <tr>
-                        <td className="commentDetailsTableCell">
+                                    <Dropdown.Menu
+                                        className="dotsDropdownMenu"
+                                        align="right"
+                                    >
+                                        <Dropdown.Item
+                                            onClick={handleDeleteComment}
+                                        >
+                                            Delete Comment
+                                        </Dropdown.Item>
+                                    </Dropdown.Menu>
+                                </Dropdown>
+                            </div>
+                        ) : (
+                            <></>
+                        )}
+                        <p className="commentText">
                             <a
                                 className="commentUsername"
                                 href={'/user-' + user.slug}
                             >
-                                {'@' + user.username}
-                            </a>
-                        </td>
-                        <td className="commentDetailsTableCell commentDetailsTableRightCol">
-                            <Timestamp createdAt={props.comment.createdAt} />
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+                                {user.username}
+                            </a>{' '}
+                            {replyTo ? (
+                                <a
+                                    href={`/user-${replyTo.slug}`}
+                                    className="replyTo"
+                                >
+                                    @{replyTo.username}
+                                </a>
+                            ) : (
+                                <></>
+                            )}{' '}
+                            {comment.comment}
+                        </p>
+                    </div>
+                    <table className="commentDetailsTable">
+                        <tbody>
+                            <tr>
+                                <td className="commentDetailsTableCell">
+                                    <ReplyButton
+                                        setReplyingTo={props.setReplyingTo}
+                                        setThread={props.setThread}
+                                        author={user}
+                                        comment={comment}
+                                    />
+                                    <LikeButton
+                                        comment={comment}
+                                        setComment={setComment}
+                                        user={props.user}
+                                        setUser={props.setUser}
+                                        signedIn={props.signedIn}
+                                        setShowModal={props.setShowModal}
+                                    />
+                                    {comment.likers.length > 0 ? (
+                                        <a
+                                            href={
+                                                '' /*`/recipe-${slug}/likes`*/
+                                            } // TODO
+                                            className="numLikesComment"
+                                        >
+                                            <Number
+                                                number={comment.likers.length}
+                                            />{' '}
+                                            {comment.likers.length === 1
+                                                ? `like`
+                                                : `likes`}
+                                        </a>
+                                    ) : (
+                                        <></>
+                                    )}
+                                </td>
+                                <td className="commentDetailsTableCell commentDetailsTableRightCol">
+                                    <Timestamp createdAt={comment.createdAt} />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            ) : (
+                <i className="deletedText">This comment was deleted</i>
+            )}
         </div>
+    )
+}
+
+const ReplyButton = (props) => {
+    const handleReply = () => {
+        props.setReplyingTo(props.author)
+        props.setThread(
+            props.comment.thread ? props.comment.thread : props.comment._id
+        )
+    }
+
+    return (
+        <button className="replyButton" onClick={handleReply}>
+            <i>
+                <ReplyFill className="text-info" />
+            </i>
+        </button>
     )
 }
 

@@ -50,6 +50,10 @@ const Comment = new mongoose.Schema({
     recipe: { type: mongoose.Schema.Types.ObjectId, ref: 'Recipe' },
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     comment: { type: String, required: true },
+    likers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    replyTo: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    thread: { type: mongoose.Schema.Types.ObjectId, ref: 'Comment' },
+    deleted: { type: Boolean },
     createdAt: { type: Date, required: true }
 })
 

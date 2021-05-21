@@ -1,12 +1,12 @@
 .comment {
     margin-bottom: 10px;
-    background-color: rgb(23, 162, 184, .1);
+    background-color: rgb(23, 162, 184, 0.1);
     border-radius: 15px;
     padding: 1px 10px 10px 10px;
 }
 
 .commentText {
-    order:-1;
+    order: -1;
     font-size: 13px;
     margin-top: 10px;
     margin-bottom: 3px;
@@ -18,7 +18,12 @@
     font-size: 13px;
 }
 
-.commentUsername:hover, .commentUsername:active {
+.commentUsername:hover,
+.commentUsername:active,
+.numLikesComment:hover,
+.numLikesComment:active,
+.replyTo:hover,
+.replyTo:active {
     color: black;
     opacity: 60%;
     text-decoration: none;
@@ -37,12 +42,42 @@
     text-align: right;
 }
 
-
 .commentFirstRow {
     display: flex;
     justify-content: space-between;
-  }
+}
 
-.text-dark{
-    float:right;
+.text-dark {
+    float: right;
+}
+
+.replyButton {
+    background: none;
+    border: none;
+    padding: 0px;
+    margin-right: 5px;
+}
+
+.numLikesComment {
+    font-weight: bold;
+    color: black;
+    font-size: 12px;
+    display: inline-block;
+    margin-left: 5px;
+}
+
+.reply {
+    margin-left: 20px;
+}
+
+.replyTo {
+    color: black;
+    font-weight: lighter;
+    font-style: italic;
+}
+
+.deletedText {
+    font-size: 13px;
+    margin-top: 10px;
+    display: inline-block;
 }

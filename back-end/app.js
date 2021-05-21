@@ -566,6 +566,9 @@ app.post(
                 recipe: req.body.recipe,
                 user: req.body.user,
                 comment: req.body.comment,
+                likers: [],
+                thread: req.body.thread ? req.body.thread : undefined,
+                replyTo: req.body.replyTo ? req.body.replyTo : undefined,
                 createdAt: Date.now()
             }
 
@@ -681,14 +684,66 @@ app.post(
 )
 
 app.post('/deletecomment', (req, res, next) => {
-    // delete comment document
-    Comment.findByIdAndDelete(req.body.id)
-        .then(() => {
-            res.send('deleted comment')
+    const thread = req.body.thread ? req.body.thread : req.body.id
+    console.log(thread)
+    Comment.countDocuments({ thread: thread })
+        .then((count) => {
+            console.log(count)
+            // comment doesn't have replies or is a reply
+            if (count === 0 || req.body.thread) {
+                // delete comment document
+                Comment.findByIdAndDelete(req.body.id)
+                    .then(() => {
+                        // comment was the only reply on the thread
+                        if (count === 1) {
+                            // check to see if thread has been deleted and delete the placeholder
+                            Comment.findById(req.body.thread)
+                                .then((comment) => {
+                                    if (comment.deleted) {
+                                        Comment.findByIdAndDelete(
+                                            req.body.thread
+                                        )
+                                            .then(() => {
+                                                res.json({
+                                                    deletedThread: true
+                                                })
+                                            })
+                                            .catch((err) => {
+                                                next(err)
+                                            })
+                                    } else {
+                                        res.send('deleted comment')
+                                    }
+                                })
+                                .catch((err) => {
+                                    next(err)
+                                })
+                        } else {
+                            res.send('deleted comment')
+                        }
+                    })
+                    .catch((err) => {
+                        next(err)
+                    })
+            }
+            // comment has replies
+            else {
+                // set comment document's deleted to true
+                Comment.findByIdAndUpdate(
+                    req.body.id,
+                    { $set: { deleted: true } },
+                    { new: true, useFindAndModify: false }
+                )
+                    .then((comment) => {
+                        console.log(comment)
+                        res.json(comment)
+                    })
+                    .catch((err) => {
+                        next(err)
+                    })
+            }
         })
-        .catch((err) => {
-            next(err)
-        })
+        .catch((err) => next(err))
 })
 
 // recursive function for adding new tags to database and updating counts of existing tags
@@ -886,6 +941,20 @@ app.post('/blocktag', (req, res, next) => {
         .catch((err) => next(err))
 })
 
+app.post('/likecomment', (req, res, next) => {
+    const update = {}
+    update[req.body.like ? '$push' : '$pull'] = { likers: req.body.userID }
+
+    Comment.findByIdAndUpdate(req.body.commentID, update, {
+        new: true,
+        useFindAndModify: false
+    })
+        .then((comment) => {
+            res.json(comment)
+        })
+        .catch((err) => next(err))
+})
+
 app.post('/likerecipe', (req, res, next) => {
     // update signed-in user's liked array appropriately
     const update = {}
@@ -1017,7 +1086,7 @@ app.post('/likerecipe', (req, res, next) => {
                 }
             )
                 // send back the updated user and recipe
-                .then((recipe) => res.send({ user, recipe }))
+                .then((recipe) => res.json({ user, recipe }))
                 .catch((err) => {
                     next(err)
                 })
@@ -1136,7 +1205,7 @@ app.post('/followuser', (req, res, next) => {
                 useFindAndModify: false
             })
                 // send back the updated user objects
-                .then((signedInUser) => res.send({ profileUser, signedInUser }))
+                .then((signedInUser) => res.json({ profileUser, signedInUser }))
                 .catch((err) => {
                     next(err)
                 })
