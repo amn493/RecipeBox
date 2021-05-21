@@ -685,10 +685,8 @@ app.post(
 
 app.post('/deletecomment', (req, res, next) => {
     const thread = req.body.thread ? req.body.thread : req.body.id
-    console.log(thread)
     Comment.countDocuments({ thread: thread })
         .then((count) => {
-            console.log(count)
             // comment doesn't have replies or is a reply
             if (count === 0 || req.body.thread) {
                 // delete comment document
@@ -735,7 +733,6 @@ app.post('/deletecomment', (req, res, next) => {
                     { new: true, useFindAndModify: false }
                 )
                     .then((comment) => {
-                        console.log(comment)
                         res.json(comment)
                     })
                     .catch((err) => {
