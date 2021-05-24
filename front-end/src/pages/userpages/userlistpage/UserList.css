@@ -1,0 +1,16 @@
+.numUsers {
+    font-size: 15px;
+    text-align: center;
+    margin-top: -4px;
+    margin-bottom: 20px;
+}
+
+.userSearchBar {
+    margin-bottom: 30px;
+}
+
+.noUsersFoundMessage {
+    font-size: 14px;
+    font-weight: lighter;
+    text-align: center;
+}

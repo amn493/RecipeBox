@@ -14,7 +14,6 @@ import './BrowseRecipesPage.css'
 
 const BrowseRecipesPage = (props) => {
     const query = new URLSearchParams(useLocation().search)
-    console.log(query.get('tag'))
 
     const [reqError, setReqError] = useState(false)
 

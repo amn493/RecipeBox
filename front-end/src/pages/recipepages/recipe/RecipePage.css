@@ -11,18 +11,7 @@
     width: 100%;
 }
 
-.likeButton {
-    width: 20px;
-    height: 20px;
-    margin-right: 5px;
-    display: inline-block;
-}
-
 .numLikes {
-    display: inline-block;
-}
-
-.likeButtonDiv {
     display: inline-block;
 }
 
@@ -134,4 +123,9 @@
 
 .dotsDropdownMenu {
     font-size: 14px;
+}
+
+.replyAlert {
+    font-size: 14px;
+    margin-bottom: -20px;
 }

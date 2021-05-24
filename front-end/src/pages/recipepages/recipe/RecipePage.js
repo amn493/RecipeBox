@@ -9,12 +9,14 @@ import Button from 'react-bootstrap/Button'
 import Dropdown from 'react-bootstrap/Dropdown'
 import { ThreeDots } from 'react-bootstrap-icons'
 import Carousel from 'react-bootstrap/Carousel'
+import Alert from 'react-bootstrap/Alert'
 
 import Comment from './Comment.js'
 import Timestamp from '../../../gencomponents/Timestamp.js'
 import ErrorComponent from '../../../gencomponents/ErrorComponent.js'
 import CreateAccountModal from '../../../gencomponents/CreateAccountModal.js'
 import Number from '../../../gencomponents/Number.js'
+import LikeButton from './LikeButton.js'
 
 import './RecipePage.css'
 
@@ -85,15 +87,29 @@ const RecipePage = (props) => {
     // request comments for current recipe (recipe = recipe.id) on initial render
     const [comments, setComments] = useState()
 
+    // sort threads and replies properly
+    const sortComments = (comments) => {
+        const threads = comments.filter((comment) => !comment.thread)
+        const replies = comments.filter((comment) => comment.thread).reverse()
+
+        replies.forEach((reply) => {
+            for (let i = 0; i < threads.length; i++) {
+                if (threads[i]._id === reply.thread) {
+                    threads.splice(i + 1, 0, reply)
+                    break
+                }
+            }
+        })
+        return threads
+    }
+
     useEffect(() => {
         if (recipe) {
             axios(
                 `http://${process.env.REACT_APP_ORIGIN}:4000/comments?recipeID=${recipe._id}`
             )
                 .then((response) => {
-                    setComments(
-                        response.data.sort((a, b) => a.createdAt - b.createdAt)
-                    )
+                    setComments(sortComments(response.data))
                 })
                 .catch((err) => {
                     console.error(err)
@@ -255,7 +271,7 @@ const RecipePage = (props) => {
                                     <tr>
                                         <td>
                                             <a
-                                                href={`${window.location.href}/likes`}
+                                                href={`/recipe-${slug}/likes`}
                                                 className="numLikes"
                                             >
                                                 <Number number={recipe.likes} />{' '}
@@ -309,8 +325,9 @@ const RecipePage = (props) => {
 
                         <CommentsSection
                             setComments={setComments}
+                            sortComments={sortComments}
                             comments={comments}
-                            userId={props.user._id}
+                            user={props.user}
                             recipeId={recipe._id}
                             recipeUserId={recipe.user}
                             signedIn={props.signedIn}
@@ -337,63 +354,14 @@ const RecipePage = (props) => {
     )
 }
 
-// Component for like button
-const LikeButton = (props) => {
-    const handleLiked = () => {
-        let requestData = {
-            like: !props.user.liked.includes(props.recipe._id),
-            userID: props.user._id,
-            recipeID: props.recipe._id
-        }
-
-        axios
-            .post(
-                `http://${process.env.REACT_APP_ORIGIN}:4000/likerecipe`,
-                requestData
-            )
-            .then((response) => {
-                props.setRecipe(response.data.recipe)
-                props.setUser(response.data.user)
-            })
-            .catch((err) => console.error(err))
-    }
-
-    return (
-        <div className="likeButtonDiv">
-            <input
-                className="likeButton"
-                type="image"
-                src={
-                    props.user.liked.includes(props.recipe._id)
-                        ? 'icons/heartFill.png'
-                        : 'icons/heartOutline.png'
-                }
-                alt={
-                    props.user.liked.includes(props.recipe._id)
-                        ? 'heart fill'
-                        : 'heart outline'
-                }
-                onClick={() => {
-                    if (props.signedIn) {
-                        handleLiked()
-                    } else {
-                        // show sign-in modal if a not-signed in user attempts to like the recipe
-                        props.setShowModal(true)
-                    }
-                }}
-            />
-        </div>
-    )
-}
-
 // Component for comments section
-// Expects comments (an array of comment objects), userId (the id of the signed in user), and recipeId (the id of the current recipe) as props
-// Example: <CommentsSection comments={comments} userId={user.id} recipeId={recipe.id} />
-
 const CommentsSection = (props) => {
-    // state variables for comments array and text field value
-    const [comments, setComments] = useState(props.comments)
+    // state variable for text field value
     const [value, setValue] = useState('')
+
+    // state variables for replying to comments
+    const [replyingTo, setReplyingTo] = useState()
+    const [thread, setThread] = useState()
 
     // update page to include new comment on submit
     const handleSubmit = (event) => {
@@ -403,10 +371,15 @@ const CommentsSection = (props) => {
             // don't add empty comments
             if (value !== '') {
                 const newComment = {
-                    user: props.userId,
+                    user: props.user._id,
                     comment: value,
                     recipe: props.recipeId,
                     createdAt: Date.now()
+                }
+
+                if (replyingTo) {
+                    newComment.replyTo = replyingTo._id
+                    newComment.thread = thread
                 }
 
                 axios
@@ -415,9 +388,17 @@ const CommentsSection = (props) => {
                         newComment
                     )
                     .then((response) => {
-                        //update page to include new comment
-                        setComments(comments.concat([response.data]))
+                        //update page to include the new comment
+                        const oldComments = props.comments
+                        props.setComments([]) // change this ?
+                        props.setComments(
+                            props.sortComments(
+                                oldComments.concat([response.data])
+                            )
+                        )
                         setValue('')
+                        setReplyingTo()
+                        setThread()
                     })
             }
         } else {
@@ -434,17 +415,37 @@ const CommentsSection = (props) => {
     return (
         <div className="commentsSection">
             <h2 className="recipeSubheading">Comments</h2>
-            {comments.map((comment, i) => (
+            {props.comments.map((comment, i) => (
                 <Comment
-                    setComments={setComments}
-                    comments={comments}
+                    setComments={props.setComments}
+                    comments={props.comments}
                     recipeUser={props.recipeUserId}
-                    currentUser={props.userId}
                     comment={comment}
                     key={i}
                     setReqError={props.setReqError}
+                    setShowModal={props.setShowModal}
+                    user={props.user}
+                    signedIn={props.signedIn}
+                    setReplyingTo={setReplyingTo}
+                    setThread={setThread}
                 />
             ))}
+
+            {replyingTo ? (
+                <Alert
+                    variant="info"
+                    onClose={() => {
+                        setReplyingTo()
+                        setThread()
+                    }}
+                    dismissible
+                    className="replyAlert"
+                >
+                    Replying to <b>@{replyingTo.username}</b>
+                </Alert>
+            ) : (
+                <></>
+            )}
 
             <Form className="commentFieldAndButton" onSubmit={handleSubmit}>
                 <InputGroup>
