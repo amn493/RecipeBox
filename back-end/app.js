@@ -244,7 +244,9 @@ app.use((req, res, next) => {
 })
 
 /* Begin GET Requests */
-
+app.get('/', (req, res, next) => {
+    res.send("Recipebox backend is up! What're you doing here....?")
+})
 app.get('/recipe', (req, res, next) => {
     // fetch recipe where slug === req.query.slug from database
 
