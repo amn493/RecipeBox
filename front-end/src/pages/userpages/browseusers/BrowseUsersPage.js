@@ -21,7 +21,7 @@ const BrowseUsersPage = (props) => {
     useEffect(() => {
         // Fetch users that match the filter
         axios(
-            `http://${process.env.REACT_APP_ORIGIN}/usersbyname?name=${filterKeyword}`
+            `https://${process.env.REACT_APP_ORIGIN}/usersbyname?name=${filterKeyword}`
         )
             .then((response) => {
                 setUsers(response.data)
@@ -36,7 +36,7 @@ const BrowseUsersPage = (props) => {
     const [recommendedUsers, setRecommendedUsers] = useState([])
 
     useEffect(() => {
-        axios(`http://${process.env.REACT_APP_ORIGIN}/recommendedusers`)
+        axios(`https://${process.env.REACT_APP_ORIGIN}/recommendedusers`)
             .then((response) => setRecommendedUsers(response.data))
             .catch((err) => {
                 console.error(err)

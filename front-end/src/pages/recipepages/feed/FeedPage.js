@@ -36,7 +36,7 @@ const Feed = (props) => {
             } else {
                 // Otherwise, go ahead and query the database
                 axios(
-                    `http://${process.env.REACT_APP_ORIGIN}/feedrecipes?${
+                    `https://${process.env.REACT_APP_ORIGIN}/feedrecipes?${
                         props.user.following.length > 0
                             ? props.user.following.reduce(
                                   (acc, following) =>
@@ -69,7 +69,7 @@ const Feed = (props) => {
         let followingArray = props.user.following
 
         axios(
-            `http://${process.env.REACT_APP_ORIGIN}/feedrecipes?${
+            `https://${process.env.REACT_APP_ORIGIN}/feedrecipes?${
                 followingArray.length > 0
                     ? followingArray.reduce(
                           (acc, following) => acc + `&following=${following}`,

@@ -21,9 +21,9 @@ const UserList = (props) => {
         ) {
             let url
             if (props.pageType === 'likes') {
-                url = `http://${process.env.REACT_APP_ORIGIN}/likedby?id=${props.dataFromSlug._id}`
+                url = `https://${process.env.REACT_APP_ORIGIN}/likedby?id=${props.dataFromSlug._id}`
             } else {
-                url = `http://${
+                url = `https://${
                     process.env.REACT_APP_ORIGIN
                 }/usersbyid?id=${props.dataFromSlug[props.pageType].reduce(
                     (acc, userid) => acc + `&id=${userid}`,

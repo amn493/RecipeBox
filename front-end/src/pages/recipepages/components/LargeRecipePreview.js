@@ -31,7 +31,7 @@ const LargeRecipePreview = (props) => {
             })
         } else {
             axios(
-                `http://${process.env.REACT_APP_ORIGIN}/userbyid?id=${props.recipe.user}`
+                `https://${process.env.REACT_APP_ORIGIN}/userbyid?id=${props.recipe.user}`
             )
                 .then((response) => {
                     setAuthorUser({

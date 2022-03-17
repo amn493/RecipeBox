@@ -50,7 +50,7 @@ const CreateAccountPage = (props) => {
     const handleSubmit = (event) => {
         event.preventDefault()
         axios
-            .post(`http://${process.env.REACT_APP_ORIGIN}/createaccount`, {
+            .post(`https://${process.env.REACT_APP_ORIGIN}/createaccount`, {
                 username: username,
                 password: password,
                 email: email,
