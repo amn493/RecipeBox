@@ -30,7 +30,7 @@ const BrowseRecipesPage = (props) => {
         axios(
             `http://${
                 process.env.REACT_APP_ORIGIN
-            }:4000/tags?blockedTags=${props.user.blockedTags.reduce(
+            }/tags?blockedTags=${props.user.blockedTags.reduce(
                 (acc, tag) => acc + `&blockedTags=${tag}`,
                 ''
             )}`
@@ -56,7 +56,7 @@ const BrowseRecipesPage = (props) => {
             axios(
                 `http://${
                     process.env.REACT_APP_ORIGIN
-                }:4000/filteredrecipes?keyword=${filterKeyword}${
+                }/filteredrecipes?keyword=${filterKeyword}${
                     filterTags.length > 0
                         ? filterTags.reduce(
                               (acc, tag) => acc + `&tags=${tag}`,
@@ -87,7 +87,7 @@ const BrowseRecipesPage = (props) => {
     const [recommendedRecipes, setRecommendedRecipes] = useState([])
 
     useEffect(() => {
-        axios(`http://${process.env.REACT_APP_ORIGIN}:4000/recommendedrecipes`)
+        axios(`http://${process.env.REACT_APP_ORIGIN}/recommendedrecipes`)
             .then((response) =>
                 setRecommendedRecipes(
                     response.data.filter(

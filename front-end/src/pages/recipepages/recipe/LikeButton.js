@@ -20,7 +20,7 @@ const LikeButton = (props) => {
 
         axios
             .post(
-                `http://${process.env.REACT_APP_ORIGIN}:4000/${
+                `http://${process.env.REACT_APP_ORIGIN}/${
                     props.recipe ? 'likerecipe' : 'likecomment'
                 }`,
                 requestData

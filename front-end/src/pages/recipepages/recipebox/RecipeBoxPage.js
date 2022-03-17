@@ -68,7 +68,7 @@ const RecipeBoxPage = (props) => {
         axios(
             `http://${
                 process.env.REACT_APP_ORIGIN
-            }:4000/tags?blockedTags=${props.user.blockedTags.reduce(
+            }/tags?blockedTags=${props.user.blockedTags.reduce(
                 (acc, tag) => acc + `&blockedTags=${tag}`,
                 ''
             )}`
@@ -89,7 +89,7 @@ const RecipeBoxPage = (props) => {
         axios(
             `http://${
                 process.env.REACT_APP_ORIGIN
-            }:4000/filteredrecipes?userid=${
+            }/filteredrecipes?userid=${
                 props.user._id
             }&keyword=${filterKeyword}${
                 filterTags.length > 0

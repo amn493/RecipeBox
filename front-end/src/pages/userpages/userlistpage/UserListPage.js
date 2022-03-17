@@ -29,13 +29,13 @@ const UserListPage = (props) => {
         if (pageType === 'likes') {
             // fetch the recipe whose likes are being displayed
             axios(
-                `http://${process.env.REACT_APP_ORIGIN}:4000/recipe?slug=${slug}`
+                `http://${process.env.REACT_APP_ORIGIN}/recipe?slug=${slug}`
             ).then((recipeResponse) => {
                 setDataFromSlug(recipeResponse.data)
                 setLoadedData(true)
                 // get author user
                 axios(
-                    `http://${process.env.REACT_APP_ORIGIN}:4000/userbyid?id=${recipeResponse.data.user}`
+                    `http://${process.env.REACT_APP_ORIGIN}/userbyid?id=${recipeResponse.data.user}`
                 ).then((userResponse) => {
                     setUserBlocked(
                         userResponse.data.blockedUsers.includes(
@@ -52,7 +52,7 @@ const UserListPage = (props) => {
         } else {
             // fetch the user whose followers / following are being displayed
             axios(
-                `http://${process.env.REACT_APP_ORIGIN}:4000/userbyslug?slug=${slug}`
+                `http://${process.env.REACT_APP_ORIGIN}/userbyslug?slug=${slug}`
             )
                 .then((response) => {
                     setDataFromSlug(response.data)

@@ -23,7 +23,7 @@ const Comment = (props) => {
 
     useEffect(() => {
         axios(
-            `http://${process.env.REACT_APP_ORIGIN}:4000/userbyid?id=${comment.user}`
+            `http://${process.env.REACT_APP_ORIGIN}/userbyid?id=${comment.user}`
         )
             .then((response) => {
                 setUser(response.data)
@@ -54,7 +54,7 @@ const Comment = (props) => {
     useEffect(() => {
         if (comment.replyTo) {
             axios(
-                `http://${process.env.REACT_APP_ORIGIN}:4000/userbyid?id=${comment.replyTo}`
+                `http://${process.env.REACT_APP_ORIGIN}/userbyid?id=${comment.replyTo}`
             )
                 .then((response) => {
                     setReplyTo(response.data)
@@ -73,7 +73,7 @@ const Comment = (props) => {
             // delete comment
             axios
                 .post(
-                    `http://${process.env.REACT_APP_ORIGIN}:4000/deletecomment`,
+                    `http://${process.env.REACT_APP_ORIGIN}/deletecomment`,
                     {
                         id: comment._id,
                         thread: comment.thread ? comment.thread : undefined
