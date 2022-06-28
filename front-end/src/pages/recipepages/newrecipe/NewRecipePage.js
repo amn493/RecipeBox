@@ -64,7 +64,7 @@ const NewRecipePage = (props) => {
 
         axios
             .post(
-                `http://${process.env.REACT_APP_ORIGIN}:4000/newrecipe`,
+                `https://${process.env.REACT_APP_ORIGIN}/newrecipe`,
                 newRecipe,
                 {
                     headers

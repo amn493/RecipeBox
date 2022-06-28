@@ -8,6 +8,7 @@ const morgan = require('morgan') // middleware for nice logging of incoming HTTP
 const multer = require('multer') // middleware to handle HTTP POST requests with file uploads
 const path = require('path')
 const fs = require('fs')
+const cors = require('cors')
 require('dotenv').config({ silent: true }) // load environmental variables from a hidden file named .env
 
 // passport
@@ -55,6 +56,8 @@ app.use(express.static(path.join(__dirname, '../front-end/public')))
 
 // CORS
 
+app.use(cors())
+/* Old CORS header stuff
 app.use((req, res, next) => {
     const allowedOrigins = [
         `http://${process.env.ORIGIN}`,
@@ -69,7 +72,7 @@ app.use((req, res, next) => {
         'Origin, X-Requested-With, Content-Type, Accept, Authorization'
     )
     next()
-})
+}) */
 
 // MULTER
 
@@ -241,7 +244,9 @@ app.use((req, res, next) => {
 })
 
 /* Begin GET Requests */
-
+app.get('/', (req, res, next) => {
+    res.send("Recipebox backend is up! What're you doing here....?")
+})
 app.get('/recipe', (req, res, next) => {
     // fetch recipe where slug === req.query.slug from database
 

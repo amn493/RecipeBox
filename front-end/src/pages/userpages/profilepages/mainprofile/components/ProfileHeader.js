@@ -28,7 +28,7 @@ const ProfileHeader = (props) => {
     // block user button clicked
     const handleBlock = () => {
         axios
-            .post(`http://${process.env.REACT_APP_ORIGIN}:4000/blockuser`, {
+            .post(`https://${process.env.REACT_APP_ORIGIN}/blockuser`, {
                 addBlock: true,
                 signedInUserID: props.currentUser._id,
                 signedInBlockedUsers: props.currentUser.blockedUsers,

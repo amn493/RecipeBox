@@ -36,7 +36,7 @@ const RecipePage = (props) => {
 
     useEffect(() => {
         // fetch the recipe that corresponds to the slug from the url
-        axios(`http://${process.env.REACT_APP_ORIGIN}:4000/recipe?slug=${slug}`)
+        axios(`https://${process.env.REACT_APP_ORIGIN}/recipe?slug=${slug}`)
             .then((response) => {
                 setRecipe(response.data)
             })
@@ -60,7 +60,7 @@ const RecipePage = (props) => {
                 })
             } else {
                 axios(
-                    `http://${process.env.REACT_APP_ORIGIN}:4000/userbyid?id=${recipe.user}`
+                    `https://${process.env.REACT_APP_ORIGIN}/userbyid?id=${recipe.user}`
                 )
                     .then((response) => {
                         setAuthorUser({
@@ -106,7 +106,7 @@ const RecipePage = (props) => {
     useEffect(() => {
         if (recipe) {
             axios(
-                `http://${process.env.REACT_APP_ORIGIN}:4000/comments?recipeID=${recipe._id}`
+                `https://${process.env.REACT_APP_ORIGIN}/comments?recipeID=${recipe._id}`
             )
                 .then((response) => {
                     setComments(sortComments(response.data))
@@ -142,7 +142,7 @@ const RecipePage = (props) => {
             // delete recipe
             axios
                 .post(
-                    `http://${process.env.REACT_APP_ORIGIN}:4000/deleterecipe`,
+                    `https://${process.env.REACT_APP_ORIGIN}/deleterecipe`,
                     {
                         id: recipe._id
                     }
@@ -161,7 +161,7 @@ const RecipePage = (props) => {
     // pin/unpin button clicked
     const handlePin = () => {
         axios
-            .post(`http://${process.env.REACT_APP_ORIGIN}:4000/pinrecipe`, {
+            .post(`https://${process.env.REACT_APP_ORIGIN}/pinrecipe`, {
                 id: recipe._id,
                 pin: !recipe.pinned
             })
@@ -384,7 +384,7 @@ const CommentsSection = (props) => {
 
                 axios
                     .post(
-                        `http://${process.env.REACT_APP_ORIGIN}:4000/comment`,
+                        `https://${process.env.REACT_APP_ORIGIN}/comment`,
                         newComment
                     )
                     .then((response) => {

@@ -2,7 +2,7 @@
 
 ![Build Status](https://github.com/agile-dev-assignments/project-setup-team-ntobo-global/actions/workflows/continuous-integration.yml/badge.svg)
 
-You can find the live [RecipeBox app here](http://142.93.127.57/)
+You can find the live [RecipeBox app here](https://recipebox-frontend.herokuapp.com/)
 
 ## Vision Statement
 

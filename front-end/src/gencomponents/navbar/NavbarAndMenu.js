@@ -11,7 +11,7 @@ const NavbarAndMenu = (props) => {
     // sign out user when sign out button is clicked
     const signOutUser = () => {
         axios
-            .post(`http://${process.env.REACT_APP_ORIGIN}:4000/signout`)
+            .post(`https://${process.env.REACT_APP_ORIGIN}/signout`)
             .then(() => {
                 localStorage.removeItem('token')
                 window.location = '/sign-in'

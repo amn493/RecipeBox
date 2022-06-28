@@ -9,7 +9,7 @@ const FollowButton = (props) => {
             if (props.isBlockedUser) {
                 axios
                     .post(
-                        `http://${process.env.REACT_APP_ORIGIN}:4000/blockuser`,
+                        `https://${process.env.REACT_APP_ORIGIN}/blockuser`,
                         {
                             addBlock: false,
                             signedInUserID: props.currentUser._id,
@@ -39,7 +39,7 @@ const FollowButton = (props) => {
                 }
                 axios
                     .post(
-                        `http://${process.env.REACT_APP_ORIGIN}:4000/followuser`,
+                        `https://${process.env.REACT_APP_ORIGIN}/followuser`,
                         followData
                     )
                     .then((response) => {

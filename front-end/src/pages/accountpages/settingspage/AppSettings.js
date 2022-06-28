@@ -21,7 +21,7 @@ const AppSettings = (props) => {
     const blockUser = (userNameToBlock) => {
         //function to add a blocked user
         axios
-            .post(`http://${process.env.REACT_APP_ORIGIN}:4000/blockuser`, {
+            .post(`https://${process.env.REACT_APP_ORIGIN}/blockuser`, {
                 addBlock: true,
                 signedInUserID: currentUser._id,
                 signedInBlockedUsers: blockedUsers.map((user) => user._id),
@@ -53,7 +53,7 @@ const AppSettings = (props) => {
         //function to unblock a user
         if (blockedUsers.includes(userToUnblock) === true) {
             axios
-                .post(`http://${process.env.REACT_APP_ORIGIN}:4000/blockuser`, {
+                .post(`https://${process.env.REACT_APP_ORIGIN}/blockuser`, {
                     addBlock: false,
                     signedInUserID: currentUser._id,
                     signedInBlockedUsers: blockedUsers.map((user) => user._id),
@@ -86,7 +86,7 @@ const AppSettings = (props) => {
     //retrieve blocked users using GET handler
     useEffect(() => {
         axios(
-            `http://${process.env.REACT_APP_ORIGIN}:4000/users?userID=${currentUser._id}`
+            `https://${process.env.REACT_APP_ORIGIN}/users?userID=${currentUser._id}`
         )
             .then((response) => {
                 setBlockedUsers(
@@ -117,9 +117,9 @@ const AppSettings = (props) => {
     useEffect(() => {
         // fetch recipe tags
         axios(
-            `http://${
+            `https://${
                 process.env.REACT_APP_ORIGIN
-            }:4000/tags?blockedTags=${props.user.blockedTags.reduce(
+            }/tags?blockedTags=${props.user.blockedTags.reduce(
                 (acc, tag) => `&blockedTags=${tag}`,
                 ''
             )}`
@@ -142,7 +142,7 @@ const AppSettings = (props) => {
     const handleChangedNotifSwitch = () => {
         axios
             .post(
-                `http://${process.env.REACT_APP_ORIGIN}:4000/notificationsettings`,
+                `https://${process.env.REACT_APP_ORIGIN}/notificationsettings`,
                 {
                     emailNotifications: emailNotifs,
                     likes: likesNotifs,
@@ -162,7 +162,7 @@ const AppSettings = (props) => {
     const handleAddBlockedTag = (tagToBlock) => {
         if (blockedTagsList.includes(tagToBlock) === false) {
             axios
-                .post(`http://${process.env.REACT_APP_ORIGIN}:4000/blocktag`, {
+                .post(`https://${process.env.REACT_APP_ORIGIN}/blocktag`, {
                     addBlock: true,
                     tagToBlockOrUnblock: tagToBlock,
                     signedInBlockedTags: blockedTagsList,
@@ -185,7 +185,7 @@ const AppSettings = (props) => {
 
     const handleRemoveBlockedTag = (tagToUnblock) => {
         axios
-            .post(`http://${process.env.REACT_APP_ORIGIN}:4000/blocktag`, {
+            .post(`https://${process.env.REACT_APP_ORIGIN}/blocktag`, {
                 addBlock: false,
                 tagToBlockOrUnblock: tagToUnblock,
                 signedInBlockedTags: blockedTagsList,
@@ -223,7 +223,7 @@ const AppSettings = (props) => {
     // sign out user when sign out button is clicked
     const signOutUser = () => {
         axios
-            .post(`http://${process.env.REACT_APP_ORIGIN}:4000/signout`)
+            .post(`https://${process.env.REACT_APP_ORIGIN}/signout`)
             .then(() => {
                 localStorage.removeItem('token')
                 window.location = '/sign-in'

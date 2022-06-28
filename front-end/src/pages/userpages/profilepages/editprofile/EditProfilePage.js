@@ -52,7 +52,7 @@ const EditProfilePage = (props) => {
     const handleSubmit = (event) => {
         event.preventDefault()
         axios(
-            `http://${process.env.REACT_APP_ORIGIN}:4000/usernametaken?username=${userNameVal}`
+            `https://${process.env.REACT_APP_ORIGIN}/usernametaken?username=${userNameVal}`
         )
             .then((response) => {
                 if (!response.data || userNameVal === props.user.username) {
@@ -86,7 +86,7 @@ const EditProfilePage = (props) => {
 
                     axios
                         .post(
-                            `http://${process.env.REACT_APP_ORIGIN}:4000/updateuserinfo`,
+                            `https://${process.env.REACT_APP_ORIGIN}/updateuserinfo`,
                             updatedUserInfo,
                             {
                                 headers
